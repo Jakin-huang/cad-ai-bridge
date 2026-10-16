@@ -1,9 +1,9 @@
 {
   "version": "0.2.0",
-  "checkedAt": "2026-10-16T03:44:49.601Z",
+  "checkedAt": "2026-10-16T04:18:59.970Z",
   "environment": "Windows x64 / AutoCAD 2022 zh-CN / Tangent Electrical T20 V8.0",
-  "pluginSHA256": "F57A80DACAB7EAB0B3F86DC31E2900F098CBF1B7EA9D2DBD9FD7D905672A069B",
-  "syntheticDxfSHA256": "3d92b9999179a8e194d8adaf5d8d992abe6017d8b868b737635e1e41b0b20e4d",
+  "pluginSHA256": "6C4601B01ECAF15161F418B2A0789322710B461BCC01991363A3D67D62945C71",
+  "syntheticDxfSHA256": "db88a1409e1f8680ab1068a775dd193e685d3ae90f0af3ed462b5e16bd140f5c",
   "generic": {
     "count": 16,
     "checks": [
@@ -24,7 +24,7 @@
       "MCP schema rejects non-planar coordinates",
       "independent DXF export contains three inserts, one route and numbers"
     ],
-    "elapsedMs": 37056
+    "elapsedMs": 34160
   },
   "tangent": {
     "count": 11,
@@ -41,7 +41,7 @@
       "Native vendor interpreter resolves architectural proxies while preserving electrical recognition",
       "Vendor installation sample and workspace source copy remain byte-identical"
     ],
-    "elapsedMs": 103400
+    "elapsedMs": 84596
   },
   "mcp": {
     "count": 4,
@@ -69,15 +69,17 @@
     ]
   },
   "school": {
-    "checkedAt": "2026-10-16T03:35:54.867Z",
+    "checkedAt": "2026-10-16T04:23:07.873Z",
     "requirementsExample": "examples/school-requirements.json",
-    "sheets": 14,
+    "sheets": 19,
     "devices": 292,
     "routes": 278,
     "circuits": 42,
     "designChecks": 20,
     "cadChecks": 11,
     "nativeReopened": true,
-    "reviewStatus": "待专业审定"
+    "reviewStatus": "待专业审定",
+    "localStandardRequired": true,
+    "privateDrawingAssetsExcluded": true
   }
 }

@@ -3,6 +3,7 @@ runs/
 plugin/bin/
 artifacts/
 cadbridge.local.json*
+cadbridge-standard.local.json*
 mcp-config.local.json*
 dist/
 *.log

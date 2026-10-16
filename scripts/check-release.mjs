@@ -64,6 +64,12 @@ if(!staticOnly){
   const school=JSON.parse(await fs.readFile(path.join(schoolFolder,'delivery.json'),'utf8')),proof=JSON.parse(await fs.readFile(path.join(schoolFolder,'cad-verification.json'),'utf8')),model=JSON.parse(await fs.readFile(path.join(schoolFolder,'design-model.json'),'utf8')),manifest=JSON.parse(await fs.readFile(path.join(schoolFolder,'manifest.json'),'utf8'));
   assert.equal(school.ok,true);assert.equal(school.nativeReopened,true);assert.equal(school.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(school.pdfChecks.ok,true);assert.equal(proof.ok,true);assert.equal(proof.checks.length,11);assert.equal(model.validation.ok,true);assert.ok(model.validation.checks.length>=19);
   for(const source of school.sourceDigests)assert.equal(digest(await fs.readFile(path.join(root,source.file))),source.sha256);
+  if(model.standard){
+   const cfg=await readJSON('cadbridge-standard.local.json'),profile=JSON.parse(await fs.readFile(cfg.profile,'utf8')),standardProof=await readJSON('artifacts/standard-profile-report.json');
+   assert.equal(digest(await fs.readFile(cfg.profile)),cfg.sha256);assert.equal(standardProof.ok,true);assert.equal(standardProof.checks.length,5);assert.equal(standardProof.profileSha256,cfg.sha256);
+   assert.equal(JSON.parse(await fs.readFile(path.join(schoolFolder,'template-provenance.json'),'utf8')).profileSha256,cfg.sha256);
+   for(const source of profile.sources){assert.equal(digest(await fs.readFile(source.source)),source.sha256);assert.equal(digest(await fs.readFile(source.dxf)),source.dxfSha256);}
+  }
   for(const file of manifest.files)assert.equal(digest(await fs.readFile(path.join(schoolFolder,file.name))),file.sha256);
   for(const result of school.results){const host=JSON.parse((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);}
   assert.equal(JSON.parse(await fs.readFile(path.join(school.nativeJob,'cleanup.json'),'utf8')).ok,true);

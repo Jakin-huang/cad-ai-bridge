@@ -4,6 +4,8 @@
 
 当前为 **0.2 开发者预览**。实测环境：Windows x64 / AutoCAD 2022 简体中文 / T20 天正电气 V8.0。天正与 AutoCAD 由用户自行安装并正常授权。
 
+学校项目支持 [本地 DWG 标准库](docs/local-standard.md)：主模板统一箱柜、图例及电力选型，缺少图例可从已有施工图补充；本地资产不加入公开源码。
+
 [English](README.en.md) · [详细技术方案](docs/technical-plan.md) · [学校项目完整流程](docs/school-project.md) · [工具与数据契约](docs/tools.md) · [安装排障](docs/troubleshooting.md) · [开源项目对标](docs/open-source-benchmarks.md)
 
 ![从实际测试 DXF 生成的电气示例](docs/images/tangent-electrical-demo.svg)

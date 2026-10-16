@@ -1,5 +1,6 @@
 import {z} from 'zod';
 import {sceneSchema} from './contracts.mjs';
+import {standardRequirements,applySchoolStandard} from './school-standard.mjs';
 const positive=z.number().finite().positive().max(1e6);
 const ratio=z.number().min(0.01).max(1);
 export const schoolRequirementsSchema=z.strictObject({
@@ -12,8 +13,8 @@ export const schoolRequirementsSchema=z.strictObject({
  assumptions:z.array(z.string().min(1).max(1000)).min(1).max(30)
 });
 const round=(n,d=3)=>Number(n.toFixed(d));
-export function makeSchoolDesign(input){
- const r=schoolRequirementsSchema.parse(input),e=r.electrical,l=r.lighting,em=r.emergency;
+export function makeSchoolDesign(input,{standard}={}){
+ const r=schoolRequirementsSchema.parse(standard?standardRequirements(input,standard):input),e=r.electrical,l=r.lighting,em=r.emergency;
  const W=15000+r.classroomsPerFloor*r.classroomWidthMm,D=r.classroomDepthMm,H=D+r.corridorWidthMm,A=(r.classroomWidthMm-r.wallThicknessMm)*(D-r.wallThicknessMm)/1e6;
  const entities=[],devices=[],routes=[],circuits=[],sheets=[],groups=new Map();
  const layers=[['A-WALL',8],['A-DOOR',8],['A-FURN',9],['A-TEXT',8],['E-LIGHT',2],['E-WIRE',3],['E-CTRL',6],['E-FIRE',1],['E-DATA',4],['E-EARTH',3],['S-TEXT',7],['S-FRAME',7]].map(([name,color])=>({name,color}));
@@ -207,7 +208,8 @@ export function makeSchoolDesign(input){
  for(const c of demands){const siblings=demands.filter(v=>v.panel===c.panel&&v.phase===c.phase),amps=siblings.reduce((s,v)=>s+v.demandWatts,0)/(e.phaseVoltage*e.powerFactor),floorLength=12+(c.floor-1)*r.floorHeightMm/1000;c.feederCurrentA=amps;c.feederLengthM=floorLength;c.feederDropPercent=100*2*e.copperRhoOhmMm2M*floorLength*amps/e.floorCableMm2/e.phaseVoltage;c.totalDropPercent=mainDrop+c.feederDropPercent+c.voltageDropPercent;}
  for(const c of circuits.filter(c=>c.system==='emergency'))c.dcDropPercent=100*2*e.copperRhoOhmMm2M*c.estimatedLengthM*c.currentA/c.sectionMm2/em.voltageDc;
  const validation=validateSchool({requirements:r,devices,routes,circuits,calculations});
- return {schemaVersion:1,requirements:r,geometry:{widthMm:W,depthMm:H},scene:sceneSchema.parse({view:{center:[29700,21000,0],width:62000,height:44000},views:sheets.map(s=>({name:s.id,center:[s.origin[0]+29700,21000,0],width:62000,height:44000})),layers,symbols,entities}),devices,routes,circuits,sheets,calculations,validation,numbering:[...groups].map(([group,ds])=>({type:'number_devices',ids:ds.map(d=>d.id),prefix:`${ds[0].floor}${group.split('-')[1]}-`,start:1,width:3}))};
+ const model={schemaVersion:1,requirements:r,geometry:{widthMm:W,depthMm:H},scene:sceneSchema.parse({view:{center:[29700,21000,0],width:62000,height:44000},views:sheets.map(s=>({name:s.id,center:[s.origin[0]+29700,21000,0],width:62000,height:44000})),layers,symbols,entities}),devices,routes,circuits,sheets,calculations,validation,numbering:[...groups].map(([group,ds])=>({type:'number_devices',ids:ds.map(d=>d.id),prefix:`${ds[0].floor}${group.split('-')[1]}-`,start:1,width:3}))};
+ return standard?applySchoolStandard(model,standard):model;
 }
 export function validateSchool(model){
  const {requirements:r,devices,routes,circuits,calculations:c}=model,e=r.electrical,errors=[],checks=[];

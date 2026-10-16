@@ -11,15 +11,16 @@ const wireSpec=z.strictObject({wireType:wireField.optional(),conductorSpec:wireF
 const host=z.enum(['core','tangent']).optional();
 const detail=z.enum(['summary','full']).optional();
 const primitive=z.discriminatedUnion('kind',[
- z.strictObject({kind:z.literal('polyline'),layer:layerName,points:z.array(point).min(2).max(1000),closed:z.boolean().default(false)}),
+ z.strictObject({kind:z.literal('polyline'),layer:layerName,points:z.array(point).min(2).max(1000),closed:z.boolean().default(false),width:z.number().positive().max(10000).optional()}),
+ z.strictObject({kind:z.literal('solid'),layer:layerName,points:z.array(point).length(3)}),
  z.strictObject({kind:z.literal('circle'),layer:layerName,position:point,radius:z.number().positive().max(1e6)}),
- z.strictObject({kind:z.literal('text'),layer:layerName,position:point,text:z.string().min(1).max(512).regex(/^[^\r\n\x00]*$/),height:z.number().positive().max(10000),rotationRadians:z.number().finite().default(0)})
+ z.strictObject({kind:z.literal('text'),layer:layerName,position:point,text:z.string().min(1).max(512).regex(/^[^\r\n\x00]*$/),height:z.number().positive().max(10000),rotationRadians:z.number().finite().default(0),widthFactor:z.number().min(0.01).max(10).optional()})
 ]);
 export const sceneSchema=z.strictObject({
  view:z.strictObject({center:point,width:z.number().positive().max(1e9),height:z.number().positive().max(1e9)}).optional(),
  views:z.array(z.strictObject({name:id,center:point,width:z.number().positive().max(1e9),height:z.number().positive().max(1e9)})).max(100).optional(),
  layers:z.array(z.strictObject({name:layerName,color:z.number().int().min(1).max(255)})).min(1).max(100),
- symbols:z.array(z.strictObject({name:id,geometry:z.array(primitive).min(1).max(100),attributes:z.array(z.strictObject({tag:id,position:point,height:z.number().positive().max(10000),visible:z.boolean(),value:z.string().max(512)})).max(20)})).max(100),
+ symbols:z.array(z.strictObject({name:id,geometry:z.array(primitive).min(1).max(1000),attributes:z.array(z.strictObject({tag:id,position:point,height:z.number().positive().max(10000),visible:z.boolean(),value:z.string().max(512)})).max(20)})).max(100),
  entities:z.array(primitive).max(20000)
 }).superRefine((scene,ctx)=>{
  const layers=new Set(['0']);for(const l of scene.layers){if(layers.has(l.name))ctx.addIssue({code:'custom',message:'Duplicate layer '+l.name});layers.add(l.name);}

@@ -4,9 +4,10 @@ const pt=e=>[Number(tag(e,10,0)),Number(tag(e,20,0)),Number(tag(e,30,0))];
 function points(entity){const ps=[];for(const [code,value]of entity.pairs){if(code===10)ps.push([Number(value),0,0]);else if(code===20)ps.at(-1)[1]=Number(value);}return ps;}
 function matchPrimitive(p,e){
  if(p.layer!==tag(e,8,'0'))return false;
- if(p.kind==='text')return e.type==='TEXT'&&p.text===tag(e,1)&&near(p.position,pt(e))&&Math.abs(p.height-Number(tag(e,40)))<1e-6&&Math.abs(p.rotationRadians-Number(tag(e,50,0))*Math.PI/180)<1e-6;
+ if(p.kind==='text')return e.type==='TEXT'&&p.text===tag(e,1)&&near(p.position,pt(e))&&Math.abs(p.height-Number(tag(e,40)))<1e-6&&Math.abs((p.widthFactor??1)-Number(tag(e,41,1)))<1e-6&&Math.abs(Math.atan2(Math.sin(p.rotationRadians-Number(tag(e,50,0))*Math.PI/180),Math.cos(p.rotationRadians-Number(tag(e,50,0))*Math.PI/180)))<1e-6;
+ if(p.kind==='solid')return e.type==='SOLID'&&p.points.every((v,i)=>near(v,[Number(tag(e,10+i)),Number(tag(e,20+i)),Number(tag(e,30+i,0))]));
  if(p.kind==='circle')return e.type==='CIRCLE'&&near(p.position,pt(e))&&Math.abs(p.radius-Number(tag(e,40)))<1e-6;
- return e.type==='LWPOLYLINE'&&Number(Boolean(p.closed))===(Number(tag(e,70,0))&1)&&points(e).length===p.points.length&&p.points.every((v,i)=>near(v,points(e)[i]));
+ return e.type==='LWPOLYLINE'&&Math.abs((p.width??0)-Number(tag(e,43,0)))<1e-6&&Number(Boolean(p.closed))===(Number(tag(e,70,0))&1)&&points(e).length===p.points.length&&p.points.every((v,i)=>near(v,points(e)[i]));
 }
 export function verifySchoolReadback(model,snapshot,dxf){
  const checks=[],check=(name,ok,detail)=>checks.push({name,ok,...(detail===undefined?{}:{detail})}),byId=new Map(snapshot.devices.map(d=>[d.id,d]));

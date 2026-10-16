@@ -48,7 +48,7 @@ MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的�
 
 ## 原子制图
 
-`cad_create_drawing`（CLI action `create_drawing`）接受 `{scene:{layers,symbols,entities}}`，只在新空白图里建立毫米制图纸。图层使用有限ASCII名称与ACI颜色；普通图块包含声明式几何和有限属性。几何仅为polyline、circle、text，坐标为WCS `[x,y,0]`，不接受脚本、命令、输出覆盖路径或外参。最多100图层/100符号/20000静态实体，整体请求仍限1MiB。图块定义与实体在同一事务中创建，失败不输出新DWG。需要完整业务项目时参见[学校流程](school-project.md)。
+`cad_create_drawing`（CLI action `create_drawing`）接受 `{scene:{layers,symbols,entities}}`，只在新空白图里建立毫米制图纸。图层使用有限ASCII名称与ACI颜色；普通图块包含声明式几何和有限属性。几何为 polyline、circle、text 和三顶点实心 solid，坐标为 WCS `[x,y,0]`；polyline 可设置正值常量 width，text 可设置 0.01–10 的 widthFactor。不接受脚本、命令、输出覆盖路径或外参。最多 100 图层/100 符号/每符号 1000 个几何元素/20000 静态实体，整体请求仍限 1MiB。图块定义与实体在同一事务中创建，失败不输出新 DWG。需要完整业务项目时参见[学校流程](school-project.md)及[本地标准库](local-standard.md)。
 
 `place_symbols.instances[].layer` 和 `connect_route.layer` 可指定普通新实体的图层，默认保留E-LIGHT/E-WIRE；工程模板复制仍保留原图层，不接受此覆盖字段。单行文字使用本机微软雅黑字体，新学校PDF使用本机黑体，不分发字体文件。
 

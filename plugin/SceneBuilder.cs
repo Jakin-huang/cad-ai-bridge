@@ -11,7 +11,7 @@ namespace CadAgent {
     public sealed class SceneLayer { public string name; public short color; }
     public sealed class SceneSymbol { public string name; public Primitive[] geometry; public SceneAttribute[] attributes; }
     public sealed class SceneAttribute { public string tag,value; public double[] position; public double height; public bool visible; }
-    public sealed class Primitive { public string kind,layer,text; public double[][] points; public double[] position; public double height,radius,rotationRadians; public bool closed; }
+    public sealed class Primitive { public string kind,layer,text; public double[][] points; public double[] position; public double height,radius,rotationRadians,width,widthFactor; public bool closed; }
     // Declarative geometry only. No commands, files, external references or evaluation.
     public static class SceneBuilder {
         static void Check(bool ok,string message){if(!ok)throw new Fault("INVALID_SCENE",message);}
@@ -23,11 +23,12 @@ namespace CadAgent {
             Check(p!=null&&layers.Contains(p.layer),"Undefined layer");Entity e;
             if(p.kind=="polyline"){
                 Check(p.points!=null&&p.points.Length>=2&&p.points.Length<=1000,"Invalid polyline");var poly=new Polyline();
-                foreach(var a in p.points){var v=P(a);poly.AddVertexAt(poly.NumberOfVertices,new Point2d(v.X,v.Y),0,0,0);}poly.Closed=p.closed;e=poly;
+                foreach(var a in p.points){var v=P(a);poly.AddVertexAt(poly.NumberOfVertices,new Point2d(v.X,v.Y),0,0,0);}poly.Closed=p.closed;Check(p.width>=0&&p.width<=10000&&!Double.IsNaN(p.width),"Invalid polyline width");poly.ConstantWidth=p.width;e=poly;
+            }else if(p.kind=="solid"){Check(p.points!=null&&p.points.Length==3,"Invalid solid triangle");e=new Solid(P(p.points[0]),P(p.points[1]),P(p.points[2]),P(p.points[2]));
             }else if(p.kind=="circle"){Positive(p.radius);e=new Circle(P(p.position),Vector3d.ZAxis,p.radius);}
             else if(p.kind=="text"){
                 Positive(p.height);Check(p.height<=10000&&p.text!=null&&p.text.Length>0&&p.text.Length<=512&&!p.text.Any(c=>c=='\r'||c=='\n'||c=='\0')&&!Double.IsNaN(p.rotationRadians)&&!Double.IsInfinity(p.rotationRadians),"Invalid text");
-                e=new DBText{Position=P(p.position),Height=p.height,TextString=p.text,Rotation=p.rotationRadians,TextStyleId=style};
+                Check(p.widthFactor==0||(p.widthFactor>=0.01&&p.widthFactor<=10&&!Double.IsNaN(p.widthFactor)),"Invalid text width factor");e=new DBText{Position=P(p.position),Height=p.height,TextString=p.text,Rotation=p.rotationRadians,WidthFactor=p.widthFactor==0?1:p.widthFactor,TextStyleId=style};
             }else throw new Fault("INVALID_SCENE","Unsupported primitive");
             e.Layer=p.layer;return e;
         }
@@ -39,7 +40,7 @@ namespace CadAgent {
             Check(!styles.Has("CADBRIDGE_CJK"),"Style already exists");var textStyle=new TextStyleTableRecord{Name="CADBRIDGE_CJK",FileName="msyh.ttc"};styles.Add(textStyle);t.AddNewlyCreatedDBObject(textStyle,true);
             var bt=(BlockTable)t.GetObject(db.BlockTableId,OpenMode.ForWrite);
             foreach(var s in scene.symbols){
-                Check(s!=null&&Name(s.name)&&!bt.Has(s.name)&&s.geometry!=null&&s.geometry.Length>0&&s.geometry.Length<=100&&s.attributes!=null&&s.attributes.Length<=20,"Invalid or duplicate symbol");
+                Check(s!=null&&Name(s.name)&&!bt.Has(s.name)&&s.geometry!=null&&s.geometry.Length>0&&s.geometry.Length<=1000&&s.attributes!=null&&s.attributes.Length<=20,"Invalid or duplicate symbol");
                 var b=new BlockTableRecord{Name=s.name,Units=UnitsValue.Millimeters};bt.Add(b);t.AddNewlyCreatedDBObject(b,true);
                 foreach(var p in s.geometry)Append(b,Make(p,layers,textStyle.ObjectId),t);
                 var tags=new HashSet<string>(StringComparer.OrdinalIgnoreCase);

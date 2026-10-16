@@ -2,6 +2,10 @@
 
 ## Unreleased: engineering drawing validation
 
+- Add a local V02 standard profile with native DWG audit, complete block catalog, source-bound cable rules, supplemental engineering legends and source hash verification.
+- Generate per-panel single-line diagrams and a provenance legend sheet; support solid triangles, polyline widths and text width factors with independent readback and rendering.
+- Keep local standard assets out of public source packages and block public example packaging of derived private drawings.
+
 - Add a requirements-driven school project workflow with original geometry and symbols, bounded scene creation, load/lighting/voltage-drop estimates, circuit ownership, device numbering and explicit review boundaries.
 - Generate editable DWG/DXF, A2 vector PDF sheets, equipment/circuit CSVs, project calculations and a hashed delivery manifest; verify saved entities, text, attributes and routes with fresh CAD and independent DXF readback.
 - Add `cad_create_drawing` and optional layers for new placements/routes; read-only mode hides scene creation as a write tool.
