@@ -56,6 +56,19 @@ if(!staticOnly){
   assert.ok(executed>0);pass(file+': '+count+' real CAD checks with matching final DLL and successful cleanup');
  }
  const pages=await readJSON('artifacts/mcp-results-report.json');assert.equal(pages.ok,true);assert.equal(pages.checks.length,4);assert.ok(Date.parse(pages.checkedAt)>=builtAt);pass('Actual MCP summary, pagination and read-only evidence');
+ try{
+  const projectFolder=(await fs.readFile(path.join(root,'artifacts/real-project-current.txt'),'utf8')).trim();
+  const project=JSON.parse(await fs.readFile(path.join(projectFolder,'project-validation.json'),'utf8'));
+  const manifest=JSON.parse(await fs.readFile(path.join(projectFolder,'manifest.json'),'utf8'));
+  assert.equal(project.ok,true);assert.ok(Date.parse(project.completedAt)>=builtAt);assert.ok(project.checks.length>=18);
+  for(const entry of manifest.files){assert.equal(digest(await fs.readFile(entry.source)),entry.sha256);if(entry.copy)assert.equal(digest(await fs.readFile(entry.copy)),entry.sha256);}
+  for(const entry of project.files.filter(e=>!e.skipped)){
+   assert.equal(entry.comparison.ok,true);
+   for(const jobRoot of [entry.inspectionJob,entry.auditJob,entry.repairJob].filter(Boolean)){const host=JSON.parse((await fs.readFile(path.join(jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);}
+  }
+  for(const result of Object.values(project.results)){const host=JSON.parse((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());if(host.backend==='tangent-gui'){assert.equal(JSON.parse(await fs.readFile(path.join(result.jobRoot,'cleanup.json'),'utf8')).ok,true);}}
+  pass('Engineering drawings: independent DXF, real symbols, rollback, matching final DLL and unchanged original/source hashes');
+ }catch(error){if(error.code!=='ENOENT')throw error;else if(await fs.access(path.join(root,'artifacts/real-project-current.txt')).then(()=>true,()=>false))throw error;}
  await fs.mkdir(path.join(root,'artifacts'),{recursive:true});
  await fs.writeFile(path.join(root,'artifacts/release-check.json'),JSON.stringify({ok:true,version:pkg.version,checkedAt:new Date().toISOString(),checks,sourceFileCount:files.length,pluginSHA256:build.sha256},null,2));
 }

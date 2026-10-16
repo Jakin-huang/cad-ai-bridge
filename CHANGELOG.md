@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased: engineering drawing validation
+
+- Audit raw model-space inserts, definitions, text and XData applications, export independent DXF, and compare entities, attributes, wire fields and geometry.
+- Recognize additional observed fire, weak-current, switch, board, power and legacy device markers; exclude entirely empty wire metadata and distinguish label groups from resolved circuits.
+- Prepare managed engineering copies, deep-clone verified local electrical instances, preserve source properties, use explicit local connection anchors and add instance-owned numbering.
+- Bound large MCP replies automatically, retain full evidence for pagination, and accommodate large local audit results.
+- Preload additional full-suite object interpreters for real drawings; preserve source hashes, original entities, rollback and request replay evidence.
+
 ## 0.2.0 preview
 
 - Detect local AutoCAD 2022 and Tangent V8 installations and generate project-owned MCP configuration with backups.

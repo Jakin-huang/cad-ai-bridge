@@ -8,6 +8,7 @@ using System.Web.Script.Serialization;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using Autodesk.AutoCAD.ApplicationServices;
 using App = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 [assembly: CommandClass(typeof(CadAgent.Commands))]
@@ -21,7 +22,7 @@ namespace CadAgent
     }
     public sealed class Operation
     {
-        public string type, blockName, id, circuitId, prefix;
+        public string type, blockName, id, circuitId, prefix, templateHandle;
         public Instance[] instances;
         public string[] ids;
         public double[][] vertices;
@@ -35,11 +36,12 @@ namespace CadAgent
     {
         public string id;
         public double[] position;
+        public double[] portOffset;
         public double rotationRadians;
         public Dictionary<string,string> attributes;
     }
     public sealed class State { public string documentId, adapter; public int revision; }
-    public sealed class Meta { public string kind, id, circuitId, from, to; }
+    public sealed class Meta { public string kind, id, circuitId, from, to, templateHandle; public double[] portOffset; }
     public sealed class TaskRecord { public string fingerprint; public int revision; }
     public sealed class Fault : System.Exception
     {
@@ -166,6 +168,29 @@ namespace CadAgent
                 if(tangent)TangentAdapter.MarkNewDevice(db,tr,br);
             }
         }
+        static Point3d Port(BlockReference br,Transaction tr){var meta=Metadata(br,tr);return meta!=null&&meta.portOffset!=null?Point(meta.portOffset).TransformBy(br.BlockTransform):br.Position;}
+        static void CloneProject(Database db,Transaction tr,Operation op,Dictionary<string,Entity> index){
+            ObjectId sourceId;try{sourceId=db.GetObjectId(false,new Handle(Convert.ToInt64(op.templateHandle,16)),0);}catch{throw new Fault("TEMPLATE_NOT_FOUND","Template handle does not exist in this DWG.");}
+            var source=tr.GetObject(sourceId,OpenMode.ForRead) as BlockReference;
+            Require(source!=null&&source.OwnerId==Model(db,tr,OpenMode.ForRead).ObjectId&&!source.IsDynamicBlock,"TEMPLATE_UNSUPPORTED","Template must be an ordinary root-level local block instance.");
+            var definition=(BlockTableRecord)tr.GetObject(source.BlockTableRecord,OpenMode.ForRead);
+            Require(!definition.IsFromExternalReference&&Metadata(source,tr)==null,"TEMPLATE_UNSUPPORTED","Select an unmodified local engineering template.");
+            var data=TangentAdapter.Data(source);string category=TangentAdapter.Category(data);
+            Require(category=="lighting"||category=="socket","TEMPLATE_UNVERIFIED","Engineering cloning is currently verified for lighting and socket instances only.");
+            Require(source.ExtensionDictionary.IsNull&&source.GetPersistentReactorIds().Count==0&&!data.Keys.Any(k=>k=="KeyExtWire"||k=="KeyOwnWireId"||k=="bradata"||k=="Element"),"TEMPLATE_ASSOCIATIONS_UNSUPPORTED","Linked vendor dictionaries/reactors and topology identifiers need a dedicated cloning adapter.");
+            Require(source.Normal.IsEqualTo(Vector3d.ZAxis)&&Math.Abs(source.Position.Z)<1e-8,"TEMPLATE_UNSUPPORTED","Planar WCS XY templates only.");
+            Require(op.instances!=null&&op.instances.Length>0&&op.instances.Length<=100,"INVALID_ARGUMENT","Expected 1..100 project instances.");
+            foreach(var item in op.instances){Id(item.id);Require(!index.ContainsKey(item.id),"DUPLICATE_ID",item.id);var position=Point(item.position);Point(item.portOffset);
+                Require(!Double.IsNaN(item.rotationRadians)&&!Double.IsInfinity(item.rotationRadians),"INVALID_ARGUMENT","Finite rotation required.");
+                var mapping=new IdMapping();db.DeepCloneObjects(new ObjectIdCollection(new[]{sourceId}),Model(db,tr,OpenMode.ForRead).ObjectId,mapping,false);
+                var clone=(BlockReference)tr.GetObject(mapping[sourceId].Value,OpenMode.ForWrite);
+                var transform=Matrix3d.Displacement(position-source.Position)*Matrix3d.Rotation(item.rotationRadians-source.Rotation,Vector3d.ZAxis,source.Position);
+                clone.TransformBy(transform);
+                foreach(ObjectId aid in clone.AttributeCollection){var attr=(AttributeReference)tr.GetObject(aid,OpenMode.ForWrite);attr.TransformBy(transform);if(attr.Tag.Equals("DEVICE_ID",StringComparison.OrdinalIgnoreCase))attr.TextString="";}
+                foreach(var field in item.attributes??new Dictionary<string,string>()){bool found=false;foreach(ObjectId aid in clone.AttributeCollection){var attr=(AttributeReference)tr.GetObject(aid,OpenMode.ForRead);if(attr.Tag.Equals(field.Key,StringComparison.OrdinalIgnoreCase)){attr.UpgradeOpen();attr.TextString=field.Value;found=true;}}Require(found,"ATTRIBUTE_NOT_FOUND",field.Key);}
+                Mark(clone,new Meta{kind="device",id=item.id,templateHandle=op.templateHandle,portOffset=item.portOffset},tr);index.Add(item.id,clone);
+            }
+        }
         static void Number(Database db,Transaction tr,Operation op,Dictionary<string,Entity> index)
         {
             Require(op.ids!=null&&op.ids.Length>0&&op.ids.Distinct().Count()==op.ids.Length,"INVALID_ARGUMENT","Numbering requires distinct device IDs.");
@@ -179,6 +204,12 @@ namespace CadAgent
                 Require(used.Add(number),"NUMBER_CONFLICT",number+" already exists.");
                 var br=(BlockReference)index[op.ids[i]];bool found=false;
                 foreach(ObjectId aid in br.AttributeCollection){var ar=(AttributeReference)tr.GetObject(aid,OpenMode.ForRead);if(ar.Tag.Equals("DEVICE_ID",StringComparison.OrdinalIgnoreCase)){ar.UpgradeOpen();ar.TextString=number;found=true;}}
+                if(!found&&Metadata(br,tr).templateHandle!=null){
+                    br.UpgradeOpen();var ar=new AttributeReference();ar.SetDatabaseDefaults(db);ar.Tag="DEVICE_ID";ar.TextString=number;ar.Layer=br.Layer;
+                    var bounds=br.GeometricExtents;double span=Math.Max(bounds.MaxPoint.X-bounds.MinPoint.X,bounds.MaxPoint.Y-bounds.MinPoint.Y);
+                    ar.Position=new Point3d(bounds.MaxPoint.X+Math.Max(50,span*.1),bounds.MaxPoint.Y+Math.Max(50,span*.1),0);ar.Height=Math.Max(30,Math.Min(200,span*.2));
+                    br.AttributeCollection.AppendAttribute(ar);tr.AddNewlyCreatedDBObject(ar,true);found=true;
+                }
                 Require(found,"ATTRIBUTE_NOT_FOUND","DEVICE_ID missing from "+op.ids[i]);
             }
         }
@@ -190,7 +221,7 @@ namespace CadAgent
             Require(!String.IsNullOrWhiteSpace(op.circuitId)&&op.circuitId.Length<=64,"INVALID_ARGUMENT","Circuit ID required.");
             Require(op.vertices!=null&&op.vertices.Length>=2&&op.vertices.Length<=1000,"INVALID_PATH","Expected 2..1000 vertices.");
             var points=op.vertices.Select(Point).ToArray();
-            Require(points[0].DistanceTo(((BlockReference)index[op.from.id]).Position)<1e-6&&points[points.Length-1].DistanceTo(((BlockReference)index[op.to.id]).Position)<1e-6,"DISCONNECTED_ROUTE","Path endpoints must match fixture insertion-point ports.");
+            Require(points[0].DistanceTo(Port((BlockReference)index[op.from.id],tr))<1e-6&&points[points.Length-1].DistanceTo(Port((BlockReference)index[op.to.id],tr))<1e-6,"DISCONNECTED_ROUTE","Path endpoints must match the explicitly defined connection anchors.");
             Layer(db,tr,"E-WIRE",3);var line=new Polyline{Layer="E-WIRE"};
             for(int i=0;i<points.Length;i++){if(i>0)Require(points[i].DistanceTo(points[i-1])>1e-6,"INVALID_PATH","Zero-length route segment.");line.AddVertexAt(i,new Point2d(points[i].X,points[i].Y),0,0,0);}
             Append(Model(db,tr,OpenMode.ForWrite),line,tr);
@@ -214,14 +245,14 @@ namespace CadAgent
                     {
                         var a=Attributes(br,tr);string n=a.ContainsKey("DEVICE_ID")?a["DEVICE_ID"]:"";
                         if(n=="")issues.Add("MISSING_NUMBER:"+m.id);else if(!numbers.Add(n))issues.Add("DUPLICATE_NUMBER:"+n);
-                        devices.Add(new{id=m.id,handle=br.Handle.ToString(),blockName=br.Name,position=new[]{br.Position.X,br.Position.Y,br.Position.Z},attributes=a});
+                        var port=Port(br,tr);devices.Add(new{id=m.id,handle=br.Handle.ToString(),blockName=br.Name,position=new[]{br.Position.X,br.Position.Y,br.Position.Z},portPosition=new[]{port.X,port.Y,port.Z},templateHandle=m.templateHandle,attributes=a});
                     }
                     else if(m.kind=="route"&&line!=null)
                     {
                         length+=line.Length;
                         var vertices=new List<double[]>();for(int i=0;i<line.NumberOfVertices;i++){var p=line.GetPoint3dAt(i);vertices.Add(new[]{p.X,p.Y,p.Z});}
                         if(!index.ContainsKey(m.from)||!index.ContainsKey(m.to))issues.Add("DANGLING_ROUTE:"+m.id);
-                        else if(!(index[m.from] is BlockReference)||!(index[m.to] is BlockReference)||line.StartPoint.DistanceTo(((BlockReference)index[m.from]).Position)>1e-6||line.EndPoint.DistanceTo(((BlockReference)index[m.to]).Position)>1e-6)issues.Add("DISCONNECTED_ROUTE:"+m.id);
+                        else if(!(index[m.from] is BlockReference)||!(index[m.to] is BlockReference)||line.StartPoint.DistanceTo(Port((BlockReference)index[m.from],tr))>1e-6||line.EndPoint.DistanceTo(Port((BlockReference)index[m.to],tr))>1e-6)issues.Add("DISCONNECTED_ROUTE:"+m.id);
                         routes.Add(new{id=m.id,handle=line.Handle.ToString(),circuitId=m.circuitId,from=m.from,to=m.to,lengthMm=line.Length,vertices=vertices});
                     }
                     else issues.Add("INVALID_ENTITY_METADATA:"+m.id);
@@ -246,6 +277,20 @@ namespace CadAgent
             Require(Path.GetFileName(request)=="request.json","INVALID_JOB","Expected a host-created request.json job file.");
             Execute(request,Path.Combine(job,"response.json"),Path.Combine(job,"output.dwg"),Path.Combine(job,"output.dxf"));
         }
+        [CommandMethod("CADBRIDGEOPENRUNFILE",CommandFlags.Session)]
+        public static void OpenRunFile(){
+            var bootstrap=App.DocumentManager.MdiActiveDocument;var editor=bootstrap.Editor;
+            var result=editor.GetString(new Autodesk.AutoCAD.EditorInput.PromptStringOptions("\nRequest JSON file: "){AllowSpaces=true});
+            if(result.Status!=Autodesk.AutoCAD.EditorInput.PromptStatus.OK)return;
+            string request=Path.GetFullPath(result.StringResult),job=Path.GetDirectoryName(request);
+            Require(Path.GetFileName(request)=="request.json","INVALID_JOB","Expected host request.json.");
+            Require(String.Equals(Path.GetFullPath(bootstrap.Name),Path.Combine(job,"startup.dwg"),StringComparison.OrdinalIgnoreCase),"INVALID_HOST","Session entry requires the owned startup drawing.");
+            var document=Autodesk.AutoCAD.ApplicationServices.DocumentCollectionExtension.Open(App.DocumentManager,Path.Combine(job,"input.dwg"),false);
+            App.DocumentManager.MdiActiveDocument=document;
+            using(document.LockDocument())Execute(request,Path.Combine(job,"response.json"),Path.Combine(job,"output.dwg"),Path.Combine(job,"output.dxf"));
+            document.CloseAndDiscard();
+            bootstrap.CloseAndDiscard();App.Quit();
+        }
         static void Execute(string requestFile,string response,string output,string dxf)
         {
             var doc=App.DocumentManager.MdiActiveDocument;
@@ -255,18 +300,25 @@ namespace CadAgent
                 string raw=File.ReadAllText(requestFile,Encoding.UTF8);
                 Require(Encoding.UTF8.GetByteCount(raw)<=1048576,"REQUEST_TOO_LARGE","Request exceeds 1 MiB.");
                 var request=Json.Deserialize<Request>(raw);Require(request!=null,"INVALID_ARGUMENT","Request required.");
-                var db=doc.Database;bool replay=false;bool writes=request.action=="create_test_drawing"||request.action=="apply";
-                Require(writes||request.action=="inspect"||request.action=="takeoff"||request.action=="validate"||request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status","INVALID_ACTION","Unsupported action.");
+                var db=doc.Database;bool replay=false;bool repair=request.action=="repair_copy";bool writes=repair||request.action=="create_test_drawing"||request.action=="prepare_project"||request.action=="apply";
+                Require(writes||request.action=="audit_drawing"||request.action=="inspect"||request.action=="takeoff"||request.action=="validate"||request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status","INVALID_ACTION","Unsupported action.");
                 string selectedAdapter="generic";
                 if(writes)
                 {
-                    Require(request.units=="mm","UNITS_UNKNOWN","MVP requires explicit mm.");
+                    Require(repair||request.units=="mm","UNITS_UNKNOWN","MVP requires explicit mm.");
                     Guid requestGuid;Require(Guid.TryParse(request.requestId,out requestGuid),"INVALID_REQUEST_ID","requestId must be a UUID.");
+                    if(repair){db.Audit(true,true);mutationCommitted=true;}
+                    else {
                     using(var tr=db.TransactionManager.StartTransaction())
                     {
                         var nod=(DBDictionary)tr.GetObject(db.NamedObjectsDictionaryId,OpenMode.ForRead);
                         var state=(State)Read(nod,StateKey,tr,typeof(State));
-                        if(request.action=="create_test_drawing")
+                        if(request.action=="prepare_project"){
+                            Require(state==null,"ALREADY_MANAGED","Drawing already has managed state; inspect it instead.");
+                            Require(db.Insunits==UnitsValue.Millimeters,"UNITS_UNKNOWN","Project preparation requires declared millimeter drawing units; no silent assumption.");
+                            selectedAdapter="tangent-project";state=new State{documentId=Guid.NewGuid().ToString(),revision=0,adapter=selectedAdapter};Write(nod,StateKey,state,tr);
+                        }
+                        else if(request.action=="create_test_drawing")
                         {
                             Require(state==null&&!Entities(db,tr).Any(),"DRAWING_NOT_EMPTY","Fixture initialization requires a new empty drawing.");
                             db.Insunits=UnitsValue.Millimeters;Layer(db,tr,"E-LIGHT",2);Layer(db,tr,"E-WIRE",3);Fixture(db,tr);
@@ -293,9 +345,10 @@ namespace CadAgent
                                 foreach(var op in request.operations)
                                 {
                                     Require(op!=null,"INVALID_ARGUMENT","Null operation.");
-                                    if(op.type=="place_symbols")Place(db,tr,op,index,selectedAdapter=="tangent-v8");
+                                    if(op.type=="clone_project_symbols"){Require(selectedAdapter=="tangent-project","ADAPTER_MISMATCH","Project clone requires prepare_project output.");CloneProject(db,tr,op,index);}
+                                    else if(op.type=="place_symbols")Place(db,tr,op,index,selectedAdapter=="tangent-v8");
                                     else if(op.type=="number_devices")Number(db,tr,op,index);
-                                    else if(op.type=="connect_route")Connect(db,tr,op,index,selectedAdapter=="tangent-v8");
+                                    else if(op.type=="connect_route")Connect(db,tr,op,index,selectedAdapter=="tangent-v8"||selectedAdapter=="tangent-project");
                                     else throw new Fault("INVALID_OPERATION","Unsupported operation: "+op.type);
                                 }
                                 // Number collision validation includes all managed device instances.
@@ -307,9 +360,10 @@ namespace CadAgent
                         tr.Commit();
                         mutationCommitted=true;
                     }
+                    }
                 }
                 var snapshot=Inspect(db);
-                object tangent=(request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status"||selectedAdapter=="tangent-v8")?TangentAdapter.Read(db,request.units):null;
+                object tangent=(request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status"||selectedAdapter=="tangent-v8"||selectedAdapter=="tangent-project")?TangentAdapter.Read(db,request.units):null;
                 if(writes)
                 {
                     Require(!String.IsNullOrEmpty(output)&&!File.Exists(output),"OUTPUT_EXISTS","Output must be a new file.");
@@ -317,7 +371,10 @@ namespace CadAgent
                     drawingSaved=true;
                     if(!String.IsNullOrEmpty(dxf))db.DxfOut(dxf,16,DwgVersion.AC1032);
                 }
-                File.WriteAllText(response,Json.Serialize(new{ok=true,replayed=replay,snapshot=snapshot,tangent=tangent}),new UTF8Encoding(false));
+                object audit=null;bool auditDxfExported=false;string auditDxfError=null;
+                if(request.action=="audit_drawing"){audit=DrawingAudit.Read(db);try{db.DxfOut(dxf,16,DwgVersion.AC1032);auditDxfExported=true;}catch(System.Exception exportError){auditDxfError=exportError.Message;}}
+                var serializer=request.action=="audit_drawing"?new JavaScriptSerializer{MaxJsonLength=134217728,RecursionLimit=50}:Json;
+                File.WriteAllText(response,serializer.Serialize(new{ok=true,replayed=replay,snapshot=snapshot,tangent=tangent,audit=audit,auditDxfExported=auditDxfExported,auditDxfError=auditDxfError}),new UTF8Encoding(false));
                 doc.Editor.WriteMessage("\nCADAGENT_RUN_OK\n");
             }
             catch(System.Exception ex)

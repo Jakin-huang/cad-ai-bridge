@@ -20,6 +20,12 @@ try {
   try{$locked=$mutex.WaitOne(60000)}catch [Threading.AbandonedMutexException]{$locked=$true}
   if(-not $locked){throw 'CAD host busy'}
   $key=Get-Item -LiteralPath $vars;$hadTrust=$key.GetValueNames() -contains 'TRUSTEDPATHS';$previous=[string]$key.GetValue('TRUSTEDPATHS','');$trusted=if($previous){$previous+';'+$stage}else{$stage}
+  # Native object modules load before /b. Trust only the selected installation's
+  # exact runtime directory for this owned host, then restore the original value.
+  $trusted=$trusted+';'+(Join-Path $TangentRoot 'sys24x64')
+  $objectEnabler=Join-Path (Split-Path -Parent $TangentRoot) 'T20-PlugInV8.0\sys24x64'
+  if(Test-Path -LiteralPath (Join-Path $objectEnabler 'tch_PipeBase.arx')){$trusted=$trusted+';'+$objectEnabler}
+  Set-ItemProperty -LiteralPath $vars -Name TRUSTEDPATHS -Value $trusted
   # Tangent's benign "Tip of the day" modal runs before /b scripts. The installed
   # product INI names its UI registry root. Temporarily suppress only Tips/StartUp.
   $ini=[Text.Encoding]::GetEncoding(936).GetString([IO.File]::ReadAllBytes((Join-Path $TangentRoot 'sys\tch.ini')))
@@ -31,6 +37,7 @@ try {
   if(-not $tipWasPresent -or $tipPrevious -ne 0){Set-ItemProperty -LiteralPath $tipKey -Name StartUp -Type DWord -Value 0;$tipChanged=$true}
   [IO.File]::WriteAllText((Join-Path $job 'startup-preferences.json'),([ordered]@{key=$tipKey;name='StartUp';previous=$tipPrevious;wasPresent=$tipWasPresent;temporaryValue=0;purpose='Suppress Tangent tip-of-the-day modal; no license settings touched'}|ConvertTo-Json),(New-Object Text.UTF8Encoding($false)))
   foreach($name in @('input.dwg','request.json')){Copy-Item -LiteralPath (Join-Path $job $name) -Destination (Join-Path $stage $name)}
+  Copy-Item -LiteralPath (Join-Path $job 'bootstrap.dwg') -Destination (Join-Path $stage 'startup.dwg')
   Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'plugin\bin\CadAgent.dll') -Destination (Join-Path $stage 'CadAgent.dll')
   $lispStage=$stage.Replace('\','/')
   function Literal([string]$value){return '"'+$value.Replace('\','/').Replace('"','\"')+'"'}
@@ -44,7 +51,7 @@ try {
     ('(setvar "TRUSTEDPATHS" (strcat cbPreviousTrust ";" '+(Literal $stage)+'))'),
     ('(command "_.NETLOAD" '+(Literal (Join-Path $stage 'CadAgent.dll'))+')'),
     '(setvar "TRUSTEDPATHS" cbPreviousTrust)',
-    ('(if (member "TEL_KERNAL.ARX" (mapcar ''strcase (arx))) (command "CADBRIDGERUNFILE" '+(Literal (Join-Path $stage 'request.json'))+') (princ "TANGENT_NATIVE_NOT_READY"))'),
+    ('(if (member "TEL_KERNAL.ARX" (mapcar ''strcase (arx))) (command "CADBRIDGEOPENRUNFILE" '+(Literal (Join-Path $stage 'request.json'))+') (princ "TANGENT_NATIVE_NOT_READY"))'),
     '_.QUIT','_N',''
   )
   [IO.File]::WriteAllText($script,($lines -join "`n"),[Text.Encoding]::ASCII)
@@ -56,7 +63,13 @@ try {
   $start.FileName=Join-Path $CadRoot 'acad.exe';$start.UseShellExecute=$false;$start.CreateNoWindow=$false;$start.WindowStyle=[Diagnostics.ProcessWindowStyle]::Normal
   $start.WorkingDirectory=Join-Path $TangentRoot 'sys24x64';$start.Environment['__COMPAT_LAYER']='RunAsInvoker'
   # Autodesk requires /b and its script to be the final command-line arguments.
-  foreach($arg in @((Join-Path $stage 'input.dwg'),'/p',$Profile,'/nologo','/ld',(Join-Path $TangentRoot 'sys24x64\tch_kernal.arx'),'/b',$script)){$start.ArgumentList.Add($arg)}
+  foreach($arg in @((Join-Path $stage 'startup.dwg'),'/p',$Profile,'/nologo')){$start.ArgumentList.Add($arg)}
+  # Keep the manufacturer's module initialization order. Only its core is forced
+  # early; object interpreters demand-load normally from the selected installation.
+  $nativePreload=@('tch_kernal.arx')
+  $moduleEvidence=@(foreach($module in $nativePreload){$modulePath=Join-Path (Join-Path $TangentRoot 'sys24x64') $module;if(-not(Test-Path -LiteralPath $modulePath)){throw ('Native module missing: '+$module)};$start.ArgumentList.Add('/ld');$start.ArgumentList.Add($modulePath);[ordered]@{name=$module;path=$modulePath;sha256=(Get-FileHash -LiteralPath $modulePath).Hash}})
+  [IO.File]::WriteAllText((Join-Path $job 'native-preload.json'),($moduleEvidence|ConvertTo-Json),(New-Object Text.UTF8Encoding($false)))
+  $start.ArgumentList.Add('/b');$start.ArgumentList.Add($script)
   $process=New-Object Diagnostics.Process;$process.StartInfo=$start
   if(-not $process.Start()){throw 'AutoCAD process did not start'}
   [IO.File]::WriteAllText((Join-Path $job 'process.json'),([ordered]@{pid=$process.Id;stage=$stage;startedAt=$process.StartTime.ToUniversalTime().ToString('o');executable=$start.FileName}|ConvertTo-Json),(New-Object Text.UTF8Encoding($false)))

@@ -1,6 +1,6 @@
 # 工具与数据契约
 
-MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的严格 schema。所有图纸路径必须位于 setup 配置的 workspace，解析真实路径后检查边界。输出路径由宿主生成，调用者不能指定覆盖源图。
+MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的严格 schema。图纸路径必须位于 setup 配置的 workspace 或本项目任务输出目录，解析真实路径后检查边界。输出路径由宿主生成，调用者不能指定覆盖源图。
 
 ## 读取天正
 
@@ -10,7 +10,27 @@ MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的�
 
 `tangent_inspect` 与 `tangent_takeoff` 默认返回摘要。`host` 可为 `core` 或 `tangent`；后者启动独立图形会话。`detail: full` 返回完整记录。若图纸单位为 Undefined，`units: mm` 明确声明长度按毫米解释；已有其他单位不能被假设覆盖。
 
-设备输出包含 handle、块名、分类、位置、属性、识别依据和分组后的 typed XData。导线输出包含几何类型、回路 ID、原始规格字段、图面长度及有依据时的毫米长度。统计覆盖模型空间根层；未知实体、代理和读取错误分别报告，不把未识别实体默认为设备。
+设备输出包含 handle、块名、分类、位置、属性、识别依据和分组后的 typed XData。识别 light、socket、fireequip、weakequip、switchboard、switch、powerequip、otherequip 等已有标记；有名称证据时识别旧式专业设备层字段。导线输出包含几何类型、回路标签、原始规格字段、图面长度及有依据时的毫米长度。全空导线字段计入待复核项，不计入有效导线。统计覆盖模型空间根层，包括图例与重复视图实例；未知实体、代理和读取错误分别报告。
+
+`circuitLabelCount` 是原样标签的分组数，保留大小写。未建立配电箱、馈线和拓扑身份时 `circuitCount` 为 null，`circuitIdentityResolved` 为 false；相同 WL1 不能跨楼层/配电箱直接当作同一条实际回路。图面实例数也不等于工程净量或采购量。
+
+完整结果超过 MCP 返回预算时，即使请求 `detail: full` 也会返回 `responseTruncated: true` 与分页入口；不会重启 CAD。完整 JSON 仍在任务目录内。所有 MCP 工具返回均受此边界保护。
+
+## 原始审计与工程图块
+
+`cad_audit_drawing` 对副本列出实体类型、图层、XData 应用名、根层 INSERT、图块定义和文字，同时独立导出 DXF。默认只返回摘要；分页 kind 新增 inserts、definitions、texts。XData 预览和图块几何预览有长度上限，DXF 保留完整记录。`auditDxfExported` 和 `auditDxfError` 单独报告导出状态，失败的部分文件不能作为验收证据。
+
+`cad_prepare_project` 接受 drawing、expectedSha256、requestId UUID、units:mm、可选 host，给明确为毫米制的既有图纸生成带文档身份的副本，不修改已有实体或自动设置单位。
+
+在其输出上调用 `electrical_apply`，adapter 为 tangent-project：
+
+```json
+{"type":"clone_project_symbols","templateHandle":"ABC","instances":[{"id":"L1","position":[10000,0,0],"rotationRadians":0,"portOffset":[0,0,0]}]}
+```
+
+模板目前限已验证的普通本地灯具/插座根层块，保留原定义、图层、比例、属性和 XData；当前位置及旋转由请求指定。带关联字典、反应器、已知拓扑身份字段、动态图块和外参的模板拒绝。portOffset 是块局部坐标中的显式几何连接锚点，由实际几何核对后选择，通过原实例的块变换转换为 WCS，不自动推断厂家端子。新设备编号使用 DEVICE_ID；若源块没有该属性，仅给新增实例附加本项目的编号属性，不覆盖 A 等原有专业属性，不改共享块定义。ATTSYNC 等外部属性同步可能重置这类实例附加属性，需由上层适配器另行处理。新增导线可设置回路与规格字段。
+
+`cad_repair_copy` 接受 drawing、expectedSha256、requestId 和可选 host，运行 CAD 自带 AUDIT，再输出新 DWG/DXF；不设置图纸单位、不覆盖原文件。AUDIT 可能删除损坏对象，需查看宿主日志和对照结果。此操作只修复副本，不视为一次可自动重放的制图事务。
 
 ### 分页
 
@@ -20,7 +40,7 @@ MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的�
 {"jobId":"job-EXAMPLE","kind":"devices","offset":0,"limit":25}
 ```
 
-`kind` 为 `devices`、`wires` 或 `circuits`；每页 1–100 条。返回 total、items、hasMore 和完整结果文件 SHA-256。分页读取本项目已有任务记录，不启动 CAD、不读取任意路径。
+`kind` 为 devices、wires、circuits 或原始审计的 inserts、definitions、texts；每页 1–100 条。返回 total、items、hasMore 和完整结果文件 SHA-256。分页读取本项目已有任务记录，不启动 CAD、不读取任意路径。
 
 ## 创建测试图
 
@@ -38,7 +58,7 @@ MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的�
 {"type":"connect_route","id":"route-WL1","circuitId":"WL1","from":{"id":"L1","port":"PWR"},"to":{"id":"L2","port":"PWR"},"vertices":[[0,0,0],[3000,0,0]],"wireSpec":{"wireType":"BV","conductorSpec":"2x2.5"}}
 ```
 
-`wireSpec` 只用于天正合成 fixture 适配，字段还包括 method、installation、conduitDiameter。测试端口位于插入点，路线首尾必须匹配；不会自动寻找真实设备的接线端子或绕障碍。
+`wireSpec` 用于天正合成与工程适配的新增路线，字段还包括 method、installation、conduitDiameter。合成端口位于插入点；工程适配使用显式锚点。路线首尾必须匹配；不会自动寻找设备接线端子或绕障碍。
 
 ```json
 {"type":"number_devices","ids":["L1","L2"],"prefix":"L-","start":1,"width":3}

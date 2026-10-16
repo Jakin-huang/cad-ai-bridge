@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {schemas} from '../../src/contracts.mjs';
 import {snapshotDrawing,hashFile,isWithin} from '../../src/drawings.mjs';
-import {summarize,readResultPage} from '../../src/results.mjs';
+import {summarize,readResultPage,boundForTransport} from '../../src/results.mjs';
 import {atomicJson,csvCell} from '../../src/files.mjs';
 import {selectInstallation} from '../../src/config.mjs';
 async function temporary(t){const d=await fs.mkdtemp(path.join(os.tmpdir(),'cadbridge-test-'));t.after(()=>fs.rm(d,{recursive:true,force:true}));return d;}
@@ -63,4 +63,14 @@ test('saved result pagination reads only owned evidence and verifies its digest'
 });
 test('CSV cells quote content and prevent formula interpretation',()=>{
  assert.equal(csvCell('WL1'),'"WL1"');assert.equal(csvCell('=HYPERLINK("x")'),'"\'=HYPERLINK(""x"")"');assert.equal(csvCell('A\nB'),'"A\nB"');assert.equal(csvCell(null),'""');
+});
+test('large full-detail results stay within MCP transport budget and retain small managed snapshots',()=>{
+ const devices=Array.from({length:1000},(_,id)=>({id,raw:'x'.repeat(1000)}));const result={ok:true,jobRoot:path.join('runs','job-large'),snapshot:{documentId:'d',revision:1,devices:[{id:'new'}],symbols:[]},tangent:{devices,wires:[],circuits:[],coverage:{scope:'roots'}}};const limited=boundForTransport(result);
+ assert.equal(limited.responseTruncated,true);assert.ok(Buffer.byteLength(JSON.stringify(limited))<512*1024);assert.deepEqual(limited.snapshot.devices,[{id:'new'}]);assert.equal(limited.details.jobId,'job-large');assert.equal(result.tangent.devices.length,1000);
+ const failed=boundForTransport({ok:false,error:{code:'NUMBER_CONFLICT',message:'Duplicate number'},drawingSaved:false,jobRoot:result.jobRoot,afterFailure:{raw:'x'.repeat(1000000)}});assert.equal(failed.error.code,'NUMBER_CONFLICT');assert.equal(failed.drawingSaved,false);assert.equal(failed.details.jobId,'job-large');assert.ok(Buffer.byteLength(JSON.stringify(failed))<512*1024);
+});
+test('result pages cap bytes and provide a reachable continuation for large records',async t=>{
+ const d=await temporary(t),job=path.join(d,'job-large');await fs.mkdir(job);await fs.writeFile(path.join(job,'result.json'),JSON.stringify({audit:{definitions:Array.from({length:12},(_,i)=>({i,text:'x'.repeat(50000)}))}}));
+ const page=await readResultPage(d,{jobId:'job-large',kind:'definitions',offset:0,limit:100});assert.ok(Buffer.byteLength(JSON.stringify(page))<300000);assert.ok(page.items.length>0&&page.items.length<12);assert.equal(page.nextOffset,page.items.length);assert.equal(page.hasMore,true);
+ const next=await readResultPage(d,{jobId:'job-large',kind:'definitions',offset:page.nextOffset,limit:100});assert.equal(next.items[0].i,page.nextOffset);
 });

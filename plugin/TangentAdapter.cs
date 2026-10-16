@@ -11,6 +11,13 @@ namespace CadAgent {
     // No claim of the complete Tangent SDK/schema or native topology is made.
     public static class TangentAdapter {
         static readonly string[] WireKeys={"ltype","ldm","lmeth","linst","lnoar","lnorm","linenum"};
+        static readonly Dictionary<string,string> DeviceKeys=new Dictionary<string,string>{{"light","lighting"},{"socket","socket"},{"fireequip","fire"},{"weakequip","weak-current"},{"switchboard","distribution-board"},{"switch","switch"},{"powerequip","power"},{"otherequip","other-equipment"},{"EES_Fire","fire"}};
+        static bool Present(Dictionary<string,List<XDatum>> data,string key){string value=Text(data,key);return !String.IsNullOrWhiteSpace(value)&&value!="F"&&value!="false";}
+        public static string Category(Dictionary<string,List<XDatum>> data){
+            foreach(var pair in DeviceKeys)if(Present(data,pair.Key))return pair.Value;
+            if(Present(data,"名称")){if(data.ContainsKey("照明平面设备层"))return "lighting";if(data.ContainsKey("动力平面设备层"))return "power";if(data.ContainsKey("消防平面设备层"))return "fire";}
+            return data.ContainsKey("DEVTYPE")||Present(data,"设备名称")?"device-unclassified":null;
+        }
         static void AddRegApp(Database db,Transaction tr,string app) {
             var table=(RegAppTable)tr.GetObject(db.RegAppTableId,OpenMode.ForRead);
             if(table.Has(app))return;
@@ -73,7 +80,8 @@ namespace CadAgent {
             if(assumeUnits=="mm"&&!actualMm&&!assumedMm)throw new Fault("UNITS_MISMATCH","An explicit drawing unit cannot be overridden by an assumption.");
             var devices=new List<object>();var wires=new List<object>();var errors=new List<object>();var proxies=new Dictionary<string,int>();var groups=new Dictionary<string,int>();
             var circuitLengths=new Dictionary<string,double>(StringComparer.Ordinal);var circuitCounts=new Dictionary<string,int>(StringComparer.Ordinal);
-            int total=0,excluded=0,unknownCircuits=0;double length=0;
+            int total=0,excluded=0,unknownCircuits=0,emptyWireMetadata=0,unclassifiedBlocks=0;double length=0;bool allWiresManaged=true;
+            var unresolvedWireLayers=new Dictionary<string,int>();var candidateLayers=new Dictionary<string,int>();
             using(var tr=db.TransactionManager.StartOpenCloseTransaction()) {
                 var bt=(BlockTable)tr.GetObject(db.BlockTableId,OpenMode.ForRead);
                 var model=(BlockTableRecord)tr.GetObject(bt[BlockTableRecord.ModelSpace],OpenMode.ForRead);
@@ -83,16 +91,19 @@ namespace CadAgent {
                         var entity=tr.GetObject(id,OpenMode.ForRead) as Entity;if(entity==null){excluded++;continue;}
                         var proxy=entity as ProxyEntity;if(proxy!=null){Count(proxies,proxy.OriginalClassName+"|"+proxy.OriginalDxfName);excluded++;continue;}
                         var data=Data(entity);var br=entity as BlockReference;
-                        string category=data.ContainsKey("light")?"lighting":data.ContainsKey("socket")?"socket":data.ContainsKey("EES_Fire")?"fire":(data.ContainsKey("DEVTYPE")||data.ContainsKey("设备名称"))?"device-unclassified":null;
+                        string category=Category(data);
                         if(br!=null&&category!=null) {
                             var attrs=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
                             foreach(ObjectId aid in br.AttributeCollection){var a=(AttributeReference)tr.GetObject(aid,OpenMode.ForRead);attrs[a.Tag]=a.TextString;}
-                            string name=Text(data,"设备名称");if(name==null&&attrs.ContainsKey("A"))name=attrs["A"];
+                            string name=Text(data,"设备名称")??Text(data,"名称");if(name==null&&attrs.ContainsKey("A"))name=attrs["A"];
                             devices.Add(new {handle=br.Handle.ToString(),blockName=br.Name,category=category,name=name,layer=br.Layer,position=new[]{br.Position.X,br.Position.Y,br.Position.Z},attributes=attrs,xdata=data,recognitionBasis="Observed Tangent V8 XData application names"});
                             Count(groups,category+"|"+br.Name);continue;
                         }
+                        if(br!=null&&System.Text.RegularExpressions.Regex.IsMatch(br.Layer,@"(?i)EQUIP|设备|消防|照明|插座|弱电")){unclassifiedBlocks++;Count(candidateLayers,br.Layer);}
                         var curve=entity as Curve;
                         if(curve!=null&&(entity is Polyline||entity is Line||entity is Arc)&&WireKeys.Any(k=>data.ContainsKey(k))) {
+                            if(!WireKeys.Any(k=>!String.IsNullOrWhiteSpace(Text(data,k)))){emptyWireMetadata++;Count(unresolvedWireLayers,entity.Layer);excluded++;continue;}
+                            if(entity.ExtensionDictionary.IsNull||!((DBDictionary)tr.GetObject(entity.ExtensionDictionary,OpenMode.ForRead)).Contains("CADAGENT_ENTITY"))allWiresManaged=false;
                             double drawingLength=curve.GetDistanceAtParameter(curve.EndParam)-curve.GetDistanceAtParameter(curve.StartParam);
                             string circuit=Text(data,"linenum");if(String.IsNullOrWhiteSpace(circuit)){circuit=null;unknownCircuits++;}else{Count(circuitCounts,circuit);if(!circuitLengths.ContainsKey(circuit))circuitLengths[circuit]=0;circuitLengths[circuit]+=drawingLength;}
                             var spec=new Dictionary<string,string>();foreach(var key in WireKeys)if(data.ContainsKey(key))spec[key]=Text(data,key);
@@ -107,8 +118,8 @@ namespace CadAgent {
             foreach(System.Diagnostics.ProcessModule module in System.Diagnostics.Process.GetCurrentProcess().Modules)if(module.ModuleName.StartsWith("tel_",StringComparison.OrdinalIgnoreCase)||module.ModuleName.StartsWith("tch_",StringComparison.OrdinalIgnoreCase))nativeModules.Add(module.ModuleName);
             return new {adapter="tangent-v8-observed",units=db.Insunits.ToString(),unitsSource=actualMm?"drawing":assumedMm?"caller-assumption":"unresolved",deviceCount=devices.Count,wireCount=wires.Count,devices=devices,wires=wires,
                 circuits=circuitCounts.OrderBy(x=>x.Key,StringComparer.Ordinal).Select(x=>new {id=x.Key,wireCount=x.Value,lengthDrawingUnits=circuitLengths[x.Key],lengthMm=(actualMm||assumedMm)?(double?)circuitLengths[x.Key]:null}).ToArray(),
-                statistics=new {deviceGroups=groups,circuitCount=circuitCounts.Count,unassignedWireCount=unknownCircuits,lengthDrawingUnits=length,lengthMm=(actualMm||assumedMm)?(double?)length:null},
-                coverage=new {modelSpaceEntities=total,excludedEntities=excluded,proxyEntities=proxies.Values.Sum(),proxyClasses=proxies,scope="Model-space root only; nested blocks and xrefs excluded; no inferred device-to-circuit topology",errors=errors,completeWithinScope=errors.Count==0},
+                statistics=new {deviceGroups=groups,circuitCount=allWiresManaged&&wires.Count>0?(int?)circuitCounts.Count:null,circuitLabelCount=circuitCounts.Count,circuitIdentityResolved=allWiresManaged&&wires.Count>0,unassignedWireCount=unknownCircuits,lengthDrawingUnits=length,lengthMm=(actualMm||assumedMm)?(double?)length:null},
+                coverage=new {modelSpaceEntities=total,excludedEntities=excluded,emptyWireMetadataEntities=emptyWireMetadata,emptyWireMetadataByLayer=unresolvedWireLayers,unclassifiedElectricalBlocks=unclassifiedBlocks,unclassifiedElectricalBlocksByLayer=candidateLayers,proxyEntities=proxies.Values.Sum(),proxyClasses=proxies,scope="Model-space root instances including legends and repeated views; nested blocks and xrefs excluded; circuit labels do not resolve feeder or board identities",errors=errors,completeWithinScope=errors.Count==0&&unclassifiedBlocks==0&&proxies.Count==0,geometryReadSucceeded=errors.Count==0},
                 nativeRuntime=new {loadedModules=nativeModules,commandReadinessVerified=false,note="Loaded modules alone do not prove native command or license readiness."}};
         }
     }

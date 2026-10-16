@@ -1,8 +1,12 @@
 import {dependency} from './dependencies.mjs';
 import {schemas,execute} from './bridge.mjs';
+import {boundForTransport} from './src/results.mjs';
 const {McpServer}=await dependency('@modelcontextprotocol/server');
 const {serveStdio}=await dependency('@modelcontextprotocol/server/stdio');
 const definitions=[
+ ['cad_audit_drawing','audit_drawing','只读清点真实图纸的实体、图层、图块实例与定义，并导出副本 DXF；默认摘要，详情可分页。'],
+ ['cad_prepare_project','prepare_project','将明确为毫米制的真实工程图初始化为可管理副本；保留原有实体，输出新 DWG，不修改源图。'],
+ ['cad_repair_copy','repair_copy','仅对输入快照运行 AutoCAD AUDIT 并另存修复副本；需要源摘要，不修改源图。修复可能改变损坏对象，必须对照复核。'],
  ['cad_create_test_drawing','create_test_drawing','创建毫米制空白测试 DWG，包含 EA_LIGHT 测试灯具定义。输出新文件。'],
  ['cad_inspect','inspect','重新打开指定 DWG，返回文档 ID、版本、图块、设备、线路和源文件摘要。'],
  ['tangent_inspect','tangent_inspect','只读识别天正 V8 示例中观察到的设备图块、导线 XData 和回路；报告代理对象、单位与识别范围。'],
@@ -16,9 +20,9 @@ const definitions=[
 await serveStdio(()=>{
  const server=new McpServer({name:'cad-ai-bridge',version:'0.2.0'});
  for(const [name,action,description]of definitions){
-   if(process.env.CADBRIDGE_READ_ONLY==='1'&&['apply','create_test_drawing'].includes(action))continue;
-   server.registerTool(name,{description,inputSchema:schemas[action],annotations:{readOnlyHint:!['apply','create_test_drawing'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
-     try{const result=await execute(action,args);return{content:[{type:'text',text:JSON.stringify(result)}],isError:!result.ok};}
+   if(process.env.CADBRIDGE_READ_ONLY==='1'&&['apply','create_test_drawing','prepare_project','repair_copy'].includes(action))continue;
+   server.registerTool(name,{description,inputSchema:schemas[action],annotations:{readOnlyHint:!['apply','create_test_drawing','prepare_project','repair_copy'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
+     try{const result=boundForTransport(await execute(action,args));return{content:[{type:'text',text:JSON.stringify(result)}],isError:!result.ok};}
      catch(error){return{content:[{type:'text',text:JSON.stringify({ok:false,error:{code:'HOST_OR_INPUT_ERROR',message:error.message}})}],isError:true};}
    });
  }

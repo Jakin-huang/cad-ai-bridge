@@ -1,9 +1,9 @@
 {
   "version": "0.2.0",
-  "checkedAt": "2026-10-16T01:34:15.039Z",
+  "checkedAt": "2026-10-16T02:46:03.378Z",
   "environment": "Windows x64 / AutoCAD 2022 zh-CN / Tangent Electrical T20 V8.0",
-  "pluginSHA256": "6D05AA26148A22EDC0875025ACE0751152C1DBA1F40F5723A8B447CB1E27994F",
-  "syntheticDxfSHA256": "5efc0790d31e8d40637e862bfe790b8743010a863617dcfba601d71810dac8d8",
+  "pluginSHA256": "4D27E235BA08D2514A98F20F6D9621BE7AB63190C6AD8AC61E77AFBA7C900F38",
+  "syntheticDxfSHA256": "935f803da96916a57db898f82916309b06011c008e70844ea11888c30ae45d6c",
   "generic": {
     "count": 16,
     "checks": [
@@ -24,7 +24,7 @@
       "MCP schema rejects non-planar coordinates",
       "independent DXF export contains three inserts, one route and numbers"
     ],
-    "elapsedMs": 35553
+    "elapsedMs": 48751
   },
   "tangent": {
     "count": 11,
@@ -36,12 +36,12 @@
       "Fresh native host reads persisted devices, numbered attributes and two circuits",
       "Fast backend matches native host electrical counts and length",
       "Managed connection ports and numbering validate after native save",
-      "Vendor sample recognition reads 34 devices and 28 wires without assuming units",
+      "Vendor sample reads 34 lighting/socket instances plus other observed classes and 28 wires without assuming units",
       "Explicit unit assumption is reported and enables length conversion",
       "Native vendor interpreter resolves architectural proxies while preserving electrical recognition",
       "Vendor installation sample and workspace source copy remain byte-identical"
     ],
-    "elapsedMs": 86603
+    "elapsedMs": 105046
   },
   "mcp": {
     "count": 4,
@@ -49,11 +49,11 @@
       "Default Tangent MCP inspection returns bounded summary with full evidence retained",
       "MCP result pages match retained data and create no CAD jobs",
       "Summary reduces returned JSON bytes on actual vendor example",
-      "Read-only MCP discovery hides both write tools"
+      "Read-only MCP discovery hides all write tools"
     ],
     "metrics": {
-      "fullBytes": 32768,
-      "summaryBytes": 4504
+      "fullBytes": 33108,
+      "summaryBytes": 4844
     }
   }
 }

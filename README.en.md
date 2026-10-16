@@ -26,7 +26,9 @@ Writes operate on snapshots and save new DWGs. Document identity, SHA-256, revis
 
 Native acceptance covers five synthetic devices, two circuits, numbering, save/reopen and 12000 mm of routes. The installed vendor example yields 34 recognized lighting/socket devices and 28 wires. Native interpretation resolves architectural objects that appear as proxies in CoreConsole.
 
-Current writes are limited to ordinary managed blocks and explicitly marked synthetic Tangent fixtures, planar WCS geometry and mm units. Observed XData support is not a complete Tangent SDK, native annotation/topology implementation or engineering compliance check. Nested blocks, xrefs, arbitrary vendor-library writes and native cable-tray creation remain outside this preview.
+Writes support ordinary managed blocks, synthetic Tangent fixtures and verified local engineering instances cloned in prepared project copies. Scales, layers and source attributes are retained, routes use explicitly selected geometric anchors, and new instance numbering does not replace professional name tags. Geometry is planar WCS with declared mm units. Raw census, independent DXF checks and AUDIT repair copies are available. See [engineering-copy validation](docs/project-validation.md).
+
+Root instance counts include legends and repeated views. Circuit label groups do not resolve board/feeder identities; unresolved circuitCount is null. Empty wire metadata and unclassified candidates are reported separately. Observed XData support is not a complete Tangent SDK, native annotation/topology implementation or engineering compliance check. Nested blocks, xrefs, arbitrary external library import and native cable-tray creation require further adapters.
 
 ```powershell
 npm test

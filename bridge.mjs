@@ -13,6 +13,7 @@ const allowedRoot=await fs.realpath(settings.workspace);
 export {schemas} from './src/contracts.mjs';
 export {hashFile} from './src/drawings.mjs';
 let queue=Promise.resolve();
+let bootstrapDrawing;
 export function execute(action,args={}){
  const work=queue.then(()=>run(action,args));queue=work.catch(()=>{});return work;
 }
@@ -33,6 +34,10 @@ async function run(action,args){
  await fs.writeFile(path.join(job,'request.json'),encoded);
  const backend=action==='native_status'?'tangent':requestedHost||'core';
  if(backend==='tangent'&&(!settings.tangentRoot||!settings.tangentProfile))throw new Error('TANGENT_NOT_CONFIGURED: run cadbridge setup and select Tangent V8.');
+ if(backend==='tangent'){
+  if(!bootstrapDrawing){const seed=await run('create_test_drawing',{});if(!seed.ok)throw Error('BOOTSTRAP_FAILED');bootstrapDrawing=seed.drawing;}
+  await fs.copyFile(bootstrapDrawing,path.join(job,'bootstrap.dwg'),fs.constants.COPYFILE_EXCL);
+ }
  const powershell=settings.powershell;
  const argsForHost=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,backend==='tangent'?'run-gui.ps1':'run-core.ps1'),'-JobRoot',job,'-CadRoot',settings.cadRoot,'-ProductKey',settings.productKey];
  if(backend==='tangent')argsForHost.push('-TangentRoot',settings.tangentRoot,'-Profile',settings.tangentProfile);
@@ -49,8 +54,9 @@ async function run(action,args){
  if(host.code!==0)throw new Error(`HOST_FAILED: ${job}\n${host.stderr}`);
  const response=JSON.parse((await fs.readFile(path.join(job,'response.json'),'utf8')).replace(/^\uFEFF/,''));
  const result={...response,backend,jobRoot:job,elapsedMs:Math.round(performance.now()-started),inputSha256};
+ if(action==='audit_drawing'&&response.ok&&response.auditDxfExported)result.dxf=path.join(job,'output.dxf');
  if(backend==='tangent')result.nativeHost=JSON.parse(await fs.readFile(path.join(job,'host.json'),'utf8'));
- if((response.ok||response.drawingSaved)&&['create_test_drawing','apply'].includes(action)){
+ if((response.ok||response.drawingSaved)&&['create_test_drawing','prepare_project','repair_copy','apply'].includes(action)){
    result.drawing=path.join(job,'output.dwg');result.drawingSha256=await hashFile(result.drawing);
    try{await fs.access(path.join(job,'output.dxf'));result.dxf=path.join(job,'output.dxf');}catch{}
  }
@@ -60,5 +66,9 @@ async function run(action,args){
    result.takeoff={deviceCount:s.deviceCount,routeCount:s.routeCount,routeLengthMm:s.routeLengthMm,groups,coverage:s.coverage};
  }
  await fs.writeFile(path.join(job,'result.json'),JSON.stringify(result,null,2));
+ if(action==='audit_drawing'&&result.audit&&detail!=='full'){
+  const {inserts,definitions,texts,...rest}=result.audit;
+  return {...result,audit:{...rest,insertCount:inserts.length,definitionCount:definitions.length,textCount:texts.length},details:{jobId:path.basename(job),tool:'cad_read_result',kinds:['inserts','definitions','texts']}};
+ }
  return ['tangent_inspect','tangent_takeoff'].includes(action)&&detail!=='full'?summarize(result):result;
 }
