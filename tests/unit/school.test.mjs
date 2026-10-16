@@ -8,7 +8,7 @@ test('school business model reconciles room areas, lighting and phase loads',()=
  const m=makeSchoolDesign(requirements);
  assert.equal(m.validation.ok,true);assert.equal(m.sheets.length,14);assert.equal(m.calculations.grossAreaM2,974.4);assert.equal(m.calculations.installedWatts,10296);
  assert.equal(m.devices.filter(d=>d.blockName==='SCH_LIGHT').length,72);assert.equal(m.devices.filter(d=>d.blockName==='SCH_BOARD').length,18);
- assert.equal(m.circuits.filter(c=>c.system==='power').length,18);assert.equal(m.calculations.emergency[0].loadWatts,120);
+ assert.equal(m.circuits.filter(c=>c.system==='power').length,18);assert.equal(m.calculations.emergency[0].loadWatts,130);
  assert.ok(Math.abs(m.calculations.classroomLux-327.272727)<0.001);
  assert.ok(Math.max(...m.circuits.filter(c=>c.system==='power').map(c=>c.totalDropPercent))<5);
  assert.ok(schemas.create_drawing.safeParse({scene:m.scene}).success);

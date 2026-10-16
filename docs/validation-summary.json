@@ -69,13 +69,13 @@
     ]
   },
   "school": {
-    "checkedAt": "2026-10-16T04:23:07.873Z",
+    "checkedAt": "2026-10-16T05:05:59.679Z",
     "requirementsExample": "examples/school-requirements.json",
     "sheets": 19,
-    "devices": 292,
-    "routes": 278,
-    "circuits": 42,
-    "designChecks": 20,
+    "devices": 302,
+    "routes": 282,
+    "circuits": 48,
+    "designChecks": 28,
     "cadChecks": 11,
     "nativeReopened": true,
     "reviewStatus": "待专业审定",

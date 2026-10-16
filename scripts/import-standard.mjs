@@ -18,7 +18,7 @@ for(const [key,name,scale,rotation]of [
  ['SCH_LIGHT','EF1',1,0],['SCH_BOARD','EFB',1,0],['SCH_CEILING','EXD',1,0],['SCH_SOCKET','EC1',1,0],['SCH_SWITCH','ES2',1,0],
  ['SCH_PANEL','EAL',0.6,0],['STD_POWER_PANEL','EAP',0.6,0],['STD_EM_PANEL','ALA',0.6,0],['STD_INTERFACE','EAC',0.6,0],
  ['SCH_EM','EAA',1,0],['SCH_EXIT','EET',1,0],['SCH_LEFT','EDX',1,Math.PI],['SCH_RIGHT','EDX',1,0],['SCH_FAN','DDJ',0.6,0],
- ['STD_MCB','带隔离的断路器',1500,Math.PI/2],['STD_RCBO','带隔离的漏电漏电断路器',1,0],['STD_PANEL_HEADER','配电箱表头(带计算式)',1,0]
+ ['STD_MCB','带隔离的断路器',1500,Math.PI/2],['STD_IS','隔离开关',1500,Math.PI/2],['STD_RCBO','带隔离的漏电漏电断路器',1,0],['STD_PANEL_HEADER','配电箱表头(带计算式)',1,0]
 ])register(key,blocks,name,scale,0,rotation);
 const missing=['SCH_SMOKE','SCH_MCP','SCH_SOUNDER','SCH_SPEAKER','SCH_DATA','SCH_AP'];
 if(!referenceManifest)throw Error('Reference drawing manifest required for symbols absent from primary standard');

@@ -2,6 +2,10 @@
 
 ## Unreleased: engineering drawing validation
 
+- Review every school sheet with explicit unresolved-input owners; add incoming/outgoing hardware references, separate feeder overcurrent protection from receiving-panel isolation, and preserve manufacturer verification requirements.
+- Replace device-order chains with corridor trees and socket perimeter routes; reconcile four lighting control groups, separate control return conduits, switch-leg voltage drop and dual-port data cable quantities.
+- Segregate seven emergency outputs per floor, add equipment-room lighting and a 200W procurement envelope, connect all eight lightning down-conductor points to the foundation ring, and add fault regressions.
+
 - Add a local V02 standard profile with native DWG audit, complete block catalog, source-bound cable rules, supplemental engineering legends and source hash verification.
 - Generate per-panel single-line diagrams and a provenance legend sheet; support solid triangles, polyline widths and text width factors with independent readback and rendering.
 - Keep local standard assets out of public source packages and block public example packaging of derived private drawings.

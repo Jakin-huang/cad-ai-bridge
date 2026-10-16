@@ -1,4 +1,6 @@
 import {z} from 'zod';
+import {routedTree,routeMetrics} from './school-routing.mjs';
+import {finishSchoolReview} from './school-review.mjs';
 import {sceneSchema} from './contracts.mjs';
 import {standardRequirements,applySchoolStandard} from './school-standard.mjs';
 const positive=z.number().finite().positive().max(1e6);
@@ -16,7 +18,7 @@ const round=(n,d=3)=>Number(n.toFixed(d));
 export function makeSchoolDesign(input,{standard}={}){
  const r=schoolRequirementsSchema.parse(standard?standardRequirements(input,standard):input),e=r.electrical,l=r.lighting,em=r.emergency;
  const W=15000+r.classroomsPerFloor*r.classroomWidthMm,D=r.classroomDepthMm,H=D+r.corridorWidthMm,A=(r.classroomWidthMm-r.wallThicknessMm)*(D-r.wallThicknessMm)/1e6;
- const entities=[],devices=[],routes=[],circuits=[],sheets=[],groups=new Map();
+ const entities=[],devices=[],routes=[],circuits=[],sheets=[],controls=[],routingComparisons=[],groups=new Map();
  const layers=[['A-WALL',8],['A-DOOR',8],['A-FURN',9],['A-TEXT',8],['E-LIGHT',2],['E-WIRE',3],['E-CTRL',6],['E-FIRE',1],['E-DATA',4],['E-EARTH',3],['S-TEXT',7],['S-FRAME',7]].map(([name,color])=>({name,color}));
  const p=(x,y)=>[round(x,6),round(y,6),0];
  const poly=(points,layer='S-FRAME',closed=false)=>({kind:'polyline',layer,points:points.map(a=>p(...a)),closed});
@@ -95,6 +97,9 @@ export function makeSchoolDesign(input,{standard}={}){
   for(const item of items)item.attributes.CIRCUIT=id;
   const start=routes.length;let prev=panel;
   for(let i=0;i<items.length;i++){const d=items[i];wire(prev,d,id,i===0?[[d.position[0],panel.position[1]]]:[[d.position[0],prev.position[1]]]);prev=d;}
+  const baseline=routeMetrics(routes.slice(start));
+  routes.splice(start,routes.length-start,...routedTree(panel,items,{ox:sheets.find(s=>s.id===panel.sheetId).origin[0]+6000,oy:19000,width:W,depth:D,classWidth:r.classroomWidthMm,classCount:r.classroomsPerFloor,circuitId:id,system}).map((w,i)=>({...w,id:`R-${start+i+1}`,circuitId:id})));
+  routingComparisons.push({circuitId:id,system,before:baseline,after:routeMetrics(routes.slice(start))});
   for(const w of routes.slice(start))w.layer=system==='emergency'||system==='signal'&&id.startsWith('FA')?'E-FIRE':system==='data'||system==='signal'?'E-DATA':'E-WIRE';
   const geometryLengthM=routes.slice(start).reduce((s,w)=>s+w.lengthMm/1000,0),watts=items.reduce((s,d)=>s+d.watts,0),estimatedLengthM=geometryLengthM+extraM+items.length*0.5;
   const currentA=system==='emergency'?watts/em.voltageDc:system==='power'?watts/(e.phaseVoltage*e.powerFactor):null;
@@ -113,8 +118,11 @@ export function makeSchoolDesign(input,{standard}={}){
    for(let row=0;row<4;row++)for(let col=0;col<3;col++)items.push(addDevice('SCH_LIGHT','L',[ox+rx+2000+row*(r.classroomWidthMm-3500)/3,oy+1500+col*(D-3000)/2],{floor:f,room,circuit:id,watts:l.luminaireWatts,model:`LED-${l.luminaireWatts}W-${l.luminaireLumens}lm`,sheetId:s.id}));
    for(let col=0;col<3;col++)items.push(addDevice('SCH_BOARD','B',[ox+rx+900,oy+1800+col*1800],{floor:f,room,circuit:id,watts:l.boardWatts,model:`BOARD-${l.boardWatts}W`,sheetId:s.id}));
    circuit(id,panel,items,'power',['A','B','C'][c%3],{extraM:8});
-   const sw=addDevice('SCH_SWITCH','K',[ox+rx+1900,oy+D-350],{floor:f,room,circuit:id,model:'2x2-gang',role:'control',sheetId:s.id});
-   entities.push(poly([[sw.position[0],sw.position[1]],[sw.position[0],oy+D-800],[ox+rx+7500,oy+D-800]],'E-CTRL'));
+   const switches=[0,1].map(k=>addDevice('SCH_SWITCH','K',[ox+rx+1800+k*650,oy+D-350],{floor:f,room,circuit:id,model:'2-gang',role:'control',sheetId:s.id}));
+   const sets=[...Array.from({length:3},(_,col)=>items.filter(d=>d.blockName==='SCH_LIGHT'&&Math.abs(d.position[1]-(oy+1500+col*(D-3000)/2))<1)),items.filter(d=>d.blockName==='SCH_BOARD')];
+   sets.forEach((lights,k)=>{const sw=switches[Math.floor(k/2)],key='abcd'[k];controls.push({id:id+'-'+key,circuitId:id,sheetId:s.id,room,switchId:sw.id,key:k%2+1,group:key,deviceIds:lights.map(d=>d.id),description:['窗侧','中间','内侧','黑板'][k]});for(const d of lights)entities.push(text(d.position[0]-450,d.position[1]-450,key,200,'E-CTRL'));});
+   entities.push(text(switches[0].position[0]-150,oy+D+150,'a/b  c/d',190,'E-CTRL'));
+   // Dashed wiring is represented by explicit relation labels, avoiding a fictitious control bus.
   }
   const commonId=`AL${f}-L${r.classroomsPerFloor+1}`;
   const common=[];for(let i=0;i<7;i++)common.push(addDevice('SCH_CEILING','C',[ox+2500+i*(W-5000)/6,oy+D+2800],{floor:f,circuit:commonId,watts:12,model:'LED-12W',sheetId:s.id}));
@@ -133,15 +141,15 @@ export function makeSchoolDesign(input,{standard}={}){
    circuit(id,panel,items,'power',['B','C','A'][c%3],{breaker:e.socketBreakerA,section:e.socketCableMm2,kd:e.socketDemandFactor,extraM:10});
    entities.push(text(ox+rx+2000,oy+D-1900,`${id} B${e.socketBreakerA}A / A型${e.socketRcdMa}mA`,250));
   }
-  const net=[0,1].map(i=>addDevice('SCH_SOCKET','S',[ox+W-6500+i*800,oy+6000],{floor:f,circuit:`AP${f}-S4`,watts:150,model:'ICT-SOCKET',sheetId:s.id}));
-  circuit(`AP${f}-S${r.classroomsPerFloor+1}`,panel,net,'power','B',{breaker:e.socketBreakerA,section:e.socketCableMm2,extraM:8});
+  const net=[0,1].map(i=>addDevice('SCH_SOCKET','S',[ox+W-6500+i*800,oy+6000-i*800],{floor:f,circuit:`AP${f}-S4`,watts:150,model:'ICT-SOCKET',sheetId:s.id}));
+  circuit(`AP${f}-S${r.classroomsPerFloor+1}`,panel,net,'power',['B','C','A'][(f-1)%3],{breaker:e.socketBreakerA,section:e.socketCableMm2,extraM:8});
   const fans=[0,1].map(i=>addDevice('SCH_FAN','V',[ox+W-10000+i*4500,oy+400],{floor:f,circuit:`AP${f}-V1`,watts:30,model:'EXHAUST-30W',sheetId:s.id}));
   circuit(`AP${f}-V1`,panel,fans,'power','C',{extraM:8});
   notes(x+6000,14500,['插座采用安全门保护型；教室一般插座h=1.8m，讲台AV插座由家具协调。',`插座与照明分回路，插座A型${e.socketRcdMa}mA RCBO；卫生间无普通电源插座。`,'卫生间排风机单独回路，设就地控制与隔离；设备安装IP等级由环境校核。','弱电间信息设备电源300W为负荷假设；空调、电热水器等未纳入本项目。',`插座WDZ-BYJ 3x${e.socketCableMm2}，排风3x${e.lightingCableMm2} / SC20，保护导体不得省略。`],300,800);
  }
  for(let f=1;f<=r.floors;f++){
   const {s,x,ox,oy}=sheet(`${f}层消防应急照明与疏散指示平面图`);architecture(ox,oy,f);
-  const panel=addDevice('SCH_PANEL','EL',[ox+W-10000,oy+6000],{floor:f,model:`AEL${f}-36V-150W`,role:'panel',sheetId:s.id});
+  const panel=addDevice('SCH_PANEL','EL',[ox+W-10000,oy+6000],{floor:f,model:`AEL${f}-36V-${em.supplyRatedWattsPerFloor}W`,role:'panel',sheetId:s.id});
   const a=[],b=[];
   for(let i=0;i<8;i++)(i%2?a:b).push(addDevice('SCH_EM','E',[ox+1800+i*(W-3600)/7,oy+D+600],{floor:f,circuit:`AEL${f}-E${i%2?1:2}`,watts:em.lightWatts,model:'A-36V-5W',sheetId:s.id}));
   for(const dx of [1800,W-1800])for(const dy of [1200,3200,5400,7200])a.push(addDevice('SCH_EM','E',[ox+dx,oy+dy],{floor:f,circuit:`AEL${f}-E1`,watts:em.lightWatts,model:'A-36V-5W-STAIR',sheetId:s.id}));
@@ -150,13 +158,15 @@ export function makeSchoolDesign(input,{standard}={}){
   for(let i=0;i<6;i++){const dx=4000+i*(W-8000)/5,left=dx<W/2;b.push(addDevice(left?'SCH_LEFT':'SCH_RIGHT','X',[ox+dx,oy+D+1400],{floor:f,circuit:`AEL${f}-E2`,watts:em.signWatts,model:left?'A-36V-LEFT':'A-36V-RIGHT',sheetId:s.id}));}
   // Add classroom escape lighting as an owner requirement, on the protected system only.
   for(let c=0;c<r.classroomsPerFloor;c++)for(const dx of [2300,r.classroomWidthMm-2300])b.push(addDevice('SCH_EM','E',[ox+4500+c*r.classroomWidthMm+dx,oy+D-1800],{floor:f,circuit:`AEL${f}-E2`,watts:em.lightWatts,model:'A-36V-5W-CLASS',sheetId:s.id}));
-  const emergencyGroups=[[],[],[],[]];for(const d of [...a,...b]){const localX=d.position[0]-ox;emergencyGroups[Math.min(3,Math.floor(localX/W*4))].push(d);}
-  emergencyGroups.forEach((items,i)=>{items.sort((a,b)=>a.position[1]-b.position[1]||a.position[0]-b.position[0]);circuit(`AEL${f}-E${i+1}`,panel,items,'emergency','DC',{section:4,extraM:12});});
-  notes(x+6000,14500,['独立消防电源→AEL集中电源→四路36V DC；禁止接普通开关和插座。',`集中控制型；设计备用${em.durationMinutes}min；楼梯最低${em.stairMinLux}lx、走道最低${em.corridorMinLux}lx。`,'标志方向对应左右楼梯，首层楼梯直通室外；实际防火门/出口由建筑专业确认。','疏散标志沿走道低位安装，出口标志门上方；应急照明h=2.6m。','线路初选WDZN-BYJ 2x4 / SC25，直流压降与保护由选定厂家复核。','未取得IES/LDT，最低照度、连续可视性及90min电池性能均为待验证项。'],300,800);
+  const emergencyGroups=Array.from({length:7},()=>[]),zoneNames=['西楼梯专用','东楼梯专用','西走廊','东走廊','教室疏散','强电间专用','弱电间专用'];
+  for(const d of [...a,...b]){const xx=d.position[0]-ox,yy=d.position[1]-oy;const k=d.attributes.MODEL.includes('CLASS')?4:xx<4500&&yy<D?0:xx>W-4500&&yy<D?1:xx<W/2?2:3;emergencyGroups[k].push(d);}
+  for(const [k,dx]of [[5,W-10000],[6,W-5500]])emergencyGroups[k].push(addDevice('SCH_EM','E',[ox+dx,oy+5600],{floor:f,watts:em.lightWatts,model:'A-36V-5W-ROOM',sheetId:s.id}));
+  emergencyGroups.forEach((items,i)=>{items.sort((a,b)=>a.position[1]-b.position[1]||a.position[0]-b.position[0]);circuit(`AEL${f}-E${i+1}`,panel,items,'emergency','DC',{section:4,extraM:12});const c=circuits.at(-1);c.area=zoneNames[i];c.outputRatedA=2;c.outputRatedWatts=72;c.outputProtection='集中电源内置DC36V过载/短路保护，采购要求2A/72W，无外置AC断路器';});
+  notes(x+6000,14500,['独立消防电源→AEL集中电源→七路36V DC；禁止接普通开关和插座。',`集中控制型；设计备用${em.durationMinutes}min；楼梯最低${em.stairMinLux}lx、走道最低${em.corridorMinLux}lx。`,'标志方向对应左右楼梯，首层楼梯直通室外；实际防火门/出口由建筑专业确认。','疏散标志沿走道低位安装，出口标志门上方；应急照明h=2.6m。','线路初选WDZN-BYJ 2x4 / SC25，直流压降与保护由选定厂家复核。','未取得IES/LDT，最低照度、连续可视性及90min电池性能均为待验证项。'],300,800);
  }
  for(let f=1;f<=r.floors;f++){
   const {s,x,ox,oy}=sheet(`${f}层火灾报警、信息与广播布点平面图`);architecture(ox,oy,f);
-  const hub=addDevice('SCH_PANEL','FD',[ox+W-6000,oy+6200],{floor:f,model:`FD${f}-ICT+ISO`,role:'interface',sheetId:s.id}),fire=[],data=[],broadcast=[];
+  const hub=addDevice('SCH_PANEL','FD',[ox+W-6000,oy+6200],{floor:f,model:`FD${f}-逻辑接口分区(非合并实体柜)`,role:'interface',sheetId:s.id}),fire=[],data=[],broadcast=[];
   for(let c=0;c<r.classroomsPerFloor;c++){
    const rx=4500+c*r.classroomWidthMm;
    for(const dx of [3000,6500])fire.push(addDevice('SCH_SMOKE','D',[ox+rx+dx,oy+4200],{floor:f,circuit:'FA-LOOP1',model:'SMOKE-ADDRESSABLE',sheetId:s.id}));
@@ -166,7 +176,7 @@ export function makeSchoolDesign(input,{standard}={}){
   for(let i=0;i<5;i++)fire.push(addDevice('SCH_SMOKE','D',[ox+4000+i*(W-8000)/4,oy+D+2500],{floor:f,circuit:'FA-LOOP1',model:'SMOKE-ADDRESSABLE',sheetId:s.id}));
   for(const dx of [W-10000,W-5500])fire.push(addDevice('SCH_SMOKE','D',[ox+dx,oy+7000],{floor:f,circuit:'FA-LOOP1',model:'SMOKE-ADDRESSABLE',sheetId:s.id}));
   for(const dx of [3200,W-3200]){fire.push(addDevice('SCH_MCP','M',[ox+dx,oy+D+600],{floor:f,circuit:'FA-LOOP1',model:'MCP-ADDRESSABLE',sheetId:s.id}),addDevice('SCH_SOUNDER','A',[ox+dx,oy+D+1700],{floor:f,circuit:'FA-LOOP1',model:'SOUNDER-STROBE',sheetId:s.id}));broadcast.push(addDevice('SCH_SPEAKER','P',[ox+dx,oy+D+3000],{floor:f,circuit:`PA${f}`,watts:3,model:'PA-3W',sheetId:s.id}));}
-  circuit(`FA${f}-LOOP1`,hub,fire,'signal','-',{});for(const d of data)circuit(`NET${f}-${d.id.split('-').at(-1)}`,hub,[d],'data','-',{});circuit(`PA${f}`,hub,broadcast,'signal','-',{});
+  circuit(`FA${f}-LOOP1`,hub,fire,'signal','-',{});for(const d of data){circuit(`NET${f}-${d.id.split('-').at(-1)}`,hub,[d],'data','-',{});const c=circuits.at(-1);c.parallelCables=d.blockName==='SCH_DATA'?2:1;c.portLabels=d.blockName==='SCH_DATA'?['A','B']:['AP'];}circuit(`PA${f}`,hub,broadcast,'signal','-',{});
   notes(x+6000,14500,['火警总线采用耐火双绞线，网络为星形Cat6；图示回路是接线示意，非原厂总线拓扑。','报警地址、隔离器分组、回路容量、返回路径及与原主机兼容性须由原厂家深化。','信息点双口Cat6，AP采用PoE；铜缆永久链路≤90m，机柜、UPS及光纤由校园协调。','广播接校园系统，紧急广播优先；声压、可懂度及扬声器抽头由专业复核。','线色仅用于区分：消防/数据/广播实物线路分别敷设，不与强电共管。','探测器布点待梁、吊顶、风口及产品保护范围复核；弱电系统不计入普通照明负荷。'],280,800);
  }
  const power=sheet('低压配电单线系统与负荷总览','示意');
@@ -186,7 +196,7 @@ export function makeSchoolDesign(input,{standard}={}){
   notes(schedule.x+4500,yy-1200,['Ib按支路装机计算，馈线按需用负荷分相累计；估长含立面/端接假设，非采购量。','所有导线均为铜芯；支路3芯含L、N、PE，控制支线另计；压降为简化电阻法。','消防、数据、广播回路另见系统图及circuits.csv；不混入普通电源需用负荷。'],280,700);
  }
  const sys=sheet('消防应急、报警、信息与广播系统图','示意');
-  notes(sys.x+5000,34000,['校园消防电源专用回路 → AFE0 → AEL1…AELn（各层独立集中电源）','校园应急照明控制器 → 通信干线 → 各AEL：火警联动、故障监视、手动控制。',`AEL额定${em.supplyRatedWattsPerFloor}W / DC${em.voltageDc}V / ${em.durationMinutes}min；末端电压范围由产品要求复核。`,'每层E1～E4仅接A型应急灯/标志灯；照明与指示支路保护按产品配置。','校园报警主机 → 短路隔离器 → 本楼各层感烟/手报/声光 → 返回校园报警主机。','平面连线表示设备归属，最终闭环回线和隔离器分段见厂家深化，不把串接线当闭环。','校园核心网络 → 单模光纤 → 各层FD网络柜 → Cat6星形链路 → 信息点/AP。','校园广播主机 → 分区干线 → 每层扬声器；紧急优先，抽头功率按容量核验。'],320,1100);
+  notes(sys.x+5000,34000,['校园消防电源专用回路 → AFE0 → AEL1…AELn（各层独立集中电源）','校园应急照明控制器 → 通信干线 → 各AEL：火警联动、故障监视、手动控制。',`AEL额定${em.supplyRatedWattsPerFloor}W / DC${em.voltageDc}V / ${em.durationMinutes}min；末端电压范围由产品要求复核。`,'每层E1～E7仅接A型应急灯/标志灯；照明与指示支路保护按产品配置。','校园报警主机 → 短路隔离器 → 本楼各层感烟/手报/声光 → 返回校园报警主机。','平面连线表示设备归属，最终闭环回线和隔离器分段见厂家深化，不把串接线当闭环。','校园核心网络 → 单模光纤 → 各层FD网络柜 → Cat6星形链路 → 信息点/AP。','校园广播主机 → 分区干线 → 每层扬声器；紧急优先，抽头功率按容量核验。'],320,1100);
  for(let f=1;f<=r.floors;f++){const xx=sys.x+8000+(f-1)*15000;entities.push(rect(xx,16500,10000,5000,'E-FIRE'));notes(xx+700,20300,[`AEL${f}  /  FD${f}`,`报警设备 ${devices.filter(d=>d.floor===f&&['SCH_SMOKE','SCH_MCP','SCH_SOUNDER'].includes(d.blockName)).length}点`,`广播 ${devices.filter(d=>d.floor===f&&d.blockName==='SCH_SPEAKER').length}x3W`,`网络 ${devices.filter(d=>d.floor===f&&['SCH_DATA','SCH_AP'].includes(d.blockName)).length}组`],320,1000);}
  notes(sys.x+5000,14000,['待接口确认：现有主机品牌/协议、剩余地址容量、光纤路由、消防电源与控制器位置。','火灾报警联动矩阵、非消防切电、消防广播及校园整体消防设计由专业整合。','此图提供明确接入边界，不虚构尚未确定的供电点或消防联动接口。'],300,850);
  const roof=sheet('屋面防雷预留与引下线协调平面图');
@@ -195,9 +205,9 @@ export function makeSchoolDesign(input,{standard}={}){
  const down=[];for(const dx of [0,W/3,2*W/3,W])for(const dy of [0,H]){down.push([dx,dy]);entities.push(circle(roof.ox+dx,roof.oy+dy,240,'E-EARTH'),text(roof.ox+dx+300,roof.oy+dy+350,`DL${down.length}`,230));}
  for(const dx of [W/3,2*W/3])entities.push(line(roof.ox+dx,roof.oy,roof.ox+dx,roof.oy+H,'E-EARTH'));
  notes(roof.x+6000,14500,['图示为接闪带/引下线预留，暂按更密网格协调，不构成已确定防雷类别的结论。',`几何网格最大 ${round(W/3/1000,2)}m x ${H/1000}m；引下线共${down.length}处，利用结构钢筋优先。`,'需输入雷电密度、环境、建筑重要性、金属屋面及屋顶设备后完成分类与滚球校核。','接闪带材料截面、支架、引下线、测试点及断接卡由防雷专项落实。','屋顶新增设备应置于保护范围并做等电位；电源/信号进线协调SPD。'],300,850);
- const ground=sheet('基础接地与总等电位联结示意');
+ const ground=sheet('基础接地与总等电位联结示意'),groundLinks=[];
  entities.push(rect(ground.ox,ground.oy,W,H,'A-WALL'),rect(ground.ox+400,ground.oy+400,W-800,H-800,'E-EARTH'));
- for(let i=0;i<down.length;i++){const [dx,dy]=down[i];entities.push(circle(ground.ox+dx,ground.oy+dy,240,'E-EARTH'),text(ground.ox+dx+250,ground.oy+dy+350,`DL${i+1}`,230));}
+ for(let i=0;i<down.length;i++){const [dx,dy]=down[i],target=[Math.max(400,Math.min(W-400,dx)),Math.max(400,Math.min(H-400,dy))],connection=poly([[ground.ox+dx,ground.oy+dy],[ground.ox+target[0],ground.oy+target[1]]],'E-EARTH');entities.push(circle(ground.ox+dx,ground.oy+dy,240,'E-EARTH'),text(ground.ox+dx+250,ground.oy+dy+350,`DL${i+1}`,230),connection);groundLinks.push({id:`DL${i+1}`,sheetId:ground.s.id,source:[dx,dy],target,points:connection.points});}
  entities.push(rect(ground.ox+W-10500,ground.oy+5000,3000,1400,'E-EARTH'),text(ground.ox+W-10300,ground.oy+5500,'MEB 总等电位',250),line(ground.ox+W-10500,ground.oy+5500,ground.ox+400,ground.oy+5500,'E-EARTH'),line(ground.ox+W-7500,ground.oy+5500,ground.ox+W-400,ground.oy+5500,'E-EARTH'));
  notes(ground.x+6000,14500,['基础钢筋闭合接地网，MEB以两根接地导体接不同点；连接与结构专业协调。','总等电位连接：PE母排、进出金属管线、结构钢筋及可利用金属构件。','保护联结铜导体初选6mm2，主接地导体规格按故障电流与专项计算确定。','N与PE分别设置，接地电阻按各系统最严要求确定；未取得土壤数据不承诺1Ω。','竣工需测试接地连续性、阻值、绝缘与RCD动作；所有测试记录纳入项目交付。'],300,850);
  const catalogRows=Math.ceil(sheets.length/2);entities.push(text(title.x+4500,19000,'图纸目录',400));for(let i=0;i<sheets.length;i++)entities.push(text(title.x+4500+Math.floor(i/catalogRows)*16000,17700-(i%catalogRows)*700,`${sheets[i].id}  ${sheets[i].title}`,230));
@@ -207,9 +217,9 @@ export function makeSchoolDesign(input,{standard}={}){
  for(let f=1;f<=r.floors;f++){const cs=circuits.filter(c=>c.floor===f&&c.system==='emergency'),w=cs.reduce((s,c)=>s+c.watts,0);calculations.emergency.push({floor:f,loadWatts:w,capacityWatts:em.supplyRatedWattsPerFloor,requiredUsableWh:round(w*em.durationMinutes/60),requiredNameplateWh:round(w*em.durationMinutes/60/em.batteryUsableFactor),status:'选型容量校核，续航和末端电压待厂家验证'});}
  for(const c of demands){const siblings=demands.filter(v=>v.panel===c.panel&&v.phase===c.phase),amps=siblings.reduce((s,v)=>s+v.demandWatts,0)/(e.phaseVoltage*e.powerFactor),floorLength=12+(c.floor-1)*r.floorHeightMm/1000;c.feederCurrentA=amps;c.feederLengthM=floorLength;c.feederDropPercent=100*2*e.copperRhoOhmMm2M*floorLength*amps/e.floorCableMm2/e.phaseVoltage;c.totalDropPercent=mainDrop+c.feederDropPercent+c.voltageDropPercent;}
  for(const c of circuits.filter(c=>c.system==='emergency'))c.dcDropPercent=100*2*e.copperRhoOhmMm2M*c.estimatedLengthM*c.currentA/c.sectionMm2/em.voltageDc;
- const validation=validateSchool({requirements:r,devices,routes,circuits,calculations});
- const model={schemaVersion:1,requirements:r,geometry:{widthMm:W,depthMm:H},scene:sceneSchema.parse({view:{center:[29700,21000,0],width:62000,height:44000},views:sheets.map(s=>({name:s.id,center:[s.origin[0]+29700,21000,0],width:62000,height:44000})),layers,symbols,entities}),devices,routes,circuits,sheets,calculations,validation,numbering:[...groups].map(([group,ds])=>({type:'number_devices',ids:ds.map(d=>d.id),prefix:`${ds[0].floor}${group.split('-')[1]}-`,start:1,width:3}))};
- return standard?applySchoolStandard(model,standard):model;
+ const validation=validateSchool({requirements:r,devices,routes,circuits,calculations,sheets,controls,geometry:{widthMm:W}});
+ const model={schemaVersion:1,requirements:r,geometry:{widthMm:W,depthMm:H},scene:sceneSchema.parse({view:{center:[29700,21000,0],width:62000,height:44000},views:sheets.map(s=>({name:s.id,center:[s.origin[0]+29700,21000,0],width:62000,height:44000})),layers,symbols,entities}),devices,routes,circuits,sheets,controls,groundLinks,routingComparisons,calculations,validation,numbering:[...groups].map(([group,ds])=>({type:'number_devices',ids:ds.map(d=>d.id),prefix:`${ds[0].floor}${group.split('-')[1]}-`,start:1,width:3}))};
+ const result=standard?applySchoolStandard(model,standard):model;finishSchoolReview(result);result.validation=validateSchool(result);return result;
 }
 export function validateSchool(model){
  const {requirements:r,devices,routes,circuits,calculations:c}=model,e=r.electrical,errors=[],checks=[];
@@ -231,12 +241,21 @@ export function validateSchool(model){
  check('各层馈线Ib≤In≤假定修正后Iz',power.every(v=>v.feederCurrentA<=e.floorBreakerA&&e.floorBreakerA<=e.floorAssumedIzA));
  check('总进线分相最大Ib≤In≤假定修正后Iz',c.maxPhaseCurrentA<=e.mainBreakerA&&e.mainBreakerA<=e.mainAssumedIzA,c.maxPhaseCurrentA);
  check('普通电源累计简化压降不超过项目限值',power.every(v=>v.totalDropPercent<=e.maxVoltageDropPercent),Math.max(...power.map(v=>v.totalDropPercent)));
+ if(model.controlWiring){check('控制返回分管且不返回上级配电箱，四组及开关腿无遗漏',model.controlWiring.length===2*r.floors*r.classroomsPerFloor&&routes.filter(w=>w.controlPipe).length===14*r.floors*r.classroomsPerFloor&&routes.filter(w=>w.controlPipe).every(w=>w.controlGroups.length<=4&&index.get(w.from).role!=='panel'&&index.get(w.to).role!=='panel')&&(!model.standard||e.lightingBreakerA<=model.standard.selections.control.izA));check('照明压降计入最远开关腿的保守等效长度',power.every(v=>v.voltageDropEquivalentLengthM>=v.estimatedLengthM+Math.max(0,...model.controlWiring.filter(w=>w.circuitId===v.id).map(w=>w.estimatedLengthM))-1e-6));}
+ if(model.groundLinks)check('八处防雷引下线均连接到基础接地环线',model.groundLinks.length===8&&model.groundLinks.every(g=>{const [x,y]=g.target;return x>=400&&x<=model.geometry.widthMm-400&&y>=400&&y<=model.geometry.depthMm-400&&(x===400||x===model.geometry.widthMm-400||y===400||y===model.geometry.depthMm-400)&&model.scene.entities.some(p=>p.kind==='polyline'&&p.layer==='E-EARTH'&&JSON.stringify(p.points)===JSON.stringify(g.points));}));
  check('插座附加RCD≤30mA',e.socketRcdMa<=30);
+ if(model.standard){const panels=model.standard.panels;
+ check('所有箱进线型号齐全；隔离额定电流不作为馈线保护值',panels.length===2+3*r.floors&&panels.every(p=>p.incoming?.model&&p.incoming.spec&&p.incoming.reference&& (p.incoming.function!=='isolation'||p.incoming.ratingA>=p.incoming.upstreamProtectionA))&&panels.filter(p=>p.id!=='AP0'&&/^A[LP]\d+$/.test(p.id)).every(p=>p.incoming.function==='isolation'&&p.incoming.upstreamProtectionA<=p.selection.izA));
+ check('消防应急输入及输出不设置RCD',panels.filter(p=>p.id==='AFE0'||p.id.startsWith('ALA')).every(p=>!p.incoming.rcdMa&&p.rows.every(v=>!v.hardware.rcdMa&&!v.rcd)));
+ }
  check('应急电源容量留有裕量',c.emergency.every(v=>v.loadWatts<=v.capacityWatts*0.8),c.emergency);
  check('应急36V支路保守电阻压降初估≤10%',circuits.filter(v=>v.system==='emergency').every(v=>v.dcDropPercent<=10));
+ check('应急支路按楼梯及功能分区独立设置且2A负载≤80%',circuits.filter(v=>v.system==='emergency').every(v=>v.area&&v.outputRatedA<=6&&v.watts<=v.outputRatedWatts*0.8&&(!v.area.includes('楼梯')||v.deviceIds.every(id=>/STAIR|EXIT|DOWN/.test(index.get(id).attributes.MODEL)||index.get(id).position[0]-(model.sheets.find(s=>s.id===index.get(id).sheetId).origin[0]+6000)<4500||index.get(id).position[0]-(model.sheets.find(s=>s.id===index.get(id).sheetId).origin[0]+6000)>model.geometry.widthMm-4500))));
+ check('教室四组控制覆盖全部灯具且每只双联开关对应两组',!model.controls||model.controls.length===r.floors*r.classroomsPerFloor*4&&model.controls.every(g=>index.get(g.switchId)?.attributes.MODEL==='2-gang'&&model.controls.filter(v=>v.switchId===g.switchId).length===2&&g.deviceIds.length>0&&g.deviceIds.every(id=>index.has(id)&&index.get(id).attributes.CIRCUIT===g.circuitId))&&new Set(model.controls.flatMap(g=>g.deviceIds)).size===15*r.floors*r.classroomsPerFloor);
+ check('双口信息插座配置两条独立铜缆',circuits.filter(v=>v.system==='data').every(v=>v.parallelCables===(index.get(v.deviceIds[0]).blockName==='SCH_DATA'?2:1)));
  check('信息铜缆估算敷设长度≤90m',circuits.filter(v=>v.system==='data').every(v=>v.estimatedLengthM<=90));
  check('应急与普通电源末端不混接',circuits.every(v=>v.deviceIds.every(id=>v.system==='emergency'?['SCH_EM','SCH_EXIT','SCH_LEFT','SCH_RIGHT'].includes(index.get(id).blockName):!['SCH_EM','SCH_EXIT','SCH_LEFT','SCH_RIGHT'].includes(index.get(id).blockName))));
  const adj=new Map();for(const w of routes){if(!adj.has(w.circuitId))adj.set(w.circuitId,new Map());const a=adj.get(w.circuitId);if(!a.has(w.from))a.set(w.from,[]);a.get(w.from).push(w.to);}
  check('全部回路末端可从指定配电箱或接口到达',circuits.every(v=>{const seen=new Set([v.panel]),todo=[v.panel],a=adj.get(v.id);while(todo.length)for(const next of a?.get(todo.pop())||[])if(!seen.has(next)){seen.add(next);todo.push(next);}return v.deviceIds.every(id=>seen.has(id));}));
- return {ok:errors.length===0,checks,errors,reviewStatus:'待专业审定',pending:['建筑与消防专业底图确认、供电及校园系统接口资料','短路电流、保护选择性、自动切断时间、SPD协调及敷设条件载流量','真实IES/LDT逐点照度、均匀度、UGR及产品检验','消防设备布点、隔离分段、报警闭环及联动矩阵厂家深化','应急末端电压、支路保护、电池续航及失电联动','防雷分类/滚球/接地电阻/土壤及结构条件','地方节能条文及GB7793-2025生效后重新核对']};
+ return {ok:errors.length===0,checks,errors,reviewStatus:'待专业审定',pending:model.review?.requiredInputs?.map(v=>v.id+' '+v.materials)||['建筑与消防专业底图确认、供电及校园系统接口资料','短路电流、保护选择性、自动切断时间、SPD协调及敷设条件载流量','真实IES/LDT逐点照度、均匀度、UGR及产品检验','消防设备布点、隔离分段、报警闭环及联动矩阵厂家深化','应急末端电压、支路保护、电池续航及失电联动','防雷分类/滚球/接地电阻/土壤及结构条件','地方节能条文及GB7793-2025生效后重新核对']};
 }

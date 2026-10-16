@@ -1,6 +1,7 @@
+import {panelHardware} from './school-review.mjs';
 import {selectV02Cable} from './standard-library.mjs';
 import {sceneSchema} from './contracts.mjs';
-export function standardSelections(profile,e){return {main:selectV02Cable(profile.rules,{ratingA:e.mainBreakerA,kind:'cable',phase:3}),floor:selectV02Cable(profile.rules,{ratingA:e.floorBreakerA,kind:'cable',phase:3}),lighting:selectV02Cable(profile.rules,{ratingA:e.lightingBreakerA}),socket:selectV02Cable(profile.rules,{ratingA:e.socketBreakerA})};}
+export function standardSelections(profile,e){return {main:selectV02Cable(profile.rules,{ratingA:e.mainBreakerA,kind:'cable',phase:3}),floor:selectV02Cable(profile.rules,{ratingA:e.floorBreakerA,kind:'cable',phase:3}),lighting:selectV02Cable(profile.rules,{ratingA:e.lightingBreakerA}),socket:selectV02Cable(profile.rules,{ratingA:e.socketBreakerA}),control:selectV02Cable(profile.rules,{ratingA:e.lightingBreakerA,phase:3})};}
 export function standardRequirements(input,profile){
  const r=structuredClone(input),s=standardSelections(profile,r.electrical),e=r.electrical;
  Object.assign(e,{mainCableMm2:s.main.sectionMm2,mainAssumedIzA:s.main.izA,floorCableMm2:s.floor.sectionMm2,floorAssumedIzA:s.floor.izA,lightingCableMm2:s.lighting.sectionMm2,socketCableMm2:s.socket.sectionMm2,branchAssumedIzA:Math.min(s.lighting.izA,s.socket.izA)});
@@ -32,10 +33,11 @@ export function applySchoolStandard(model,profile){
   text(x+4000,38000,title,600);text(x+4000,36400,`${r.projectId} | ${id} | V02标准对照 / 待专业审定`,280);line(x+2000,4800,x+57400,4800,'S-FRAME');text(x+3000,3000,r.name,330);text(x+38000,3000,`${id} A2 / ${r.designDate}`,300);return {x,id};
  }
  const panels=[{id:'AP0',title:'普通电源总配电箱',selection:s.main,rows:Array.from({length:r.floors},(_,i)=>['AL','AP'].map(k=>({id:`${k}${i+1}`,selection:s.floor,load:'楼层馈线',phase:'ABC',breaker:`4P-C${e.floorBreakerA}`}))).flat()},
- {id:'AFE0',title:'消防电源接口箱（校园专用电源）',selection:null,rows:Array.from({length:r.floors},(_,i)=>({id:`ALA${i+1}`,selection:null,load:'A型应急集中电源',phase:'待厂家',breaker:'输入保护待厂家'}))}];
+ {id:'AFE0',title:'消防电源接口箱（校园专用电源）',selection:selectV02Cable(profile.rules,{ratingA:10,phase:3}),rows:Array.from({length:r.floors},(_,i)=>({id:`ALA${i+1}`,selection:selectV02Cable(profile.rules,{ratingA:6}),load:'输入≤400VA/台（采购包络）',phase:['A','B','C'][i%3],hardwareRatingA:6,breaker:'2P-C6（启动待核）'}))}];
  for(let f=1;f<=r.floors;f++)for(const prefix of ['AL','AP']){const panel=m.devices.find(d=>d.floor===f&&d.attributes.MODEL===`${prefix}-${f}`||d.floor===f&&d.attributes.MODEL===`${prefix}${f}`);if(!panel)throw Error('Missing panel '+prefix+f);
   panels.push({id:`${prefix}${f}`,title:prefix==='AL'?'楼层一般照明配电箱':'楼层一般动力及插座配电箱',selection:s.floor,rows:m.circuits.filter(c=>c.panel===panel.id&&c.system==='power').map(c=>({id:c.id,selection:c.selection,phase:c.phase,load:`${Math.round(c.watts)}W / Ib=${c.currentA.toFixed(2)}A`,breaker:`${c.id.includes('-S')?'2P':'1P'}-C${c.breakerA}${c.id.includes('-S')?'/0.03 A型':''}`,rcd:c.id.includes('-S')}))});}
- for(let f=1;f<=r.floors;f++)panels.push({id:`ALA${f}`,title:`A型应急照明集中电源 DC36V / ${r.emergency.supplyRatedWattsPerFloor}W`,selection:null,rows:m.circuits.filter(c=>c.floor===f&&c.system==='emergency').map(c=>({id:c.id,selection:null,phase:'DC±',load:`${c.watts}W / ${c.currentA.toFixed(2)}A`,breaker:'36V支路保护待厂家',dc:true}))});
+ for(let f=1;f<=r.floors;f++)panels.push({id:`ALA${f}`,title:`A型应急照明集中电源 DC36V / ${r.emergency.supplyRatedWattsPerFloor}W`,selection:null,rows:m.circuits.filter(c=>c.floor===f&&c.system==='emergency').map(c=>({id:c.id,selection:null,phase:'DC±',load:`${c.watts}W / ${c.currentA.toFixed(2)}A`,breaker:`内置DC36V ${c.outputRatedA}A/72W`,area:c.area,dc:true}))});
+ for(const panel of panels)panelHardware(panel);
  for(let i=0;i<panels.length;i+=2){const {x,id}=sheet('配电箱系统图 '+panels.slice(i,i+2).map(p=>p.id).join(' / '));
   for(let j=0;j<2&&panels[i+j];j++){const panel=panels[i+j],xx=x+7400+j*26400,yy=32500;panel.sheetId=id;
    stamp('STD_PANEL_HEADER',xx,yy,'S-TEXT');text(xx-2500,yy+900,panel.id,420);text(xx+1000,yy+900,panel.title,220);
@@ -44,14 +46,19 @@ export function applySchoolStandard(model,profile){
    if(cs.length&&cs.every(c=>c.system==='power')){const pe=cs.reduce((n,c)=>n+c.watts,0),pj=cs.reduce((n,c)=>n+c.demandWatts,0),phase={A:0,B:0,C:0};for(const c of cs)phase[c.phase]+=c.demandWatts;const ij=Math.max(...Object.values(phase))/(e.phaseVoltage*e.powerFactor);
     for(const [dx,dy,v]of [[2100,-1050,(pe/1000).toFixed(2)],[2100,-1650,(pj/1000).toFixed(2)],[4700,-1050,(pj/pe).toFixed(2)],[4550,-1650,ij.toFixed(2)],[7000,-1050,e.powerFactor]])text(xx+dx,yy+dy,v,230);
    }else text(xx+9000,yy-1350,'保护/输入参数待厂家',225);
-   text(xx+1000,yy-3850,panel.selection?`${panel.selection.type} ${panel.selection.conductors}.${panel.selection.conduit}`:'消防供电/厂家条件待确认',235);
-   if(panel.selection)text(xx+1000,yy-4750,`进线保护：4P-C${panel.selection.ratingA}A；隔离/过流，分断容量待核`,220);
-   const y0=yy-6100,yEnd=y0-Math.max(1,panel.rows.length-1)*1850;line(xx,y0+800,xx,yEnd-600);
-   for(let k=0;k<panel.rows.length;k++){const row=panel.rows[k],y=y0-k*1850;line(xx,y,xx+750,y);if(row.dc)line(xx+750,y,xx+2300,y);else stamp(row.rcd?'STD_RCBO':'STD_MCB',xx+750,y);line(xx+2300,y,xx+15000,y);
-    text(xx+600,y+600,row.breaker,220);text(xx+4200,y+600,row.id,250);text(xx+12500,y+600,row.phase,230);
-    text(xx+4000,y-420,row.selection?`${row.selection.type} ${row.selection.conductors}.${row.selection.conduit}`:row.dc?'WDZN-BYJ 2x4.SC25（暂选，厂家校核）':'消防输入线规格待供电及厂家资料',215);text(xx+12000,y-420,row.load,200);
+   text(xx+1000,yy-3850,panel.selection?`${panel.selection.type} ${panel.selection.conductors}.${panel.selection.conduit}`:panel.id.startsWith('ALA')?'交流输入：WDZN-BYJ 2x2.5+E2.5.SC20 / 上级C6':'消防供电/厂家条件待确认',235);
+   const hw=panel.incoming;
+   text(xx+1000,yy-4650,`进线 ${hw.model} ${hw.spec.split(' / ')[0]}`,230);
+   text(xx+1000,yy-5350,`${hw.reference}；${hw.function==='isolation'?'上级保护'+hw.upstreamProtectionA+'A':'Icn≥6kA，实际短路待核'}`,215);
+   const y0=yy-7500,yEnd=y0-Math.max(1,panel.rows.length-1)*1850,incomingY=y0+1200;
+   line(xx-2500,incomingY,xx-1750,incomingY);stamp(hw.function==='isolation'?'STD_IS':'STD_MCB',xx-1750,incomingY);line(xx-1750+(hw.function==='isolation'?1500:1506.21454378),incomingY,xx,incomingY);if(panel.id.startsWith('ALA')){line(xx,incomingY,xx,y0+900);entities.push({kind:'polyline',layer:'E-FIRE',closed:true,points:[[xx-650,y0+900,0],[xx+650,y0+900,0],[xx+650,y0+300,0],[xx-650,y0+300,0]]});text(xx-550,y0+480,'AC/DC',180);line(xx,y0+300,xx,yEnd-600);line(xx-650,y0+600,xx-1500,y0+600,'E-FIRE');text(xx-2500,y0-150,'电池90min',190);}else line(xx,incomingY,xx,yEnd-600);
+   text(xx-2500,incomingY+600,panel.id==='AP0'?'校园普通电源':panel.id==='AFE0'?'校园消防专用':panel.id.startsWith('ALA')?'AFE0交流输入':'AP0楼层馈线',185);
+
+   for(let k=0;k<panel.rows.length;k++){const row=panel.rows[k],y=y0-k*1850;line(xx,y,xx+750,y);if(row.dc){line(xx+750,y,xx+750+1506.21454378,y);entities.push({kind:'polyline',layer:'E-FIRE',closed:true,points:[[xx+850,y+200,0],[xx+2000,y+200,0],[xx+2000,y-200,0],[xx+850,y-200,0]]});}else stamp(row.rcd?'STD_RCBO':'STD_MCB',xx+750,y);line(xx+750+1506.21454378,y,xx+15000,y);
+    text(xx+(row.dc?1000:600),y+600,row.breaker,215);text(xx+4200,y+600,row.id,250);text(xx+12500,y+600,row.phase,230);
+    text(xx+4000,y-420,row.selection?`${row.selection.type} ${row.selection.conductors}.${row.selection.conduit}`:row.dc?'WDZN-BYJ 2x4.SC25（暂选，厂家校核）':'消防输入线规格待供电及厂家资料',215);text(xx+12000,y-420,row.load,200);if(row.dc)text(xx+6500,y+600,row.area,190);
    }
-   text(xx-2500,10200,'N、PE分设；插座RCBO A型30mA；PE不设开关。',230);text(xx-2500,9200,'空白参数不复制模板算例；短路、SPD及选择性待核。',230);
+   text(xx-2500,10200,panel.id.startsWith('ALA')||panel.id==='AFE0'?'消防输入/输出不设RCD；输出保护为原厂内置。':'N、PE分设；RCBO A型30mA；PE不设开关。',230);text(xx-2500,9200,'器件参考型号见panel-hardware.csv；短路/SPD待核。',230);
   }
  }
  const legend=sheet('统一图例、选型依据与来源对照');
@@ -64,7 +71,8 @@ export function applySchoolStandard(model,profile){
  text(legend.x+5000,7200,'普通导线类型存在表间差异，本次采用保护管选择表WDZN-BYJ参考；来源详见JSON。',235);
  m.scene.entities=m.scene.entities.filter(p=>p.kind!=='text'||!(p.position[0]<37000&&p.position[1]>10000&&p.position[1]<19000&&/^E-\d{2}  /.test(p.text)));
  for(let i=0;i<m.sheets.length;i++)m.scene.entities.push({kind:'text',layer:'S-TEXT',position:[4500+Math.floor(i/10)*16000,17700-(i%10)*700,0],text:`${m.sheets[i].id}  ${m.sheets[i].title}`,height:205,rotationRadians:0});
+ for(const q of m.routingComparisons)q.circuitId=replace(q.circuitId);
  m.standard={id:profile.id,privateDerivedAssets:true,selections:s,panels,symbols:Object.fromEntries(Object.entries(profile.symbols).map(([k,v])=>[k,{sourceIndex:v.sourceIndex,blockName:v.blockName,blockHandle:v.blockHandle,sourceInstanceHandle:v.sourceInstanceHandle,toleranceMm:v.toleranceMm}])),sources:profile.sources.map(v=>({role:v.role,source:v.source,sha256:v.sha256})),coverage:profile.coverage,conversions:profile.conversions,conflicts:profile.rules.conflicts};
- m.scene=sceneSchema.parse(m.scene);m.validation.pending.push('V02模板表内普通导线类型差异、消防输入及应急产品支路配置审定');
+ m.scene=sceneSchema.parse(m.scene);
  return m;
 }
