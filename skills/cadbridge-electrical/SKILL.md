@@ -1,9 +1,13 @@
 ---
 name: cadbridge-electrical
-description: Audit electrical drawing copies, read device and circuit metadata, place synthetic or verified local engineering symbols, connect explicit anchors, number devices and verify saved DWGs through CAD AI Bridge MCP.
+description: Audit electrical drawing copies, create bounded electrical drawing scenes or school design examples, place symbols, connect routes, number devices and verify saved DWGs through CAD AI Bridge.
 ---
 
 Use the connected CAD AI Bridge tools. Setup, compatibility and current write limits are described in the repository README; do not install clients or change other application settings merely by invoking this skill.
+
+For a school project from requirements, use the repository's `cadbridge school` workflow and read [the school project scope](../../docs/school-project.md). It supports a bounded teaching-building template and produces a new delivery directory. Record explicit architecture, supply, equipment and standards assumptions; preserve pending professional reviews. The generated model owns circuit identities, unlike unresolved labels read from arbitrary existing DWGs. Its calculations do not establish photometry, native Tangent associations or construction approval.
+
+For a custom original drawing, `cad_create_drawing` accepts only declarative layers, local ordinary symbols, polylines, circles and text. It creates a new mm drawing; then use `electrical_apply` for managed placements, routes and numbering. Use `electrical_takeoff` for these ordinary bridge objects. Do not claim they are vendor-native electrical entities. Inspect saved DWG and independent DXF evidence before delivering a model-derived PDF.
 
 For existing Tangent drawings, begin with `tangent_inspect`. Its default summary includes coverage, units and a job ID. Retrieve necessary device, wire or circuit records using `cad_read_result`; this does not restart CAD. Select `host: tangent` when native objects need interpretation, or use CoreConsole for ordinary blocks and XData. Report proxies, excluded nested blocks and unclassified entities as coverage limitations.
 

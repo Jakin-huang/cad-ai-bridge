@@ -29,7 +29,7 @@ async function run(action,args){
  }
  const {drawing,expectedSha256,host:requestedHost,detail,...payload}=parsed;
  const request={...payload,action};
- if(action==='create_test_drawing'){request.requestId=crypto.randomUUID();request.units='mm';}
+ if(['create_test_drawing','create_drawing'].includes(action)){request.requestId=crypto.randomUUID();request.units='mm';}
  const encoded=JSON.stringify(request);if(Buffer.byteLength(encoded)>1024*1024)throw new Error('Request exceeds 1 MiB');
  await fs.writeFile(path.join(job,'request.json'),encoded);
  const backend=action==='native_status'?'tangent':requestedHost||'core';
@@ -56,7 +56,7 @@ async function run(action,args){
  const result={...response,backend,jobRoot:job,elapsedMs:Math.round(performance.now()-started),inputSha256};
  if(action==='audit_drawing'&&response.ok&&response.auditDxfExported)result.dxf=path.join(job,'output.dxf');
  if(backend==='tangent')result.nativeHost=JSON.parse(await fs.readFile(path.join(job,'host.json'),'utf8'));
- if((response.ok||response.drawingSaved)&&['create_test_drawing','prepare_project','repair_copy','apply'].includes(action)){
+ if((response.ok||response.drawingSaved)&&['create_drawing','create_test_drawing','prepare_project','repair_copy','apply'].includes(action)){
    result.drawing=path.join(job,'output.dwg');result.drawingSha256=await hashFile(result.drawing);
    try{await fs.access(path.join(job,'output.dxf'));result.dxf=path.join(job,'output.dxf');}catch{}
  }

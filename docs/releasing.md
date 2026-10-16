@@ -14,6 +14,8 @@ npm run setup
 npm test
 node bin/cadbridge.mjs selftest --native
 node tests/mcp-results.mjs
+node tests/school-mcp.mjs
+node tests/school-delivery.mjs     # 本地已有学校交付时，检查回读及故障注入
 npm run preview
 npm run check
 npm run package:preview
@@ -30,5 +32,7 @@ npm run package:preview
 GitHub 常规 CI 只运行无 CAD 检查。真实宿主验收由维护者在自己的授权环境执行，公开 `docs/validation-summary.json` 只保留脱敏的版本、测试项、耗时、摘要字节数和插件摘要；详细日志本地留存。发布新版本时同步 README、Changelog、依赖锁文件和构建版本。
 
 本次仅准备本地仓库和预览包。远程仓库地址、GitHub 账户和实际推送由维护者决定；未设置远程、未推送、未创建线上发行版。
+
+新增学校流程使用额外的Python、reportlab/pypdf及本机字体，不随ZIP分发运行时或字体。维护者还需运行 `cadbridge school`，检查各页PDF渲染及设计待审清单。本地有学校交付指针时，完整发布检查会核对当前设计源码、DLL、DWG/DXF回读、PDF及交付文件哈希。测试机使用reportlab4.4.9、pypdf6.10.0；可按此版本复现。学校底图与符号均为原创，生成图纸默认仍留在artifacts。
 
 包含工程实例适配的版本还应在维护者授权图纸的隔离副本上运行 `node scripts/verify-local.mjs <manifest.json>`。本地存在工程验收指针时，完整发布检查还会验证每张图的独立 DXF 对照、最终 DLL 摘要和全部原图/源副本哈希。详细工程报告和几何预览仍留在 artifacts，公开包仅包含通用测试流程与合成示例。

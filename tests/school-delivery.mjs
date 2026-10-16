@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {root} from '../scripts/public-files.mjs';
+import {readDxf} from '../src/dxf-audit.mjs';
+import {verifySchoolReadback} from '../src/school-verification.mjs';
+const folder=(await fs.readFile(path.join(root,'artifacts/school-project-current.txt'),'utf8')).trim();
+const delivery=JSON.parse(await fs.readFile(path.join(folder,'delivery.json'),'utf8')),model=JSON.parse(await fs.readFile(path.join(folder,'design-model.json'),'utf8'));
+const job=delivery.results.find(r=>r.action==='inspect').jobRoot,snapshot=JSON.parse(await fs.readFile(path.join(job,'result.json'),'utf8')).snapshot,dxf=await readDxf(delivery.dxf);
+const checks=[];const check=(name,fn)=>{fn();checks.push(name);console.log('PASS '+name);};
+check('Final delivery passes all independent readback checks',()=>assert.equal(verifySchoolReadback(model,snapshot,dxf).ok,true));
+check('Saved device number corruption is detected independently',()=>{const damaged=structuredClone(dxf),attrs=damaged.attributes.values().next().value;attrs.DEVICE_ID='CORRUPT';assert.equal(verifySchoolReadback(model,snapshot,damaged).ok,false);});
+check('Saved static design text corruption is detected',()=>{const damaged=structuredClone(dxf),text=damaged.roots.find(e=>e.type==='TEXT');text.pairs.find(p=>p[0]===1)[1]='CORRUPT';assert.equal(verifySchoolReadback(model,snapshot,damaged).ok,false);});
+check('Saved route layer corruption is detected',()=>{const damaged=structuredClone(dxf),wire=damaged.roots.find(e=>e.handle===snapshot.routes[0].handle);wire.pairs.find(p=>p[0]===8)[1]='0';assert.equal(verifySchoolReadback(model,snapshot,damaged).ok,false);});
+check('Saved route vertex corruption is detected',()=>{const damaged=structuredClone(dxf),wire=damaged.roots.find(e=>e.handle===snapshot.routes[0].handle);wire.pairs.find(p=>p[0]===10)[1]=String(Number(wire.pairs.find(p=>p[0]===10)[1])+10);assert.equal(verifySchoolReadback(model,snapshot,damaged).ok,false);});
+check('Missing sheet navigation view is detected',()=>{const damaged=structuredClone(dxf);damaged.records=damaged.records.filter(e=>!(e.type==='VIEW'&&e.pairs.some(p=>p[0]===2&&p[1]==='E-02')));assert.equal(verifySchoolReadback(model,snapshot,damaged).ok,false);});
+await fs.writeFile(path.join(root,'artifacts/school-delivery-report.json'),JSON.stringify({ok:true,checkedAt:new Date().toISOString(),drawingSha256:delivery.drawingSha256,checks},null,2));
+console.log(JSON.stringify({ok:true,checks:checks.length}));

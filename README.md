@@ -4,7 +4,7 @@
 
 当前为 **0.2 开发者预览**。实测环境：Windows x64 / AutoCAD 2022 简体中文 / T20 天正电气 V8.0。天正与 AutoCAD 由用户自行安装并正常授权。
 
-[English](README.en.md) · [详细技术方案](docs/technical-plan.md) · [工具与数据契约](docs/tools.md) · [安装排障](docs/troubleshooting.md) · [开源项目对标](docs/open-source-benchmarks.md)
+[English](README.en.md) · [详细技术方案](docs/technical-plan.md) · [学校项目完整流程](docs/school-project.md) · [工具与数据契约](docs/tools.md) · [安装排障](docs/troubleshooting.md) · [开源项目对标](docs/open-source-benchmarks.md)
 
 ![从实际测试 DXF 生成的电气示例](docs/images/tangent-electrical-demo.svg)
 
@@ -37,13 +37,25 @@ node bin/cadbridge.mjs mcp --read-only
 | 回路与统计 | 读取导线规格和 `linenum`，汇总设备、回路、图面长度；明确单位和覆盖范围 |
 | 布置、连线、编号 | 原子操作合成测试图，或在工程副本中复制已识别的普通电气实例，保留原定义、比例、图层及专业属性，使用显式几何锚点连线 |
 | 工程审计与修复副本 | 原始实体、图层、实例和定义清点，独立 DXF 对照；有摘要保护的 AUDIT 只修复快照并另存 |
+| 从需求新建学校项目 | 参数化原创底图和符号、照度/负荷/压降初算、布置/接线/编号、DWG/DXF、A2 PDF、回路与设备表，含独立CAD回读证据 |
 | 两种宿主 | CoreConsole 快速批处理；`host: tangent` 使用独立 AutoCAD 图形会话解析天正对象 |
 | 结果分页 | 默认返回天正摘要；`cad_read_result` 分页读取已有完整结果，不重新启动 CAD |
 | 文件与事务 | 原图快照、SHA-256、文档 ID、版本检查、事务回滚、持久化请求幂等，另存新 DWG |
 
 天正示例含 34 个灯具/插座及其他可识别类别、28 条导线；原生宿主解析了快速后端报告的 129 个建筑代理对象。合成测试图实测 3 灯具、2 插座、2 回路、12000 mm 路线与 L/S 编号的保存和重开。真实工程验证流程见 [副本验收说明](docs/project-validation.md)。
 
-当前统计覆盖模型空间根层，包括图例和重复视图实例。全空导线字段单独列为待复核；未建立配电箱/馈线拓扑时，回路标签分组数不能当作实际回路总数。嵌套块、外参、动态块写入、任意外部厂家图库导入、原生桥架创建、专用标注关联、负荷计算与规范校核仍需专项适配。新增编号使用 DEVICE_ID；不覆盖原有 A 等专业属性。回路字段使用新路线的 linenum。
+既有图纸统计覆盖模型空间根层，包括图例和重复视图实例。全空导线字段单独列为待复核；未建立配电箱/馈线拓扑时，回路标签分组数不能当作实际回路总数。嵌套块、外参、动态块写入、任意外部厂家图库导入、原生桥架创建及专用标注关联仍需专项适配。学校模板有显式设备与回路模型，可做假设下的负荷和电阻压降初算；全项规范、产品与施工审查仍需专业完成。新增编号使用 DEVICE_ID；不覆盖原有 A 等专业属性。天正适配回路字段使用新路线的 linenum。
+
+## 从头生成学校示范项目
+
+```powershell
+python -m pip install reportlab pypdf
+node bin/cadbridge.mjs school examples/school-requirements.json
+```
+
+默认需求是二层六间教室、180人的小学教学单体。每次新建输出目录，生成14页A2图册、可编辑DWG/DXF、设备及回路CSV、计算报告和文件摘要。普通AutoCAD与天正宿主重开，并独立DXF核验。可用 `CADBRIDGE_PYTHON` 选择Python；无CAD时用 `--model-only` 预检。详见[范围、公式与待审事项](docs/school-project.md)。
+
+这是方案深化示范。没有真实建筑、供电、IES/LDT及厂家接口时，不输出照明质量、消防闭环、防雷分类或短路保护“已合规”的结论。
 
 ## MCP 工具
 
@@ -53,6 +65,7 @@ node bin/cadbridge.mjs mcp --read-only
 | `cad_prepare_project` | 给明确毫米制的工程图生成可管理副本 |
 | `cad_repair_copy` | 对输入快照运行 AUDIT 并另存修复结果 |
 | `cad_create_test_drawing` | 创建普通或 `adapter: tangent-v8` 测试图 |
+| `cad_create_drawing` | 从受约束的图层、原创图块和几何场景新建图纸 |
 | `cad_inspect` | 读取受管理图纸身份、符号、设备和路线 |
 | `electrical_apply` | 批量布置、显式路径连线、编号，输出新 DWG/DXF |
 | `electrical_takeoff` | 受管理设备与路线统计 |

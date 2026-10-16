@@ -9,7 +9,7 @@ const checks=[];let metrics;
 for(const readOnly of [false,true]){
  const client=new Client({name:'cadbridge-result-validation',version:'0.2.0'}),transport=new StdioClientTransport({command:process.execPath,args:[path.join(root,'mcp-server.mjs')],env:{...process.env,...(readOnly?{CADBRIDGE_READ_ONLY:'1'}:{})},stderr:'pipe'});
  try{await client.connect(transport);const list=await client.listTools();assert.ok(list.tools.some(t=>t.name==='cad_read_result'));
-  if(readOnly){assert.ok(!list.tools.some(t=>['electrical_apply','cad_create_test_drawing','cad_prepare_project','cad_repair_copy'].includes(t.name)));checks.push('Read-only MCP discovery hides all write tools');continue;}
+  if(readOnly){assert.ok(!list.tools.some(t=>['electrical_apply','cad_create_drawing','cad_create_test_drawing','cad_prepare_project','cad_repair_copy'].includes(t.name)));checks.push('Read-only MCP discovery hides all write tools');continue;}
   const source=path.join(prior.results.vendorSample.jobRoot,'input.dwg');
   const response=await client.callTool({name:'tangent_inspect',arguments:{drawing:source}});const summary=JSON.parse(response.content[0].text);assert.equal(summary.ok,true);assert.equal(summary.tangent.deviceCount,prior.results.vendorSample.tangent.deviceCount);assert.equal(summary.tangent.devices,undefined);assert.equal(summary.tangent.preview.devices.length,3);checks.push('Default Tangent MCP inspection returns bounded summary with full evidence retained');
   const full=JSON.parse(await fs.readFile(path.join(summary.jobRoot,'result.json'),'utf8'));const before=(await fs.readdir(path.join(root,'runs'))).length;

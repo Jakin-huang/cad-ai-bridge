@@ -56,6 +56,20 @@ if(!staticOnly){
   assert.ok(executed>0);pass(file+': '+count+' real CAD checks with matching final DLL and successful cleanup');
  }
  const pages=await readJSON('artifacts/mcp-results-report.json');assert.equal(pages.ok,true);assert.equal(pages.checks.length,4);assert.ok(Date.parse(pages.checkedAt)>=builtAt);pass('Actual MCP summary, pagination and read-only evidence');
+ const sceneMcp=await readJSON('artifacts/school-mcp-report.json');assert.equal(sceneMcp.ok,true);assert.equal(sceneMcp.checks.length,7);assert.ok(Date.parse(sceneMcp.checkedAt)>=builtAt);
+ for(const result of Object.values(sceneMcp.results)){if(!result?.jobRoot)continue;const host=JSON.parse((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);}
+ pass('Original-scene MCP creation, declared layers, numbering, fresh census and read-only discovery');
+ try{
+  const schoolFolder=(await fs.readFile(path.join(root,'artifacts/school-project-current.txt'),'utf8')).trim();
+  const school=JSON.parse(await fs.readFile(path.join(schoolFolder,'delivery.json'),'utf8')),proof=JSON.parse(await fs.readFile(path.join(schoolFolder,'cad-verification.json'),'utf8')),model=JSON.parse(await fs.readFile(path.join(schoolFolder,'design-model.json'),'utf8')),manifest=JSON.parse(await fs.readFile(path.join(schoolFolder,'manifest.json'),'utf8'));
+  assert.equal(school.ok,true);assert.equal(school.nativeReopened,true);assert.equal(school.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(school.pdfChecks.ok,true);assert.equal(proof.ok,true);assert.equal(proof.checks.length,11);assert.equal(model.validation.ok,true);assert.ok(model.validation.checks.length>=19);
+  for(const source of school.sourceDigests)assert.equal(digest(await fs.readFile(path.join(root,source.file))),source.sha256);
+  for(const file of manifest.files)assert.equal(digest(await fs.readFile(path.join(schoolFolder,file.name))),file.sha256);
+  for(const result of school.results){const host=JSON.parse((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);}
+  assert.equal(JSON.parse(await fs.readFile(path.join(school.nativeJob,'cleanup.json'),'utf8')).ok,true);
+  const faultChecks=await readJSON('artifacts/school-delivery-report.json');assert.equal(faultChecks.ok,true);assert.equal(faultChecks.checks.length,6);assert.equal(faultChecks.drawingSha256,school.drawingSha256);
+  pass('Requirements-driven school project: current sources/DLL, independent drawing readback, native reopen, PDF and delivery hashes');
+ }catch(error){if(error.code!=='ENOENT')throw error;else if(await fs.access(path.join(root,'artifacts/school-project-current.txt')).then(()=>true,()=>false))throw error;}
  try{
   const projectFolder=(await fs.readFile(path.join(root,'artifacts/real-project-current.txt'),'utf8')).trim();
   const project=JSON.parse(await fs.readFile(path.join(projectFolder,'project-validation.json'),'utf8'));

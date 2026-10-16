@@ -48,6 +48,12 @@ MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的�
 
 ## 原子制图
 
+`cad_create_drawing`（CLI action `create_drawing`）接受 `{scene:{layers,symbols,entities}}`，只在新空白图里建立毫米制图纸。图层使用有限ASCII名称与ACI颜色；普通图块包含声明式几何和有限属性。几何仅为polyline、circle、text，坐标为WCS `[x,y,0]`，不接受脚本、命令、输出覆盖路径或外参。最多100图层/100符号/20000静态实体，整体请求仍限1MiB。图块定义与实体在同一事务中创建，失败不输出新DWG。需要完整业务项目时参见[学校流程](school-project.md)。
+
+`place_symbols.instances[].layer` 和 `connect_route.layer` 可指定普通新实体的图层，默认保留E-LIGHT/E-WIRE；工程模板复制仍保留原图层，不接受此覆盖字段。单行文字使用本机微软雅黑字体，新学校PDF使用本机黑体，不分发字体文件。
+
+场景可用 `view:{center:[x,y,0],width,height}` 指定新图首次打开的平面视图，用 `views:[{name,center,width,height}]` 创建至多100个命名视图。视图仅影响新图的显示；初始视图按宿主宽高比扩大范围，避免裁掉目标边界。学校示范为每张图创建同名视图。
+
 `electrical_apply` 需要 source drawing、expectedSha256、documentId、expectedRevision、requestId UUID、`units: mm` 和 operations。使用刚读取的文件指纹与版本。`adapter` 可选且必须与图纸状态匹配；不传时由图纸持久状态决定。
 
 ```json

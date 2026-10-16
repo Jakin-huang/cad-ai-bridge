@@ -2,11 +2,15 @@
 
 ## Unreleased: engineering drawing validation
 
+- Add a requirements-driven school project workflow with original geometry and symbols, bounded scene creation, load/lighting/voltage-drop estimates, circuit ownership, device numbering and explicit review boundaries.
+- Generate editable DWG/DXF, A2 vector PDF sheets, equipment/circuit CSVs, project calculations and a hashed delivery manifest; verify saved entities, text, attributes and routes with fresh CAD and independent DXF readback.
+- Add `cad_create_drawing` and optional layers for new placements/routes; read-only mode hides scene creation as a write tool.
+
 - Audit raw model-space inserts, definitions, text and XData applications, export independent DXF, and compare entities, attributes, wire fields and geometry.
 - Recognize additional observed fire, weak-current, switch, board, power and legacy device markers; exclude entirely empty wire metadata and distinguish label groups from resolved circuits.
 - Prepare managed engineering copies, deep-clone verified local electrical instances, preserve source properties, use explicit local connection anchors and add instance-owned numbering.
 - Bound large MCP replies automatically, retain full evidence for pagination, and accommodate large local audit results.
-- Preload additional full-suite object interpreters for real drawings; preserve source hashes, original entities, rollback and request replay evidence.
+- Preserve normal full-suite initialization order and bootstrap drawing opens; retain source hashes, original entities, rollback and request replay evidence.
 
 ## 0.2.0 preview
 

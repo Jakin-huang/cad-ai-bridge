@@ -19,10 +19,11 @@ namespace CadAgent
         public string action, requestId, documentId, units, adapter;
         public int expectedRevision;
         public Operation[] operations;
+        public Scene scene;
     }
     public sealed class Operation
     {
-        public string type, blockName, id, circuitId, prefix, templateHandle;
+        public string type, blockName, id, circuitId, prefix, templateHandle, layer;
         public Instance[] instances;
         public string[] ids;
         public double[][] vertices;
@@ -34,7 +35,7 @@ namespace CadAgent
     public sealed class Endpoint { public string id, port; }
     public sealed class Instance
     {
-        public string id;
+        public string id, layer;
         public double[] position;
         public double[] portOffset;
         public double rotationRadians;
@@ -156,7 +157,8 @@ namespace CadAgent
                 Require(!Double.IsNaN(item.rotationRadians)&&!Double.IsInfinity(item.rotationRadians),"INVALID_ARGUMENT","Rotation must be finite radians.");
                 var attrs=item.attributes??new Dictionary<string,string>();
                 foreach(var tag in attrs.Keys)Require(defs.Any(a=>String.Equals(a.Tag,tag,StringComparison.OrdinalIgnoreCase)),"ATTRIBUTE_NOT_FOUND","Unknown attribute: "+tag);
-                var br=new BlockReference(Point(item.position),definition.ObjectId){Rotation=item.rotationRadians,Layer="E-LIGHT"};
+                string placementLayer=item.layer??"E-LIGHT";Layer(db,tr,placementLayer,2);
+                var br=new BlockReference(Point(item.position),definition.ObjectId){Rotation=item.rotationRadians,Layer=placementLayer};
                 Append(model,br,tr);
                 foreach(var ad in defs)
                 {
@@ -222,7 +224,7 @@ namespace CadAgent
             Require(op.vertices!=null&&op.vertices.Length>=2&&op.vertices.Length<=1000,"INVALID_PATH","Expected 2..1000 vertices.");
             var points=op.vertices.Select(Point).ToArray();
             Require(points[0].DistanceTo(Port((BlockReference)index[op.from.id],tr))<1e-6&&points[points.Length-1].DistanceTo(Port((BlockReference)index[op.to.id],tr))<1e-6,"DISCONNECTED_ROUTE","Path endpoints must match the explicitly defined connection anchors.");
-            Layer(db,tr,"E-WIRE",3);var line=new Polyline{Layer="E-WIRE"};
+            string routeLayer=op.layer??"E-WIRE";Layer(db,tr,routeLayer,3);var line=new Polyline{Layer=routeLayer};
             for(int i=0;i<points.Length;i++){if(i>0)Require(points[i].DistanceTo(points[i-1])>1e-6,"INVALID_PATH","Zero-length route segment.");line.AddVertexAt(i,new Point2d(points[i].X,points[i].Y),0,0,0);}
             Append(Model(db,tr,OpenMode.ForWrite),line,tr);
             Mark(line,new Meta{kind="route",id=op.id,circuitId=op.circuitId,from=op.from.id,to=op.to.id},tr);index.Add(op.id,line);
@@ -300,7 +302,7 @@ namespace CadAgent
                 string raw=File.ReadAllText(requestFile,Encoding.UTF8);
                 Require(Encoding.UTF8.GetByteCount(raw)<=1048576,"REQUEST_TOO_LARGE","Request exceeds 1 MiB.");
                 var request=Json.Deserialize<Request>(raw);Require(request!=null,"INVALID_ARGUMENT","Request required.");
-                var db=doc.Database;bool replay=false;bool repair=request.action=="repair_copy";bool writes=repair||request.action=="create_test_drawing"||request.action=="prepare_project"||request.action=="apply";
+                var db=doc.Database;bool replay=false;bool repair=request.action=="repair_copy";bool writes=repair||request.action=="create_drawing"||request.action=="create_test_drawing"||request.action=="prepare_project"||request.action=="apply";
                 Require(writes||request.action=="audit_drawing"||request.action=="inspect"||request.action=="takeoff"||request.action=="validate"||request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status","INVALID_ACTION","Unsupported action.");
                 string selectedAdapter="generic";
                 if(writes)
@@ -317,6 +319,12 @@ namespace CadAgent
                             Require(state==null,"ALREADY_MANAGED","Drawing already has managed state; inspect it instead.");
                             Require(db.Insunits==UnitsValue.Millimeters,"UNITS_UNKNOWN","Project preparation requires declared millimeter drawing units; no silent assumption.");
                             selectedAdapter="tangent-project";state=new State{documentId=Guid.NewGuid().ToString(),revision=0,adapter=selectedAdapter};Write(nod,StateKey,state,tr);
+                        }
+                        else if(request.action=="create_drawing")
+                        {
+                            Require(state==null&&!Entities(db,tr).Any(),"DRAWING_NOT_EMPTY","Scene creation requires a new empty drawing.");
+                            db.Insunits=UnitsValue.Millimeters;SceneBuilder.Build(db,tr,request.scene);
+                            state=new State{documentId=Guid.NewGuid().ToString(),revision=0,adapter="generic"};Write(nod,StateKey,state,tr);
                         }
                         else if(request.action=="create_test_drawing")
                         {
@@ -362,6 +370,7 @@ namespace CadAgent
                     }
                     }
                 }
+                if(request.action=="create_drawing")SceneBuilder.SetView(doc,request.scene);
                 var snapshot=Inspect(db);
                 object tangent=(request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status"||selectedAdapter=="tangent-v8"||selectedAdapter=="tangent-project")?TangentAdapter.Read(db,request.units):null;
                 if(writes)

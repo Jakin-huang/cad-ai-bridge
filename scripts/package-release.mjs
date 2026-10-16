@@ -12,7 +12,7 @@ const dist=path.join(root,'dist');await fs.mkdir(dist,{recursive:true});
 // Unique staging directories avoid deleting or overwriting unrelated content.
 const stage=await fs.mkdtemp(path.join(dist,'stage-')),folder=path.join(stage,name);await fs.mkdir(folder);
 const files=[...await publicFiles(),'plugin/bin/CadAgent.dll'];
-const manifest={name:pkg.name,version:pkg.version,kind:'Windows developer preview',requirements:['Windows x64','Node.js >=22.19','PowerShell >=7','AutoCAD 2022 locally installed and normally licensed','.NET Framework 4.8','Optional Tangent Electrical T20 V8.0'],containsVendorRuntime:false,containsNodeRuntime:false,files:[]};
+const manifest={name:pkg.name,version:pkg.version,kind:'Windows developer preview',requirements:['Windows x64','Node.js >=22.19','PowerShell >=7','AutoCAD 2022 locally installed and normally licensed','.NET Framework 4.8','Optional Tangent Electrical T20 V8.0','School PDF workflow: Python with reportlab/pypdf and local SimHei font; CADBRIDGE_PYTHON selects Python'],containsVendorRuntime:false,containsNodeRuntime:false,files:[]};
 for(const file of files){const bytes=await fs.readFile(path.join(root,file));const target=path.join(folder,file);await fs.mkdir(path.dirname(target),{recursive:true});await fs.writeFile(target,bytes);manifest.files.push({file,bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex')});}
 const build=JSON.parse((await fs.readFile(path.join(root,'plugin/bin/build.json'),'utf8')).replace(/^\uFEFF/,''));
 // Build metadata shipped publicly contains no development machine paths.

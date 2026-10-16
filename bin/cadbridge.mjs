@@ -7,7 +7,7 @@ import {discover,selectInstallation,loadConfig,projectRoot,psExecutable} from '.
 import {atomicJson,csvCell} from '../src/files.mjs';
 const [command='help',...argv]=process.argv.slice(2);
 const values=new Set(['workspace','cad-root','language','host','units','format','config','detail']);
-const flags=new Set(['dry-run','skip-build','read-only','native','json']);
+const flags=new Set(['dry-run','skip-build','read-only','native','json','model-only']);
 const options={},positional=[];
 for(let i=0;i<argv.length;i++){const token=argv[i];if(!token.startsWith('--')){positional.push(token);continue;}const key=token.slice(2);if(values.has(key)){if(!argv[i+1]||argv[i+1].startsWith('--'))throw Error('Missing --'+key+' value');options[key]=argv[++i];}else if(flags.has(key))options[key]=true;else throw Error('Unknown option --'+key);}
 if(options.config)process.env.CADBRIDGE_CONFIG=path.resolve(options.config);
@@ -54,11 +54,12 @@ try{
  else if(command==='mcp'){if(options['read-only'])process.env.CADBRIDGE_READ_ONLY='1';await import('../mcp-server.mjs');}
  else if(command==='selftest'){await child(process.execPath,[path.join(projectRoot,'tests/integration.mjs')]);if(options.native)await child(process.execPath,[path.join(projectRoot,'tests/tangent-integration.mjs')]);output({ok:true,nativeTested:Boolean(options.native)});}
  else if(command==='demo')await demo();
+ else if(command==='school')await child(process.execPath,[path.join(projectRoot,'scripts/create-school-project.mjs'),...(positional[0]?[path.resolve(positional[0])]:[]),...(options['model-only']?['--model-only']:[])]);
  else if(command==='inspect'||command==='takeoff'){
   if(!positional[0])throw Error('A DWG path is required');if(options.format&&!['csv','json'].includes(options.format))throw Error('Format must be json or csv');const {execute}=await import('../bridge.mjs');const result=await execute(command==='inspect'?'tangent_inspect':'tangent_takeoff',{drawing:path.resolve(positional[0]),...(options.units?{units:options.units}:{}),...(options.host?{host:options.host}:{}),...(options.detail?{detail:options.detail}:{}),...(options.format==='csv'?{detail:'full'}:{})});
   if(options.format==='csv'){if(!result.ok)throw Error(JSON.stringify(result.error));const rows=[['circuit','wireCount','lengthDrawingUnits','lengthMm'],...result.tangent.circuits.map(c=>[c.id,c.wireCount,c.lengthDrawingUnits,c.lengthMm])];process.stdout.write('\uFEFF'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n')+'\r\n');}else output(result);
   if(!result.ok)process.exitCode=1;
  }else if(command==='call'){if(!positional[0]||!positional[1])throw Error('Usage: cadbridge call <action> <request.json>');const {execute}=await import('../bridge.mjs');const result=await execute(positional[0],JSON.parse((await fs.readFile(positional[1],'utf8')).replace(/^\uFEFF/,'')));output(result);if(!result.ok)process.exitCode=1;}
- else if(command==='help')process.stdout.write('CAD AI Bridge 0.2 preview\n\n  setup [--workspace DIR] [--cad-root DIR] [--dry-run]\n  doctor [--native TEST.dwg]\n  mcp [--read-only]\n  demo [--host core|tangent]\n  inspect DRAWING.dwg [--units mm] [--host core|tangent]\n  takeoff DRAWING.dwg [--format csv]\n  selftest [--native]\n  call ACTION REQUEST.json\n');
+ else if(command==='help')process.stdout.write('CAD AI Bridge 0.2 preview\n\n  setup [--workspace DIR] [--cad-root DIR] [--dry-run]\n  doctor [--native TEST.dwg]\n  mcp [--read-only]\n  demo [--host core|tangent]\n  school [requirements.json]  (Python + reportlab + pypdf required)\n  inspect DRAWING.dwg [--units mm] [--host core|tangent]\n  takeoff DRAWING.dwg [--format csv]\n  selftest [--native]\n  call ACTION REQUEST.json\n');
  else throw Error('Unknown command '+command);
 }catch(error){process.stderr.write(JSON.stringify({ok:false,error:{code:'CADBRIDGE_ERROR',message:error.message}})+'\n');process.exitCode=1;}
