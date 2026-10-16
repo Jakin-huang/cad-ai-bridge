@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible connector or CAD workflow problem
+body:
+  - type: textarea
+    attributes:
+      label: Environment
+      description: Bridge version, Windows, CAD year/language, Tangent version and sanitized doctor result
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Reproduction
+      description: Steps and a synthetic drawing or request that reproduces the issue
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Evidence
+      description: Relevant error codes and sanitized job excerpts; exclude actual engineering drawings and credentials

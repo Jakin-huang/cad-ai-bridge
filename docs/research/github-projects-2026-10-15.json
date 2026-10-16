@@ -1,0 +1,89 @@
+{
+  "observedAt": "2026-10-15T22:36:24.0458831+08:00",
+  "repositories": [
+    {
+      "repository": "ahujasid/mcp-for-blender",
+      "url": "https://github.com/ahujasid/mcp-for-blender",
+      "stars": 30912,
+      "forks": 2805,
+      "isFork": false,
+      "archived": false,
+      "pushedAt": "2026-10-06T15:08:04Z",
+      "license": "MIT",
+      "defaultBranch": "main",
+      "source": "https://api.github.com/repos/ahujasid/mcp-for-blender"
+    },
+    {
+      "repository": "neka-nat/freecad-mcp",
+      "url": "https://github.com/neka-nat/freecad-mcp",
+      "stars": 2881,
+      "forks": 350,
+      "isFork": false,
+      "archived": false,
+      "pushedAt": "2026-10-13T13:14:58Z",
+      "license": "MIT",
+      "defaultBranch": "main",
+      "source": "https://api.github.com/repos/neka-nat/freecad-mcp"
+    },
+    {
+      "repository": "daobataotie/CAD-MCP",
+      "url": "https://github.com/daobataotie/CAD-MCP",
+      "stars": 609,
+      "forks": 89,
+      "isFork": false,
+      "archived": false,
+      "pushedAt": "2026-09-15T10:34:49Z",
+      "license": "MIT",
+      "defaultBranch": "main",
+      "source": "https://api.github.com/repos/daobataotie/CAD-MCP"
+    },
+    {
+      "repository": "thewisekape/autocad-mcp",
+      "url": "https://github.com/thewisekape/autocad-mcp",
+      "stars": 7,
+      "forks": 3,
+      "isFork": false,
+      "archived": false,
+      "pushedAt": "2026-04-05T09:23:07Z",
+      "license": "Apache-2.0",
+      "defaultBranch": "main",
+      "source": "https://api.github.com/repos/thewisekape/autocad-mcp"
+    },
+    {
+      "repository": "modelcontextprotocol/inspector",
+      "url": "https://github.com/modelcontextprotocol/inspector",
+      "stars": 11082,
+      "forks": 1553,
+      "isFork": false,
+      "archived": false,
+      "pushedAt": "2026-10-14T04:26:29Z",
+      "license": "NOASSERTION",
+      "defaultBranch": "main",
+      "source": "https://api.github.com/repos/modelcontextprotocol/inspector"
+    },
+    {
+      "repository": "farion1231/cc-switch",
+      "url": "https://github.com/farion1231/cc-switch",
+      "stars": 144656,
+      "forks": 9581,
+      "isFork": false,
+      "archived": false,
+      "pushedAt": "2026-10-15T14:25:13Z",
+      "license": "MIT",
+      "defaultBranch": "main",
+      "source": "https://api.github.com/repos/farion1231/cc-switch"
+    },
+    {
+      "repository": "CherryHQ/cherry-studio",
+      "url": "https://github.com/CherryHQ/cherry-studio",
+      "stars": 52663,
+      "forks": 5075,
+      "isFork": false,
+      "archived": false,
+      "pushedAt": "2026-10-15T14:07:28Z",
+      "license": "AGPL-3.0",
+      "defaultBranch": "main",
+      "source": "https://api.github.com/repos/CherryHQ/cherry-studio"
+    }
+  ]
+}
