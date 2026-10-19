@@ -4,7 +4,7 @@
 
 ```powershell
 node bin/cadbridge.mjs standard "D:\CAD-work\standard.dwg" "D:\CAD-work\manifest.json"
-node bin/cadbridge.mjs school
+node bin/cadbridge.mjs school REQUIREMENTS.json
 ```
 
 第二个参数是 `tests/project-integration.mjs` 使用的工程副本清单，同目录应有 `project-validation.json`。清单中包含原图哈希及审计任务位置。导入在 `artifacts/standard-profile-*` 内新建副本、原生审计 DXF、完整定义目录和版本化映射；本地配置 `cadbridge-standard.local.json` 锁定映射哈希。重新生成学校项目前会再次核对原模板、补充施工图和审计 DXF。改图或调整配置后需重新导入。
@@ -19,10 +19,4 @@ R3补充模板“隔离开关”定义，主来源图形由17项增为18项，�
 
 `template-provenance.json` 记录源文件哈希、选型单元格句柄、图块来源与转换边界。`circuits.csv` 增加电线型号、导体构成、保护管及来源句柄；`cad-verification.json` 核对保存后的实体、填充、线宽、字宽、设备属性、连线和视图。可运行 `node tests/standard-profile.mjs` 校核本地规则与来源复现。
 
-本地 DWG、DXF、映射、配置和衍生图形全部处于忽略目录，不随源码包发布。学校示例打包器会阻止将含本地衍生资产的交付物打成公开示例。需要原创公开示例时显式运行：
-
-```powershell
-node bin/cadbridge.mjs school --without-standard
-```
-
-导入和生成只创建新文件，结束时校验所有原图哈希。发布或分享企业标准及衍生图纸需另行明确授权；当前流程不推送远端。
+本地 DWG、DXF、映射和衍生图形保存在项目外，不随源码或发行包分发。生成项目时需明确提供用户自己的需求文件，不再提供默认示例或示例打包器。

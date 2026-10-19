@@ -11,6 +11,7 @@ import {getJob} from './jobs.mjs';
 import {failure} from './errors.mjs';
 import {atomicJson} from './files.mjs';
 import {verifyPlugin} from './setup.mjs';
+import {dataHome} from './local-paths.mjs';
 const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply']);
 export async function launchHost(exe,args){
  return new Promise((resolve,reject)=>{
@@ -20,7 +21,7 @@ export async function launchHost(exe,args){
  });
 }
 async function runtimeSettings(){const settings=await loadConfig();await verifyPlugin();return settings;}
-export function createExecutor({getSettings=runtimeSettings,launch=launchHost,runs=path.join(root,'runs')}={}){
+export function createExecutor({getSettings=runtimeSettings,launch=launchHost,runs=path.join(dataHome(),'runs')}={}){
  let queue=Promise.resolve(),bootstrap;
  async function execute(action,args={}){
   let parsed;try{if(!schemas[action])throw Error('INVALID_ACTION: unsupported action');parsed=schemas[action].parse(args);}catch(error){return failure(error);}
@@ -56,7 +57,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
     await fs.copyFile(bootstrap.drawing,path.join(job,'bootstrap.dwg'),fs.constants.COPYFILE_EXCL);
    }
    timings.bootstrapMs=Math.round(performance.now()-t);
-   const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,backend==='tangent'?'run-gui.ps1':'run-core.ps1'),'-JobRoot',job,'-CadRoot',settings.cadRoot,'-ProductKey',settings.productKey];
+   const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,backend==='tangent'?'run-gui.ps1':'run-core.ps1'),'-JobRoot',job,'-RunsRoot',runs,'-CadRoot',settings.cadRoot,'-ProductKey',settings.productKey];
    if(backend==='tangent')args.push('-TangentRoot',settings.tangentRoot,'-Profile',settings.tangentProfile);else args.push('-Language',settings.language);
    task.status='running';await mark('launch');hostStarted=true;t=performance.now();
    host=await launch(settings.powershell,args);timings.hostMs=Math.round(performance.now()-t);await atomicJson(path.join(job,'launcher.json'),host);

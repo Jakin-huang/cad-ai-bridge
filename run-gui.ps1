@@ -1,8 +1,9 @@
-param([Parameter(Mandatory=$true)][string]$JobRoot,[string]$CadRoot,[string]$TangentRoot,[string]$ProductKey,[string]$Profile='TElec20V8',[int]$TimeoutSeconds=120)
+param([Parameter(Mandatory=$true)][string]$JobRoot,[string]$CadRoot,[string]$TangentRoot,[string]$ProductKey,[string]$Profile='TElec20V8',[int]$TimeoutSeconds=120,[string]$RunsRoot)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'src\host-common.ps1')
 [Console]::OutputEncoding=New-Object Text.UTF8Encoding($false)
-$job=[IO.Path]::GetFullPath($JobRoot);$runs=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'runs'))+[IO.Path]::DirectorySeparatorChar
+$job=[IO.Path]::GetFullPath($JobRoot);if(-not $RunsRoot){$RunsRoot=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'CADBridge\data\runs'}
+$runs=[IO.Path]::GetFullPath($RunsRoot)+[IO.Path]::DirectorySeparatorChar
 if(-not $job.StartsWith($runs,[StringComparison]::OrdinalIgnoreCase)){throw 'JobRoot must be under project runs'}
 if(-not $CadRoot -or -not $TangentRoot -or -not $ProductKey){throw 'CAD, Tangent and registry product selection required; run cadbridge setup'}
 if(-not (Test-Path -LiteralPath (Join-Path $TangentRoot 'sys24x64\tel_kernal.arx'))){throw 'Tangent V8 R24 native module missing'}

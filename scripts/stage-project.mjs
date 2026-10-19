@@ -1,6 +1,7 @@
+import {projectPath,parseLocalJSON,resolveLocalPath} from '../src/local-paths.mjs';
 import fs from 'node:fs/promises';import path from 'node:path';import {root} from './public-files.mjs';import {hashFile} from '../src/drawings.mjs';
 if(!process.argv[2])throw Error('Usage: node scripts/stage-project.mjs <source drawing directory>');
-const source=await fs.realpath(process.argv[2]),folder=path.join(root,'artifacts','project-'+new Date().toISOString().replace(/[:.]/g,'-'));await fs.mkdir(folder,{recursive:true});
+const source=await fs.realpath(process.argv[2]),folder=projectPath('artifacts','project-'+new Date().toISOString().replace(/[:.]/g,'-'));await fs.mkdir(folder,{recursive:true});
 const files=[];async function scan(dir){for(const entry of await fs.readdir(dir,{withFileTypes:true})){if(entry.isSymbolicLink())continue;const file=path.join(dir,entry.name);if(entry.isDirectory())await scan(file);else if(entry.isFile()&&path.extname(file).toLowerCase()==='.dwg')files.push(file);}}await scan(source);
 const manifest={createdAt:new Date().toISOString(),source,folder,files:[]};
 for(const file of files.sort()){const entry={source:file,name:path.basename(file),bytes:(await fs.stat(file)).size,sha256:await hashFile(file)};if(entry.bytes===0)entry.skipped='EMPTY_DWG';else{const dir=path.join(folder,'case-'+String(manifest.files.length+1).padStart(2,'0'));await fs.mkdir(dir);entry.copy=path.join(dir,'source.dwg');await fs.copyFile(file,entry.copy,fs.constants.COPYFILE_EXCL);if(await hashFile(entry.copy)!==entry.sha256)throw Error('Copy digest mismatch');}manifest.files.push(entry);}

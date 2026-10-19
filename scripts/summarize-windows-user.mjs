@@ -1,13 +1,14 @@
+import {projectPath,parseLocalJSON,resolveLocalPath} from '../src/local-paths.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {projectRoot as root} from '../src/config.mjs';
 import {readDxf,tag,curveLength,xdata,field} from '../src/dxf-audit.mjs';
-const read=async file=>JSON.parse((await fs.readFile(path.join(root,file),'utf8')).replace(/^\uFEFF/,''));
+const read=async file=>parseLocalJSON((await fs.readFile(projectPath(file),'utf8')).replace(/^\uFEFF/,''));
 const [pkg,dependencies,runtime,readonly,environment]=await Promise.all(['windows-user-package-report','windows-dependency-repair-report','runtime-bootstrap-report','windows-readonly-report','windows-user-environment'].map(name=>read('artifacts/'+name+'.json')));
 for(const report of [pkg,dependencies,runtime,readonly])assert.equal(report.ok,true);
 assert.equal(pkg.packageSha256,dependencies.packageSha256);assert.equal(environment.elevated,false);
-const unitText=await fs.readFile(path.join(root,'artifacts/windows-user-unit.txt'),'utf8');assert.match(unitText,/# fail 0\b/);const unitChecks=Number(unitText.match(/# pass (\d+)/)[1]);
+const unitText=await fs.readFile(projectPath('artifacts/windows-user-unit.txt'),'utf8');assert.match(unitText,/# fail 0\b/);const unitChecks=Number(unitText.match(/# pass (\d+)/)[1]);
 const snapshot=pkg.results.upgraded.takeoff.snapshot;assert.equal(snapshot.routeLengthMm,3000);assert.deepEqual(snapshot.devices.map(device=>device.attributes.DEVICE_ID).sort(),['L-001','L-002']);
 const dxf=await readDxf(pkg.results.upgraded.applied.dxf),devices=dxf.roots.filter(entity=>entity.type==='INSERT'&&tag(entity,2)==='EA_LIGHT');
 assert.equal(devices.length,2);assert.deepEqual(devices.map(device=>dxf.attributes.get(device.handle).DEVICE_ID).sort(),['L-001','L-002']);
@@ -24,5 +25,5 @@ if(clean){
  summary.limitations=clean.limitations;
  summary.pending=['Licensed CAD and signed-in WorkBuddy desktop under the independent guest account remain outside the fresh-bootstrap acceptance','Browser download / Mark-of-the-Web flow remains unverified'];
 }
-await fs.writeFile(path.join(root,'docs/windows-user-validation.json'),JSON.stringify(summary,null,2)+'\n');
+await fs.writeFile(projectPath('docs/windows-user-validation.json'),JSON.stringify(summary,null,2)+'\n');
 console.log(JSON.stringify({ok:true,unitChecks,checks:Object.values(summary.checks).reduce((sum,checks)=>sum+checks.length,0),pending:summary.pending}));

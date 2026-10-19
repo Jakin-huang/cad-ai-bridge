@@ -21,3 +21,6 @@ runtime-archives/
 *.dwl2
 *.bak
 .env*
+cadbridge-validation.local.json*
+examples/
+docs/images/

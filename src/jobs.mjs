@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {isWithin} from './drawings.mjs';
 import {boundForTransport} from './results.mjs';
+import {resolveLocalReferences} from './local-paths.mjs';
 export async function jobDirectory(runs,jobId){
  if(!/^job-[A-Za-z0-9_-]+$/.test(jobId))throw Error('INVALID_JOB: invalid job ID');
  const root=await fs.realpath(runs),job=await fs.realpath(path.join(root,jobId));
@@ -9,7 +10,7 @@ export async function jobDirectory(runs,jobId){
 }
 export async function jobJson(job,name){
  const file=await fs.realpath(path.join(job,name));if(!isWithin(job,file))throw Error('RESULT_OUTSIDE_RUNS: evidence escapes job directory');
- return JSON.parse((await fs.readFile(file,'utf8')).replace(/^\uFEFF/,''));
+ return resolveLocalReferences(JSON.parse((await fs.readFile(file,'utf8')).replace(/^\uFEFF/,'')));
 }
 async function optional(job,name){try{return await jobJson(job,name);}catch(error){if(error.code==='ENOENT')return undefined;throw error;}}
 async function one(runs,jobId){

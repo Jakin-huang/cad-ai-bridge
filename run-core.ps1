@@ -1,8 +1,9 @@
-param([Parameter(Mandatory=$true)][string]$JobRoot,[Parameter(Mandatory=$true)][string]$CadRoot,[Parameter(Mandatory=$true)][string]$ProductKey,[string]$Language='en-US',[int]$TimeoutSeconds=45)
+param([Parameter(Mandatory=$true)][string]$JobRoot,[Parameter(Mandatory=$true)][string]$CadRoot,[Parameter(Mandatory=$true)][string]$ProductKey,[string]$Language='en-US',[int]$TimeoutSeconds=45,[string]$RunsRoot)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'src\host-common.ps1')
 [Console]::OutputEncoding=New-Object Text.UTF8Encoding($false)
-$runs=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'runs'))+[IO.Path]::DirectorySeparatorChar
+if(-not $RunsRoot){$RunsRoot=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'CADBridge\data\runs'}
+$runs=[IO.Path]::GetFullPath($RunsRoot)+[IO.Path]::DirectorySeparatorChar
 $job=[IO.Path]::GetFullPath($JobRoot)
 if(-not $job.StartsWith($runs,[StringComparison]::OrdinalIgnoreCase)){throw 'JobRoot must be under this middleware runs directory'}
 $mutex=New-Object Threading.Mutex($false,'Local\CadAgentMiddlewareAutoCAD2022')

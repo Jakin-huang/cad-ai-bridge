@@ -15,8 +15,8 @@ export async function verifyPlugin(root=projectRoot){
  for(const source of build.sourceDigests)if(!sources.includes(source.file)||await hashFile(path.join(root,'plugin',source.file))!==source.sha256.toLowerCase())throw Error('PLUGIN_SOURCE_CHANGED: rebuild plugin');
  return{ok:true,sha256:digest,target:build.target};
 }
-export function mcpConfiguration(config,powershell){
- return{mcpServers:{'cad-ai-bridge':{command:process.execPath,args:[path.join(projectRoot,'bin/cadbridge.mjs'),'mcp'],env:{CADBRIDGE_CONFIG:path.resolve(config),CADAGENT_POWERSHELL:powershell}}}};
+export function mcpConfiguration(config,powershell,store){
+ return{mcpServers:{'cad-ai-bridge':{command:process.execPath,args:[path.join(projectRoot,'bin/cadbridge.mjs'),'mcp'],env:{CADBRIDGE_CONFIG:path.resolve(config),CADAGENT_POWERSHELL:powershell,...(store?{CADBRIDGE_DATA_HOME:store}:{})}}}};
 }
 export async function mergeClientConfiguration(file,mcp){
  let previous={};try{previous=JSON.parse((await fs.readFile(file,'utf8')).replace(/^\uFEFF/,''));}catch(error){if(error.code!=='ENOENT')throw Error('CLIENT_CONFIG_INVALID: '+error.message);}

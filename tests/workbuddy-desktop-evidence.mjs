@@ -1,3 +1,4 @@
+import {projectPath,parseLocalJSON,resolveLocalPath} from '../src/local-paths.mjs';
 // Read-only acceptance of an explicitly supplied desktop task; never launches CAD or changes client settings.
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -7,10 +8,10 @@ import {hashFile} from '../src/drawings.mjs';
 import {readDxf,tag,curveLength,xdata,field} from '../src/dxf-audit.mjs';
 const [sessionFile,desktopLog]=process.argv.slice(2);
 if(!sessionFile||!desktopLog)throw Error('Supply the exact desktop session JSONL and main-thread log');
-const rows=(await fs.readFile(sessionFile,'utf8')).trim().split('\n').map(line=>JSON.parse(line));
+const rows=(await fs.readFile(sessionFile,'utf8')).trim().split('\n').map(line=>parseLocalJSON(line));
 const calls=rows.filter(r=>r.type==='function_call'),checks=[];
-const args=call=>typeof call.arguments==='string'?JSON.parse(call.arguments):call.arguments;
-function output(reply){const block=Array.isArray(reply.output)?reply.output[0]:reply.output;return JSON.parse(block.text);}
+const args=call=>typeof call.arguments==='string'?parseLocalJSON(call.arguments):call.arguments;
+function output(reply){const block=Array.isArray(reply.output)?reply.output[0]:reply.output;return parseLocalJSON(block.text);}
 assert.ok(calls.some(c=>c.name==='Skill'&&JSON.stringify(args(c)).includes('cadbridge-electrical')));
 checks.push('Actual desktop task invokes the global electrical Skill');
 const executions=calls.filter(c=>c.name==='DeferExecuteTool').map(c=>({call:c,...args(c)}));
@@ -27,10 +28,10 @@ checks.push('Desktop diagnostic, drawing creation, write, takeoff and validation
 const desktop=await fs.readFile(desktopLog,'utf8');assert.match(desktop,/Connected to custom-mcp:cad-ai-bridge, 15 tools/);
 for(const entry of [results.cad_create_test_drawing,results.electrical_apply,takeoff,results.electrical_validate]){
  const result=entry.result;
- const folder=await fs.realpath(result.jobRoot),relative=path.relative(path.join(root,'runs'),folder);
+ const folder=await fs.realpath(result.jobRoot),relative=path.relative(projectPath('runs'),folder);
  assert.ok(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative),'Job must remain inside bridge runs');
- const task=JSON.parse(await fs.readFile(path.join(folder,'task.json'),'utf8'));assert.equal(task.status,'completed');
- const stored=JSON.parse(await fs.readFile(path.join(folder,'result.json'),'utf8'));assert.equal(stored.ok,true);
+ const task=parseLocalJSON(await fs.readFile(path.join(folder,'task.json'),'utf8'));assert.equal(task.status,'completed');
+ const stored=parseLocalJSON(await fs.readFile(path.join(folder,'result.json'),'utf8'));assert.equal(stored.ok,true);
  // Tangent summaries intentionally retain only snapshot identity; full evidence stays in the job.
  for(const key of ['documentId','revision','units'])assert.equal(stored.snapshot[key],result.snapshot[key]);
  for(const key of ['devices','routes','issues'])if(Array.isArray(result.snapshot[key]))assert.deepEqual(stored.snapshot[key],result.snapshot[key]);
@@ -62,11 +63,11 @@ const presented=output(rows.find(r=>r.type==='function_call_result'&&r.callId===
 assert.equal(presented.type,'present_files_result');assert.ok(presented.files.includes(applied.drawing));assert.ok(presented.files.includes(applied.dxf));
 checks.push('Desktop present_files succeeds for the actual DWG and DXF');
 const sessionId=rows.find(r=>r.sessionId)?.sessionId;
-let review;try{review=JSON.parse(await fs.readFile(path.join(root,'artifacts/workbuddy-desktop-user-review.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+let review;try{review=parseLocalJSON(await fs.readFile(projectPath('artifacts/workbuddy-desktop-user-review.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
 if(review?.sessionId!==sessionId||review?.drawingSha256!==applied.drawingSha256)review=undefined;
 const manualChecks=[];
 if(review?.filesVisible===true)manualChecks.push('User confirms actual desktop file cards are visible');
 if(review?.manualDwgOpen===true)manualChecks.push('User confirms the delivered DWG can be opened manually in local CAD');
 const report={ok:true,acceptanceComplete:manualChecks.length===2,checkedAt:new Date().toISOString(),scope:'User-assisted desktop task, verified from its session, desktop proxy log, saved files, independent DXF and separately recorded user observations',checks,manualChecks,sessionId,drawing:applied.drawing,dxf:applied.dxf,drawingSha256:applied.drawingSha256,statistics:{deviceCount:2,routeCount:1,routeLengthMm:3000,numbers:['L-001','L-002']},jobIds:[fixture,applied,takeoff.result,results.electrical_validate.result].map(r=>path.basename(r.jobRoot)),presentation:{files:presented.files,previewed:presented.previewed||[],userOpenVerified:review?.manualDwgOpen===true,cardDirectOpenVerified:review?.cardDirectOpenVerified??null,embeddedCadPreviewVerified:review?.embeddedCadPreviewVerified===true}};
-await fs.writeFile(path.join(root,'artifacts/workbuddy-desktop-task-report.json'),JSON.stringify(report,null,2));
+await fs.writeFile(projectPath('artifacts/workbuddy-desktop-task-report.json'),JSON.stringify(report,null,2));
 console.log(JSON.stringify({ok:true,checks,drawing:applied.drawing,previewed:report.presentation.previewed}));

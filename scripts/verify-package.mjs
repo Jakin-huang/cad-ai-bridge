@@ -2,8 +2,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import {assertNoSampleFiles} from './public-files.mjs';
 const folder=await fs.realpath(process.argv[2]||'.');
 const manifest=JSON.parse(await fs.readFile(path.join(folder,'release-manifest.json'),'utf8'));
+assertNoSampleFiles(manifest.files.map(entry=>entry.file));
 const expected=new Set(['release-manifest.json']);
 for(const entry of manifest.files){
  assert.ok(!expected.has(entry.file),'Duplicate manifest file');expected.add(entry.file);

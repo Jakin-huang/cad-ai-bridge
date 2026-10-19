@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0-preview.3 — 2026-10-19
+
+- Separate local validation data, drawings, old packages and examples from the source tree.
+- Exclude example datasets, drawing previews and sample packaging tools from public files and releases.
+- Store runtime jobs and maintainer validation output outside the project, preserving configured data storage across upgrades.
+- Require explicit user inputs for optional project generation; skip data-dependent tests when external private requirements are absent.
+- Reject drawing/sample assets at release boundaries and retain core MCP/Skill/CLI capabilities.
+
 ## 0.2.0-preview.2 — 2026-10-19
 
 - Add a Chinese Windows entry with native folder selection, preparation progress, clear success/failure guidance, optional logs and a copyable first task. Keep it an onboarding surface for the existing connector.

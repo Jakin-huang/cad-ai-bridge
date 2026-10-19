@@ -1,12 +1,30 @@
 {
-  "name":"cad-ai-bridge",
-  "version":"0.2.0",
-  "private":true,
-  "type":"module",
-  "description":"Local MCP and CLI bridge for AutoCAD electrical workflows and observed Tangent V8 metadata",
-  "license":"MIT",
-  "bin":{"cadbridge":"bin/cadbridge.mjs"},
-  "scripts":{"test":"node --test tests/unit/*.test.mjs","test:cad":"node tests/integration.mjs","test:tangent":"node tests/tangent-integration.mjs","mcp":"node mcp-server.mjs","setup":"node bin/cadbridge.mjs setup","doctor":"node bin/cadbridge.mjs doctor","demo":"node bin/cadbridge.mjs demo","check":"node scripts/check-release.mjs","preview":"node render-preview.mjs","package:preview":"node scripts/package-release.mjs"},
-  "dependencies":{"@modelcontextprotocol/server":"2.3.1","@modelcontextprotocol/client":"2.3.1","zod":"4.4.3"},
-  "engines":{"node":">=22.19"}
+  "name": "cad-ai-bridge",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Local MCP and CLI bridge for AutoCAD electrical workflows and observed Tangent V8 metadata",
+  "license": "MIT",
+  "bin": {
+    "cadbridge": "bin/cadbridge.mjs"
+  },
+  "scripts": {
+    "test": "node --test tests/unit/*.test.mjs",
+    "test:cad": "node tests/integration.mjs",
+    "test:tangent": "node tests/tangent-integration.mjs",
+    "mcp": "node mcp-server.mjs",
+    "setup": "node bin/cadbridge.mjs setup",
+    "doctor": "node bin/cadbridge.mjs doctor",
+    "demo": "node bin/cadbridge.mjs demo",
+    "check": "node scripts/check-release.mjs",
+    "package:preview": "node scripts/package-release.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.3.1",
+    "@modelcontextprotocol/client": "2.3.1",
+    "zod": "4.4.3"
+  },
+  "engines": {
+    "node": ">=22.19"
+  }
 }

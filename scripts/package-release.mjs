@@ -1,14 +1,15 @@
+import {projectPath,parseLocalJSON,resolveLocalPath} from '../src/local-paths.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
-import {root,publicFiles} from './public-files.mjs';
+import {root,publicFiles,assertNoSampleFiles} from './public-files.mjs';
 import {dependencyFiles} from './package-dependencies.mjs';
-const check=spawnSync(process.execPath,[path.join(root,'scripts/check-release.mjs')],{stdio:'inherit',windowsHide:true});
+const check=spawnSync(process.execPath,[projectPath('scripts/check-release.mjs')],{stdio:'inherit',windowsHide:true});
 if(check.status!==0)throw Error('Release checks failed');
 if(process.platform!=='win32')throw Error('Build this verified AutoCAD preview package on Windows');
-const pkg=JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8'));
-const release=JSON.parse(await fs.readFile(path.join(root,'release.json'),'utf8'));
+const pkg=parseLocalJSON(await fs.readFile(projectPath('package.json'),'utf8'));
+const release=parseLocalJSON(await fs.readFile(projectPath('release.json'),'utf8'));
 if(release.compatibilityVersion!==pkg.version||release.tag!=='v'+release.version||release.channel!=='preview')throw Error('Release identity does not match compatibility version');
 const frozen=process.argv.includes('--frozen');
 function git(args){const result=spawnSync('git',args,{cwd:root,encoding:'utf8',windowsHide:true});if(result.status!==0)throw Error(result.stderr||String(result.error));return result.stdout.trim();}
@@ -20,36 +21,37 @@ if(frozen){
 }
 const userPackage=process.argv.includes('--user');
 const name=pkg.name+'-'+release.version+(userPackage?'-windows-x64':'-windows-developer-x64');
-const dist=path.join(root,'dist');await fs.mkdir(dist,{recursive:true});
+const dist=projectPath('dist');await fs.mkdir(dist,{recursive:true});
 const archive=path.join(dist,name+(frozen?'':'-'+new Date().toISOString().replace(/[:.]/g,'-'))+'.zip');
 if(await fs.access(archive).then(()=>true,()=>false))throw Error('Release archive already exists; never overwrite a frozen artifact');
 // Unique staging directories avoid deleting or overwriting unrelated content.
 const stage=await fs.mkdtemp(path.join(dist,'stage-')),folder=path.join(stage,name);await fs.mkdir(folder);
 const files=[...await publicFiles(),'plugin/bin/CadAgent.dll',...await dependencyFiles()];
+assertNoSampleFiles(files);
 if(frozen){
  const tracked=new Set(git(['ls-files','-z']).split('\0').filter(Boolean));
  const allowed=new Set(await publicFiles());
  for(const file of allowed)if(!tracked.has(file))throw Error('Untracked public source in frozen release: '+file);
  for(const file of tracked)if(!allowed.has(file))throw Error('Tracked file outside public allowlist: '+file);
- const audit=spawnSync(process.execPath,[path.join(root,'scripts/audit-public.mjs')],{stdio:'inherit',windowsHide:true});
+ const audit=spawnSync(process.execPath,[projectPath('scripts/audit-public.mjs')],{stdio:'inherit',windowsHide:true});
  if(audit.status!==0)throw Error('Public source/history audit failed');
 }
 const manifest={name:pkg.name,version:pkg.version,kind:'Windows developer preview',requirements:['Windows x64','Node.js >=22.19','PowerShell >=7','AutoCAD 2022 locally installed and normally licensed','.NET Framework 4.8','Optional Tangent Electrical T20 V8.0','School PDF workflow: Python with reportlab/pypdf and local SimHei font; CADBRIDGE_PYTHON selects Python'],containsVendorRuntime:false,containsNodeRuntime:false,files:[]};
 manifest.release=release;manifest.frozen=frozen;if(source)manifest.source=source;
 manifest.containsNodeDependencies=true;manifest.setup='setup.cmd reuses compatible runtimes or extracts SHA-256-pinned portable ZIPs without administrator rights; matching plugin and locked dependencies are reused.';
 if(userPackage){
- const launcher=spawnSync('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(root,'scripts/build-user-launcher.ps1')],{stdio:'inherit',windowsHide:true});
+ const launcher=spawnSync('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',projectPath('scripts/build-user-launcher.ps1')],{stdio:'inherit',windowsHide:true});
  if(launcher.status!==0)throw Error('Windows launcher build failed');
- const launcherBuild=JSON.parse((await fs.readFile(path.join(root,'plugin/bin/user-launcher-build.json'),'utf8')).replace(/^\uFEFF/,''));
- const launcherBytes=await fs.readFile(path.join(root,'plugin/bin/CadBridge.Start.exe'));
- if(crypto.createHash('sha256').update(launcherBytes).digest('hex')!==launcherBuild.sha256||crypto.createHash('sha256').update(await fs.readFile(path.join(root,launcherBuild.source))).digest('hex')!==launcherBuild.sourceSHA256)throw Error('Windows launcher source/digest mismatch');
+ const launcherBuild=parseLocalJSON((await fs.readFile(projectPath('plugin/bin/user-launcher-build.json'),'utf8')).replace(/^\uFEFF/,''));
+ const launcherBytes=await fs.readFile(projectPath('plugin/bin/CadBridge.Start.exe'));
+ if(crypto.createHash('sha256').update(launcherBytes).digest('hex')!==launcherBuild.sha256||crypto.createHash('sha256').update(await fs.readFile(projectPath(launcherBuild.source))).digest('hex')!==launcherBuild.sourceSHA256)throw Error('Windows launcher source/digest mismatch');
  await fs.writeFile(path.join(folder,'开始使用.exe'),launcherBytes);
  manifest.files.push({file:'开始使用.exe',bytes:launcherBytes.length,sha256:launcherBuild.sha256});manifest.userLauncher=launcherBuild;
  manifest.entry='开始使用.exe';manifest.guide='使用说明.html';
- const cache=path.join(root,'artifacts/runtime-downloads');
- const preparation=spawnSync('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(root,'scripts/ensure-runtimes.ps1'),'-DownloadOnly'],{stdio:'inherit',windowsHide:true,env:{...process.env,CADBRIDGE_RUNTIME_CACHE:cache}});
+ const cache=projectPath('artifacts/runtime-downloads');
+ const preparation=spawnSync('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',projectPath('scripts/ensure-runtimes.ps1'),'-DownloadOnly'],{stdio:'inherit',windowsHide:true,env:{...process.env,CADBRIDGE_RUNTIME_CACHE:cache}});
  if(preparation.status!==0)throw Error('Portable runtime preparation failed');
- const assets=JSON.parse(await fs.readFile(path.join(root,'scripts/runtime-assets.json'),'utf8'));
+ const assets=parseLocalJSON(await fs.readFile(projectPath('scripts/runtime-assets.json'),'utf8'));
  for(const [kind,asset]of Object.entries(assets)){
   const bytes=await fs.readFile(path.join(cache,asset.file));const sha256=crypto.createHash('sha256').update(bytes).digest('hex');
   if(sha256!==asset.sha256)throw Error('Runtime digest mismatch: '+kind);
@@ -60,8 +62,8 @@ if(userPackage){
  manifest.runtimeAssets=assets;manifest.offlineSetup=true;
  manifest.requirements=manifest.requirements.filter(requirement=>!requirement.startsWith('Node.js')&&!requirement.startsWith('PowerShell'));
 }
-for(const file of files){const bytes=await fs.readFile(path.join(root,file));const target=path.join(folder,file);await fs.mkdir(path.dirname(target),{recursive:true});await fs.writeFile(target,bytes);manifest.files.push({file,bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex')});}
-const build=JSON.parse((await fs.readFile(path.join(root,'plugin/bin/build.json'),'utf8')).replace(/^\uFEFF/,''));
+for(const file of files){const bytes=await fs.readFile(projectPath(file));const target=path.join(folder,file);await fs.mkdir(path.dirname(target),{recursive:true});await fs.writeFile(target,bytes);manifest.files.push({file,bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex')});}
+const build=parseLocalJSON((await fs.readFile(projectPath('plugin/bin/build.json'),'utf8')).replace(/^\uFEFF/,''));
 // Build metadata shipped publicly contains no development machine paths.
 const publicBuild={target:build.target,version:build.version,dll:'CadAgent.dll',sha256:build.sha256,sourceDigests:build.sourceDigests};
 await fs.writeFile(path.join(folder,'plugin/bin/build.json'),JSON.stringify(publicBuild,null,2));

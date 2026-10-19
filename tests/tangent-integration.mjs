@@ -1,3 +1,4 @@
+import {projectPath,parseLocalJSON,resolveLocalPath} from '../src/local-paths.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -7,11 +8,11 @@ import {StdioClientTransport} from '@modelcontextprotocol/client/stdio';
 import {root,hashFile} from '../bridge.mjs';
 import {loadConfig} from '../src/config.mjs';
 const config=await loadConfig(),client=new Client({name:'cadbridge-tangent-acceptance',version:'0.2.0'});
-const transport=new StdioClientTransport({command:process.execPath,args:[path.join(root,'mcp-server.mjs')],stderr:'pipe'});
+const transport=new StdioClientTransport({command:process.execPath,args:[projectPath('mcp-server.mjs')],stderr:'pipe'});
 const checks=[],results={};let serverErrors='';const started=performance.now();
 const check=(name,fn)=>{fn();checks.push(name);console.log('PASS '+name);};
-async function call(name,args={}){if(name==='tangent_inspect'||name==='tangent_takeoff')args={detail:'full',...args};const r=await client.callTool({name,arguments:args},{timeout:180000});const text=r.content?.find(c=>c.type==='text')?.text;assert.ok(text);try{return JSON.parse(text);}catch{throw Error(text);}}
-const artifactDir=path.join(root,'artifacts');await fs.mkdir(artifactDir,{recursive:true});
+async function call(name,args={}){if(name==='tangent_inspect'||name==='tangent_takeoff')args={detail:'full',...args};const r=await client.callTool({name,arguments:args},{timeout:180000});const text=r.content?.find(c=>c.type==='text')?.text;assert.ok(text);try{return parseLocalJSON(text);}catch{throw Error(text);}}
+const artifactDir=projectPath('artifacts');await fs.mkdir(artifactDir,{recursive:true});
 try{
  await client.connect(transport);transport.stderr?.on('data',b=>serverErrors=(serverErrors+b).slice(-32000));
  results.fixture=await call('cad_create_test_drawing',{adapter:'tangent-v8'});
@@ -38,7 +39,7 @@ try{
  const valid=results.validation=await call('electrical_validate',{drawing:applied.drawing});
  check('Managed connection ports and numbering validate after native save',()=>{assert.equal(valid.ok,true);assert.deepEqual(valid.snapshot.issues,[]);});
  const source=path.join(config.tangentRoot,'sys','电气演示.dwg');
- const sampleDir=await fs.mkdtemp(path.join(root,'runs','vendor-sample-')),sample=path.join(sampleDir,'electrical.dwg');const originalHash=await hashFile(source);await fs.copyFile(source,sample);
+ const sampleDir=await fs.mkdtemp(projectPath('runs','vendor-sample-')),sample=path.join(sampleDir,'electrical.dwg');const originalHash=await hashFile(source);await fs.copyFile(source,sample);
  const vendor=results.vendorSample=await call('tangent_inspect',{drawing:sample});
  check('Vendor sample reads 34 lighting/socket instances plus other observed classes and 28 wires without assuming units',()=>{assert.equal(vendor.ok,true);assert.equal(vendor.tangent.devices.filter(d=>['lighting','socket'].includes(d.category)).length,34);assert.equal(vendor.tangent.deviceCount,vendor.tangent.devices.length);assert.equal(vendor.tangent.wireCount,28);assert.equal(vendor.tangent.unitsSource,'unresolved');assert.equal(vendor.tangent.statistics.lengthMm,null);assert.ok(vendor.tangent.circuits.some(c=>c.id==='WL1'));assert.equal(vendor.tangent.coverage.proxyEntities,129);assert.deepEqual(vendor.tangent.coverage.errors,[]);});
  const assumed=results.vendorUnits=await call('tangent_takeoff',{drawing:sample,units:'mm'});

@@ -1,3 +1,4 @@
+import {projectPath,parseLocalJSON,resolveLocalPath} from '../src/local-paths.mjs';
 // Explicit local acceptance, never run by npm test. Supply the installed client's home.
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -8,12 +9,12 @@ import {StdioClientTransport} from '@modelcontextprotocol/client/stdio';
 import {projectRoot as root} from '../src/config.mjs';
 import {workbuddyLocations} from '../src/client-install.mjs';
 const home=process.argv[2];if(!home)throw Error('Supply the WorkBuddy home directory explicitly');
-const locations=workbuddyLocations(home),config=JSON.parse(await fs.readFile(locations.config,'utf8'));
+const locations=workbuddyLocations(home),config=parseLocalJSON(await fs.readFile(locations.config,'utf8'));
 const server=config.mcpServers['cad-ai-bridge'];assert.equal(server.type,'stdio');
-const skill=path.join(locations.skill,'SKILL.md');assert.deepEqual(await fs.readFile(skill),await fs.readFile(path.join(root,'skills/cadbridge-electrical/SKILL.md')));
+const skill=path.join(locations.skill,'SKILL.md');assert.deepEqual(await fs.readFile(skill),await fs.readFile(projectPath('skills/cadbridge-electrical/SKILL.md')));
 await fs.access(path.join(locations.skill,'references/school-workflow.md'));
 const client=new Client({name:'installed-workbuddy-config-acceptance',version:'0.2.0'}),checks=[],results={};
-async function call(name,args={}){const reply=await client.callTool({name,arguments:args},undefined,{timeout:server.timeout});const value=JSON.parse(reply.content[0].text);assert.equal(value.ok,true,JSON.stringify(value.error));results[name]=value;return value;}
+async function call(name,args={}){const reply=await client.callTool({name,arguments:args},undefined,{timeout:server.timeout});const value=parseLocalJSON(reply.content[0].text);assert.equal(value.ok,true,JSON.stringify(value.error));results[name]=value;return value;}
 try{
  await client.connect(new StdioClientTransport({command:server.command,args:server.args,env:{...process.env,...server.env},stderr:'pipe'}));
  assert.equal((await client.listTools()).tools.length,15);checks.push('Installed MCP configuration starts and discovers 15 tools');
@@ -30,5 +31,5 @@ try{
  const recovered=await call('cad_get_job',{jobId:path.basename(applied.jobRoot)});assert.equal(recovered.result.drawingSha256,applied.drawingSha256);checks.push('Recorded result can be recovered');
  checks.push('Installed Skill and standalone reference match the delivered source');
  const report={ok:true,checkedAt:new Date().toISOString(),scope:'Official MCP SDK using actual installed WorkBuddy configuration; not a desktop conversation test',checks,results};
- await fs.writeFile(path.join(root,'artifacts/workbuddy-installed-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:true,checks,drawing:applied.drawing}));
+ await fs.writeFile(projectPath('artifacts/workbuddy-installed-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:true,checks,drawing:applied.drawing}));
 }finally{await client.close();}

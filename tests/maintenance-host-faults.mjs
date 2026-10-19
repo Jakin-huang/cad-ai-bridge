@@ -1,3 +1,4 @@
+import {projectPath,parseLocalJSON,resolveLocalPath} from '../src/local-paths.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -13,6 +14,6 @@ for(const [name,block,code,outcome]of [['dxf','output.dxf','DXF_EXPORT_FAILED','
 }
 const timeout=createExecutor({launch:(exe,args)=>launchHost(exe,[...args,'-TimeoutSeconds','1'])});
 const timed=results.timeout=await timeout('create_test_drawing');assert.equal(timed.ok,false);assert.equal(timed.error.code,'TIMEOUT_STATE_UNKNOWN');assert.equal(timed.outcome,'unconfirmed');
-const metadata=JSON.parse((await fs.readFile(path.join(timed.jobRoot,'process.json'),'utf8')).replace(/^\uFEFF/,''));let alive=true;try{process.kill(metadata.pid,0);}catch{alive=false;}assert.equal(alive,false);checks.push('Timed-out owned CAD process exits and its unknown outcome remains queryable');console.log('PASS '+checks.at(-1));
+const metadata=parseLocalJSON((await fs.readFile(path.join(timed.jobRoot,'process.json'),'utf8')).replace(/^\uFEFF/,''));let alive=true;try{process.kill(metadata.pid,0);}catch{alive=false;}assert.equal(alive,false);checks.push('Timed-out owned CAD process exits and its unknown outcome remains queryable');console.log('PASS '+checks.at(-1));
 const next=await execute('create_test_drawing');assert.equal(next.ok,true);checks.push('Next CAD job succeeds after timeout and configuration restoration');console.log('PASS '+checks.at(-1));
-await fs.writeFile(path.join(root,'artifacts/maintenance-host-faults-report.json'),JSON.stringify({ok:true,checkedAt:new Date().toISOString(),checks,results},null,2));
+await fs.writeFile(projectPath('artifacts/maintenance-host-faults-report.json'),JSON.stringify({ok:true,checkedAt:new Date().toISOString(),checks,results},null,2));

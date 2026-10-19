@@ -105,7 +105,6 @@ cad-ai-bridge/
   src/                       MCP 服务、任务和宿主调度
   plugins/autocad/           C# 插件及版本适配
   apps/desktop/              配置和诊断界面
-  examples/electrical/       自行生成的符号、请求和演示图
   tests/unit/               无 CAD 的契约、配置和路径测试
   tests/integration/        真实 CAD 的保存、重开和回滚回归
   docs/                     安装、兼容表、工具、排障、开发指南

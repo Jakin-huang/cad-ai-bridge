@@ -70,7 +70,6 @@
   },
   "school": {
     "checkedAt": "2026-10-16T08:33:51.364Z",
-    "requirementsExample": "examples/school-requirements.json",
     "sheets": 19,
     "devices": 302,
     "routes": 282,

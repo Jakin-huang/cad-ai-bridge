@@ -1,3 +1,4 @@
+import {projectPath,parseLocalJSON,resolveLocalPath} from '../src/local-paths.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -7,14 +8,14 @@ import {root,hashFile} from '../bridge.mjs';
 const {Client}=await dependency('@modelcontextprotocol/client');
 const {StdioClientTransport}=await dependency('@modelcontextprotocol/client/stdio');
 const client=new Client({name:'cad-electrical-integration',version:'0.1.0'});
-const transport=new StdioClientTransport({command:process.execPath,args:[path.join(root,'mcp-server.mjs')],stderr:'pipe'});
+const transport=new StdioClientTransport({command:process.execPath,args:[projectPath('mcp-server.mjs')],stderr:'pipe'});
 let stderr='';const checks=[];const started=performance.now();const results={};
 const check=(name,fn)=>{fn();checks.push(name);console.log('PASS '+name);};
 async function call(name,args={}){
  const result=await client.callTool({name,arguments:args});
  const text=result.content?.find(c=>c.type==='text')?.text;
  assert.ok(text,'MCP tool must return text');
- try{return JSON.parse(text);}catch(error){if(result.isError)return{ok:false,error:{code:'SDK_INPUT_VALIDATION',message:text}};throw error;}
+ try{return parseLocalJSON(text);}catch(error){if(result.isError)return{ok:false,error:{code:'SDK_INPUT_VALIDATION',message:text}};throw error;}
 }
 try{
  await client.connect(transport);
@@ -63,7 +64,7 @@ try{
  check('file digest mismatch rejected before CAD launch',()=>{assert.equal(staleFile.ok,false);assert.match(staleFile.error.message,/STALE_FILE/);});
  const badSchema=results.badSchema=await call('electrical_apply',{...current,operations:[{...request.operations[1],vertices:[[0,0,1],[6000,0,0]]}]});
  check('MCP schema rejects non-planar coordinates',()=>assert.equal(badSchema.ok,false));
- const artifacts=path.join(root,'artifacts');await fs.mkdir(artifacts,{recursive:true});
+ const artifacts=projectPath('artifacts');await fs.mkdir(artifacts,{recursive:true});
  for(const [source,target]of [[applied.drawing,'electrical-demo.dwg'],[applied.dxf,'electrical-demo.dxf']])await fs.copyFile(source,path.join(artifacts,target));
  await fs.writeFile(path.join(artifacts,'sample-apply-request.json'),JSON.stringify(request,null,2));
  const dxf=await fs.readFile(applied.dxf,'utf8');const lines=dxf.split(/\r?\n/);let section='',pending=false,entities=[],entity=null;
@@ -85,7 +86,7 @@ try{
  await fs.writeFile(path.join(artifacts,'integration-report.json'),JSON.stringify(report,null,2));
  console.log(JSON.stringify({ok:true,checks:checks.length,elapsedMs:report.elapsedMs,report:path.join(artifacts,'integration-report.json')}));
 }catch(error){
- await fs.mkdir(path.join(root,'artifacts'),{recursive:true});
- await fs.writeFile(path.join(root,'artifacts','integration-failure.json'),JSON.stringify({error:error.stack,checks,results,stderr},null,2));
+ await fs.mkdir(projectPath('artifacts'),{recursive:true});
+ await fs.writeFile(projectPath('artifacts','integration-failure.json'),JSON.stringify({error:error.stack,checks,results,stderr},null,2));
  throw error;
 }finally{await client.close();}
