@@ -1,9 +1,9 @@
 {
   "version": "0.2.0",
-  "checkedAt": "2026-10-16T04:18:59.970Z",
+  "checkedAt": "2026-10-16T08:19:52.320Z",
   "environment": "Windows x64 / AutoCAD 2022 zh-CN / Tangent Electrical T20 V8.0",
-  "pluginSHA256": "6C4601B01ECAF15161F418B2A0789322710B461BCC01991363A3D67D62945C71",
-  "syntheticDxfSHA256": "db88a1409e1f8680ab1068a775dd193e685d3ae90f0af3ed462b5e16bd140f5c",
+  "pluginSHA256": "758706CA6C0617647E49205994C35DE2572286009AF497541A90C80FBC6B1EBF",
+  "syntheticDxfSHA256": "55fc9f7c584f054e41b748c69394428dde7c1fac2fa0231a301ad146861c2fb8",
   "generic": {
     "count": 16,
     "checks": [
@@ -24,7 +24,7 @@
       "MCP schema rejects non-planar coordinates",
       "independent DXF export contains three inserts, one route and numbers"
     ],
-    "elapsedMs": 34160
+    "elapsedMs": 45963
   },
   "tangent": {
     "count": 11,
@@ -41,7 +41,7 @@
       "Native vendor interpreter resolves architectural proxies while preserving electrical recognition",
       "Vendor installation sample and workspace source copy remain byte-identical"
     ],
-    "elapsedMs": 84596
+    "elapsedMs": 117865
   },
   "mcp": {
     "count": 4,
@@ -52,8 +52,8 @@
       "Read-only MCP discovery hides all write tools"
     ],
     "metrics": {
-      "fullBytes": 33108,
-      "summaryBytes": 4844
+      "fullBytes": 33491,
+      "summaryBytes": 5173
     }
   },
   "sceneMcp": {
@@ -69,7 +69,7 @@
     ]
   },
   "school": {
-    "checkedAt": "2026-10-16T05:05:59.679Z",
+    "checkedAt": "2026-10-16T08:33:51.364Z",
     "requirementsExample": "examples/school-requirements.json",
     "sheets": 19,
     "devices": 302,

@@ -1,0 +1,10 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+const [folder,reports]=process.argv.slice(2);if(!folder||!reports)throw Error('Usage: node scripts/prepare-clean-windows.mjs EXTRACTED-USER-PACKAGE REPORT-DIRECTORY');
+const source=path.resolve(folder),output=path.resolve(reports);
+const manifest=JSON.parse(await fs.readFile(path.join(source,'release-manifest.json'),'utf8'));if(!manifest.offlineSetup)throw Error('Use an extracted offline Windows user preview');
+await fs.access(path.join(source,'tests/clean-windows.ps1'));await fs.mkdir(output,{recursive:true});
+const xml=value=>value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+const config='<Configuration><Networking>Disable</Networking><ClipboardRedirection>Disable</ClipboardRedirection><MappedFolders><MappedFolder><HostFolder>'+xml(source)+'</HostFolder><SandboxFolder>C:\\BridgePackage</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder><MappedFolder><HostFolder>'+xml(output)+'</HostFolder><SandboxFolder>C:\\BridgeReports</SandboxFolder><ReadOnly>false</ReadOnly></MappedFolder></MappedFolders><LogonCommand><Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\BridgePackage\\tests\\clean-windows.ps1</Command></LogonCommand></Configuration>';
+const file=path.join(output,'cadbridge-clean-windows.wsb');await fs.writeFile(file,config);
+console.log(JSON.stringify({ok:true,file,executed:false,next:'Open this .wsb on a Windows host with Windows Sandbox already available. Results are written only to the selected report directory.'}));

@@ -1,2 +1,4 @@
 @echo off
-node "%~dp0bin\cadbridge.mjs" %*
+setlocal
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\cli-local.ps1" %*
+exit /b %errorlevel%

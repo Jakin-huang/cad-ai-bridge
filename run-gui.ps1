@@ -82,9 +82,14 @@ try {
   if(-not $finished){throw ('TIMEOUT_STATE_UNKNOWN: owned GUI process stopped; inspect '+$stage)}
   if(-not (Test-Path -LiteralPath (Join-Path $job 'response.json'))){throw ('TANGENT_HOST_NO_RESPONSE: native initialization or script failed; inspect '+$stage)}
 } finally {
-  if($process){$process.Dispose()}
+  $cleanupErrors=New-Object 'Collections.Generic.List[string]'
+  if($process){
+    try{
+      if(-not $process.HasExited){$process.Kill();$process.WaitForExit()}
+      foreach($name in @('response.json','output.dwg','output.dxf','native-status.txt')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
+    }catch{$cleanupErrors.Add($_.Exception.Message)}finally{$process.Dispose()}
+  }
   if($locked){
-    $cleanupErrors=New-Object 'Collections.Generic.List[string]'
     try{
       try{Restore-CadTrust $vars $hadTrust $previous $trusted}catch{$cleanupErrors.Add($_.Exception.Message)}
       try{if($tipChanged -and $tipKey){$currentTip=(Get-Item -LiteralPath $tipKey).GetValue('StartUp',$null);if($currentTip -eq 0){if($tipWasPresent){Set-ItemProperty -LiteralPath $tipKey -Name StartUp -Type DWord -Value $tipPrevious}else{Remove-ItemProperty -LiteralPath $tipKey -Name StartUp}}elseif($currentTip -ne $tipPrevious){throw 'TIP_RESTORE_CONFLICT: external tip preference changes preserved'}}}catch{$cleanupErrors.Add($_.Exception.Message)}

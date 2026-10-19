@@ -1,6 +1,12 @@
 # 安装与排障
 
-先运行 `npm run doctor`。缺少插件时运行 setup；选择多个 AutoCAD 安装时明确给出 `--cad-root`。本版只验收 AutoCAD 2022，其他年份需要对应 API 和独立验收，不能直接复制 DLL 宣称兼容。
+先调用 MCP 的 `cad_doctor` 或运行 `npm run doctor`。即使 CAD、工作区或配置不可用，MCP 仍能连接并提供诊断；Node 或 MCP 库自身不可用时需要先运行 setup。缺少插件时运行 setup；选择多个 AutoCAD 安装时明确给出 `--cad-root`。本版只验收 AutoCAD 2022，其他年份需要对应 API 和独立验收，不能直接复制 DLL 宣称兼容。
+
+`setup` 优先复用目标版本、DLL 摘要和源码均匹配的插件；`--skip-build` 也要求通过校验，不能跳过损坏插件。开发者修改源码后可用 `--rebuild`。工作目录不存在时自动创建；路径是文件、不可访问或配置格式损坏时返回对应错误。
+
+任务超时、断连或写入错误时，先调用 `cad_get_job`。用 jobId 获取结果；未收到 jobId 时用原 requestId 找到对应尝试，再逐个查询。`status: unconfirmed` 表示缺少最终记录，仍可能在执行或存在未确认结果，不自动重放。`outcome: saved` 时检查现有 drawing；DXF 导出或宿主清理失败不代表 DWG 未保存。工具保留错误阶段、任务目录和输出摘要，分页与恢复查询均不启动 CAD。
+
+环境检测缓存仅在同一 MCP 进程内保留至多 30 秒；配置、关键环境变量、宿主、插件和检测脚本变化会使缓存失效，`cad_doctor` 的 `refresh: true` 强制检测。图纸摘要、文档身份、版本、事务和原图保护不使用该缓存。
 
 ## 首次启动
 

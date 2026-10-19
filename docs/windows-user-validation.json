@@ -1,0 +1,61 @@
+{
+  "status": "user-preview-validated-on-existing-windows",
+  "checkedAt": "2026-10-19T02:19:21.319Z",
+  "version": "0.2.0",
+  "distribution": "Windows user preview",
+  "environment": "Windows 10 x64; non-elevated process; isolated client, minimal PATH and offline bootstrap",
+  "unitChecks": 63,
+  "checks": {
+    "package": [
+      "Windows process is not elevated",
+      "Freshly extracted user ZIP manifest verifies every source, dependency, plugin and runtime archive",
+      "Previous release installs into isolated client without changing its other service or proxy",
+      "Offline upgrade with Node, PowerShell 7 and winget excluded extracts bundled runtimes without UAC",
+      "Side-by-side upgrade inherits prior drawing workspace and preserves unrelated client settings",
+      "Packaged CLI works with Node and PowerShell 7 absent from PATH",
+      "Packaged runtimes discover 15 tools, pass doctor, save two lights and reopen their route/numbering with no issues",
+      "Packaged PowerShell loads native Tangent host and restores its user settings after exit",
+      "Repeat offline setup succeeds with exactly the same connector parameters",
+      "Recovery command restores previous runnable release and Skill while retaining later services and new DWG",
+      "Machine and user PATH remain unchanged"
+    ],
+    "dependencyRepair": [
+      "Missing dependencies offline fail before changing client configuration",
+      "Unavailable npm registry fails with preserved client configuration",
+      "Official npm registry repairs all missing locked dependencies with bundled npm and no admin",
+      "Repaired package installs again offline without dependency downloads"
+    ],
+    "runtimeFaults": [
+      "valid offline cache reused",
+      "damaged offline archive quarantined before execution",
+      "offline missing runtime has actionable failure",
+      "network failure bounded to two attempts and partial download removed",
+      "unverified downloaded bytes rejected",
+      "archive traversal rejected and staging cleaned"
+    ],
+    "readOnlyDirectory": [
+      "Windows ACL denies installation-directory writes",
+      "Setup stops with actionable read-only error before runtime download or client changes"
+    ],
+    "savedOutput": [
+      "Independent DXF and saved snapshot agree on two light positions, L-001/L-002 and 3000 mm WL1 route"
+    ]
+  },
+  "runtimeVersions": {
+    "node": "22.23.3",
+    "powershell": "7.4.20"
+  },
+  "cleanWindowsVerified": false,
+  "separateStandardAccountVerified": false,
+  "cleanWindowsHarnessPrepared": true,
+  "limitations": [
+    "Non-elevated process belongs to the existing Windows account; it is not a separate standard-account acceptance",
+    "Local VM acceptance is deferred by user; no fresh Windows bridge test completed",
+    "Fresh-system harness has not been executed; no fresh-system compatibility claim",
+    "Existing user-assisted WorkBuddy desktop acceptance remains separate from this package/SDK test"
+  ],
+  "pending": [
+    "Fresh Windows evidence from an independent physical or external test environment",
+    "Independent standard Windows account evidence"
+  ]
+}

@@ -5,7 +5,10 @@ artifacts/
 cadbridge.local.json*
 cadbridge-standard.local.json*
 mcp-config.local.json*
+mcp-config.workbuddy.local.json*
 dist/
+runtime/
+runtime-archives/
 *.log
 *.tmp-*
 *.tgz

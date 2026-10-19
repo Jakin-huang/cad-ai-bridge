@@ -52,6 +52,8 @@ try {
     }
     if(Test-Path -LiteralPath $inputDrawing){$argsForCad=@('/i',('"'+$inputDrawing+'"'))+$argsForCad}
     $p=Start-Process -FilePath (Join-Path $CadRoot 'accoreconsole.exe') -ArgumentList $argsForCad -WorkingDirectory $job -WindowStyle Hidden -RedirectStandardOutput (Join-Path $job 'stdout.raw.log') -RedirectStandardError (Join-Path $job 'stderr.log') -PassThru
+    [ordered]@{pid=$p.Id;startedAt=$p.StartTime.ToUniversalTime().ToString('o');executable=(Join-Path $CadRoot 'accoreconsole.exe')} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $job 'process.json') -Encoding utf8
+    $preparationMs=$watch.ElapsedMilliseconds
     $null=$p.Handle
     $finished=$p.WaitForExit($TimeoutSeconds*1000)
     if(-not $finished){$p.Kill();$p.WaitForExit()}
@@ -62,12 +64,12 @@ try {
     $watch.Stop()
     $sha=[Security.Cryptography.SHA256]::Create()
     try{$pluginHash=[BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($plugin))).Replace('-','')}finally{$sha.Dispose()}
-    [ordered]@{exitCode=$p.ExitCode;timedOut=(-not $finished);elapsedMs=$watch.ElapsedMilliseconds;pluginSHA256=$pluginHash} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $job 'host.json') -Encoding utf8
+    [ordered]@{exitCode=$p.ExitCode;timedOut=(-not $finished);elapsedMs=$watch.ElapsedMilliseconds;preparationMs=$preparationMs;processMs=($watch.ElapsedMilliseconds-$preparationMs);pluginSHA256=$pluginHash} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $job 'host.json') -Encoding utf8
     if(-not $finished){throw 'TIMEOUT_STATE_UNKNOWN: CAD process timed out; inspect retained job evidence before retrying'}
     if($p.ExitCode -ne 0){throw "CAD host exited with code $($p.ExitCode); see $job\stdout.log"}
     if(-not (Test-Path -LiteralPath $env:CADAGENT_RESPONSE)){throw "No plugin response. See $job\stdout.log; sandboxed registry writes may require host execution outside the sandbox."}
 } finally {
-    if($p){$p.Dispose()}
+    if($p){try{if(-not $p.HasExited){$p.Kill();$p.WaitForExit()}}catch{Write-Warning ('Owned process cleanup failed: '+$_.Exception.Message)}finally{$p.Dispose()}}
     if($locked){
         try {
             Restore-CadTrust $variables $originalPresent $previous $trusted

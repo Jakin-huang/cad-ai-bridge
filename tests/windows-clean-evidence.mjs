@@ -1,0 +1,19 @@
+// Verify a real guest report against this lab's seed, VM command and package.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import assert from 'node:assert/strict';
+import {projectRoot as root} from '../src/config.mjs';
+const lab=path.resolve(process.argv[2]||'');if(!process.argv[2])throw Error('Supply the explicitly selected lab directory');
+const read=async file=>JSON.parse((await fs.readFile(path.join(lab,file),'utf8')).replace(/^\uFEFF/,''));
+const [metadata,run,guest]=await Promise.all(['lab.json','run.json','guest-report.json'].map(read));
+const checks=[];assert.equal(guest.ok,true,guest.error);assert.equal(guest.nonce,metadata.nonce);assert.equal(run.nonce,metadata.nonce);checks.push('Guest completion report is bound to the actual VM seed nonce');
+assert.equal(guest.elevated,false);assert.ok(guest.groups.includes('S-1-5-32-545'));assert.ok(!guest.groups.includes('S-1-5-32-544'));assert.match(guest.identity,/^BRIDGE-CLEAN\\BridgeStandard$/i);assert.match(guest.userSid,/^S-1-5-21-\d+-\d+-\d+-\d+$/);checks.push('Actual independent guest account belongs to Users and has no Administrators SID');
+assert.equal(guest.initialCommands.length,0);assert.ok(Number(guest.os.build)>=22000);assert.equal(guest.os.edition,'EnterpriseSEval');checks.push('Fresh Windows 11 Enterprise LTSC evaluation starts without Node or PowerShell 7');
+assert.equal(run.network,'none');assert.deepEqual(run.hostBlockDevices,[]);assert.ok(run.command.includes('tcg,thread=multi,tb-size=256'));assert.equal(run.command[run.command.indexOf('-nic')+1],'none');
+const drives=run.command.flatMap((value,index)=>value==='-drive'?[run.command[index+1]]:[]);assert.equal(drives.length,4);for(const drive of drives)assert.ok(drive.includes(run.work)||drive.includes('/usr/share/OVMF/'));
+assert.match(await fs.readFile(path.join(lab,'disk-create.txt'),'utf8'),/Formatting.*windows\.qcow2/);checks.push('VM uses software emulation, a newly created virtual disk, no NIC and no host block devices');
+const bytes=await fs.readFile(metadata.package);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),metadata.packageSHA256);assert.equal(guest.packageSHA256,metadata.packageSHA256);checks.push('Guest tested the exact released ZIP by SHA-256');
+assert.equal(guest.protocol.ok,true);assert.equal(guest.protocol.toolNames.length,15);assert.equal(guest.protocol.doctor.ok,false);assert.ok(guest.protocol.doctor.checks.some(item=>String(item.detail).includes('CAD_NOT_SUPPORTED')));assert.ok(guest.checks.length>=10);checks.push('Offline runtime/CLI, missing-CAD error, MCP discovery and Skill upgrade/restore complete under the standard account');
+const report={ok:true,checkedAt:new Date().toISOString(),scope:'Fresh offline Windows 11 Enterprise LTSC VM; real independent standard account; bridge bootstrap, MCP, Skill file installation and upgrade/recovery only',cleanWindowsVerified:true,separateStandardAccountVerified:true,cadInGuestVerified:false,workbuddyDesktopInGuestVerified:false,package:metadata.package,packageSHA256:metadata.packageSHA256,isoSHA256:run.isoSHA256,os:guest.os,guestChecks:guest.checks,evidenceChecks:checks,lab,limitations:['No licensed CAD or signed-in WorkBuddy desktop inside this guest','Package delivered by read-only VM media; browser download/Mark-of-the-Web flow not tested']};
+await fs.writeFile(path.join(root,'artifacts/windows-clean-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:true,scope:report.scope,guestChecks:guest.checks.length,evidenceChecks:checks.length}));

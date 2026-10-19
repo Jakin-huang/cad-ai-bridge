@@ -1,0 +1,235 @@
+{
+  "checkedAt": "2026-10-19T02:19:21.477Z",
+  "version": "0.2.0",
+  "pluginSHA256": "758706CA6C0617647E49205994C35DE2572286009AF497541A90C80FBC6B1EBF",
+  "implementation": [
+    "A1",
+    "A2",
+    "B1",
+    "B2",
+    "C1",
+    "C2"
+  ],
+  "environment": "Windows x64 / Node 22.20.0 / AutoCAD 2022 zh-CN / Tangent Electrical V8.0",
+  "protocolChecks": 8,
+  "realFaultChecks": 4,
+  "existingRegression": {
+    "generic": 16,
+    "tangent": 11,
+    "engineering": 18,
+    "comparedRecords": 141979,
+    "mcpResults": 4,
+    "scene": 7,
+    "schoolDesign": 28,
+    "schoolCad": 11,
+    "schoolDeliveryFaults": 6,
+    "schoolSheets": 19
+  },
+  "clients": [
+    {
+      "name": "WorkBuddy 5.3.8 bundled CodeBuddy CLI 2.115.0",
+      "scope": "CLI only; no desktop UI or Skill installation claim",
+      "checks": [
+        "Standard MCP configuration accepted",
+        "Tool discovery and cad_doctor succeeded",
+        "Synthetic drawing created",
+        "Atomic placement, connection and numbering saved",
+        "Takeoff reopened persisted result",
+        "Validation reports no issues"
+      ]
+    },
+    {
+      "name": "MCP Inspector CLI 2.11.0",
+      "scope": "Independent CLI; no desktop UI assertion",
+      "checks": [
+        "doctor",
+        "create",
+        "takeoff"
+      ]
+    },
+    {
+      "name": "WorkBuddy desktop 5.3.8",
+      "scope": "User-assisted desktop task, verified from its session, desktop proxy log, saved files, independent DXF and separately recorded user observations",
+      "checks": [
+        "Actual desktop task invokes the global electrical Skill",
+        "Desktop diagnostic, drawing creation, write, takeoff and validation succeed",
+        "Desktop proxy records correlate with completed bridge jobs",
+        "One atomic placement/route/numbering call and fresh saved-DWG readback agree",
+        "New DWG/DXF exist, saved digest matches, and original fixture is unchanged",
+        "Independent DXF parser confirms two lights, positions, numbering and WL1 length",
+        "Desktop present_files succeeds for the actual DWG and DXF"
+      ],
+      "manualChecks": [
+        "User confirms actual desktop file cards are visible",
+        "User confirms the delivered DWG can be opened manually in local CAD"
+      ]
+    }
+  ],
+  "measurements": {
+    "before": {
+      "configurationMs": [
+        1496,
+        1340,
+        1352
+      ],
+      "mcpStartupMs": 1973
+    },
+    "after": {
+      "configurationMs": [
+        1393,
+        1,
+        1
+      ],
+      "mcpStartupMs": 350
+    },
+    "sameTaskComparison": {
+      "batchMs": 3430,
+      "separateMs": 10321,
+      "hostLaunches": {
+        "batch": 1,
+        "separate": 3
+      },
+      "checks": [
+        "One atomic batch and three separate operations persist identical devices, routes and numbering",
+        "Both workflows preserve their original drawing",
+        "Recovery and managed pagination reuse results without launching CAD",
+        "Batching reduces host starts from three to one for the same task"
+      ]
+    },
+    "limitation": "Single-machine samples; batching compares invocation strategies, not old/new geometry performance."
+  },
+  "pending": [
+    "Additional CAD versions and live user sessions remain outside this release scope",
+    "Fresh Windows and independent standard-account acceptance remain pending; local VM acceptance is deferred by user"
+  ],
+  "workbuddyFollowup": {
+    "installedConfiguration": {
+      "scope": "Official MCP SDK using actual installed WorkBuddy configuration; not a desktop conversation test",
+      "checks": [
+        "Installed MCP configuration starts and discovers 15 tools",
+        "Installed environment diagnostic passes",
+        "Atomic placement, route and numbering saves through installed entry",
+        "Saved drawing reopens and retains devices",
+        "Saved connectivity and numbering validate",
+        "Recorded result can be recovered",
+        "Installed Skill and standalone reference match the delivered source"
+      ]
+    },
+    "skill": {
+      "scope": "WorkBuddy bundled CLI: identical installed Skill discovered in documented .codebuddy project scope; not desktop global Skill discovery",
+      "checks": [
+        "Installed Skill copied without modification into isolated project scope",
+        "Skill selected automatically from Chinese task",
+        "Create, atomic edit, saved takeoff and validation called",
+        "No tool call reported failure",
+        "Two lights, 3000 mm route, numbering and zero issues verified in persisted tool results",
+        "Saved DWG and unchanged source match returned digests; one atomic edit"
+      ]
+    },
+    "desktop": {
+      "status": "complete-user-assisted",
+      "observedVersion": "5.3.8",
+      "globalSkillDiscovered": true,
+      "connector": {
+        "configurationReadByDesktop": true,
+        "enabled": true,
+        "userConfirmedEnabled": true,
+        "reason": "Desktop main-thread log confirms WorkBuddy-owned stdio process and 15 registered CAD tools"
+      },
+      "checks": [
+        "Actual desktop task invokes the global electrical Skill",
+        "Desktop diagnostic, drawing creation, write, takeoff and validation succeed",
+        "Desktop proxy records correlate with completed bridge jobs",
+        "One atomic placement/route/numbering call and fresh saved-DWG readback agree",
+        "New DWG/DXF exist, saved digest matches, and original fixture is unchanged",
+        "Independent DXF parser confirms two lights, positions, numbering and WL1 length",
+        "Desktop present_files succeeds for the actual DWG and DXF"
+      ],
+      "manualChecks": [
+        "User confirms actual desktop file cards are visible",
+        "User confirms the delivered DWG can be opened manually in local CAD"
+      ],
+      "statistics": {
+        "deviceCount": 2,
+        "routeCount": 1,
+        "routeLengthMm": 3000,
+        "numbers": [
+          "L-001",
+          "L-002"
+        ]
+      },
+      "presentation": {
+        "fileCardsVisible": true,
+        "manualDwgOpen": true,
+        "embeddedCadPreviewVerified": false,
+        "cardDirectOpenVerified": null
+      },
+      "limitations": [
+        "Desktop clicks and task entry assisted by user because computer-use capture/input was unreliable",
+        "No embedded CAD preview or direct card-to-CAD opening assertion"
+      ],
+      "pending": []
+    }
+  },
+  "windowsUserRelease": {
+    "status": "user-preview-validated-on-existing-windows",
+    "checkedAt": "2026-10-19T02:19:21.319Z",
+    "version": "0.2.0",
+    "distribution": "Windows user preview",
+    "environment": "Windows 10 x64; non-elevated process; isolated client, minimal PATH and offline bootstrap",
+    "unitChecks": 63,
+    "checks": {
+      "package": [
+        "Windows process is not elevated",
+        "Freshly extracted user ZIP manifest verifies every source, dependency, plugin and runtime archive",
+        "Previous release installs into isolated client without changing its other service or proxy",
+        "Offline upgrade with Node, PowerShell 7 and winget excluded extracts bundled runtimes without UAC",
+        "Side-by-side upgrade inherits prior drawing workspace and preserves unrelated client settings",
+        "Packaged CLI works with Node and PowerShell 7 absent from PATH",
+        "Packaged runtimes discover 15 tools, pass doctor, save two lights and reopen their route/numbering with no issues",
+        "Packaged PowerShell loads native Tangent host and restores its user settings after exit",
+        "Repeat offline setup succeeds with exactly the same connector parameters",
+        "Recovery command restores previous runnable release and Skill while retaining later services and new DWG",
+        "Machine and user PATH remain unchanged"
+      ],
+      "dependencyRepair": [
+        "Missing dependencies offline fail before changing client configuration",
+        "Unavailable npm registry fails with preserved client configuration",
+        "Official npm registry repairs all missing locked dependencies with bundled npm and no admin",
+        "Repaired package installs again offline without dependency downloads"
+      ],
+      "runtimeFaults": [
+        "valid offline cache reused",
+        "damaged offline archive quarantined before execution",
+        "offline missing runtime has actionable failure",
+        "network failure bounded to two attempts and partial download removed",
+        "unverified downloaded bytes rejected",
+        "archive traversal rejected and staging cleaned"
+      ],
+      "readOnlyDirectory": [
+        "Windows ACL denies installation-directory writes",
+        "Setup stops with actionable read-only error before runtime download or client changes"
+      ],
+      "savedOutput": [
+        "Independent DXF and saved snapshot agree on two light positions, L-001/L-002 and 3000 mm WL1 route"
+      ]
+    },
+    "runtimeVersions": {
+      "node": "22.23.3",
+      "powershell": "7.4.20"
+    },
+    "cleanWindowsVerified": false,
+    "separateStandardAccountVerified": false,
+    "cleanWindowsHarnessPrepared": true,
+    "limitations": [
+      "Non-elevated process belongs to the existing Windows account; it is not a separate standard-account acceptance",
+      "Local VM acceptance is deferred by user; no fresh Windows bridge test completed",
+      "Fresh-system harness has not been executed; no fresh-system compatibility claim",
+      "Existing user-assisted WorkBuddy desktop acceptance remains separate from this package/SDK test"
+    ],
+    "pending": [
+      "Fresh Windows evidence from an independent physical or external test environment",
+      "Independent standard Windows account evidence"
+    ]
+  }
+}

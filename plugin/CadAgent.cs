@@ -297,6 +297,9 @@ namespace CadAgent
         {
             var doc=App.DocumentManager.MdiActiveDocument;
             bool mutationCommitted=false,drawingSaved=false;
+            var watch=System.Diagnostics.Stopwatch.StartNew();long last=0;string phase="input";
+            var timings=new Dictionary<string,long>();
+            Action<string> mark=next=>{long now=watch.ElapsedMilliseconds;timings[phase]=timings.ContainsKey(phase)?timings[phase]+now-last:now-last;last=now;phase=next;};
             try
             {
                 string raw=File.ReadAllText(requestFile,Encoding.UTF8);
@@ -307,6 +310,7 @@ namespace CadAgent
                 string selectedAdapter="generic";
                 if(writes)
                 {
+                    mark("transaction");
                     Require(repair||request.units=="mm","UNITS_UNKNOWN","MVP requires explicit mm.");
                     Guid requestGuid;Require(Guid.TryParse(request.requestId,out requestGuid),"INVALID_REQUEST_ID","requestId must be a UUID.");
                     if(repair){db.Audit(true,true);mutationCommitted=true;}
@@ -370,27 +374,30 @@ namespace CadAgent
                     }
                     }
                 }
+                mark("inspect");
                 if(request.action=="create_drawing")SceneBuilder.SetView(doc,request.scene);
                 var snapshot=Inspect(db);
                 object tangent=(request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status"||selectedAdapter=="tangent-v8"||selectedAdapter=="tangent-project")?TangentAdapter.Read(db,request.units):null;
                 if(writes)
                 {
                     Require(!String.IsNullOrEmpty(output)&&!File.Exists(output),"OUTPUT_EXISTS","Output must be a new file.");
-                    db.SaveAs(output,DwgVersion.AC1032);
+                    mark("save");db.SaveAs(output,DwgVersion.AC1032);
                     drawingSaved=true;
-                    if(!String.IsNullOrEmpty(dxf))db.DxfOut(dxf,16,DwgVersion.AC1032);
+                    if(!String.IsNullOrEmpty(dxf)){mark("dxf");db.DxfOut(dxf,16,DwgVersion.AC1032);}
                 }
                 object audit=null;bool auditDxfExported=false;string auditDxfError=null;
                 if(request.action=="audit_drawing"){audit=DrawingAudit.Read(db);try{db.DxfOut(dxf,16,DwgVersion.AC1032);auditDxfExported=true;}catch(System.Exception exportError){auditDxfError=exportError.Message;}}
                 var serializer=request.action=="audit_drawing"?new JavaScriptSerializer{MaxJsonLength=134217728,RecursionLimit=50}:Json;
-                File.WriteAllText(response,serializer.Serialize(new{ok=true,replayed=replay,snapshot=snapshot,tangent=tangent,audit=audit,auditDxfExported=auditDxfExported,auditDxfError=auditDxfError}),new UTF8Encoding(false));
+                mark("response");
+                File.WriteAllText(response,serializer.Serialize(new{ok=true,replayed=replay,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,timings=timings,snapshot=snapshot,tangent=tangent,audit=audit,auditDxfExported=auditDxfExported,auditDxfError=auditDxfError}),new UTF8Encoding(false));
                 doc.Editor.WriteMessage("\nCADAGENT_RUN_OK\n");
             }
             catch(System.Exception ex)
             {
                 var fault=ex as Fault;object snapshot=null;
+                string failedPhase=phase;mark("response");
                 try{snapshot=Inspect(doc.Database);}catch{}
-                File.WriteAllText(response,Json.Serialize(new{ok=false,error=new{code=fault==null?"CAD_ERROR":fault.Code,message=ex.Message},mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,afterFailure=snapshot}),new UTF8Encoding(false));
+                File.WriteAllText(response,Json.Serialize(new{ok=false,error=new{code=fault==null?(failedPhase=="save"?"DWG_SAVE_FAILED":failedPhase=="dxf"?"DXF_EXPORT_FAILED":"CAD_ERROR"):fault.Code,message=ex.Message},failureStage=failedPhase,timings=timings,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,afterFailure=snapshot}),new UTF8Encoding(false));
                 doc.Editor.WriteMessage("\nCADAGENT_RUN_ERROR "+ex.ToString()+"\n");
             }
         }

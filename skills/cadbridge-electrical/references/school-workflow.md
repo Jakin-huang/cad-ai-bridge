@@ -1,0 +1,7 @@
+# School workflow scope
+
+Use only for a requested school example. Normal CAD reading, counting and editing use the connected MCP tools directly and do not require this CLI workflow.
+
+The separately installed CAD AI Bridge provides `cadbridge school [requirements.json]` through its `cadbridge.cmd` launcher. It creates a new delivery directory with DWG/DXF, PDF, schedules and calculation evidence. Locate the existing bridge installation from its MCP launch configuration when available; keep its working directory and configuration. If the client does not expose that location, explain the missing CLI access rather than guessing a path or reinstalling the bridge. The full specification and editable sample are in that installation's `docs/school-project.md` and `examples/school-requirements.json`.
+
+This is a bounded teaching-building test sample, not a general school design system. It needs the installed AutoCAD environment; PDF output also needs Python with reportlab and pypdf. Read declared architectural, power supply, equipment and standards assumptions before generating. Report missing real architectural inputs, photometric data, manufacturer interfaces and professional reviews. Do not represent preliminary calculations as construction approval or native Tangent object associations.

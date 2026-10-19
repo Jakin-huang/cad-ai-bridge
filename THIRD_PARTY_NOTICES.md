@@ -7,6 +7,8 @@ CAD AI Bridge source is MIT licensed. The following runtime libraries retain the
 
 The lockfile identifies transitive versions and their license fields. Redistributed dependency directories must retain their LICENSE and NOTICE files. Release packaging records the exact included files and checksums.
 
+The Windows user preview also includes unmodified official portable runtime ZIPs: Node.js 22.23.3 (MIT with bundled third-party notices in its LICENSE) and PowerShell 7.4.20 (MIT with LICENSE.txt and ThirdPartyNotices.txt). Their upstream notices remain inside the ZIPs and extracted runtime directories. Sources and pinned SHA-256 values are recorded in `scripts/runtime-assets.json` and the release manifest. The smaller developer preview downloads them only when no compatible local runtime exists. [Node.js release](https://nodejs.org/dist/v22.23.3/) and [PowerShell release](https://github.com/PowerShell/PowerShell/releases/tag/v7.4.20).
+
 The optional school PDF workflow uses separately installed ReportLab and pypdf (tested with 4.4.9 and 6.10.0). Their distributions retain their upstream license notices; this project's ZIP does not include Python or those library directories. System fonts are read from the user's Windows installation and font files are not redistributed.
 
 The projects cited in `docs/technical-plan.md` are design references. Their implementation code has not been copied into this repository. REA was used during local investigation and is not a runtime dependency.

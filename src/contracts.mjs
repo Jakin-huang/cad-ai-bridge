@@ -35,6 +35,8 @@ const operation=z.discriminatedUnion('type',[
  z.strictObject({type:z.literal('number_devices'),ids:z.array(id).min(1).max(2000),prefix:z.string().max(32),start:z.number().int().min(0).max(1e8),width:z.number().int().min(1).max(9)})
 ]);
 export const schemas={
+ doctor:z.strictObject({refresh:z.boolean().default(false)}),
+ get_job:z.strictObject({jobId:z.string().regex(/^job-[A-Za-z0-9_-]+$/).optional(),requestId:z.uuid().optional()}).refine(v=>Boolean(v.jobId)!==Boolean(v.requestId),{message:'Provide exactly one of jobId or requestId'}),
  audit_drawing:z.strictObject({drawing:str,host,detail}),
  prepare_project:z.strictObject({drawing:str,expectedSha256:z.string().regex(/^[a-fA-F0-9]{64}$/),requestId:z.uuid(),units:z.literal('mm'),host}),
  repair_copy:z.strictObject({drawing:str,expectedSha256:z.string().regex(/^[a-fA-F0-9]{64}$/),requestId:z.uuid(),host}),
@@ -42,7 +44,7 @@ export const schemas={
  create_drawing:z.strictObject({scene:sceneSchema}),
  tangent_inspect:z.strictObject({drawing:str,units:z.literal('mm').optional(),host,detail}),
  tangent_takeoff:z.strictObject({drawing:str,units:z.literal('mm').optional(),host,detail}),
- read_result:z.strictObject({jobId:z.string().regex(/^job-[A-Za-z0-9_-]+$/),kind:z.enum(['devices','wires','circuits','inserts','definitions','texts']),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)}),
+ read_result:z.strictObject({jobId:z.string().regex(/^job-[A-Za-z0-9_-]+$/),kind:z.enum(['devices','wires','circuits','inserts','definitions','texts','managedDevices','routes','symbols','issues']),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)}),
  native_status:z.strictObject({drawing:str}),
  inspect:z.strictObject({drawing:str,host}),
  takeoff:z.strictObject({drawing:str,host}),

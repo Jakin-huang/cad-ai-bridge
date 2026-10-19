@@ -2,6 +2,16 @@
 
 MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的严格 schema。图纸路径必须位于 setup 配置的 workspace 或本项目任务输出目录，解析真实路径后检查边界。输出路径由宿主生成，调用者不能指定覆盖源图。
 
+## 诊断与已有任务
+
+`cad_doctor`（CLI action `doctor`）接受 `{}` 或 `{"refresh":true}`，返回环境检查和修复建议，不启动 CAD。缺少配置、PowerShell、CAD、插件或工作目录时依然可完成 MCP 握手并调用诊断。Node 和 MCP 库本身是服务启动前提。
+
+`cad_get_job`（CLI action `get_job`）接受 `{"jobId":"job-EXAMPLE"}`，或 `{"requestId":"293040de-26b0-4b1b-9e3f-98697c348ba0"}`，两者只能提供一个。jobId 返回有界结果；requestId 返回最多20个匹配任务入口及总数，再按 jobId 查询。它读取本项目 runs 内证据，不需要 CAD 配置，不等待写任务队列、不启动宿主、不重放修改。缺少最终记录时状态为 unconfirmed，不能据此断言未执行。
+
+CAD 结果新增 outcome、safeToRetry 和 metrics，原字段保持。outcome 的 saved 表示已有 DWG，modified_not_saved 表示已提交修改但未保存，unconfirmed 表示缺少确定结果；既有读取为 read_only。error 新增 stage 和 next。插件故障继续保留 NUMBER_CONFLICT、STALE_REVISION 等原错误代码；DWG 保存和 DXF 导出失败分别为 DWG_SAVE_FAILED、DXF_EXPORT_FAILED。已保存 DWG 可在后续失败结果中通过 drawing 与 drawingSha256 获取。
+
+metrics 记录 queueMs、configurationMs、snapshotMs、bootstrapMs、hostMs、outputsMs、totalMs、hostLaunches、discoveryCacheHit 及 hostPhases。宿主整体耗时包含启动、执行与退出；插件阶段单独记录事务、读取、保存与 DXF 导出。首个天正任务的 bootstrap 可能额外启动一次 CoreConsole，hostLaunches 会计入，不把总宿主时间全部当作启动时间。
+
 ## 读取天正
 
 ```json
@@ -40,7 +50,7 @@ MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的�
 {"jobId":"job-EXAMPLE","kind":"devices","offset":0,"limit":25}
 ```
 
-`kind` 为 devices、wires、circuits 或原始审计的 inserts、definitions、texts；每页 1–100 条。返回 total、items、hasMore 和完整结果文件 SHA-256。分页读取本项目已有任务记录，不启动 CAD、不读取任意路径。
+`kind` 为 devices、wires、circuits 或原始审计的 inserts、definitions、texts；受管理快照另支持 managedDevices、routes、symbols、issues。devices 仍表示天正识别设备，managedDevices 对应 snapshot.devices。每页 1–100 条并受字节预算限制。返回 total、items、hasMore、nextOffset 和本次读取的完整结果文件 SHA-256。分页读取本项目已有任务记录，不启动 CAD、不读取任意路径。
 
 ## 创建测试图
 

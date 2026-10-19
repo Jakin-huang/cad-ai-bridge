@@ -1,9 +1,12 @@
 import {dependency} from './dependencies.mjs';
 import {schemas,execute} from './bridge.mjs';
 import {boundForTransport} from './src/results.mjs';
+import {failure} from './src/errors.mjs';
 const {McpServer}=await dependency('@modelcontextprotocol/server');
 const {serveStdio}=await dependency('@modelcontextprotocol/server/stdio');
 const definitions=[
+ ['cad_doctor','doctor','检查 CAD AI Bridge 的配置、工作目录与插件，给出修复建议。不启动 CAD；即使 CAD 或配置缺失也可调用。refresh=true 强制重新检测。'],
+ ['cad_get_job','get_job','查询已有任务和保存结果；提供 jobId，或用原请求 requestId 查找相关任务。无需 CAD，不重放任何修改；断连或超时后先调用本工具。'],
  ['cad_audit_drawing','audit_drawing','只读清点真实图纸的实体、图层、图块实例与定义，并导出副本 DXF；默认摘要，详情可分页。'],
  ['cad_prepare_project','prepare_project','将明确为毫米制的真实工程图初始化为可管理副本；保留原有实体，输出新 DWG，不修改源图。'],
  ['cad_repair_copy','repair_copy','仅对输入快照运行 AutoCAD AUDIT 并另存修复副本；需要源摘要，不修改源图。修复可能改变损坏对象，必须对照复核。'],
@@ -24,7 +27,7 @@ await serveStdio(()=>{
    if(process.env.CADBRIDGE_READ_ONLY==='1'&&['apply','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action))continue;
    server.registerTool(name,{description,inputSchema:schemas[action],annotations:{readOnlyHint:!['apply','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
      try{const result=boundForTransport(await execute(action,args));return{content:[{type:'text',text:JSON.stringify(result)}],isError:!result.ok};}
-     catch(error){return{content:[{type:'text',text:JSON.stringify({ok:false,error:{code:'HOST_OR_INPUT_ERROR',message:error.message}})}],isError:true};}
+     catch(error){return{content:[{type:'text',text:JSON.stringify(failure(error))}],isError:true};}
    });
  }
  return server;
