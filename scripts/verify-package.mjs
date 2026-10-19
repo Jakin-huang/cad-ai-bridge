@@ -14,6 +14,12 @@ for(const entry of manifest.files){
 }
 async function walk(dir,relative=''){for(const entry of await fs.readdir(dir,{withFileTypes:true})){assert.equal(entry.isSymbolicLink(),false);const name=relative?relative+'/'+entry.name:entry.name;if(entry.isDirectory())await walk(path.join(dir,entry.name),name);else assert.ok(expected.has(name),'Unlisted package file: '+name);}}
 await walk(folder);assert.equal(manifest.containsVendorRuntime,false);
+if(manifest.entry){
+ const launcher=manifest.files.find(entry=>entry.file===manifest.entry);assert.ok(launcher,'Missing user entry');
+ assert.equal(launcher.sha256,manifest.userLauncher.sha256);
+ const source=manifest.files.find(entry=>entry.file===manifest.userLauncher.source);assert.ok(source,'Missing launcher source');assert.equal(source.sha256,manifest.userLauncher.sourceSHA256);
+ assert.ok(manifest.files.some(entry=>entry.file===manifest.guide),'Missing offline guide');
+}
 if(manifest.containsNodeRuntime){
  assert.equal(manifest.offlineSetup,true);assert.equal(manifest.containsPowerShellRuntime,true);
  assert.ok(manifest.runtimeAssets.node&&manifest.runtimeAssets.powershell,'Both runtime pins are required');

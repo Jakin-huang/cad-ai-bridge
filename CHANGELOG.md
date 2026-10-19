@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0-preview.2 — 2026-10-19
+
+- Add a Chinese Windows entry with native folder selection, preparation progress, clear success/failure guidance, optional logs and a copyable first task. Keep it an onboarding surface for the existing connector.
+- Bundle a small project-owned window host using Windows PowerShell and the already-required .NET Framework; preserve CLI setup and portable runtimes.
+- Remember and change drawing folders without command arguments. Bind remembered success to configuration digests; stop invalid/unwritable folders before connector changes.
+- Ship an offline illustrated one-page guide. Preserve WorkBuddy first-trust confirmation and distinguish local preparation from client connection.
+- Verify the launcher binary against its own source and include the entry and guide in final product-file comparisons. Retain existing CAD and recovery acceptance.
+
 ## 0.2.0-preview.1 — 2026-10-19
 
 Public preview release; internal package/plugin compatibility version remains 0.2.0. Clean Windows and an independent standard account remain unverified.

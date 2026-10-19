@@ -4,13 +4,13 @@ CAD AI Bridge 连接本机 CAD 与现有 AI 客户端。WorkBuddy 不需要另�
 
 ## 普通用户操作
 
-1. 将 Windows 用户预览包解压到用户可写的固定目录，双击根目录的 `connect-workbuddy.cmd`。它准备依赖、检测 CAD、复用匹配插件、配置 MCP 并安装 Skill；末尾显示诊断结果，窗口保留供查看。用户包带有离线运行时，无需管理员安装 Node/PowerShell。
+1. 将 Windows 用户预览包解压到用户可写的固定目录，双击根目录的 **`开始使用.exe`**，用“选择文件夹”指定图纸目录，再点“接入 WorkBuddy”。它准备依赖、检测 CAD、复用匹配插件、配置 MCP 并安装 Skill；窗口显示进度、中文成功或失败提示及处理办法；“查看日志”保留技术详情。用户包带有离线运行时，无需管理员安装 Node/PowerShell。
 2. 打开 WorkBuddy，在“专家·技能·连接器 → 连接器”页点击**右上角“自定义连接器”**，在 MCP 服务管理中查看 `cad-ai-bridge`。若出现“首次连接此 MCP 服务需要您的信任确认”，核对本机启动路径后点击该行蓝色**“信任”**，等待显示已连接并加载工具。“1启用”的计数不能代替首次信任或已连接状态。新建任务时，通过输入框“+ → 连接器”确认当前任务已选用，再让 AI 调用 `cad_doctor`。`cadbridge-electrical` 则在技能“我安装的”中查看。
 3. 用自然语言提出任务。例如：“检查 CAD 连接。然后新建电气测试图，在 (0,0) 与 (3000,0) 各放一盏灯，连接 WL1，编号 L-001、L-002。保存后重开核对数量、3000 毫米路线和连接，给我新 DWG。”
 
 上述流程已在本机完成用户辅助的桌面验收：全局 Skill、连接器、自然语言绘图、文件卡片交付与手动打开均通过。首次信任和部分桌面操作由用户完成，不等于无人值守的 UI 自动化通过。安装入口成功仍只代表文件准备完成。
 
-如需处理自己的图纸，在安装时指定图纸所在目录：
+处理自己的图纸时，直接在中文入口点选或更换所在目录，无需输入命令。下列命令保留给开发者和脚本使用：
 
 ```powershell
 .\connect-workbuddy.cmd --workspace "D:\CAD-work"
@@ -48,6 +48,6 @@ CAD AI Bridge 连接本机 CAD 与现有 AI 客户端。WorkBuddy 不需要另�
 
 本轮发现并修正了接入说明不够准确的问题：自定义MCP不在市场卡片中直接查找；“1启用”仍可能缺少首次信任；配置文件或代理描述出现服务名不能当作成功连接。首个未信任任务仅加载Skill和搜索工具，明确记录为失败；完成客户端确认后，原任务复验成功。Skill 同时补充了断连恢复和文件展示规则，不再让 AI 要求用户手动打开CAD、启动Bridge或加载插件作为工具发现的前提。
 
-桌面控制组件在本次环境中出现截图超时、点击缺少坐标及窗口状态不一致，因此用户协助完成信任、任务输入与打开观察。DWG/DXF 的 `previewed` 为空：通过的是文件卡片交付及本机手动打开，未验证内嵌CAD预览或点击卡片直接调起CAD。同机验收不替代干净Windows及普通权限环境，本项目仍是开发者预览。
+桌面控制组件在本次环境中出现截图超时、点击缺少坐标及窗口状态不一致，因此用户协助完成信任、任务输入与打开观察。DWG/DXF 的 `previewed` 为空：通过的是文件卡片交付及本机手动打开，未验证内嵌CAD预览或点击卡片直接调起CAD。同机验收不替代干净Windows及普通权限环境，本项目仍是用户预览。
 
 依据：[WorkBuddy 桌面连接器操作](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Connector)、[连接器规范](https://open.workbuddy.cn/docs/connector)、[项目级 Skill 配置](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Project)、[MCP 配置与审批](https://www.codebuddy.cn/docs/cli/mcp)。客户端版本差异以实测为准。

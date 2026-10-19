@@ -7,7 +7,7 @@ import {spawnSync} from 'node:child_process';
 import {root,publicFiles} from './public-files.mjs';
 function git(args,input){const r=spawnSync('git',args,{cwd:root,input,encoding:'utf8',windowsHide:true,maxBuffer:32*1024*1024});assert.equal(r.status,0,r.stderr||String(r.error));return r.stdout;}
 const findings=[];
-const forbidden=/(?:^|\/)(?:node_modules|runs|artifacts|dist)(?:\/|$)|(?:^|\/)(?:\.env(?:\..*)?|[^/]*\.local\.json[^/]*)$|\.(?:dwg|dxf|arx|dll|iso|qcow2|vhdx|pfx|p12)$/i;
+const forbidden=/(?:^|\/)(?:node_modules|runs|artifacts|dist)(?:\/|$)|(?:^|\/)(?:\.env(?:\..*)?|[^/]*\.local\.json[^/]*)$|\.(?:dwg|dxf|arx|dll|exe|iso|qcow2|vhdx|pfx|p12)$/i;
 const rules=[
  ['private-key',new RegExp('-----BEGIN (?:RSA |EC |OPENSSH )?'+'PRIVATE KEY-----')],
  ['github-token',/\bgh[pousr]_[A-Za-z0-9]{30,}\b|\bgithub_pat_[A-Za-z0-9_]{50,}\b/],

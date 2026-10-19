@@ -34,3 +34,9 @@ test('standalone verifier rejects a manifest outside the package root',async t=>
  const f=await fixture(t,false),outside=f.folder+'-outside.txt';await fs.writeFile(outside,'source');t.after(()=>fs.rm(outside,{force:true}));
  f.manifest.files[0].file='../'+path.basename(outside);await f.save();const result=f.run();assert.notEqual(result.status,0);assert.match(result.stderr,/Manifest escapes package/);
 });
+test('standalone verifier binds the user entry to its source and requires the offline guide',async t=>{
+ const f=await fixture(t,true);f.manifest.entry='start.exe';f.manifest.userLauncher={sha256:'0'.repeat(64),source:'source.txt',sourceSHA256:sha('source')};f.manifest.guide='guide.html';await f.save();assert.notEqual(f.run().status,0);
+ await fs.writeFile(path.join(f.folder,'start.exe'),'own launcher');f.manifest.files.push({file:'start.exe',sha256:sha('own launcher')});f.manifest.userLauncher.sha256=sha('own launcher');await f.save();assert.notEqual(f.run().status,0);
+ await fs.writeFile(path.join(f.folder,'guide.html'),'offline guide');f.manifest.files.push({file:'guide.html',sha256:sha('offline guide')});await f.save();assert.equal(f.run().status,0);
+ f.manifest.userLauncher.sourceSHA256='0'.repeat(64);await f.save();assert.notEqual(f.run().status,0);
+});

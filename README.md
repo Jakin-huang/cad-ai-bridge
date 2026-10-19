@@ -6,15 +6,15 @@
 
 [三批优化交付记录](docs/maintenance-validation.md)记录本轮实现、实测收益、回归结果和仍需验证的分发环境。
 
-当前发行：**v0.2.0-preview.1，Windows 用户预览版**。适合已有 AutoCAD 2022 的用户试用；实测 Windows 10 x64 / AutoCAD 2022 简体中文 / 可选 T20 天正电气 V8.0 / WorkBuddy 5.3.8。CAD、天正需自行正常安装授权；内部包与插件兼容版本为 0.2.0。[本版发布说明](docs/releases/v0.2.0-preview.1.md)
+当前发行：**v0.2.0-preview.2，Windows 用户预览版**。适合已有 AutoCAD 2022 的用户试用；实测 Windows 10 x64 / AutoCAD 2022 简体中文 / 可选 T20 天正电气 V8.0 / WorkBuddy 5.3.8。CAD、天正需自行正常安装授权；内部包与插件兼容版本为 0.2.0。[本版发布说明](docs/releases/v0.2.0-preview.2.md)
 
 ## 普通用户三步开始
 
-1. 从本仓库 Releases 下载 `cad-ai-bridge-0.2.0-preview.1-windows-x64.zip`，解压到用户可写目录。GitHub 自动生成的 Source code ZIP 不包含便携运行时和插件，请选择上述用户包。
-2. 双击 `connect-workbuddy.cmd`，等待配置完成。在 WorkBuddy 的“自定义连接器”中找到 `cad-ai-bridge`，完成客户端首次“信任”，等待工具加载。
+1. 从本仓库 Releases 下载 `cad-ai-bridge-0.2.0-preview.2-windows-x64.zip`，解压到用户可写目录。GitHub 自动生成的 Source code ZIP 不包含便携运行时和插件，请选择上述用户包。
+2. 双击 **`开始使用.exe`**，点选图纸文件夹，再点“接入 WorkBuddy”，等待中文结果提示。在 WorkBuddy 的“自定义连接器”中找到 `cad-ai-bridge`，完成客户端首次“信任”，等待工具加载。
 3. 新建任务，发送：“使用 CAD AI Bridge 检查连接，新建测试图，放两盏相距 3000 毫米的灯并连接 WL1，编号 L-001、L-002；保存后重开核对，返回 DWG/DXF 文件。”
 
-用户包内含官方便携 Node/PowerShell 和锁定依赖；桥梁环境准备可离线完成，无需管理员、开发工具或模型 API 密钥。文件卡片可交付 DWG/DXF，使用本机 CAD 打开。升级时保留旧目录，在新目录运行同一入口；需回退时使用 `restore-workbuddy.cmd`。[安装、升级和排障](docs/windows-user-release.md)
+根目录的 [一页图文说明](使用说明.html) 可离线阅读，入口还可复制第一条任务。图纸目录会被记住，重开入口即可更换。用户包内含官方便携 Node/PowerShell 和锁定依赖；桥梁环境准备可离线完成，无需管理员、开发工具或模型 API 密钥。文件卡片可交付 DWG/DXF，使用本机 CAD 打开。升级时保留旧目录，在新目录打开“开始使用.exe”接入；需回退时使用 `restore-workbuddy.cmd`。[安装、升级和排障](docs/windows-user-release.md)
 
 本版已经过本机未提权进程、离线缺失运行时、升级恢复及真实 CAD 验证，**尚未完成干净 Windows 和独立标准账户验收**；本地虚拟机验收已暂缓。其他 CAD 版本和 MCP 客户端需另行验证。支持本地 stdio MCP 的客户端可导入生成的 `mcp-config.local.json`；Skill 按各客户端机制添加。[通用接入与 WorkBuddy 流程](docs/workbuddy.md)
 

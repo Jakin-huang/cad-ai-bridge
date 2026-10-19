@@ -38,6 +38,14 @@ const manifest={name:pkg.name,version:pkg.version,kind:'Windows developer previe
 manifest.release=release;manifest.frozen=frozen;if(source)manifest.source=source;
 manifest.containsNodeDependencies=true;manifest.setup='setup.cmd reuses compatible runtimes or extracts SHA-256-pinned portable ZIPs without administrator rights; matching plugin and locked dependencies are reused.';
 if(userPackage){
+ const launcher=spawnSync('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(root,'scripts/build-user-launcher.ps1')],{stdio:'inherit',windowsHide:true});
+ if(launcher.status!==0)throw Error('Windows launcher build failed');
+ const launcherBuild=JSON.parse((await fs.readFile(path.join(root,'plugin/bin/user-launcher-build.json'),'utf8')).replace(/^\uFEFF/,''));
+ const launcherBytes=await fs.readFile(path.join(root,'plugin/bin/CadBridge.Start.exe'));
+ if(crypto.createHash('sha256').update(launcherBytes).digest('hex')!==launcherBuild.sha256||crypto.createHash('sha256').update(await fs.readFile(path.join(root,launcherBuild.source))).digest('hex')!==launcherBuild.sourceSHA256)throw Error('Windows launcher source/digest mismatch');
+ await fs.writeFile(path.join(folder,'开始使用.exe'),launcherBytes);
+ manifest.files.push({file:'开始使用.exe',bytes:launcherBytes.length,sha256:launcherBuild.sha256});manifest.userLauncher=launcherBuild;
+ manifest.entry='开始使用.exe';manifest.guide='使用说明.html';
  const cache=path.join(root,'artifacts/runtime-downloads');
  const preparation=spawnSync('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(root,'scripts/ensure-runtimes.ps1'),'-DownloadOnly'],{stdio:'inherit',windowsHide:true,env:{...process.env,CADBRIDGE_RUNTIME_CACHE:cache}});
  if(preparation.status!==0)throw Error('Portable runtime preparation failed');

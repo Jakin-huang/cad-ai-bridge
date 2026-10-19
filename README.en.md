@@ -1,9 +1,9 @@
 # CAD AI Bridge
 
-**v0.2.0-preview.1 — Windows user preview.** Tested on Windows 10 x64, Chinese AutoCAD 2022, optional Tangent Electrical V8.0 and WorkBuddy 5.3.8. Internal package/plugin compatibility version remains 0.2.0. [Release notes](docs/releases/v0.2.0-preview.1.md).
+**v0.2.0-preview.2 — Windows user preview.** Tested on Windows 10 x64, Chinese AutoCAD 2022, optional Tangent Electrical V8.0 and WorkBuddy 5.3.8. Internal package/plugin compatibility version remains 0.2.0. [Release notes](docs/releases/v0.2.0-preview.2.md).
 
-1. Download `cad-ai-bridge-0.2.0-preview.1-windows-x64.zip` from this repository's Releases and extract it to a writable user folder. GitHub's automatic Source code ZIP does not include the plugin and portable runtimes.
-2. Run `connect-workbuddy.cmd`. In WorkBuddy's custom connectors, trust `cad-ai-bridge` once and wait for its tools to load.
+1. Download `cad-ai-bridge-0.2.0-preview.2-windows-x64.zip` from this repository's Releases and extract it to a writable user folder. GitHub's automatic Source code ZIP does not include the plugin and portable runtimes.
+2. Open **`开始使用.exe`**, choose your drawing folder and click “接入 WorkBuddy”. The Chinese window shows progress, success or actionable recovery instructions. Read the offline [illustrated one-page guide](使用说明.html). In WorkBuddy's custom connectors, trust `cad-ai-bridge` once and wait for its tools to load.
 3. Start a task: “Use CAD AI Bridge to check the connection, draw two lights 3000 mm apart, connect WL1, number them L-001 and L-002, save and reopen to verify, and return the DWG/DXF files.”
 
 The ZIP includes official portable Node/PowerShell archives and locked dependencies, allowing offline bridge setup without administrator rights, development tools or a model API key. Your own normally licensed AutoCAD installation is required. Keep the old folder when upgrading; `restore-workbuddy.cmd` restores the previous connector and Skill. [Installation and validation](docs/windows-user-release.md).

@@ -16,6 +16,7 @@ runtime-archives/
 *.dxf
 *.arx
 *.dll
+*.exe
 *.dwl
 *.dwl2
 *.bak

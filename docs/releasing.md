@@ -1,8 +1,12 @@
 # 预览版打包与发布准备
 
-当前冻结发行标识为 **v0.2.0-preview.1**（[发布说明](releases/v0.2.0-preview.1.md)）。`release.json` 管理发行版本、日期和渠道；`package.json` 与 .NET 插件维持 `0.2.0` 兼容版本。两者不能混作稳定性承诺。
+用户包主入口为 `开始使用.exe`，配套离线 `使用说明.html`。打包时使用系统 .NET Framework 编译 `scripts/UserLauncher.cs`，生成自有窗口启动器，并把二进制摘要与源文件摘要写入清单；不额外分发 Windows PowerShell 5.1 系统程序集。接入界面调用现有 setup，并在用户目录保存本机日志。命令行入口保留。
 
-本地发布顺序：完成测试和公开文件审计，提交全部公开源码，创建同名 Git 标签，再运行 `node scripts/package-release.mjs --user --frozen`。冻结打包要求工作树干净、标签指向 HEAD，清单记录提交和 tree；同名 ZIP 已存在时拒绝覆盖。正式用户附件名为 `cad-ai-bridge-0.2.0-preview.1-windows-x64.zip`，附同名 `.sha256`。GitHub 发布时选用该标签并标记 **Pre-release**，正文使用本版发布说明。
+维护者另运行 `tests/user-onboarding.ps1 -Project <隔离解压目录> -TestRoot <隔离测试目录> -ReportPath <报告.json>`，验证真实安装后端的目录选择/记忆/更换和失败保护。`开始使用.exe -RenderTo <输出.png> [-PreviewReport <真实后端报告.json>]` 是无安装操作的控件布局核查模式，不代表桌面点击流程通过。
+
+当前冻结发行标识为 **v0.2.0-preview.2**（[发布说明](releases/v0.2.0-preview.2.md)）。`release.json` 管理发行版本、日期和渠道；`package.json` 与 .NET 插件维持 `0.2.0` 兼容版本。两者不能混作稳定性承诺。
+
+本地发布顺序：完成测试和公开文件审计，提交全部公开源码，创建同名 Git 标签，再运行 `node scripts/package-release.mjs --user --frozen`。冻结打包要求工作树干净、标签指向 HEAD，清单记录提交和 tree；同名 ZIP 已存在时拒绝覆盖。正式用户附件名为 `cad-ai-bridge-0.2.0-preview.2-windows-x64.zip`，附同名 `.sha256`。GitHub 发布时选用该标签并标记 **Pre-release**，正文使用本版发布说明。
 
 `node scripts/audit-public.mjs` 检查全部可达 Git 历史 blob 和公开文件清单，包括已删除旧文件；匹配结果不输出密钥原文，详细报告留在 artifacts。该检查覆盖常见密钥格式、个人路径、禁止公开的文件和二进制，不替代专门的密钥扫描或权属审查。原有 Git 作者身份和邮箱仍保留在历史中，仓库公开时也会公开；本轮不改写既有提交。
 

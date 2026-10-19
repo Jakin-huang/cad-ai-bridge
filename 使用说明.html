@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CAD AI Bridge · 一页使用说明</title>
+<style>
+:root{font-family:"Microsoft YaHei UI","Microsoft YaHei",sans-serif;color:#172b41;background:#eef3f8;font-size:15px;line-height:1.65}*{box-sizing:border-box}body{margin:0}main{max-width:1120px;margin:32px auto;padding:34px;background:white;border:1px solid #dce5ee;border-radius:18px}header{display:flex;align-items:center;gap:20px;justify-content:space-between}.tag{font-size:12px;color:#2062cc;background:#edf4ff;padding:5px 12px;border-radius:30px;white-space:nowrap}h1{font-size:29px;line-height:1.3;margin:0 0 8px}h2{font-size:17px;margin:12px 0 7px}p{margin:7px 0}.lead{color:#52657b;margin-bottom:22px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.step{border:1px solid #dce5ee;border-radius:12px;padding:16px}.number{display:inline-grid;place-items:center;background:#205ed7;color:white;border-radius:50%;width:26px;height:26px;margin-right:7px;font-size:14px}.picture{width:100%;height:146px;display:block;background:#f4f7fb;border-radius:8px}svg text{font-family:"Microsoft YaHei UI",sans-serif}.small{font-size:12px;color:#607286}.task{margin-top:18px;border-radius:12px;background:#f1f6ff;padding:16px 20px}textarea{resize:none;width:100%;height:82px;margin:6px 0 0;border:1px solid #cad9ef;background:white;border-radius:6px;padding:9px;font:inherit;font-size:14px;line-height:1.6;color:#172b41}.recovery{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:18px}strong{font-weight:650}footer{margin-top:20px;padding-top:13px;border-top:1px solid #e4eaf1;color:#607286;font-size:12px}code{font-family:inherit;font-weight:650;color:#173e80}a{color:#205ed7} @media(max-width:800px){main{margin:0;padding:22px;border-radius:0}.steps{grid-template-columns:1fr}.picture{height:160px}.recovery{grid-template-columns:1fr;gap:6px}header{display:block}.tag{display:inline-block;margin-bottom:8px}textarea{height:125px}} @page{size:A4;margin:12mm}@media print{ :root{background:white;font-size:10pt}main{max-width:none;border:0;margin:0;padding:0}.steps{gap:9px}.step{padding:10px}.picture{height:115px}h1{font-size:22pt}h2{font-size:12pt}.lead{margin-bottom:14px}.task{margin-top:12px;padding:10px}textarea{font-size:9.5pt;height:85px}.small,footer{font-size:8.5pt}.recovery{gap:14px;margin-top:10px}header,.step,.task,.recovery,footer{break-inside:avoid}}
+</style>
+<main>
+<header><div><h1>让 AI 使用你已有的 CAD</h1><p>解压 → 接入 → 在 WorkBuddy 中说出任务</p></div><span class="tag">Windows 用户预览 · 无需了解 GitHub</span></header>
+<p class="lead">开始前：电脑上已有正常可用的 <strong>AutoCAD 2022 和 WorkBuddy</strong>，天正电气 V8 可选。桥梁自带所需运行环境，无需管理员、开发工具或额外 API 密钥。</p>
+<section class="steps" aria-label="三步开始">
+<article class="step">
+<svg class="picture" viewBox="0 0 290 146" role="img" aria-label="解压用户包，双击开始使用，选择图纸文件夹后接入">
+<rect x="17" y="12" width="256" height="122" rx="7" fill="white" stroke="#c6d4e6"/><path d="M17 35H273" stroke="#dce5ee"/><circle cx="29" cy="24" r="3" fill="#205ed7"/><text x="40" y="28" font-size="11" fill="#314b6a">CAD AI Bridge · 开始使用</text><text x="30" y="55" font-size="11" fill="#52657b">图纸文件夹</text><rect x="29" y="63" width="169" height="23" rx="3" fill="#f6f8fb" stroke="#c6d4e6"/><text x="37" y="79" font-size="11" fill="#314b6a">你的图纸文件夹</text><rect x="205" y="63" width="55" height="23" rx="3" fill="#edf4ff"/><text x="213" y="79" font-size="11" fill="#205ed7">选择…</text><rect x="29" y="97" width="113" height="25" rx="4" fill="#205ed7"/><text x="41" y="114" font-size="12" fill="white">接入 WorkBuddy</text>
+</svg>
+<h2><span class="number">1</span>解压后，双击中文入口</h2>
+<p>把完整用户包解压到自己的固定文件夹，双击 <code>开始使用.exe</code>。选好图纸文件夹，点<strong>“接入 WorkBuddy”</strong>，等待结果。</p>
+<p class="small">不需要另开软件注册账号；请保留整个解压目录。后续会沿用已选目录。</p>
+</article>
+<article class="step">
+<svg class="picture" viewBox="0 0 290 146" role="img" aria-label="在 WorkBuddy 自定义连接器中找到 cad-ai-bridge，首次点击信任并等待工具加载">
+<rect x="17" y="12" width="256" height="122" rx="7" fill="white" stroke="#c6d4e6"/><text x="30" y="36" font-size="13" fill="#314b6a">MCP 服务管理</text><path d="M28 48H262" stroke="#dce5ee"/><rect x="30" y="61" width="25" height="25" rx="5" fill="#8c60ef"/><text x="38" y="78" fill="white" font-size="14">C</text><text x="65" y="76" font-size="13" fill="#172b41">cad-ai-bridge</text><rect x="30" y="96" width="230" height="27" rx="4" fill="#fff4e8"/><text x="38" y="113" font-size="10" fill="#876138">首次连接需确认信任</text><rect x="211" y="100" width="42" height="19" rx="4" fill="#205ed7"/><text x="220" y="114" fill="white" font-size="11">信任</text>
+</svg>
+<h2><span class="number">2</span>在 WorkBuddy 完成首次信任</h2>
+<p>进入“专家·技能·连接器 → 连接器 → 右上角<strong>自定义连接器</strong>”，找到 <code>cad-ai-bridge</code>，核对本机路径后点<strong>“信任”</strong>，等待已连接、工具加载。</p>
+<p class="small">本机准备成功不等于客户端已连接。“1 启用”也不代表已完成信任。上图为位置示意。</p>
+</article>
+<article class="step">
+<svg class="picture" viewBox="0 0 290 146" role="img" aria-label="在新任务中描述绘图需求，获取 DWG 和 DXF 文件，用本机 CAD 打开">
+<rect x="17" y="12" width="256" height="122" rx="7" fill="white" stroke="#c6d4e6"/><rect x="31" y="26" width="223" height="32" rx="7" fill="#edf4ff"/><text x="43" y="47" font-size="12" fill="#205ed7">画两盏相距 3000 毫米的灯…</text><path d="M145 63V75" stroke="#7993b1" stroke-width="2"/><rect x="31" y="83" width="108" height="36" rx="6" fill="#f2faf5" stroke="#bad7c5"/><text x="42" y="106" font-size="12" fill="#246941">output.dwg</text><rect x="151" y="83" width="108" height="36" rx="6" fill="#f2faf5" stroke="#bad7c5"/><text x="162" y="106" font-size="12" fill="#246941">output.dxf</text>
+</svg>
+<h2><span class="number">3</span>新建任务，说出需求</h2>
+<p>在任务输入框的<strong>“+ → 连接器”</strong>中确认已选用本项目，再粘贴下面的示例。全局 Skill 会提供操作指引，不需另外手动安装。</p>
+<p class="small">AI 返回 DWG/DXF 文件入口；需要时在本机 CAD 中手动打开。文件卡片不等于内嵌预览。</p>
+</article>
+</section>
+<section class="task"><strong>第一次可直接试这句话</strong><span class="small">　也可在中文入口中点击“复制第一条任务”</span>
+<textarea readonly aria-label="可复制的第一条任务" spellcheck="false">使用 CAD AI Bridge 检查连接，新建天正适配测试图，在 (0,0) 和 (3000,0) 各放一盏灯，连接 WL1，编号 L-001、L-002。一次批量修改后保存，重开核对两盏灯、3000 毫米路线和编号，返回可点击的 DWG/DXF 文件。</textarea></section>
+<section class="recovery">
+<div><h2>看到失败提示怎么办？</h2><p>按窗口中的中文建议处理后重新接入。若仍失败，点<strong>“查看日志”</strong>，把错误信息交给分享者；无需自行修改配置或运行命令。日志可能含本机路径，分享前请去除个人和工程信息。</p></div>
+<div><h2>更换目录、升级与恢复</h2><p>更换图纸目录：重开中文入口，选目录后重新接入。升级：保留旧安装目录，在新目录接入。需回退时先结束任务并退出 WorkBuddy，再运行 <code>restore-workbuddy.cmd</code>。</p></div>
+</section>
+<footer>CAD AI Bridge 负责连接已有软件和 AI。接入不会修改原图纸；绘图能力仍受当前适配范围约束。本版未完成干净 Windows、独立标准账户和浏览器下载安全提示流程验收，其他 CAD 版本与客户端需另行验证。<a href="README.md">详细说明</a></footer>
+</main>
+</html>

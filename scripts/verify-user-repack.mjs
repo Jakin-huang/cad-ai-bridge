@@ -19,7 +19,7 @@ const folders=await fs.readdir(destination);assert.equal(folders.length,1);const
 const manifest=JSON.parse(await fs.readFile(path.join(folder,'release-manifest.json'),'utf8'));assert.equal(manifest.offlineSetup,true);
 for(const file of manifest.files)assert.equal(hash(await fs.readFile(path.join(folder,file.file))),file.sha256,file.file);
 const maintenance=new Set(['scripts/verify-user-repack.mjs','scripts/package-release.mjs','scripts/public-files.mjs','scripts/check-release.mjs','scripts/summarize-maintenance.mjs','scripts/summarize-windows-user.mjs','scripts/prepare-clean-windows.mjs','scripts/prepare-clean-vm.mjs']);
-const product=file=>!maintenance.has(file)&&(!/^(?:docs|tests|\.github)\//.test(file))&&(/\.(?:mjs|ps1|cmd|cs)$/.test(file)||/^(?:src|runtime-archives|node_modules|plugin|skills)\//.test(file)||['package.json','package-lock.json','scripts/runtime-assets.json'].includes(file));
+const product=file=>!maintenance.has(file)&&(!/^(?:docs|tests|\.github)\//.test(file))&&(/\.(?:mjs|ps1|cmd|cs)$/.test(file)||/^(?:src|runtime-archives|node_modules|plugin|skills)\//.test(file)||['package.json','package-lock.json','scripts/runtime-assets.json','开始使用.exe','使用说明.html'].includes(file));
 const old=new Map(accepted.verifiedManifest.filter(entry=>product(entry.file)).map(entry=>[entry.file,entry.sha256]));
 const current=new Map(manifest.files.filter(entry=>product(entry.file)).map(entry=>[entry.file,entry.sha256]));
 assert.deepEqual(current,old,'Runtime/product files changed after acceptance; rerun the full package and dependency tests');
