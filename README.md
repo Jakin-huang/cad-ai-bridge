@@ -1,8 +1,22 @@
 # CAD AI Bridge
 
-把本地 AutoCAD 电气读图和批量制图接入 AI：**设备识别、回路读取、统计、图块布置、连线和编号**。提供 MCP、CLI、自动配置与可复现演示。
+连接用户现有的 CAD 软件与 AI，通过 MCP 和 Skill 开放软件能力，减少接入与操作步骤。当前预览已实现本地 AutoCAD 电气读图和批量制图：**设备识别、回路读取、统计、图块布置、连线和编号**，提供 CLI、自动配置与可复现演示。
 
-当前为 **0.2 开发者预览**。实测环境：Windows x64 / AutoCAD 2022 简体中文 / T20 天正电气 V8.0。天正与 AutoCAD 由用户自行安装并正常授权。
+[现有项目完善与优化方案](docs/connector-plan.md)优先降低接入成本、提高稳定性和调用效率，保留当前已验证能力。学校生成器是业务回归样本，WorkBuddy 等是客户端兼容性样本；常驻会话、通用命令等按实际收益决定后续实施。
+
+[三批优化交付记录](docs/maintenance-validation.md)记录本轮实现、实测收益、回归结果和仍需验证的分发环境。
+
+当前发行：**v0.2.0-preview.1，Windows 用户预览版**。适合已有 AutoCAD 2022 的用户试用；实测 Windows 10 x64 / AutoCAD 2022 简体中文 / 可选 T20 天正电气 V8.0 / WorkBuddy 5.3.8。CAD、天正需自行正常安装授权；内部包与插件兼容版本为 0.2.0。[本版发布说明](docs/releases/v0.2.0-preview.1.md)
+
+## 普通用户三步开始
+
+1. 从本仓库 Releases 下载 `cad-ai-bridge-0.2.0-preview.1-windows-x64.zip`，解压到用户可写目录。GitHub 自动生成的 Source code ZIP 不包含便携运行时和插件，请选择上述用户包。
+2. 双击 `connect-workbuddy.cmd`，等待配置完成。在 WorkBuddy 的“自定义连接器”中找到 `cad-ai-bridge`，完成客户端首次“信任”，等待工具加载。
+3. 新建任务，发送：“使用 CAD AI Bridge 检查连接，新建测试图，放两盏相距 3000 毫米的灯并连接 WL1，编号 L-001、L-002；保存后重开核对，返回 DWG/DXF 文件。”
+
+用户包内含官方便携 Node/PowerShell 和锁定依赖；桥梁环境准备可离线完成，无需管理员、开发工具或模型 API 密钥。文件卡片可交付 DWG/DXF，使用本机 CAD 打开。升级时保留旧目录，在新目录运行同一入口；需回退时使用 `restore-workbuddy.cmd`。[安装、升级和排障](docs/windows-user-release.md)
+
+本版已经过本机未提权进程、离线缺失运行时、升级恢复及真实 CAD 验证，**尚未完成干净 Windows 和独立标准账户验收**；本地虚拟机验收已暂缓。其他 CAD 版本和 MCP 客户端需另行验证。支持本地 stdio MCP 的客户端可导入生成的 `mcp-config.local.json`；Skill 按各客户端机制添加。[通用接入与 WorkBuddy 流程](docs/workbuddy.md)
 
 学校项目支持 [本地 DWG 标准库](docs/local-standard.md)：主模板统一箱柜、图例及电力选型，缺少图例可从已有施工图补充；本地资产不加入公开源码。
 
@@ -10,7 +24,7 @@
 
 ![从实际测试 DXF 生成的电气示例](docs/images/tangent-electrical-demo.svg)
 
-## 三步开始
+## 从源码开始（开发者）
 
 需要 Node.js **22.19+**、PowerShell **7+**、本机 AutoCAD 2022 与 .NET Framework 4.8。原生天正后端另需本地天正电气 V8。
 
@@ -22,7 +36,11 @@ npm run demo
 
 setup 自动检测 CAD、编译本项目的 .NET 插件，并生成 `cadbridge.local.json` 与 `mcp-config.local.json`。重复配置会先备份。多安装实例可使用 `--cad-root` 选择，图纸工作目录可由 `--workspace` 指定。项目不依赖 REA 运行目录，也不需要模型 API 密钥。
 
-Windows 也可运行 `setup.cmd --workspace "D:\CAD-work"` 完成依赖安装、配置和诊断。当前目录需事先存在；省略参数时使用项目目录。[预览包与发布说明](docs/releasing.md)
+Windows 也可运行 `setup.cmd --workspace "D:\CAD-work"` 完成依赖准备、配置和诊断。省略工作目录时使用项目目录。[预览包与发布说明](docs/releasing.md)
+
+WorkBuddy 用户可双击 `connect-workbuddy.cmd`，完成环境配置、MCP 合并与完整 Skill 安装；已有服务保留，更新前备份。随后在客户端右上角“自定义连接器”中完成该服务的首次“信任”，等待工具加载，再用自然语言操作。桌面完整流程已通过用户辅助验收，DWG/DXF 以文件卡片交付并用本机CAD打开。[接入步骤与验收边界](docs/workbuddy.md)
+
+`setup.cmd` 复用匹配锁定版本的依赖和通过目标、摘要及源码校验的插件。缺少运行时时，优先使用随包的官方便携 ZIP；较小的开发者包则下载固定版本并校验 SHA-256，不调用系统安装器、不修改系统 PATH。工作目录可自动创建。源码有变或显式 `--rebuild` 才重建插件。可用 `--client-config <客户端MCP配置文件>` 合并本项目条目，其他服务保留，修改前备份；也可直接导入生成的通用配置。
 
 将生成的 `mcp-config.local.json` 导入支持本地 stdio 的 MCP 客户端。此文件使用本机的真实路径；setup 不会覆盖已有 AI 客户端设置。
 
@@ -63,6 +81,8 @@ node bin/cadbridge.mjs school examples/school-requirements.json
 
 | 工具 | 用途 |
 | --- | --- |
+| `cad_doctor` | 不启动 CAD 的环境诊断，环境缺失时仍可连接和调用 |
+| `cad_get_job` | 按 jobId 查询已有任务；按原 requestId 查找，断连后获取结果，不重放写入 |
 | `cad_audit_drawing` | 原始清点、DXF 导出与有界详情分页 |
 | `cad_prepare_project` | 给明确毫米制的工程图生成可管理副本 |
 | `cad_repair_copy` | 对输入快照运行 AUDIT 并另存修复结果 |
@@ -110,6 +130,8 @@ npm run check                    # 发布检查，含本地验收证据
 公开的 [验收摘要](docs/validation-summary.json) 记录测试项与插件 SHA-256；[复现示例](examples/electrical/README.md) 说明如何本地生成 DWG/DXF。维护者使用 `npm run preview` 重建预览，使用 `npm run package:preview` 生成带文件清单及校验和的开发者预览 ZIP。
 
 大图完整结果超过返回预算时，MCP 自动返回摘要和分页入口，避免协议消息过大导致断连。默认摘要的大小对比记录在验收摘要中；这是 JSON 字节实测，不是模型 token 或跨机器性能保证。
+
+受管理快照的大结果也可分页读取 `managedDevices`、`routes`、`symbols` 与 `issues`。每次 CAD 调用记录配置、排队、快照、宿主、输出处理及插件事务/保存/导出耗时；只读结果查询不进入 CAD 队列。断连或超时先用 `cad_get_job` 找回记录；`outcome: saved` 表示已有 DWG，后续导出或清理失败不应触发重复写入。
 
 ## 加载与恢复
 

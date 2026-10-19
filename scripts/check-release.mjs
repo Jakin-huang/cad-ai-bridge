@@ -30,11 +30,13 @@ pass('Public source allowlist, syntax, JSON, local links and private-path checks
 const pkg=await readJSON('package.json'),lock=await readJSON('package-lock.json');
 assert.equal(pkg.name,lock.name);assert.equal(pkg.version,lock.version);assert.equal(lock.packages[''].version,pkg.version);
 assert.deepEqual(lock.packages[''].dependencies,pkg.dependencies);
+const release=await readJSON('release.json');
+assert.equal(release.compatibilityVersion,pkg.version);assert.equal(release.tag,'v'+release.version);assert.equal(release.channel,'preview');assert.match(release.version,/^\d+\.\d+\.\d+-preview\.\d+$/);
 for(const version of Object.values(pkg.dependencies))assert.match(version,/^\d+\.\d+\.\d+$/);
 assert.ok(!(await fs.readFile(path.join(root,'dependencies.mjs'),'utf8')).includes('.tools'));
 pass('Pinned independent dependencies and synchronized lockfile');
 const ignored=await fs.readFile(path.join(root,'.gitignore'),'utf8');
-for(const item of ['runs/','artifacts/','node_modules/','plugin/bin/','cadbridge.local.json*','mcp-config.local.json*','dist/'])assert.ok(ignored.split(/\r?\n/).includes(item),item+' must be ignored');
+for(const item of ['runs/','artifacts/','node_modules/','plugin/bin/','cadbridge.local.json*','mcp-config.local.json*','mcp-config.workbuddy.local.json*','dist/'])assert.ok(ignored.split(/\r?\n/).includes(item),item+' must be ignored');
 pass('Generated, proprietary and local configuration excluded from source distribution');
 if(!staticOnly){
  const build=await readJSON('plugin/bin/build.json');
@@ -90,6 +92,12 @@ if(!staticOnly){
   for(const result of Object.values(project.results)){const host=JSON.parse((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());if(host.backend==='tangent-gui'){assert.equal(JSON.parse(await fs.readFile(path.join(result.jobRoot,'cleanup.json'),'utf8')).ok,true);}}
   pass('Engineering drawings: independent DXF, real symbols, rollback, matching final DLL and unchanged original/source hashes');
  }catch(error){if(error.code!=='ENOENT')throw error;else if(await fs.access(path.join(root,'artifacts/real-project-current.txt')).then(()=>true,()=>false))throw error;}
+ try{
+  const desktop=await readJSON('artifacts/workbuddy-desktop-task-report.json');assert.equal(desktop.ok,true);assert.equal(desktop.acceptanceComplete,true);assert.equal(desktop.checks.length,7);assert.equal(desktop.manualChecks.length,2);
+  assert.equal(digest(await fs.readFile(desktop.drawing)),desktop.drawingSha256);assert.ok((await fs.stat(desktop.dxf)).size>0);
+  for(const jobId of desktop.jobIds){assert.match(jobId,/^job-[a-zA-Z0-9_-]+$/);const job=path.join(root,'runs',jobId);const host=JSON.parse((await fs.readFile(path.join(job,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);assert.equal(JSON.parse(await fs.readFile(path.join(job,'result.json'),'utf8')).ok,true);}
+  pass('WorkBuddy user-assisted desktop: 7 evidence checks, 2 user observations, current DLL and unchanged delivered DWG');
+ }catch(error){if(error.code!=='ENOENT')throw error;else if(await fs.access(path.join(root,'artifacts/workbuddy-desktop-task-report.json')).then(()=>true,()=>false))throw error;}
  await fs.mkdir(path.join(root,'artifacts'),{recursive:true});
  await fs.writeFile(path.join(root,'artifacts/release-check.json'),JSON.stringify({ok:true,version:pkg.version,checkedAt:new Date().toISOString(),checks,sourceFileCount:files.length,pluginSHA256:build.sha256},null,2));
 }

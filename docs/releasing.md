@@ -1,10 +1,18 @@
 # 预览版打包与发布准备
 
-当前发行形式是 **Windows 开发者预览 ZIP**：源码、锁文件、电气 Skill、公开合成预览和本项目编译的插件。需要已安装 Node.js 22.19+、PowerShell 7+、.NET Framework 4.8 和正常授权的 AutoCAD 2022；原生后端另需天正电气 V8。ZIP 不包含 Node 运行时，首次安装依赖需要网络。普通用户桌面向导和全套离线运行时属于后续版本。
+当前冻结发行标识为 **v0.2.0-preview.1**（[发布说明](releases/v0.2.0-preview.1.md)）。`release.json` 管理发行版本、日期和渠道；`package.json` 与 .NET 插件维持 `0.2.0` 兼容版本。两者不能混作稳定性承诺。
 
-获取源码或解压 ZIP 后，可以运行 `setup.cmd --workspace "D:\CAD-work"`。脚本检查 Node/PowerShell、执行锁定依赖安装、检测宿主、编译本项目插件并生成项目本地配置，然后运行 doctor。工作目录应事先存在；未填写时为项目目录。本项目生成的任务输出也允许重新读取，无需将整个上级目录开放为工作区。
+本地发布顺序：完成测试和公开文件审计，提交全部公开源码，创建同名 Git 标签，再运行 `node scripts/package-release.mjs --user --frozen`。冻结打包要求工作树干净、标签指向 HEAD，清单记录提交和 tree；同名 ZIP 已存在时拒绝覆盖。正式用户附件名为 `cad-ai-bridge-0.2.0-preview.1-windows-x64.zip`，附同名 `.sha256`。GitHub 发布时选用该标签并标记 **Pre-release**，正文使用本版发布说明。
 
-将 `mcp-config.local.json` 中对应的 MCP 条目添加到所用客户端。自动配置当前生成可审查的项目配置；各客户端的专用配置写入器尚未实现。运行 `cadbridge.cmd mcp` 或 `cadbridge.cmd mcp --read-only` 可启动服务。
+`node scripts/audit-public.mjs` 检查全部可达 Git 历史 blob 和公开文件清单，包括已删除旧文件；匹配结果不输出密钥原文，详细报告留在 artifacts。该检查覆盖常见密钥格式、个人路径、禁止公开的文件和二进制，不替代专门的密钥扫描或权属审查。原有 Git 作者身份和邮箱仍保留在历史中，仓库公开时也会公开；本轮不改写既有提交。
+
+打包后先在未安装的解压目录运行 `node scripts/verify-package.mjs <目录>`，检查无额外文件、全量 SHA-256 和用户包运行时固定摘要。然后用 `tests/windows-user-package.mjs` 进行隔离客户端、离线安装、真实 CAD、升级与回退验收，用 `tests/windows-dependency-repair.mjs` 验证依赖恢复，最后运行 `scripts/verify-user-repack.mjs` 做最终核对。冻结包须保留原始字节；后续修复创建新的预览版号。
+
+发行提供两种 ZIP。**Windows 用户预览包**包含源码、Skill、项目插件、锁定依赖及官方 Node/PowerShell 便携 ZIP，普通权限下可离线准备桥梁环境。**Windows 开发者预览包**体积较小，不含运行时；缺失时从官方地址下载固定版本并校验 SHA-256。二者不使用 winget 或系统安装器，不修改系统 PATH；运行时存放在 `%LOCALAPPDATA%\CADBridge\runtimes`，避免深目录触发 Windows 5.1 的长路径限制。AutoCAD 2022、.NET Framework 4.8 与可选天正 V8 仍来自用户正常安装和授权的软件。[用户发行验收](windows-user-release.md)
+
+获取源码或解压 ZIP 后，可以运行 `setup.cmd --workspace "D:\CAD-work"`。脚本准备 Node/PowerShell、检查锁定依赖、检测宿主，并复用通过目标版本、DLL 与源码摘要校验的本项目插件；需要时才下载依赖或构建插件。工作目录自动创建；未填写时为项目目录。本项目生成的任务输出也允许重新读取，无需将整个上级目录开放为工作区。`--rebuild` 强制构建；`--skip-build` 也要求插件通过校验。
+
+将生成的 `mcp-config.local.json` 导入客户端，或运行 `setup.cmd --workspace "D:\CAD-work" --client-config "D:\AI-config\mcp.json"`，仅合并本项目服务条目并备份原文件；其他字段和服务保留。配置位置由用户明确提供，不猜测客户端私有目录。Skill 指引随包提供；基础工具调用不要求安装 Skill。运行 `cadbridge.cmd mcp` 或 `cadbridge.cmd mcp --read-only` 可启动服务。
 
 维护者在有本机 CAD 的 Windows 环境构建：
 
@@ -19,13 +27,14 @@ node tests/school-delivery.mjs     # 本地已有学校交付时，检查回读�
 npm run preview
 npm run check
 npm run package:preview
+node scripts/package-release.mjs --user   # 含离线便携运行时的用户包
 ```
 
 `check` 核对普通/天正报告确实来自当前 DLL、编译时源码摘要与当前源码一致、原生宿主清理成功、摘要/分页验收通过、锁文件一致，以及公开源码的语法、链接和私有路径。静态 CI 使用 `npm run check -- --static`，不宣称完成真实 CAD 验收。
 
-`package:preview` 采用源码白名单，另外仅包含本项目 DLL 和移除本机路径的构建记录，生成 ZIP、SHA-256 和包内逐文件清单。版本包保存在被 Git 忽略的 `dist/`。包中不包含商业 CAD DLL/ARX、对象解释器、图纸、图库、个人配置、依赖缓存或任务日志。合成 DWG/DXF 由用户本地生成，公开仓库仅带可复现方法与 SVG 预览。
+`package:preview` 采用源码白名单，另外包含本项目 DLL、移除本机路径的构建记录和锁文件明确列出的 Node 依赖，生成 ZIP、SHA-256 和包内逐文件清单。依赖保留原 LICENSE/NOTICE，不带 npm 缓存及无关包。版本包保存在被 Git 忽略的 `dist/`。包中不包含商业 CAD DLL/ARX、对象解释器、图纸、图库、个人配置或任务日志。合成 DWG/DXF 由用户本地生成，公开仓库仅带可复现方法与 SVG 预览。
 
-在准备发布的 ZIP 中检查 `release-manifest.json`，在独立解压目录运行 `setup.cmd` 或 `npm ci` 与 `doctor`。干净 Windows 机器的首次安装、不同语言版本和普通用户向导尚未完成兼容验收。
+在准备发布的 ZIP 中检查 `release-manifest.json`，在独立解压目录运行 `connect-workbuddy.cmd` 或 `setup.cmd` 与 `doctor`。使用 `node tests/windows-user-package.mjs <用户ZIP> <旧版本ZIP>` 验证非提权进程、离线环境、原工作区继承、真实CAD、重装与回退；随后 `node tests/windows-dependency-repair.mjs` 验证依赖缺失、下载失败和在线补齐。不同语言与干净Windows/独立标准账户仍需额外实机证据。
 
 0.2 本机另行通过了 ZIP 解压后逐文件 SHA-256 核对、缓存依赖安装、独立工作目录 setup、随包 DLL 的 doctor，以及完整 demo（3 灯具、1 回路、6000 mm、无校验问题）。这是同一测试机上的独立目录验收，不替代干净机器验证。对刚解压且尚未安装依赖的包，可运行 `node scripts/verify-package.mjs <解压包目录>` 核对清单。
 

@@ -1,12 +1,26 @@
 # CAD AI Bridge
 
+**v0.2.0-preview.1 — Windows user preview.** Tested on Windows 10 x64, Chinese AutoCAD 2022, optional Tangent Electrical V8.0 and WorkBuddy 5.3.8. Internal package/plugin compatibility version remains 0.2.0. [Release notes](docs/releases/v0.2.0-preview.1.md).
+
+1. Download `cad-ai-bridge-0.2.0-preview.1-windows-x64.zip` from this repository's Releases and extract it to a writable user folder. GitHub's automatic Source code ZIP does not include the plugin and portable runtimes.
+2. Run `connect-workbuddy.cmd`. In WorkBuddy's custom connectors, trust `cad-ai-bridge` once and wait for its tools to load.
+3. Start a task: “Use CAD AI Bridge to check the connection, draw two lights 3000 mm apart, connect WL1, number them L-001 and L-002, save and reopen to verify, and return the DWG/DXF files.”
+
+The ZIP includes official portable Node/PowerShell archives and locked dependencies, allowing offline bridge setup without administrator rights, development tools or a model API key. Your own normally licensed AutoCAD installation is required. Keep the old folder when upgrading; `restore-workbuddy.cmd` restores the previous connector and Skill. [Installation and validation](docs/windows-user-release.md).
+
+**Clean Windows and a separate standard-account acceptance remain unverified.** Local VM acceptance is deferred. Other CAD versions and clients require their own verification. Clients supporting local stdio MCP can import `mcp-config.local.json`; install the portable Skill through the client's own mechanism.
+
 [中文](README.md) · [Packaging and release preparation](docs/releasing.md) · [Reproducible example](examples/electrical/README.md)
 
-Local MCP and CLI tools for AutoCAD electrical workflows: identify devices, read circuits, produce takeoffs, place symbols, connect explicit routes and number devices.
+CAD AI Bridge connects existing CAD software to the user's AI client through MCP and portable Skill guidance. The current preview provides local MCP and CLI tools for AutoCAD electrical workflows: identify devices, read circuits, produce takeoffs, place symbols, connect explicit routes and number devices.
+
+The [project improvement plan (Chinese)](docs/connector-plan.md) prioritizes simpler setup, reliability and execution efficiency while preserving validated capabilities. School generation is a regression sample, and clients such as WorkBuddy are interoperability test targets. Persistent sessions and broader commands remain follow-up options, subject to demonstrated benefits.
 
 [中文](README.md) · [Technical plan](docs/technical-plan.md) · [Tool contracts](docs/tools.md)
 
-The 0.2 developer preview is tested on Windows x64, Chinese AutoCAD 2022 and Tangent Electrical V8.0. It requires Node.js 22.19+, PowerShell 7+, .NET Framework 4.8 and your own normally licensed CAD installation.
+## Build from source
+
+Source development requires Node.js 22.19+, PowerShell 7+, .NET Framework 4.8 and your own normally licensed CAD installation.
 
 ```powershell
 npm ci
@@ -14,7 +28,13 @@ npm run setup -- --workspace "."
 npm run demo
 ```
 
-Setup discovers installed CAD, compiles this project's plugin and generates `mcp-config.local.json`. Import that generated file into a client supporting local MCP stdio. Existing client configuration is not overwritten. No model API key or REA runtime is required.
+Setup discovers installed CAD, verifies or builds this project's plugin and generates `mcp-config.local.json`. Import that generated file into a client supporting local MCP stdio. Existing client configuration is not overwritten unless an explicit merge target is supplied. No model API key or REA runtime is required.
+
+For WorkBuddy, run `connect-workbuddy.cmd` to prepare the environment, merge the custom MCP entry and install the self-contained Skill with backups. Existing services and the generated connector proxy are preserved. Enable the connector in WorkBuddy and start a new task. [Setup instructions and desktop validation limits (Chinese)](docs/workbuddy.md).
+
+The WorkBuddy 5.3.8 desktop workflow passed user-assisted acceptance: first-trust confirmation, global Skill invocation, 15 connected tools, an atomic drawing task, saved readback and delivered file cards. The user confirmed visibility and manual opening. Embedded CAD preview and direct card-to-CAD opening are not claimed.
+
+Setup now reuses a verified matching plugin; use `--rebuild` to rebuild explicitly. `setup.cmd` reuses locked dependencies and prepares missing portable runtimes from bundled ZIPs or SHA-256-pinned official downloads without system installers. `--client-config <file>` merges only this server entry and backs up the original. `cad_doctor` remains available when CAD configuration is missing, and `cad_get_job` recovers recorded results without launching CAD or replaying writes. A saved DWG remains available even when subsequent export or cleanup fails.
 
 ```powershell
 npm run doctor

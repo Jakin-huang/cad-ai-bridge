@@ -13,5 +13,12 @@ for(const entry of manifest.files){
  if(entry.bytes!==undefined)assert.equal(bytes.length,entry.bytes);
 }
 async function walk(dir,relative=''){for(const entry of await fs.readdir(dir,{withFileTypes:true})){assert.equal(entry.isSymbolicLink(),false);const name=relative?relative+'/'+entry.name:entry.name;if(entry.isDirectory())await walk(path.join(dir,entry.name),name);else assert.ok(expected.has(name),'Unlisted package file: '+name);}}
-await walk(folder);assert.equal(manifest.containsVendorRuntime,false);assert.equal(manifest.containsNodeRuntime,false);
+await walk(folder);assert.equal(manifest.containsVendorRuntime,false);
+if(manifest.containsNodeRuntime){
+ assert.equal(manifest.offlineSetup,true);assert.equal(manifest.containsPowerShellRuntime,true);
+ assert.ok(manifest.runtimeAssets.node&&manifest.runtimeAssets.powershell,'Both runtime pins are required');
+ for(const asset of Object.values(manifest.runtimeAssets)){
+  const entry=manifest.files.find(entry=>entry.file==='runtime-archives/'+asset.file);assert.ok(entry,'Missing bundled runtime');assert.equal(entry.sha256,asset.sha256);
+ }
+}else assert.equal(manifest.containsNodeRuntime,false);
 console.log(JSON.stringify({ok:true,version:manifest.version,verifiedFiles:manifest.files.length}));

@@ -1,6 +1,27 @@
 # Changelog
 
-## Unreleased: engineering drawing validation
+## 0.2.0-preview.1 — 2026-10-19
+
+Public preview release; internal package/plugin compatibility version remains 0.2.0. Clean Windows and an independent standard account remain unverified.
+
+### Setup reliability and execution efficiency
+
+- Freeze the preview identity, record the source commit/tag in frozen archives and check every bundled file against its manifest.
+- Fix standalone package verification to accept and validate the offline user runtime archives.
+- Add an offline Windows user ZIP with SHA-256-pinned official Node/PowerShell archives, portable per-user runtime preparation without admin installers, and a CLI entry that works without Node on PATH. Avoid Windows 5.1 module-path inheritance and deep npm extraction path failures.
+- Inherit prior workspace settings during side-by-side upgrades; journal connector/Skill changes, recover interrupted installs, prevent concurrent updates and add a conflict-aware restore command retaining unrelated services and drawings.
+- Add non-elevated package, real-CAD, dependency download-failure and recovery acceptance plus an offline Windows Sandbox harness. Keep simulated missing dependencies separate from clean-system and independent standard-account evidence.
+
+- Add a WorkBuddy setup entry that merges custom MCP configuration, installs a self-contained bilingual Skill, backs up updates and retains existing workspace choices. Keep desktop UI acceptance distinct from protocol and bundled CLI checks.
+- Verify the user-assisted WorkBuddy desktop workflow, global Skill, 15-tool connection, atomic drawing task and delivered file cards. Clarify first-trust confirmation, disconnected-tool recovery and the difference between file presentation and embedded CAD preview; generate a dedicated local import configuration.
+
+- Keep MCP handshake and diagnostics available without CAD configuration; add cad_doctor and non-executing cad_get_job recovery by job/request ID.
+- Reuse verified plugins and locked dependencies, prepare missing runtimes through setup, create workspaces and merge explicit client configuration with backups.
+- Preserve saved DWGs and plugin evidence through export/cleanup failures; report failure stages and output state without automatic write retries.
+- Cache environment discovery with expiry and invalidation, record execution phases, and page managed snapshots without restarting CAD.
+- Bundle locked Node dependencies with their notices and retain existing CAD, Tangent, engineering and school regression requirements.
+
+### Preserved engineering drawing validation
 
 - Review every school sheet with explicit unresolved-input owners; add incoming/outgoing hardware references, separate feeder overcurrent protection from receiving-panel isolation, and preserve manufacturer verification requirements.
 - Replace device-order chains with corridor trees and socket perimeter routes; reconcile four lighting control groups, separate control return conduits, switch-leg voltage drop and dual-port data cable quantities.
@@ -20,7 +41,7 @@
 - Bound large MCP replies automatically, retain full evidence for pagination, and accommodate large local audit results.
 - Preserve normal full-suite initialization order and bootstrap drawing opens; retain source hashes, original entities, rollback and request replay evidence.
 
-## 0.2.0 preview
+## Earlier 0.2.0 local developer preview
 
 - Detect local AutoCAD 2022 and Tangent V8 installations and generate project-owned MCP configuration with backups.
 - Add a native Tangent GUI host alongside CoreConsole, ordinary tip suppression with restoration, explicit kernel preload and bounded owned-process execution.

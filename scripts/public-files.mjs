@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 export const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const topFiles=new Set(['.gitattributes','.gitignore','package.json','package-lock.json','LICENSE','THIRD_PARTY_NOTICES.md','CONTRIBUTING.md','CHANGELOG.md','README.md','README.en.md','bridge.mjs','cli.mjs','dependencies.mjs','mcp-server.mjs','build.ps1','run-core.ps1','run-gui.ps1','render-preview.mjs','mcp-config.example.json','setup.cmd','cadbridge.cmd']);
+const topFiles=new Set(['.gitattributes','.gitignore','package.json','package-lock.json','release.json','LICENSE','THIRD_PARTY_NOTICES.md','CONTRIBUTING.md','CHANGELOG.md','README.md','README.en.md','bridge.mjs','cli.mjs','dependencies.mjs','mcp-server.mjs','build.ps1','run-core.ps1','run-gui.ps1','render-preview.mjs','mcp-config.example.json','setup.cmd','connect-workbuddy.cmd','restore-workbuddy.cmd','cadbridge.cmd']);
 const directories=new Set(['.github','bin','docs','plugin','src','tests','skills','scripts','examples']);
 const extensions=new Set(['.mjs','.ps1','.cs','.md','.json','.yml','.yaml','.svg','.cmd','.py']);
 export async function publicFiles(){
