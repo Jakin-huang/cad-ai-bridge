@@ -1,0 +1,17 @@
+import fs from 'node:fs/promises';import path from 'node:path';import crypto from 'node:crypto';
+import {root} from './public-files.mjs';import {reviewSchoolLighting} from '../src/school-lighting.mjs';
+import {readDxf} from '../src/dxf-audit.mjs';import {verifySchoolReadback} from '../src/school-verification.mjs';
+const source=path.resolve(process.argv[2]||(await fs.readFile(path.join(root,'artifacts/school-project-current.txt'),'utf8')).trim());
+const hash=async file=>crypto.createHash('sha256').update(await fs.readFile(file)).digest('hex');
+const read=async name=>JSON.parse(await fs.readFile(path.join(source,name),'utf8'));
+const model=await read('design-model.json'),delivery=await read('delivery.json'),manifest=await read('manifest.json');
+for(const name of ['school-electrical.dwg','school-electrical.dxf','design-model.json'])if(await hash(path.join(source,name))!==manifest.files.find(f=>f.name===name)?.sha256)throw Error('R3 source digest mismatch: '+name);
+const job=delivery.results.findLast(r=>r.action==='inspect'&&r.jobRoot!==delivery.nativeJob),saved=JSON.parse(await fs.readFile(path.join(job.jobRoot,'result.json'),'utf8'));
+if(saved.inputSha256!==delivery.drawingSha256)throw Error('Saved independent CAD process does not match this DWG');
+const verification=verifySchoolReadback(model,saved.snapshot,await readDxf(path.join(source,'school-electrical.dxf')));if(!verification.ok)throw Error('R3 independent readback no longer matches');
+const report=reviewSchoolLighting(model),folder=await fs.mkdtemp(path.join(root,'artifacts/school-lighting-R3-'));
+report.source={drawingSha256:delivery.drawingSha256,dxfSha256:await hash(path.join(source,'school-electrical.dxf')),modelSha256:await hash(path.join(source,'design-model.json')),folder:source,independentReadback:verification};
+report.sources=[{id:'R3',title:'R3已保存模型/需求及独立DWG/DXF',detail:'72盏24W/3600lm、18盏16W/2000lm；30盏公区12W灯无Φ，UF .65/.70及MF .80均为项目假设'},{id:'GB50099',title:'中小学校设计规范GB50099-2011 表9.3.1',url:'https://edu.foshan.gov.cn/attachment/0/196/196510/4866032.pdf',detail:'学校走道、楼梯间100lx；不套用通用普通走廊50lx'},{id:'GB50034',title:'GB/T50034-2024 表5.5.1',url:'https://gf.cabr-fire.com/m/article-67007.htm',detail:'普通厕所75lx、配电装置室200lx；弱电间200lx为维护用途项目目标，网络中心/固定值班用途须重审'},{id:'GB7793',title:'GB7793-2010及修改单',url:'https://www.nhc.gov.cn/wjw/pqt/201809/5ae0838482f34ae7a1c54e63143dac2f.shtml',detail:'教室300lx、黑板500lx；平均值不能证明均匀度/UGR。GB7793-2025将于2026-11-01实施，交付跨期需重审'},{id:'GB55037',title:'GB55037-2022 10.1.10、10.1.11',url:'https://gf.cabr-fire.com/m/article-41905.htm',detail:'走廊地面Emin3lx、楼梯10lx；适用配电室/火灾仍工作设备房，备用工作面Emin不低于正常照度。本地PDF第70页附近及建研院公开条文交叉核验，不用10%替代强制要求'}];
+await fs.writeFile(path.join(folder,'room-lighting.json'),JSON.stringify(report,null,2),{flag:'wx'});
+await fs.writeFile(path.join(root,'artifacts/school-lighting-current.txt'),folder+'\n');
+console.log(JSON.stringify({ok:true,folder,totals:report.totals,readbackChecks:verification.checks.length}));
