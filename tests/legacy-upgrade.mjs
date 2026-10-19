@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {execute} from '../bridge.mjs';
+import {hashFile} from '../src/drawings.mjs';
+import {localPath,parseLocalJSON} from '../src/local-paths.mjs';
+if(!process.argv[2])throw Error('Supply an external legacy integration report');
+const prior=parseLocalJSON(await fs.readFile(process.argv[2],'utf8')),saved=prior.results.applied;
+const{action,...request}=parseLocalJSON(await fs.readFile(path.join(saved.jobRoot,'request.json'),'utf8'));
+const original=await hashFile(saved.drawing),result=await execute('apply',{...request,drawing:saved.drawing,expectedSha256:saved.drawingSha256});
+assert.equal(result.ok,true,JSON.stringify(result.error));assert.equal(result.replayed,true);assert.equal(result.snapshot.revision,saved.snapshot.revision);assert.equal(result.snapshot.deviceCount,saved.snapshot.deviceCount);assert.equal(await hashFile(saved.drawing),original);
+const host=JSON.parse((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));const build=JSON.parse((await fs.readFile(new URL('../plugin/bin/build.json',import.meta.url),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256,build.sha256);
+const report={ok:true,checkedAt:new Date().toISOString(),checks:['Pre-extension saved v0.2 request UUID replays through actual current CAD plugin','Device count and revision do not change; no duplicate mutation','Legacy input file stays byte-for-byte unchanged'],pluginSHA256:build.sha256,result};await fs.writeFile(localPath('artifacts','editing-legacy-upgrade-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:true,checks:report.checks.length}));

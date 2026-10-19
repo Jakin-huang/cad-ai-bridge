@@ -51,3 +51,7 @@ CAD AI Bridge 连接本机 CAD 与现有 AI 客户端。WorkBuddy 不需要另�
 桌面控制组件在本次环境中出现截图超时、点击缺少坐标及窗口状态不一致，因此用户协助完成信任、任务输入与打开观察。DWG/DXF 的 `previewed` 为空：通过的是文件卡片交付及本机手动打开，未验证内嵌CAD预览或点击卡片直接调起CAD。同机验收不替代干净Windows及普通权限环境，本项目仍是用户预览。
 
 依据：[WorkBuddy 桌面连接器操作](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Connector)、[连接器规范](https://open.workbuddy.cn/docs/connector)、[项目级 Skill 配置](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Project)、[MCP 配置与审批](https://www.codebuddy.cn/docs/cli/mcp)。客户端版本差异以实测为准。
+
+## Preview.4 工具扩展
+
+新版共18个工具，全局Skill增加已有图纸编辑与出图指导。重新连接已有MCP后，在新任务中检查cad_query_entities、cad_edit、cad_export是否可用。新版通过实际安装配置进行SDK查询、编辑和PNG出图测试；上文15工具的桌面会话属于历史验收，不作为新版新增操作的桌面自然语言验收。

@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | [bimwright/dwg-mcp 架构](https://github.com/bimwright/dwg-mcp/blob/master/ARCHITECTURE.md) | 外部网关与 CAD 插件分离、宿主版本边界、任务串行化 | Node MCP 网关与 CLR4 CAD 插件分离，明确只验收 2022，跨进程互斥锁保护宿主配置与任务 |
 | [dwg-mcp 安装器](https://github.com/bimwright/dwg-mcp/blob/master/scripts/install.ps1) | 检测、配置备份、分发清单 | setup、doctor、本地配置备份、插件摘要与发行文件清单 |
-| [earthtojake/text-to-cad](https://github.com/earthtojake/text-to-cad) | CLI、MCP、Skills、预览组合成完整能力 | 同一执行内核供 CLI/MCP 调用；电气 Skill 负责工作流；实际 DWG/DXF 与可重建 SVG 演示 |
+| [earthtojake/text-to-cad](https://github.com/earthtojake/text-to-cad) | CLI、MCP、Skills、预览组合成完整能力 | 同一执行内核供 CLI/MCP 调用；电气 Skill 负责工作流；实际 DWG/DXF 及 CAD 生成的局部 PNG 反馈 |
 | [MCP Inspector](https://github.com/modelcontextprotocol/inspector) | 工具发现、调用与协议排障 | 使用官方 SDK 客户端做真实 MCP 握手和端到端测试；错误返回保留稳定代码和证据 |
 
 以上是独立实现的设计借鉴，没有复制上述项目的源代码。当前批处理宿主不等价于 dwg-mcp 的常驻通信；text-to-cad 的参数化三维内核也不作为天正电气内核使用。
@@ -116,3 +116,7 @@ V8 示例中的 `light`、`socket`、`DEVTYPE`、`设备名称`、`EES_Fire` XDa
 | 普通用户发行 | Windows 安装/便携向导、客户端配置适配和恢复 | 干净 Windows 环境验收；升级/卸载归属验证；发行校验和 |
 
 当前仓库以 0.2 预览的已实现范围作为首次公开边界，后续阶段不作为现成能力宣传。桌面向导将调用同一配置与诊断内核，避免两套安装逻辑。首次上传由仓库所有者在本地检查后自行执行；本次任务不创建远程仓库、不推送、不发布发行版。
+
+## Preview.4 增量
+
+已有图纸查询、普通对象编辑、受管理路线修改及真实CAD PDF/PNG出图见[编辑与出图契约](editing.md)。现有事务、快照、身份、版本和幂等边界沿用。新增字体样式通过Windows字体名称解析微软雅黑，避免把TTC集合文件当作CAD字体路径而回退为缺少中文字形的SHX。新增原生专有能力的范围以独立验收为准。

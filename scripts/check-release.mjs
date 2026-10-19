@@ -62,6 +62,15 @@ if(!staticOnly){
  const sceneMcp=await readJSON('artifacts/school-mcp-report.json');assert.equal(sceneMcp.ok,true);assert.equal(sceneMcp.checks.length,7);assert.ok(Date.parse(sceneMcp.checkedAt)>=builtAt);
  for(const result of Object.values(sceneMcp.results)){if(!result?.jobRoot)continue;const host=parseLocalJSON((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);}
  pass('Original-scene MCP creation, declared layers, numbering, fresh census and read-only discovery');
+ for(const file of ['editing-report.json','editing-tangent-report.json']){
+  const report=await readJSON('artifacts/'+file);assert.equal(report.ok,true);assert.ok(report.checks.length>=16);assert.equal(report.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.ok(Date.parse(report.checkedAt)>=builtAt);
+  for(const result of Object.values(report.results)){if(!result?.jobRoot)continue;const host=parseLocalJSON((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);if(host.backend==='tangent-gui')assert.equal(parseLocalJSON(await fs.readFile(path.join(result.jobRoot,'cleanup.json'),'utf8')).ok,true);}
+  pass(file+': current DLL editing, plotting, rollback and original-file evidence');
+ }
+ const installed=await readJSON('artifacts/workbuddy-installed-report.json');assert.equal(installed.ok,true);assert.ok(installed.checks.length>=8);assert.ok(Date.parse(installed.checkedAt)>=builtAt);
+ for(const result of Object.values(installed.results)){if(!result?.jobRoot||!result.metrics?.hostLaunches)continue;const host=parseLocalJSON((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);}
+ pass('Current installed WorkBuddy configuration and Skill: SDK query/edit/plot and original electrical flow (not desktop conversation acceptance)');
+ const upgrade=await readJSON('artifacts/editing-legacy-upgrade-report.json');assert.equal(upgrade.ok,true);assert.equal(upgrade.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(upgrade.result.replayed,true);pass('Saved pre-extension v0.2 UUID replays with current DLL without duplicate changes');
  if(process.argv.includes('--with-local-projects'))try{
   const schoolFolder=resolveLocalPath((await fs.readFile(projectPath('artifacts/school-project-current.txt'),'utf8')).trim());
   const school=parseLocalJSON(await fs.readFile(path.join(schoolFolder,'delivery.json'),'utf8')),proof=parseLocalJSON(await fs.readFile(path.join(schoolFolder,'cad-verification.json'),'utf8')),model=parseLocalJSON(await fs.readFile(path.join(schoolFolder,'design-model.json'),'utf8')),manifest=parseLocalJSON(await fs.readFile(path.join(schoolFolder,'manifest.json'),'utf8'));
@@ -96,8 +105,8 @@ if(!staticOnly){
  try{
   const desktop=await readJSON('artifacts/workbuddy-desktop-task-report.json');assert.equal(desktop.ok,true);assert.equal(desktop.acceptanceComplete,true);assert.equal(desktop.checks.length,7);assert.equal(desktop.manualChecks.length,2);
   assert.equal(digest(await fs.readFile(desktop.drawing)),desktop.drawingSha256);assert.ok((await fs.stat(desktop.dxf)).size>0);
-  for(const jobId of desktop.jobIds){assert.match(jobId,/^job-[a-zA-Z0-9_-]+$/);const job=projectPath('runs',jobId);const host=parseLocalJSON((await fs.readFile(path.join(job,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);assert.equal(parseLocalJSON(await fs.readFile(path.join(job,'result.json'),'utf8')).ok,true);}
-  pass('WorkBuddy user-assisted desktop: 7 evidence checks, 2 user observations, current DLL and unchanged delivered DWG');
+  for(const jobId of desktop.jobIds){assert.match(jobId,/^job-[a-zA-Z0-9_-]+$/);const job=projectPath('runs',jobId);const host=parseLocalJSON((await fs.readFile(path.join(job,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.timedOut,false);assert.equal(parseLocalJSON(await fs.readFile(path.join(job,'result.json'),'utf8')).ok,true);}
+  pass('Historical WorkBuddy user-assisted desktop: 7 evidence checks and 2 user observations retained; not a current DLL/new-feature desktop acceptance');
  }catch(error){if(error.code!=='ENOENT')throw error;else if(await fs.access(projectPath('artifacts/workbuddy-desktop-task-report.json')).then(()=>true,()=>false))throw error;}
  await fs.mkdir(projectPath('artifacts'),{recursive:true});
  await fs.writeFile(projectPath('artifacts/release-check.json'),JSON.stringify({ok:true,version:pkg.version,checkedAt:new Date().toISOString(),checks,sourceFileCount:files.length,pluginSHA256:build.sha256},null,2));

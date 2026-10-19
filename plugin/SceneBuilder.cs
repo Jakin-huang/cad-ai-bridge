@@ -11,7 +11,7 @@ namespace CadAgent {
     public sealed class SceneLayer { public string name; public short color; }
     public sealed class SceneSymbol { public string name; public Primitive[] geometry; public SceneAttribute[] attributes; }
     public sealed class SceneAttribute { public string tag,value; public double[] position; public double height; public bool visible; }
-    public sealed class Primitive { public string kind,layer,text; public double[][] points; public double[] position; public double height,radius,rotationRadians,width,widthFactor; public bool closed; }
+    public sealed class Primitive { public string kind,layer,text; public double[][] points; public double[] position; public double height,radius,rotationRadians,width,widthFactor,startAngle,endAngle; public bool closed; }
     // Declarative geometry only. No commands, files, external references or evaluation.
     public static class SceneBuilder {
         static void Check(bool ok,string message){if(!ok)throw new Fault("INVALID_SCENE",message);}
@@ -19,9 +19,11 @@ namespace CadAgent {
         static void Positive(double n){Check(n>0&&n<=1e6&&!Double.IsNaN(n)&&!Double.IsInfinity(n),"Invalid size");}
         static void Append(BlockTableRecord b,Entity e,Transaction t){b.AppendEntity(e);t.AddNewlyCreatedDBObject(e,true);}
         static bool Name(string n){return n!=null&&System.Text.RegularExpressions.Regex.IsMatch(n,@"\A[A-Za-z0-9_-]{1,64}\z");}
-        static Entity Make(Primitive p,HashSet<string> layers,ObjectId style){
+        public static Entity Make(Primitive p,HashSet<string> layers,ObjectId style){
             Check(p!=null&&layers.Contains(p.layer),"Undefined layer");Entity e;
-            if(p.kind=="polyline"){
+            if(p.kind=="line"){Check(p.points!=null&&p.points.Length==2&&P(p.points[0]).DistanceTo(P(p.points[1]))>1e-6,"Invalid line");e=new Line(P(p.points[0]),P(p.points[1]));}
+            else if(p.kind=="arc"){Positive(p.radius);Check(!Double.IsNaN(p.startAngle)&&!Double.IsInfinity(p.startAngle)&&!Double.IsNaN(p.endAngle)&&!Double.IsInfinity(p.endAngle),"Invalid arc angles");e=new Arc(P(p.position),Vector3d.ZAxis,p.radius,p.startAngle,p.endAngle);}
+            else if(p.kind=="polyline"){
                 Check(p.points!=null&&p.points.Length>=2&&p.points.Length<=1000,"Invalid polyline");var poly=new Polyline();
                 foreach(var a in p.points){var v=P(a);poly.AddVertexAt(poly.NumberOfVertices,new Point2d(v.X,v.Y),0,0,0);}poly.Closed=p.closed;Check(p.width>=0&&p.width<=10000&&!Double.IsNaN(p.width),"Invalid polyline width");poly.ConstantWidth=p.width;e=poly;
             }else if(p.kind=="solid"){Check(p.points!=null&&p.points.Length==3,"Invalid solid triangle");e=new Solid(P(p.points[0]),P(p.points[1]),P(p.points[2]),P(p.points[2]));
@@ -37,7 +39,7 @@ namespace CadAgent {
             var layers=new HashSet<string>(StringComparer.Ordinal){"0"};var lt=(LayerTable)t.GetObject(db.LayerTableId,OpenMode.ForWrite);
             foreach(var l in scene.layers){Check(l!=null&&Name(l.name)&&l.name.ToUpperInvariant()==l.name&&l.color>=1&&l.color<=255&&layers.Add(l.name),"Invalid or duplicate layer");if(!lt.Has(l.name)){var r=new LayerTableRecord{Name=l.name,Color=Autodesk.AutoCAD.Colors.Color.FromColorIndex(Autodesk.AutoCAD.Colors.ColorMethod.ByAci,l.color)};lt.Add(r);t.AddNewlyCreatedDBObject(r,true);}}
             var styles=(TextStyleTable)t.GetObject(db.TextStyleTableId,OpenMode.ForWrite);
-            Check(!styles.Has("CADBRIDGE_CJK"),"Style already exists");var textStyle=new TextStyleTableRecord{Name="CADBRIDGE_CJK",FileName="msyh.ttc"};styles.Add(textStyle);t.AddNewlyCreatedDBObject(textStyle,true);
+            Check(!styles.Has("CADBRIDGE_CJK"),"Style already exists");var textStyle=new TextStyleTableRecord{Name="CADBRIDGE_CJK"};textStyle.Font=new Autodesk.AutoCAD.GraphicsInterface.FontDescriptor("Microsoft YaHei",false,false,134,0);styles.Add(textStyle);t.AddNewlyCreatedDBObject(textStyle,true);
             var bt=(BlockTable)t.GetObject(db.BlockTableId,OpenMode.ForWrite);
             foreach(var s in scene.symbols){
                 Check(s!=null&&Name(s.name)&&!bt.Has(s.name)&&s.geometry!=null&&s.geometry.Length>0&&s.geometry.Length<=1000&&s.attributes!=null&&s.attributes.Length<=20,"Invalid or duplicate symbol");

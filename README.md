@@ -2,7 +2,7 @@
 
 连接用户已有 CAD 与 AI 的本地中间层，通过 MCP 和 Skill 提供读图、统计与受约束的批量修改能力。保留软件原有工作方式，减少配置和重复操作。
 
-当前为 **v0.2.0-preview.3 用户预览版**。已验证 Windows 10 x64、AutoCAD 2022 简体中文、可选天正电气 V8 和 WorkBuddy 5.3.8。CAD 与客户端由用户正常安装和使用。
+当前为 **v0.2.0-preview.4 用户预览版**。已验证 Windows 10 x64、AutoCAD 2022 简体中文、可选天正电气 V8 和 WorkBuddy 5.3.8。CAD 与客户端由用户正常安装和使用。
 
 ## 普通用户开始使用
 
@@ -18,8 +18,10 @@
 
 | 能力 | 当前范围 |
 | --- | --- |
-| 接入与诊断 | 本地 stdio MCP、全局 Skill、15 个工具、CLI 与中文接入入口 |
+| 接入与诊断 | 本地 stdio MCP、全局 Skill、18 个工具、CLI 与中文接入入口 |
 | 识别与统计 | 已观察的天正 V8 电气实例、导线字段、回路标签分组和统计 |
+| 已有图纸编辑 | 对象筛选、移动/复制/旋转/缩放/镜像/阵列、文字/属性/图层修改、补画、偏移、直线修剪延伸、尺寸标注与布局 |
+| 实际 CAD 出图 | PDF、局部 PNG、MCP 图像反馈；调用真实 CAD 打印引擎 |
 | 受约束写入 | 图块布置、显式路径连线、编号、原创场景创建，保存后可回读 |
 | 文件保护 | 输入快照、摘要和版本检查、事务回滚、请求幂等、另存新图 |
 | 稳定性与效率 | 批量操作、任务结果恢复、分页读取、环境发现缓存、分阶段耗时 |
@@ -37,4 +39,6 @@ npm test 运行无 CAD 测试；npm run check -- --static 检查公开源码和�
 
 项目生成的可选工作流必须提供自己的需求 JSON；不再有默认学校示例或示例交付下载。[输入契约与范围](docs/school-project.md)
 
-[English](README.en.md) · [MIT](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md) · [变更记录](CHANGELOG.md) · [本版说明](docs/releases/v0.2.0-preview.3.md)
+[English](README.en.md) · [MIT](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md) · [变更记录](CHANGELOG.md) · [本版说明](docs/releases/v0.2.0-preview.4.md)
+
+新版编辑范围、使用步骤与未开放的原生操作见[编辑与出图](docs/editing.md)。

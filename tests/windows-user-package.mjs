@@ -33,11 +33,11 @@ function connect(folder,extra=[],env=process.env){
  return output;
 }
 async function serverAt(){return parseLocalJSON(await fs.readFile(path.join(home,'mcp.json'),'utf8')).mcpServers['cad-ai-bridge'];}
-async function smoke(server,write=false){
+async function smoke(server,write=false,expectedTools=18){
  const client=new Client({name:'windows-user-package-acceptance',version:'0.2.0'});
  try{
   await client.connect(new StdioClientTransport({command:server.command,args:server.args,env:{...process.env,...server.env},stderr:'pipe'}));
-  assert.equal((await client.listTools()).tools.length,15);
+  assert.equal((await client.listTools()).tools.length,expectedTools);
   async function call(name,args={}){const reply=await client.callTool({name,arguments:args},undefined,{timeout:180000});const result=parseLocalJSON(reply.content[0].text);assert.equal(result.ok,true,JSON.stringify(result.error));return result;}
   const doctor=await call('cad_doctor');
   if(!write)return{doctor};
@@ -51,8 +51,11 @@ async function smoke(server,write=false){
   assert.equal(takeoff.snapshot.devices.length,2);assert.equal(takeoff.snapshot.routes.length,1);assert.deepEqual(validation.snapshot.issues,[]);
   const native=await call('cad_native_status',{drawing:applied.drawing});assert.equal(native.nativeHost.nativeKernelLoaded,true);
   const cleanup=parseLocalJSON(await fs.readFile(path.join(native.jobRoot,'cleanup.json'),'utf8'));assert.equal(cleanup.ok,true);assert.equal(cleanup.originalTipRestored,true);
+  const query=await call('cad_query_entities',{drawing:applied.drawing,filter:{ids:['L1']}});assert.equal(query.query.entities.length,1);
+  const edited=await call('cad_edit',{drawing:applied.drawing,expectedSha256:applied.drawingSha256,documentId:applied.snapshot.documentId,expectedRevision:applied.snapshot.revision,requestId:crypto.randomUUID(),units:'mm',operations:[{type:'move_devices',ids:['L1','L2'],delta:[0,500,0]}]});assert.equal(edited.snapshot.routeLengthMm,3000);assert.deepEqual(edited.snapshot.issues,[]);
+  const preview=await call('cad_export',{drawing:edited.drawing,format:'png'});assert.ok(preview.exported.bytes>1000);
   assert.equal(hash(await fs.readFile(applied.drawing)),applied.drawingSha256);assert.equal(hash(await fs.readFile(fixture.drawing)),fixture.drawingSha256);
-  return{doctor,fixture,applied,takeoff,validation,native};
+  return{doctor,fixture,applied,takeoff,validation,native,query,edited,preview};
  }finally{await client.close();}
 }
 const home=path.join(base,'隔离 WorkBuddy'),workspace=path.join(base,'用户图纸');
@@ -75,7 +78,8 @@ try{
  checks.push('Offline upgrade with Node, PowerShell 7 and winget excluded extracts bundled runtimes without UAC');
  checks.push('Side-by-side upgrade inherits prior drawing workspace and preserves unrelated client settings');
  const cli=run(process.env.ComSpec||'cmd.exe',['/d','/s','/c','""'+path.join(newFolder,'cadbridge.cmd')+'" help"'],env);assert.match(cli,/CAD AI Bridge/);checks.push('Packaged CLI works with Node and PowerShell 7 absent from PATH');
- results.upgraded=await smoke(newServer,true);checks.push('Packaged runtimes discover 15 tools, pass doctor, save two lights and reopen their route/numbering with no issues');checks.push('Packaged PowerShell loads native Tangent host and restores its user settings after exit');
+ results.upgraded=await smoke(newServer,true);checks.push('Packaged runtimes discover 18 tools, pass doctor, save two lights and reopen their route/numbering with no issues');checks.push('Packaged PowerShell loads native Tangent host and restores its user settings after exit');
+ checks.push('New query, connected-device edit and actual CAD PNG export work from the extracted user package');
  const savedHash=hash(await fs.readFile(results.upgraded.applied.drawing));
  // Repeat setup offline, then restore the original version from its transaction journal.
  await fs.writeFile(path.join(base,'repeat-install.txt'),connect(newFolder,[],env));assert.deepEqual(await serverAt(),newServer);checks.push('Repeat offline setup succeeds with exactly the same connector parameters');
@@ -89,7 +93,7 @@ try{
  run(process.env.ComSpec||'cmd.exe',['/d','/s','/c','""'+path.join(newFolder,'restore-workbuddy.cmd')+'" --client-home "'+home+'""'],env);
  assert.deepEqual(await serverAt(),oldServer);assert.deepEqual(await fs.readFile(path.join(home,'skills/cadbridge-electrical/SKILL.md')),oldSkill);
  const restored=parseLocalJSON(await fs.readFile(path.join(home,'mcp.json'),'utf8'));assert.equal(restored.mcpServers.addedLater.command,'also keep');assert.equal(restored.mcpServers.unrelated.command,'keep');
- results.restored=await smoke(oldServer);assert.equal(hash(await fs.readFile(results.upgraded.applied.drawing)),savedHash);
+ results.restored=await smoke(oldServer,false,15);assert.equal(hash(await fs.readFile(results.upgraded.applied.drawing)),savedHash);
  checks.push('Recovery command restores previous runnable release and Skill while retaining later services and new DWG');
  const permissionsAfter=parseLocalJSON(run(powershell,['-NoProfile','-NonInteractive','-Command',"[ordered]@{machinePath=[Environment]::GetEnvironmentVariable('PATH','Machine');userPath=[Environment]::GetEnvironmentVariable('PATH','User')}|ConvertTo-Json -Compress"]));
  assert.equal(permissionsAfter.machinePath,permissions.machinePath);assert.equal(permissionsAfter.userPath,permissions.userPath);checks.push('Machine and user PATH remain unchanged');

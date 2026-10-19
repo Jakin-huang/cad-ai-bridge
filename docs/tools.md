@@ -90,3 +90,7 @@ metrics 记录 queueMs、configurationMs、snapshotMs、bootstrapMs、hostMs、o
 - 配置恢复遇到外部改变时保留外部值并报告冲突，不覆盖其他 CAD 会话写入的配置。
 
 每个任务保留 request、input snapshot、response、完整 result、宿主信息和生成文件。读取摘要只影响传回 AI 的体积，完整证据仍保留在本地。
+
+## 已有图纸编辑与实际出图
+
+cad_query_entities、cad_edit、cad_export 的输入、范围及错误边界见[编辑与出图契约](editing.md)。原有15个工具保持兼容。新增场景几何支持line和arc；这些仍是普通CAD实体。

@@ -76,7 +76,7 @@ try {
   [IO.File]::WriteAllText((Join-Path $job 'process.json'),([ordered]@{pid=$process.Id;stage=$stage;startedAt=$process.StartTime.ToUniversalTime().ToString('o');executable=$start.FileName}|ConvertTo-Json),(New-Object Text.UTF8Encoding($false)))
   $null=$process.Handle;$finished=$process.WaitForExit($TimeoutSeconds*1000)
   if(-not $finished){$process.Kill();$process.WaitForExit()}
-  foreach($name in @('response.json','output.dwg','output.dxf','native-status.txt')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
+  foreach($name in @('response.json','output.dwg','output.dxf','output.pdf','output.png','operation-fingerprint.json','native-status.txt')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
   $native=if(Test-Path -LiteralPath (Join-Path $job 'native-status.txt')){[IO.File]::ReadAllText((Join-Path $job 'native-status.txt'))}else{''}
   $watch.Stop()
   [IO.File]::WriteAllText((Join-Path $job 'host.json'),([ordered]@{backend='tangent-gui';exitCode=$process.ExitCode;timedOut=(-not $finished);elapsedMs=$watch.ElapsedMilliseconds;stage=$stage;nativeKernelLoaded=$native.Contains('tel_kernal.arx');pluginSHA256=(Get-FileHash -LiteralPath (Join-Path $stage 'CadAgent.dll')).Hash}|ConvertTo-Json -Depth 5),(New-Object Text.UTF8Encoding($false)))
@@ -87,7 +87,7 @@ try {
   if($process){
     try{
       if(-not $process.HasExited){$process.Kill();$process.WaitForExit()}
-      foreach($name in @('response.json','output.dwg','output.dxf','native-status.txt')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
+      foreach($name in @('response.json','output.dwg','output.dxf','output.pdf','output.png','operation-fingerprint.json','native-status.txt')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
     }catch{$cleanupErrors.Add($_.Exception.Message)}finally{$process.Dispose()}
   }
   if($locked){

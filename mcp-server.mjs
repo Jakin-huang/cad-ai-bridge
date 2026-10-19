@@ -2,9 +2,13 @@ import {dependency} from './dependencies.mjs';
 import {schemas,execute} from './bridge.mjs';
 import {boundForTransport} from './src/results.mjs';
 import {failure} from './src/errors.mjs';
+import fs from 'node:fs/promises';
 const {McpServer}=await dependency('@modelcontextprotocol/server');
 const {serveStdio}=await dependency('@modelcontextprotocol/server/stdio');
 const definitions=[
+ ['cad_query_entities','query_entities','只读查询模型空间对象：按图层、类型、区域、文字、图块属性或句柄筛选，返回位置、几何、属性、图层、布局与命名视图。句柄必须与本次文件摘要一起使用。'],
+ ['cad_edit','edit','在受管理图纸副本中批量移动、复制、旋转、缩放、镜像、阵列、删除普通对象，修改文字/属性/图层，补画、偏移、直线修剪延伸、标注、视图和布局；支持受管理设备移动、路线修改及关联路线标签。失败整批回滚，另存新 DWG。'],
+ ['cad_export','export','用真实 AutoCAD 打印引擎将图纸或局部区域导出 PDF/PNG，支持指定布局。仅处理副本；PNG 可作为可视反馈。失败不重放任何编辑。'],
  ['cad_doctor','doctor','检查 CAD AI Bridge 的配置、工作目录与插件，给出修复建议。不启动 CAD；即使 CAD 或配置缺失也可调用。refresh=true 强制重新检测。'],
  ['cad_get_job','get_job','查询已有任务和保存结果；提供 jobId，或用原请求 requestId 查找相关任务。无需 CAD，不重放任何修改；断连或超时后先调用本工具。'],
  ['cad_audit_drawing','audit_drawing','只读清点真实图纸的实体、图层、图块实例与定义，并导出副本 DXF；默认摘要，详情可分页。'],
@@ -24,9 +28,9 @@ const definitions=[
 await serveStdio(()=>{
  const server=new McpServer({name:'cad-ai-bridge',version:'0.2.0'});
  for(const [name,action,description]of definitions){
-   if(process.env.CADBRIDGE_READ_ONLY==='1'&&['apply','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action))continue;
-   server.registerTool(name,{description,inputSchema:schemas[action],annotations:{readOnlyHint:!['apply','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
-     try{const result=boundForTransport(await execute(action,args));return{content:[{type:'text',text:JSON.stringify(result)}],isError:!result.ok};}
+   if(process.env.CADBRIDGE_READ_ONLY==='1'&&['apply','edit','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action))continue;
+   server.registerTool(name,{description,inputSchema:schemas[action],annotations:{readOnlyHint:!['apply','edit','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
+     try{const result=boundForTransport(await execute(action,args));const content=[{type:'text',text:JSON.stringify(result)}];if(action==='export'&&args.format==='png'&&result.ok&&result.exported.bytes<=4*1024*1024)content.push({type:'image',mimeType:'image/png',data:(await fs.readFile(result.exported.file)).toString('base64')});return{content,isError:!result.ok};}
      catch(error){return{content:[{type:'text',text:JSON.stringify(failure(error))}],isError:true};}
    });
  }

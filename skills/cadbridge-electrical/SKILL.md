@@ -1,6 +1,6 @@
 ---
 name: cadbridge-electrical
-description: "通过 CAD AI Bridge 读取和统计 CAD 电气图、布置设备、连线、编号并校验新 DWG；也可处理学校设计测试样本。Audit electrical drawings, place and connect devices, and verify saved DWGs using the connected bridge."
+description: "通过 CAD AI Bridge 查询、编辑和统计已有 CAD 图纸，批量移动复制旋转、修改属性与图层、标注出图、调整受管理电气路线，保存并校验新 DWG。Query and edit CAD drawings, annotate, plot PDF/PNG, and verify saved copies through the connected bridge."
 ---
 
 Use the connected CAD AI Bridge tools. Setup, compatibility and current write limits are described in the repository README; do not install clients or change other application settings merely by invoking this skill.
@@ -39,3 +39,5 @@ After a timeout, disconnect or unknown save state, call `cad_get_job` with the r
 Return the new DWG path, statistics, validation result and any material coverage gap. Source drawings are preserved by the bridge. Do not expose unrelated local paths or include installed vendor files in shared examples.
 
 When the client offers a file presentation tool, publish the exact returned DWG/DXF paths through it so users receive file cards or usable links; WorkBuddy exposes `present_files`. Do not copy large drawings into another workspace just to display them when absolute paths are accepted. Report file delivery separately from preview and opening: a successful presentation with `previewed: []` confirms file cards, not embedded CAD viewing. Users can open the delivered drawing with their existing local CAD application. Do not claim the client previewed a drawing merely because a file card was registered.
+
+For existing drawing edits, read [the editing workflow](references/editing-workflow.md). Discover cad_query_entities, cad_edit and cad_export before using them; older connectors may not provide them. Never substitute arbitrary scripts or shell commands for missing bridge operations.

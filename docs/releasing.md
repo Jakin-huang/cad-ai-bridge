@@ -1,6 +1,6 @@
 # GitHub 预览版发布准备
 
-当前发行标识为 v0.2.0-preview.3，内部包与插件兼容版本为0.2.0。用户附件为 cad-ai-bridge-0.2.0-preview.3-windows-x64.zip 和同名 .sha256；GitHub 发布标记 Pre-release。 [发布说明](releases/v0.2.0-preview.3.md)
+当前发行标识为 v0.2.0-preview.4，内部包与插件兼容版本为0.2.0。用户附件为 cad-ai-bridge-0.2.0-preview.4-windows-x64.zip 和同名 .sha256；GitHub 发布标记 Pre-release。 [发布说明](releases/v0.2.0-preview.4.md)
 
 ## 文件边界
 

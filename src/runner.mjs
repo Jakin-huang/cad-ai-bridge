@@ -12,7 +12,7 @@ import {failure} from './errors.mjs';
 import {atomicJson} from './files.mjs';
 import {verifyPlugin} from './setup.mjs';
 import {dataHome} from './local-paths.mjs';
-const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply']);
+const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply','edit']);
 export async function launchHost(exe,args){
  return new Promise((resolve,reject)=>{
   const child=spawn(exe,args,{windowsHide:true,stdio:['ignore','pipe','pipe']});let stdout='',stderr='';
@@ -75,6 +75,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    }
    if((action==='audit_drawing'&&response.auditDxfExported)||(result.drawing&&response.ok)){try{if((await fs.stat(path.join(job,'output.dxf'))).isFile())result.dxf=path.join(job,'output.dxf');}catch{}}
    timings.outputsMs=Math.round(performance.now()-t);
+   if(action==='export'&&result.ok){const file=path.join(job,'output.'+parsed.format);const bytes=await fs.readFile(file);if(parsed.format==='pdf'&&!bytes.subarray(0,5).equals(Buffer.from('%PDF-')))throw Error('PLOT_FORMAT_INVALID');if(parsed.format==='png'&&!bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])))throw Error('PLOT_FORMAT_INVALID');result.exported={...result.exported,file,bytes:bytes.length,sha256:await hashFile(file)};}
    if(action==='takeoff'&&result.snapshot){const s=result.snapshot,groups={};for(const d of s.devices){const key=`${d.blockName}|${d.attributes.MODEL||''}`;groups[key]=(groups[key]||0)+1;}result.takeoff={deviceCount:s.deviceCount,routeCount:s.routeCount,routeLengthMm:s.routeLengthMm,groups,coverage:s.coverage};}
    result.outcome=result.drawingSaved?'saved':response.mutationCommitted?'modified_not_saved':writes.has(action)?response.ok?'modified':'not_applied':'read_only';result.safeToRetry=false;
    if(result.error)result.error={...result.error,stage:response.failureStage||stage,next:'调用 cad_get_job 查看已有结果；写入失败或保存状态不明时不要自动重放。'};

@@ -11,6 +11,8 @@ const wireSpec=z.strictObject({wireType:wireField.optional(),conductorSpec:wireF
 const host=z.enum(['core','tangent']).optional();
 const detail=z.enum(['summary','full']).optional();
 const primitive=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('line'),layer:layerName,points:z.array(point).length(2)}),
+ z.strictObject({kind:z.literal('arc'),layer:layerName,position:point,radius:z.number().positive().max(1e6),startAngle:z.number().finite(),endAngle:z.number().finite()}),
  z.strictObject({kind:z.literal('polyline'),layer:layerName,points:z.array(point).min(2).max(1000),closed:z.boolean().default(false),width:z.number().positive().max(10000).optional()}),
  z.strictObject({kind:z.literal('solid'),layer:layerName,points:z.array(point).length(3)}),
  z.strictObject({kind:z.literal('circle'),layer:layerName,position:point,radius:z.number().positive().max(1e6)}),
@@ -44,10 +46,43 @@ export const schemas={
  create_drawing:z.strictObject({scene:sceneSchema}),
  tangent_inspect:z.strictObject({drawing:str,units:z.literal('mm').optional(),host,detail}),
  tangent_takeoff:z.strictObject({drawing:str,units:z.literal('mm').optional(),host,detail}),
- read_result:z.strictObject({jobId:z.string().regex(/^job-[A-Za-z0-9_-]+$/),kind:z.enum(['devices','wires','circuits','inserts','definitions','texts','managedDevices','routes','symbols','issues']),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)}),
+ read_result:z.strictObject({jobId:z.string().regex(/^job-[A-Za-z0-9_-]+$/),kind:z.enum(['devices','wires','circuits','inserts','definitions','texts','managedDevices','routes','symbols','issues','entities']),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)}),
  native_status:z.strictObject({drawing:str}),
  inspect:z.strictObject({drawing:str,host}),
  takeoff:z.strictObject({drawing:str,host}),
  validate:z.strictObject({drawing:str,host}),
  apply:z.strictObject({drawing:str,expectedSha256:z.string().regex(/^[a-fA-F0-9]{64}$/),documentId:z.uuid(),expectedRevision:z.number().int().nonnegative(),requestId:z.uuid(),units:z.literal('mm'),adapter:z.enum(['generic','tangent-v8','tangent-project']).optional(),host,operations:z.array(operation).min(1).max(100)})
 };
+
+const handle=z.string().regex(/^[A-Fa-f0-9]{1,16}$/);
+const handles=z.array(handle).min(1).max(1000).refine(a=>new Set(a.map(h=>h.toUpperCase())).size===a.length,'Duplicate handles');
+const cadLayer=z.string().min(1).max(255).regex(/^[^<>/\\":;?*|=\x00-\x1f]+$/);
+const region=z.strictObject({min:point,max:point,mode:z.enum(['intersects','contains']).default('intersects')}).refine(v=>v.min[0]<v.max[0]&&v.min[1]<v.max[1],'Invalid region');
+const properties=z.record(z.string().min(1).max(64),z.string().max(512)).refine(v=>Object.keys(v).length>0&&Object.keys(v).length<=20,'Expected 1..20 attributes');
+const editOperation=z.discriminatedUnion('type',[
+ z.strictObject({type:z.literal('move'),handles,delta:point}),
+ z.strictObject({type:z.literal('copy'),handles,delta:point}),
+ z.strictObject({type:z.literal('rotate'),handles,center:point,angleRadians:z.number().finite()}),
+ z.strictObject({type:z.literal('scale'),handles,center:point,factor:z.number().positive().max(1000)}),
+ z.strictObject({type:z.literal('mirror'),handles,axisStart:point,axisEnd:point,copy:z.boolean().default(true)}).refine(v=>v.axisStart.some((n,i)=>n!==v.axisEnd[i]),'Mirror axis has zero length'),
+ z.strictObject({type:z.literal('array'),handles,rows:z.number().int().min(1).max(100),columns:z.number().int().min(1).max(100),rowSpacing:z.number().finite(),columnSpacing:z.number().finite()}).refine(v=>v.rows*v.columns<=200&&(v.rows===1||v.rowSpacing!==0)&&(v.columns===1||v.columnSpacing!==0),'Invalid array'),
+ z.strictObject({type:z.literal('erase'),handles}),
+ z.strictObject({type:z.literal('set_attributes'),handles,attributes:properties}),
+ z.strictObject({type:z.literal('set_text'),handles,text:z.string().min(1).max(512).regex(/^[^\x00\r\n]*$/)}),
+ z.strictObject({type:z.literal('set_layer'),handles,layer:cadLayer}),
+ z.strictObject({type:z.literal('upsert_layer'),name:cadLayer,color:z.number().int().min(1).max(255),locked:z.boolean().optional(),off:z.boolean().optional()}),
+ z.strictObject({type:z.literal('add_geometry'),entities:z.array(primitive).min(1).max(2000)}),
+ z.strictObject({type:z.literal('insert_block'),blockName:z.string().min(1).max(255),position:point,rotationRadians:z.number().finite().default(0),layer:cadLayer,attributes:properties.optional()}),
+ z.strictObject({type:z.literal('offset'),handles,distance:z.number().finite().min(-1e6).max(1e6).refine(n=>n!==0)}),
+ z.strictObject({type:z.literal('trim'),handle,fromPoint:point,toPoint:point}),
+ z.strictObject({type:z.literal('extend_line'),handle,endpoint:z.enum(['start','end']),position:point}),
+ z.strictObject({type:z.literal('add_dimension'),kind:z.enum(['aligned','rotated']),fromPoint:point,toPoint:point,position:point,rotationRadians:z.number().finite().default(0),text:z.string().max(128).default(''),layer:cadLayer,height:z.number().positive().max(10000).default(120)}),
+ z.strictObject({type:z.literal('upsert_view'),name:id,center:point,width:z.number().positive().max(1e9),height:z.number().positive().max(1e9)}),
+ z.strictObject({type:z.literal('create_layout'),name:id,center:point,width:z.number().positive().max(1e9),height:z.number().positive().max(1e9)}),
+ z.strictObject({type:z.literal('update_route'),id,circuitId:z.string().min(1).max(64).regex(/\S/).optional(),from:endpoint.optional(),to:endpoint.optional(),vertices:z.array(point).min(2).max(1000).optional(),wireSpec:wireSpec.optional()}),
+ z.strictObject({type:z.literal('move_devices'),ids:z.array(id).min(1).max(1000).refine(a=>new Set(a).size===a.length,'Duplicate device IDs'),delta:point}),
+ z.strictObject({type:z.literal('add_route_label'),id,position:point,height:z.number().positive().max(10000).default(120),layer:cadLayer})
+]);
+schemas.query_entities=z.strictObject({drawing:str,host,filter:z.strictObject({handles:handles.optional(),ids:z.array(id).min(1).max(1000).optional(),types:z.array(z.enum(['LINE','LWPOLYLINE','ARC','CIRCLE','TEXT','MTEXT','INSERT','DIMENSION','SOLID'])).min(1).max(9).optional(),layers:z.array(cadLayer).min(1).max(100).optional(),blockName:z.string().min(1).max(255).optional(),textContains:z.string().min(1).max(128).optional(),attributes:properties.optional(),region:region.optional()}).default({}),limit:z.number().int().min(1).max(5000).default(1000)});
+schemas.edit=schemas.apply.extend({operations:z.array(z.union([operation,editOperation])).min(1).max(100)});
+schemas.export=z.strictObject({drawing:str,host,format:z.enum(['pdf','png']),layout:z.string().min(1).max(255).default('Model'),region:region.optional()});

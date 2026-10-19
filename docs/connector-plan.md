@@ -101,3 +101,9 @@ CADCraft 继续作为命令组织、会话和反馈方式的参考。是否采�
 - [验收摘要](validation-summary.json)、[工程副本验收](project-validation.md)与[学校样本](school-project.md)：需要保留的回归基础。
 - [CADCraft MCP 实现](https://github.com/storytold/cadcraft/blob/9b2308b138e90a01d28d46c84021a74b1ae7ef4a/crates/mcp/src/tools.rs)：按实际需要借鉴命令、查询与图像反馈。
 - [WorkBuddy 连接器说明](https://open.workbuddy.cn/docs/connector)：客户端接入参考；实际兼容以对应版本验收为准。
+
+## 2026-10-19 能力扩展阶段
+
+在维护与接入优化之后，新增已有图纸查询、批量编辑和真实CAD出图。保留原有15个工具，新工具为cad_query_entities、cad_edit、cad_export，沿用同一MCP、Skill和中文接入入口，不增加用户配置步骤。完整范围见[编辑与出图](editing.md)和[preview.4说明](releases/v0.2.0-preview.4.md)。
+
+新增操作按真实CoreConsole与天正宿主分别验证，覆盖保存重开、独立DXF、实际PDF/PNG、事务回滚、旧UUID重放和原图摘要。天正原生桥架、厂家专有标注和未验证原生命令尚未完成；普通路线文字标签不作为这些原生能力的替代。未完成项不列入已交付能力。

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0-preview.4 — 2026-10-19
+
+Add scoped entity queries and batch edits, managed route updates, dimensions/layouts, and actual CAD PDF/PNG plotting. Preserve original files, atomic rollback and saved v0.2 UUID compatibility. Vendor-native trays and proprietary annotations remain unavailable. See docs/releases/v0.2.0-preview.4.md.
+
+
 ## 0.2.0-preview.3 — 2026-10-19
 
 - Separate local validation data, drawings, old packages and examples from the source tree.

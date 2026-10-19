@@ -15,7 +15,7 @@ for(const [name,env]of cases){
  const started=performance.now();try{
   await client.connect(transport);const list=await client.listTools();measurements.push({name,startupMs:Math.round(performance.now()-started),toolCount:list.tools.length});
   for(const tool of ['cad_doctor','cad_get_job','cad_read_result','tangent_inspect'])assert.ok(list.tools.some(t=>t.name===tool));
-  if(name==='read-only')assert.ok(!list.tools.some(t=>t.name==='electrical_apply'));
+  if(name==='read-only'){assert.ok(!list.tools.some(t=>['electrical_apply','cad_edit'].includes(t.name)));for(const tool of ['cad_query_entities','cad_export'])assert.ok(list.tools.some(t=>t.name===tool));}
   const reply=await client.callTool({name:'cad_doctor',arguments:{}}),result=parseLocalJSON(reply.content[0].text);
   if(name!=='read-only'){assert.equal(result.ok,false);assert.ok(result.checks.some(c=>!c.ok));}
   checks.push(name+': handshake and tools available; diagnostics callable');console.log('PASS '+checks.at(-1));

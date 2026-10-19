@@ -20,6 +20,10 @@ namespace CadAgent
         public int expectedRevision;
         public Operation[] operations;
         public Scene scene;
+        public EntityFilter filter;
+        public int limit;
+        public string format,layout;
+        public QueryRegion region;
     }
     public sealed class Operation
     {
@@ -28,8 +32,18 @@ namespace CadAgent
         public string[] ids;
         public double[][] vertices;
         public Endpoint from, to;
-        public int start, width;
+        public int start;
         public WireSpec wireSpec;
+        public string[] handles;
+        public string handle,name,text,kind,endpoint;
+        public double[] delta,center,axisStart,axisEnd,fromPoint,toPoint,position;
+        public double angleRadians,factor,distance,rotationRadians,height,rowSpacing,columnSpacing;
+        public int rows,columns,color;
+        public double width;
+        public bool copy;
+        public bool? locked,off;
+        public Dictionary<string,string> attributes;
+        public Primitive[] entities;
     }
     public sealed class WireSpec { public string wireType, conductorSpec, method, installation, conduitDiameter; }
     public sealed class Endpoint { public string id, port; }
@@ -44,12 +58,19 @@ namespace CadAgent
     public sealed class State { public string documentId, adapter; public int revision; }
     public sealed class Meta { public string kind, id, circuitId, from, to, templateHandle; public double[] portOffset; }
     public sealed class TaskRecord { public string fingerprint; public int revision; }
+    // Preserve the serialized v0.2 operation shape for UUIDs already stored in DWGs.
+    public sealed class LegacyOperation {
+        public string type,blockName,id,circuitId,prefix,templateHandle,layer;
+        public Instance[] instances; public string[] ids; public double[][] vertices;
+        public Endpoint from,to; public int start,width; public WireSpec wireSpec;
+    }
+    public sealed class LegacyRequest { public string documentId,units; public LegacyOperation[] operations; }
     public sealed class Fault : System.Exception
     {
         public readonly string Code;
         public Fault(string code,string message):base(message){Code=code;}
     }
-    public static class Commands
+    public static partial class Commands
     {
         static readonly JavaScriptSerializer Json = new JavaScriptSerializer { MaxJsonLength=16777216, RecursionLimit=50 };
         const string StateKey="CADAGENT_STATE", MetaKey="CADAGENT_ENTITY";
@@ -188,7 +209,7 @@ namespace CadAgent
                 var clone=(BlockReference)tr.GetObject(mapping[sourceId].Value,OpenMode.ForWrite);
                 var transform=Matrix3d.Displacement(position-source.Position)*Matrix3d.Rotation(item.rotationRadians-source.Rotation,Vector3d.ZAxis,source.Position);
                 clone.TransformBy(transform);
-                foreach(ObjectId aid in clone.AttributeCollection){var attr=(AttributeReference)tr.GetObject(aid,OpenMode.ForWrite);attr.TransformBy(transform);if(attr.Tag.Equals("DEVICE_ID",StringComparison.OrdinalIgnoreCase))attr.TextString="";}
+                foreach(ObjectId aid in clone.AttributeCollection){var attr=(AttributeReference)tr.GetObject(aid,OpenMode.ForWrite);if(attr.Tag.Equals("DEVICE_ID",StringComparison.OrdinalIgnoreCase))attr.TextString="";}
                 foreach(var field in item.attributes??new Dictionary<string,string>()){bool found=false;foreach(ObjectId aid in clone.AttributeCollection){var attr=(AttributeReference)tr.GetObject(aid,OpenMode.ForRead);if(attr.Tag.Equals(field.Key,StringComparison.OrdinalIgnoreCase)){attr.UpgradeOpen();attr.TextString=field.Value;found=true;}}Require(found,"ATTRIBUTE_NOT_FOUND",field.Key);}
                 Mark(clone,new Meta{kind="device",id=item.id,templateHandle=op.templateHandle,portOffset=item.portOffset},tr);index.Add(item.id,clone);
             }
@@ -297,6 +318,7 @@ namespace CadAgent
         {
             var doc=App.DocumentManager.MdiActiveDocument;
             bool mutationCommitted=false,drawingSaved=false;
+            string executingAction=null;
             var watch=System.Diagnostics.Stopwatch.StartNew();long last=0;string phase="input";
             var timings=new Dictionary<string,long>();
             Action<string> mark=next=>{long now=watch.ElapsedMilliseconds;timings[phase]=timings.ContainsKey(phase)?timings[phase]+now-last:now-last;last=now;phase=next;};
@@ -305,8 +327,10 @@ namespace CadAgent
                 string raw=File.ReadAllText(requestFile,Encoding.UTF8);
                 Require(Encoding.UTF8.GetByteCount(raw)<=1048576,"REQUEST_TOO_LARGE","Request exceeds 1 MiB.");
                 var request=Json.Deserialize<Request>(raw);Require(request!=null,"INVALID_ARGUMENT","Request required.");
-                var db=doc.Database;bool replay=false;bool repair=request.action=="repair_copy";bool writes=repair||request.action=="create_drawing"||request.action=="create_test_drawing"||request.action=="prepare_project"||request.action=="apply";
-                Require(writes||request.action=="audit_drawing"||request.action=="inspect"||request.action=="takeoff"||request.action=="validate"||request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status","INVALID_ACTION","Unsupported action.");
+                executingAction=request.action;
+                var db=doc.Database;bool replay=false;bool repair=request.action=="repair_copy";bool writes=repair||request.action=="create_drawing"||request.action=="create_test_drawing"||request.action=="prepare_project"||request.action=="apply"||request.action=="edit";
+                Require(writes||request.action=="query_entities"||request.action=="export"||request.action=="audit_drawing"||request.action=="inspect"||request.action=="takeoff"||request.action=="validate"||request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status","INVALID_ACTION","Unsupported action.");
+                var changes=new List<object>();
                 string selectedAdapter="generic";
                 if(writes)
                 {
@@ -347,7 +371,11 @@ namespace CadAgent
                             Require(db.Insunits==UnitsValue.Millimeters,"UNITS_UNKNOWN","Drawing unit must be millimeters.");
                             Require(request.operations!=null&&request.operations.Length>0&&request.operations.Length<=100,"INVALID_ARGUMENT","Expected 1..100 operations.");
                             string key="CADAGENT_TASK_"+requestGuid.ToString("N");
-                            string fingerprint=Hash(Json.Serialize(new{request.documentId,request.units,request.operations}));
+                            object fingerprintOperations=request.operations;
+                            if(request.operations.All(op=>op!=null&&(op.type=="place_symbols"||op.type=="clone_project_symbols"||op.type=="connect_route"||op.type=="number_devices")))fingerprintOperations=Json.Deserialize<LegacyRequest>(raw).operations;
+                            string fingerprintPayload=Json.Serialize(new{request.documentId,request.units,operations=fingerprintOperations});
+                            string fingerprint=Hash(fingerprintPayload);
+                            File.WriteAllText(Path.Combine(Path.GetDirectoryName(response),"operation-fingerprint.json"),fingerprintPayload,new UTF8Encoding(false));
                             var task=(TaskRecord)Read(nod,key,tr,typeof(TaskRecord));
                             if(task!=null){Require(task.fingerprint==fingerprint,"REQUEST_ID_CONFLICT","UUID reused with different operations.");replay=true;}
                             else
@@ -361,8 +389,10 @@ namespace CadAgent
                                     else if(op.type=="place_symbols")Place(db,tr,op,index,selectedAdapter=="tangent-v8");
                                     else if(op.type=="number_devices")Number(db,tr,op,index);
                                     else if(op.type=="connect_route")Connect(db,tr,op,index,selectedAdapter=="tangent-v8"||selectedAdapter=="tangent-project");
+                                    else if(request.action=="edit")changes.Add(Edit(db,tr,op,index,selectedAdapter));
                                     else throw new Fault("INVALID_OPERATION","Unsupported operation: "+op.type);
                                 }
+                                if(request.action=="edit"){ValidateRoutes(index,tr);RefreshLabels(db,tr,index);}
                                 // Number collision validation includes all managed device instances.
                                 var seen=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                                 foreach(var e in index.Values.OfType<BlockReference>()){var a=Attributes(e,tr);if(a.ContainsKey("DEVICE_ID")&&a["DEVICE_ID"]!="")Require(seen.Add(a["DEVICE_ID"]),"NUMBER_CONFLICT",a["DEVICE_ID"]);}
@@ -386,10 +416,13 @@ namespace CadAgent
                     if(!String.IsNullOrEmpty(dxf)){mark("dxf");db.DxfOut(dxf,16,DwgVersion.AC1032);}
                 }
                 object audit=null;bool auditDxfExported=false;string auditDxfError=null;
+                object query=request.action=="query_entities"?QueryEntities(db,request):null;
+                object exported=null;
+                if(request.action=="export"){mark("plot");exported=ExportDrawing(doc,request,Path.GetDirectoryName(response));}
                 if(request.action=="audit_drawing"){audit=DrawingAudit.Read(db);try{db.DxfOut(dxf,16,DwgVersion.AC1032);auditDxfExported=true;}catch(System.Exception exportError){auditDxfError=exportError.Message;}}
-                var serializer=request.action=="audit_drawing"?new JavaScriptSerializer{MaxJsonLength=134217728,RecursionLimit=50}:Json;
+                var serializer=(request.action=="audit_drawing"||request.action=="query_entities")?new JavaScriptSerializer{MaxJsonLength=134217728,RecursionLimit=50}:Json;
                 mark("response");
-                File.WriteAllText(response,serializer.Serialize(new{ok=true,replayed=replay,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,timings=timings,snapshot=snapshot,tangent=tangent,audit=audit,auditDxfExported=auditDxfExported,auditDxfError=auditDxfError}),new UTF8Encoding(false));
+                File.WriteAllText(response,serializer.Serialize(new{ok=true,replayed=replay,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,timings=timings,snapshot=snapshot,tangent=tangent,audit=audit,query=query,changes=changes,exported=exported,auditDxfExported=auditDxfExported,auditDxfError=auditDxfError}),new UTF8Encoding(false));
                 doc.Editor.WriteMessage("\nCADAGENT_RUN_OK\n");
             }
             catch(System.Exception ex)
@@ -397,7 +430,8 @@ namespace CadAgent
                 var fault=ex as Fault;object snapshot=null;
                 string failedPhase=phase;mark("response");
                 try{snapshot=Inspect(doc.Database);}catch{}
-                File.WriteAllText(response,Json.Serialize(new{ok=false,error=new{code=fault==null?(failedPhase=="save"?"DWG_SAVE_FAILED":failedPhase=="dxf"?"DXF_EXPORT_FAILED":"CAD_ERROR"):fault.Code,message=ex.Message},failureStage=failedPhase,timings=timings,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,afterFailure=snapshot}),new UTF8Encoding(false));
+                object afterFailureQuery=null;try{if(executingAction=="edit")afterFailureQuery=QueryEntities(doc.Database,new Request{limit=1000});}catch{}
+                File.WriteAllText(response,Json.Serialize(new{ok=false,error=new{code=fault==null?(failedPhase=="save"?"DWG_SAVE_FAILED":failedPhase=="dxf"?"DXF_EXPORT_FAILED":"CAD_ERROR"):fault.Code,message=ex.Message},failureStage=failedPhase,timings=timings,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,afterFailure=snapshot,afterFailureQuery=afterFailureQuery}),new UTF8Encoding(false));
                 doc.Editor.WriteMessage("\nCADAGENT_RUN_ERROR "+ex.ToString()+"\n");
             }
         }
