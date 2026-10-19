@@ -94,3 +94,5 @@ metrics 记录 queueMs、configurationMs、snapshotMs、bootstrapMs、hostMs、o
 ## 已有图纸编辑与实际出图
 
 cad_query_entities、cad_edit、cad_export 的输入、范围及错误边界见[编辑与出图契约](editing.md)。原有15个工具保持兼容。新增场景几何支持line和arc；这些仍是普通CAD实体。
+
+cad_edit的天正原生操作为create_native_tray、set_native_tray_size、add_native_tray_label，按独立批次自动选择天正宿主。查询可筛选TCH_CABLETRY与TCH_CABLEDIM；宽高/型号和关联字段来自原生对象。原生标注文字以真实CAD图像核对。[范围与失败条件](native-trays.md)

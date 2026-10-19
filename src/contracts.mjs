@@ -60,6 +60,9 @@ const cadLayer=z.string().min(1).max(255).regex(/^[^<>/\\":;?*|=\x00-\x1f]+$/);
 const region=z.strictObject({min:point,max:point,mode:z.enum(['intersects','contains']).default('intersects')}).refine(v=>v.min[0]<v.max[0]&&v.min[1]<v.max[1],'Invalid region');
 const properties=z.record(z.string().min(1).max(64),z.string().max(512)).refine(v=>Object.keys(v).length>0&&Object.keys(v).length<=20,'Expected 1..20 attributes');
 const editOperation=z.discriminatedUnion('type',[
+ z.strictObject({type:z.literal('create_native_tray'),fromPoint:point,toPoint:point,width:z.number().positive().max(10000),height:z.number().positive().max(10000)}).refine(v=>Math.hypot(...v.fromPoint.map((n,i)=>n-v.toPoint[i]))>1e-6,'Tray is too short'),
+ z.strictObject({type:z.literal('set_native_tray_size'),handle,width:z.number().positive().max(10000),height:z.number().positive().max(10000)}),
+ z.strictObject({type:z.literal('add_native_tray_label'),handle,position:point,landingPoint:point}).refine(v=>v.position.some((n,i)=>n!==v.landingPoint[i]),'Label landing must differ from its corner'),
  z.strictObject({type:z.literal('move'),handles,delta:point}),
  z.strictObject({type:z.literal('copy'),handles,delta:point}),
  z.strictObject({type:z.literal('rotate'),handles,center:point,angleRadians:z.number().finite()}),
@@ -83,6 +86,7 @@ const editOperation=z.discriminatedUnion('type',[
  z.strictObject({type:z.literal('move_devices'),ids:z.array(id).min(1).max(1000).refine(a=>new Set(a).size===a.length,'Duplicate device IDs'),delta:point}),
  z.strictObject({type:z.literal('add_route_label'),id,position:point,height:z.number().positive().max(10000).default(120),layer:cadLayer})
 ]);
-schemas.query_entities=z.strictObject({drawing:str,host,filter:z.strictObject({handles:handles.optional(),ids:z.array(id).min(1).max(1000).optional(),types:z.array(z.enum(['LINE','LWPOLYLINE','ARC','CIRCLE','TEXT','MTEXT','INSERT','DIMENSION','SOLID'])).min(1).max(9).optional(),layers:z.array(cadLayer).min(1).max(100).optional(),blockName:z.string().min(1).max(255).optional(),textContains:z.string().min(1).max(128).optional(),attributes:properties.optional(),region:region.optional()}).default({}),limit:z.number().int().min(1).max(5000).default(1000)});
-schemas.edit=schemas.apply.extend({operations:z.array(z.union([operation,editOperation])).min(1).max(100)});
+schemas.query_entities=z.strictObject({drawing:str,host,filter:z.strictObject({handles:handles.optional(),ids:z.array(id).min(1).max(1000).optional(),types:z.array(z.enum(['LINE','LWPOLYLINE','ARC','CIRCLE','TEXT','MTEXT','INSERT','DIMENSION','SOLID','TCH_CABLETRY','TCH_CABLEDIM'])).min(1).max(11).optional(),layers:z.array(cadLayer).min(1).max(100).optional(),blockName:z.string().min(1).max(255).optional(),textContains:z.string().min(1).max(128).optional(),attributes:properties.optional(),region:region.optional()}).default({}),limit:z.number().int().min(1).max(5000).default(1000)});
+export const nativeOperations=new Set(['create_native_tray','set_native_tray_size','add_native_tray_label']);
+schemas.edit=schemas.apply.extend({operations:z.array(z.union([operation,editOperation])).min(1).max(100)}).superRefine((v,ctx)=>{if(v.operations.some(op=>nativeOperations.has(op.type))){if(v.host==='core')ctx.addIssue({code:'custom',message:'Native operations require the Tangent host'});if(v.operations.some(op=>!nativeOperations.has(op.type)))ctx.addIssue({code:'custom',message:'Run native operations in their own batch'});}});
 schemas.export=z.strictObject({drawing:str,host,format:z.enum(['pdf','png']),layout:z.string().min(1).max(255).default('Model'),region:region.optional()});

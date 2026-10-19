@@ -35,8 +35,8 @@ namespace CadAgent
         public int start;
         public WireSpec wireSpec;
         public string[] handles;
-        public string handle,name,text,kind,endpoint;
-        public double[] delta,center,axisStart,axisEnd,fromPoint,toPoint,position;
+        public string handle,name,text,kind,endpoint,nativeModel;
+        public double[] delta,center,axisStart,axisEnd,fromPoint,toPoint,position,landingPoint;
         public double angleRadians,factor,distance,rotationRadians,height,rowSpacing,columnSpacing;
         public int rows,columns,color;
         public double width;
@@ -65,6 +65,18 @@ namespace CadAgent
         public Endpoint from,to; public int start,width; public WireSpec wireSpec;
     }
     public sealed class LegacyRequest { public string documentId,units; public LegacyOperation[] operations; }
+    // Keep preview.4 ordinary-edit fingerprints stable as native DTO fields grow.
+    public sealed class EditingOperationV4 {
+        public string type,blockName,id,circuitId,prefix,templateHandle,layer;
+        public Instance[] instances; public string[] ids; public double[][] vertices;
+        public Endpoint from,to; public int start; public WireSpec wireSpec;
+        public string[] handles; public string handle,name,text,kind,endpoint;
+        public double[] delta,center,axisStart,axisEnd,fromPoint,toPoint,position;
+        public double angleRadians,factor,distance,rotationRadians,height,rowSpacing,columnSpacing;
+        public int rows,columns,color; public double width; public bool copy;
+        public bool? locked,off; public Dictionary<string,string> attributes; public Primitive[] entities;
+    }
+    public sealed class EditingRequestV4 { public string documentId,units; public EditingOperationV4[] operations; }
     public sealed class Fault : System.Exception
     {
         public readonly string Code;
@@ -331,13 +343,15 @@ namespace CadAgent
                 var db=doc.Database;bool replay=false;bool repair=request.action=="repair_copy";bool writes=repair||request.action=="create_drawing"||request.action=="create_test_drawing"||request.action=="prepare_project"||request.action=="apply"||request.action=="edit";
                 Require(writes||request.action=="query_entities"||request.action=="export"||request.action=="audit_drawing"||request.action=="inspect"||request.action=="takeoff"||request.action=="validate"||request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status","INVALID_ACTION","Unsupported action.");
                 var changes=new List<object>();
+                bool nativeBatch=request.action=="edit"&&request.operations!=null&&request.operations.Any(op=>op!=null&&IsNativeOperation(op.type));
                 string selectedAdapter="generic";
                 if(writes)
                 {
                     mark("transaction");
                     Require(repair||request.units=="mm","UNITS_UNKNOWN","MVP requires explicit mm.");
                     Guid requestGuid;Require(Guid.TryParse(request.requestId,out requestGuid),"INVALID_REQUEST_ID","requestId must be a UUID.");
-                    if(repair){db.Audit(true,true);mutationCommitted=true;}
+                    if(nativeBatch){replay=NativeEdit(doc,request,changes);mutationCommitted=true;}
+                    else if(repair){db.Audit(true,true);mutationCommitted=true;}
                     else {
                     using(var tr=db.TransactionManager.StartTransaction())
                     {
@@ -373,6 +387,7 @@ namespace CadAgent
                             string key="CADAGENT_TASK_"+requestGuid.ToString("N");
                             object fingerprintOperations=request.operations;
                             if(request.operations.All(op=>op!=null&&(op.type=="place_symbols"||op.type=="clone_project_symbols"||op.type=="connect_route"||op.type=="number_devices")))fingerprintOperations=Json.Deserialize<LegacyRequest>(raw).operations;
+                            else fingerprintOperations=Json.Deserialize<EditingRequestV4>(raw).operations;
                             string fingerprintPayload=Json.Serialize(new{request.documentId,request.units,operations=fingerprintOperations});
                             string fingerprint=Hash(fingerprintPayload);
                             File.WriteAllText(Path.Combine(Path.GetDirectoryName(response),"operation-fingerprint.json"),fingerprintPayload,new UTF8Encoding(false));
@@ -416,7 +431,7 @@ namespace CadAgent
                     if(!String.IsNullOrEmpty(dxf)){mark("dxf");db.DxfOut(dxf,16,DwgVersion.AC1032);}
                 }
                 object audit=null;bool auditDxfExported=false;string auditDxfError=null;
-                object query=request.action=="query_entities"?QueryEntities(db,request):null;
+                object query=request.action=="query_entities"||nativeBatch?QueryEntities(db,nativeBatch?new Request{limit=1000}:request):null;
                 object exported=null;
                 if(request.action=="export"){mark("plot");exported=ExportDrawing(doc,request,Path.GetDirectoryName(response));}
                 if(request.action=="audit_drawing"){audit=DrawingAudit.Read(db);try{db.DxfOut(dxf,16,DwgVersion.AC1032);auditDxfExported=true;}catch(System.Exception exportError){auditDxfError=exportError.Message;}}

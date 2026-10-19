@@ -43,6 +43,9 @@ try {
   $lispStage=$stage.Replace('\','/')
   function Literal([string]$value){return '"'+$value.Replace('\','/').Replace('"','\"')+'"'}
   $script=Join-Path $stage 'run.scr'
+  $requestData=Get-Content -LiteralPath (Join-Path $job 'request.json') -Raw | ConvertFrom-Json
+  $nativeEdit=$requestData.action -eq 'edit' -and @($requestData.operations | Where-Object {$_.type -in @('create_native_tray','set_native_tray_size','add_native_tray_label')}).Count -gt 0
+  $entry=if($nativeEdit){'CADBRIDGENATIVEOPEN'}else{'CADBRIDGEOPENRUNFILE'}
   $lines=@(
     ('(setq cbNativeFile (open '+(Literal (Join-Path $stage 'native-status.txt'))+' "w"))'),
     '(prin1 (arx) cbNativeFile)','(princ "\n" cbNativeFile)',
@@ -52,9 +55,17 @@ try {
     ('(setvar "TRUSTEDPATHS" (strcat cbPreviousTrust ";" '+(Literal $stage)+'))'),
     ('(command "_.NETLOAD" '+(Literal (Join-Path $stage 'CadAgent.dll'))+')'),
     '(setvar "TRUSTEDPATHS" cbPreviousTrust)',
-    ('(if (member "TEL_KERNAL.ARX" (mapcar ''strcase (arx))) (command "CADBRIDGEOPENRUNFILE" '+(Literal (Join-Path $stage 'request.json'))+') (princ "TANGENT_NATIVE_NOT_READY"))'),
-    '_.QUIT','_N',''
+    ('(if (member "TEL_KERNAL.ARX" (mapcar ''strcase (arx))) (command "'+$entry+'" '+(Literal (Join-Path $stage 'request.json'))+') (princ "TANGENT_NATIVE_NOT_READY"))')
   )
+  if($nativeEdit){
+    # A session command which switches documents must enter directly from the
+    # command stream, rather than retaining an outer AutoLISP command frame.
+    $lines=$lines[0..($lines.Length-2)]+@($entry,(Join-Path $stage 'request.json').Replace('\','/'),'')
+    $lines=@('(setvar "LOGFILEPATH" '+(Literal $stage)+')','(setvar "LOGFILEMODE" 1)')+$lines
+  }
+  # Native commands are queued in the newly opened document. Their hashed
+  # completion marker must arrive before the owned worker can be reclaimed.
+  if(-not $nativeEdit){$lines+=@('_.QUIT','_N','')}
   [IO.File]::WriteAllText($script,($lines -join "`n"),[Text.Encoding]::ASCII)
   $env:TArchFolder=$TangentRoot;$env:PATH=(Join-Path $TangentRoot 'sys24x64')+';'+(Join-Path $TangentRoot 'sys')+';'+$CadRoot+';'+$env:PATH
   # Explicit CreateProcess avoids ShellExecute/UAC waits. RunAsInvoker is child-only:
@@ -65,29 +76,54 @@ try {
   $start.WorkingDirectory=Join-Path $TangentRoot 'sys24x64';$start.Environment['__COMPAT_LAYER']='RunAsInvoker'
   # Autodesk requires /b and its script to be the final command-line arguments.
   foreach($arg in @((Join-Path $stage 'startup.dwg'),'/p',$Profile,'/nologo')){$start.ArgumentList.Add($arg)}
-  # Keep the manufacturer's module initialization order. Only its core is forced
-  # early; object interpreters demand-load normally from the selected installation.
-  $nativePreload=@('tch_kernal.arx')
+  # Load the full pipe module after its core, before object-enabler demand loads
+  # can bind the interactive classes to their display-only implementations.
+  $nativePreload=@('tch_kernal.arx','tch_PipeBase.arx')
   $moduleEvidence=@(foreach($module in $nativePreload){$modulePath=Join-Path (Join-Path $TangentRoot 'sys24x64') $module;if(-not(Test-Path -LiteralPath $modulePath)){throw ('Native module missing: '+$module)};$start.ArgumentList.Add('/ld');$start.ArgumentList.Add($modulePath);[ordered]@{name=$module;path=$modulePath;sha256=(Get-FileHash -LiteralPath $modulePath).Hash}})
   [IO.File]::WriteAllText((Join-Path $job 'native-preload.json'),($moduleEvidence|ConvertTo-Json),(New-Object Text.UTF8Encoding($false)))
   $start.ArgumentList.Add('/b');$start.ArgumentList.Add($script)
   $process=New-Object Diagnostics.Process;$process.StartInfo=$start
   if(-not $process.Start()){throw 'AutoCAD process did not start'}
   [IO.File]::WriteAllText((Join-Path $job 'process.json'),([ordered]@{pid=$process.Id;stage=$stage;startedAt=$process.StartTime.ToUniversalTime().ToString('o');executable=$start.FileName}|ConvertTo-Json),(New-Object Text.UTF8Encoding($false)))
-  $null=$process.Handle;$finished=$process.WaitForExit($TimeoutSeconds*1000)
-  if(-not $finished){$process.Kill();$process.WaitForExit()}
-  foreach($name in @('response.json','output.dwg','output.dxf','output.pdf','output.png','operation-fingerprint.json','native-status.txt')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
+  $null=$process.Handle;$finished=$false;$completedByProtocol=$false;$stoppedAfterCompletion=$false
+  if($nativeEdit){
+    $hostDeadline=[DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
+    while([DateTime]::UtcNow -lt $hostDeadline){
+      if($process.WaitForExit(250)){$finished=$true;break}
+      $marker=Join-Path $stage 'native-complete.json';$responseFile=Join-Path $stage 'response.json'
+      if((Test-Path -LiteralPath $marker) -and (Test-Path -LiteralPath $responseFile)){
+        $completion=Get-Content -LiteralPath $marker -Raw | ConvertFrom-Json
+        if($completion.requestId -ne $requestData.requestId -or $completion.responseSHA256 -ne (Get-FileHash -LiteralPath $responseFile).Hash){throw 'NATIVE_COMPLETION_INVALID: job identity or response hash differs'}
+        $completedByProtocol=$true
+        # All plugin operations and file writes have returned. The owned worker
+        # has no user documents; reap it without closing a busy /b script frame.
+        $process.Kill($true);$process.WaitForExit();$stoppedAfterCompletion=$true;$finished=$true;break
+      }
+    }
+  }else{$finished=$process.WaitForExit($TimeoutSeconds*1000)}
+  if(-not $finished){$process.Kill($true);$process.WaitForExit()}
+  if($nativeEdit -and $finished -and -not $completedByProtocol){
+    $marker=Join-Path $stage 'native-complete.json';$responseFile=Join-Path $stage 'response.json'
+    if(-not(Test-Path -LiteralPath $marker) -or -not(Test-Path -LiteralPath $responseFile)){throw 'NATIVE_COMPLETION_UNCONFIRMED: worker exited before confirmed completion'}
+    $completion=Get-Content -LiteralPath $marker -Raw | ConvertFrom-Json
+    if($completion.requestId -ne $requestData.requestId -or $completion.responseSHA256 -ne (Get-FileHash -LiteralPath $responseFile).Hash){throw 'NATIVE_COMPLETION_INVALID: job identity or response hash differs'}
+    $completedByProtocol=$true
+  }
+  foreach($name in @('response.json','output.dwg','output.dxf','output.pdf','output.png','operation-fingerprint.json','native-status.txt','native-runtime.json','native-complete.json','native-entry-error.log')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
+  if($nativeEdit){Get-ChildItem -LiteralPath $stage -Filter '*.log' | Copy-Item -Destination $job}
   $native=if(Test-Path -LiteralPath (Join-Path $job 'native-status.txt')){[IO.File]::ReadAllText((Join-Path $job 'native-status.txt'))}else{''}
   $watch.Stop()
-  [IO.File]::WriteAllText((Join-Path $job 'host.json'),([ordered]@{backend='tangent-gui';exitCode=$process.ExitCode;timedOut=(-not $finished);elapsedMs=$watch.ElapsedMilliseconds;stage=$stage;nativeKernelLoaded=$native.Contains('tel_kernal.arx');pluginSHA256=(Get-FileHash -LiteralPath (Join-Path $stage 'CadAgent.dll')).Hash}|ConvertTo-Json -Depth 5),(New-Object Text.UTF8Encoding($false)))
+  [IO.File]::WriteAllText((Join-Path $job 'host.json'),([ordered]@{backend='tangent-gui';exitCode=$process.ExitCode;timedOut=(-not $finished);completedByProtocol=$completedByProtocol;stoppedAfterCompletion=$stoppedAfterCompletion;elapsedMs=$watch.ElapsedMilliseconds;stage=$stage;nativeKernelLoaded=$native.Contains('tel_kernal.arx');pluginSHA256=(Get-FileHash -LiteralPath (Join-Path $stage 'CadAgent.dll')).Hash}|ConvertTo-Json -Depth 5),(New-Object Text.UTF8Encoding($false)))
   if(-not $finished){throw ('TIMEOUT_STATE_UNKNOWN: owned GUI process stopped; inspect '+$stage)}
+  if(Test-Path -LiteralPath (Join-Path $job 'native-entry-error.log')){throw 'NATIVE_HOST_CLEANUP_FAILED: inspect native-entry-error.log and saved outputs before retrying'}
   if(-not (Test-Path -LiteralPath (Join-Path $job 'response.json'))){throw ('TANGENT_HOST_NO_RESPONSE: native initialization or script failed; inspect '+$stage)}
 } finally {
   $cleanupErrors=New-Object 'Collections.Generic.List[string]'
   if($process){
     try{
-      if(-not $process.HasExited){$process.Kill();$process.WaitForExit()}
-      foreach($name in @('response.json','output.dwg','output.dxf','output.pdf','output.png','operation-fingerprint.json','native-status.txt')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
+      if(-not $process.HasExited){$process.Kill($true);$process.WaitForExit()}
+      foreach($name in @('response.json','output.dwg','output.dxf','output.pdf','output.png','operation-fingerprint.json','native-status.txt','native-runtime.json','native-complete.json','native-entry-error.log')){if(Test-Path -LiteralPath (Join-Path $stage $name)){Copy-Item -LiteralPath (Join-Path $stage $name) -Destination (Join-Path $job $name)}}
+      if($nativeEdit){Get-ChildItem -LiteralPath $stage -Filter '*.log' | Copy-Item -Destination $job}
     }catch{$cleanupErrors.Add($_.Exception.Message)}finally{$process.Dispose()}
   }
   if($locked){

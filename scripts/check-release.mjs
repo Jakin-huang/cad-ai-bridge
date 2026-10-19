@@ -71,6 +71,16 @@ if(!staticOnly){
  for(const result of Object.values(installed.results)){if(!result?.jobRoot||!result.metrics?.hostLaunches)continue;const host=parseLocalJSON((await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8')).replace(/^\uFEFF/,''));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);}
  pass('Current installed WorkBuddy configuration and Skill: SDK query/edit/plot and original electrical flow (not desktop conversation acceptance)');
  const upgrade=await readJSON('artifacts/editing-legacy-upgrade-report.json');assert.equal(upgrade.ok,true);assert.equal(upgrade.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(upgrade.result.replayed,true);pass('Saved pre-extension v0.2 UUID replays with current DLL without duplicate changes');
+ const v4upgrade=await readJSON('artifacts/preview4-editing-upgrade-report.json');assert.equal(v4upgrade.ok,true);assert.equal(v4upgrade.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(v4upgrade.result.replayed,true);pass('Saved preview.4 ordinary edit UUID remains compatible');
+ const native=await readJSON('artifacts/native-tangent-report.json');assert.equal(native.ok,true);assert.ok(native.checks.length>=16);assert.equal(native.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.ok(Date.parse(native.checkedAt)>=builtAt);
+ for(const result of Object.values(native.results)){
+  if(!result?.jobRoot||!result.metrics?.hostLaunches)continue;
+  const host=parseLocalJSON(await fs.readFile(path.join(result.jobRoot,'host.json'),'utf8'));assert.equal(host.pluginSHA256.toLowerCase(),build.sha256.toLowerCase());assert.equal(host.timedOut,false);
+  if(host.backend==='tangent-gui')assert.equal(parseLocalJSON(await fs.readFile(path.join(result.jobRoot,'cleanup.json'),'utf8')).ok,true);
+  const request=parseLocalJSON(await fs.readFile(path.join(result.jobRoot,'request.json'),'utf8'));
+  if(request.action==='edit'&&request.operations.some(op=>['create_native_tray','set_native_tray_size','add_native_tray_label'].includes(op.type)))assert.equal(host.completedByProtocol,true);
+ }
+ pass('Real native trays, associated labels, actual plot changes, catalog models, locked layers, rollback and source hashes');
  if(process.argv.includes('--with-local-projects'))try{
   const schoolFolder=resolveLocalPath((await fs.readFile(projectPath('artifacts/school-project-current.txt'),'utf8')).trim());
   const school=parseLocalJSON(await fs.readFile(path.join(schoolFolder,'delivery.json'),'utf8')),proof=parseLocalJSON(await fs.readFile(path.join(schoolFolder,'cad-verification.json'),'utf8')),model=parseLocalJSON(await fs.readFile(path.join(schoolFolder,'design-model.json'),'utf8')),manifest=parseLocalJSON(await fs.readFile(path.join(schoolFolder,'manifest.json'),'utf8'));

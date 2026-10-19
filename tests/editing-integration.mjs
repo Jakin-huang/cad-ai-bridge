@@ -11,7 +11,7 @@ const client=new Client({name:'cad-editing-acceptance',version:'0.2.0'}),checks=
 const host=process.argv.includes('--tangent')?'tangent':'core';
 const reportName=host==='core'?'editing-report.json':'editing-tangent-report.json';
 const transport=new StdioClientTransport({command:process.execPath,args:[path.resolve('mcp-server.mjs')],stderr:'pipe'});
-async function call(name,args={}){const response=await client.callTool({name,arguments:args},undefined,{timeout:180000});const text=response.content.find(c=>c.type==='text')?.text;let result;try{result=JSON.parse(text);}catch{throw Error(text);}if(name==='cad_export'&&args.format==='png'&&result.ok)assert.ok(response.content.some(c=>c.type==='image'));return result;}
+async function call(name,args={}){const response=await client.callTool({name,arguments:args},{timeout:180000});const text=response.content.find(c=>c.type==='text')?.text;let result;try{result=JSON.parse(text);}catch{throw Error(text);}if(name==='cad_export'&&args.format==='png'&&result.ok)assert.ok(response.content.some(c=>c.type==='image'));return result;}
 function check(name,fn){fn();checks.push(name);console.log('PASS '+name);}
 const fail=result=>assert.equal(result.ok,true,JSON.stringify(result.error));
 function request(drawing,operations){return{drawing:drawing.drawing,expectedSha256:drawing.drawingSha256,documentId:drawing.snapshot.documentId,expectedRevision:drawing.snapshot.revision,requestId:crypto.randomUUID(),units:'mm',host,operations};}

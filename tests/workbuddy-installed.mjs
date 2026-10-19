@@ -14,8 +14,9 @@ const server=config.mcpServers['cad-ai-bridge'];assert.equal(server.type,'stdio'
 const skill=path.join(locations.skill,'SKILL.md');assert.deepEqual(await fs.readFile(skill),await fs.readFile(projectPath('skills/cadbridge-electrical/SKILL.md')));
 await fs.access(path.join(locations.skill,'references/school-workflow.md'));
 assert.deepEqual(await fs.readFile(path.join(locations.skill,'references/editing-workflow.md')),await fs.readFile(projectPath('skills/cadbridge-electrical/references/editing-workflow.md')));
+assert.deepEqual(await fs.readFile(path.join(locations.skill,'references/native-tray-workflow.md')),await fs.readFile(projectPath('skills/cadbridge-electrical/references/native-tray-workflow.md')));
 const client=new Client({name:'installed-workbuddy-config-acceptance',version:'0.2.0'}),checks=[],results={};
-async function call(name,args={}){const reply=await client.callTool({name,arguments:args},undefined,{timeout:server.timeout});const value=parseLocalJSON(reply.content[0].text);assert.equal(value.ok,true,JSON.stringify(value.error));results[name]=value;return value;}
+async function call(name,args={}){const reply=await client.callTool({name,arguments:args},{timeout:server.timeout});const value=parseLocalJSON(reply.content[0].text);assert.equal(value.ok,true,JSON.stringify(value.error));results[name]=value;return value;}
 try{
  await client.connect(new StdioClientTransport({command:server.command,args:server.args,env:{...process.env,...server.env},stderr:'pipe'}));
  assert.equal((await client.listTools()).tools.length,18);checks.push('Installed MCP configuration starts and discovers 18 tools');

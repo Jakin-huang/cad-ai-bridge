@@ -7,6 +7,15 @@ import crypto from 'node:crypto';
 import {schemas} from '../../src/contracts.mjs';
 import {boundForTransport,readResultPage} from '../../src/results.mjs';
 const base={drawing:'drawing.dwg',expectedSha256:'a'.repeat(64),documentId:'202a2572-0b4a-4de4-95c0-138f250c0d83',expectedRevision:0,requestId:'293040de-26b0-4b1b-9e3f-98697c348ba0',units:'mm'};
+test('native tray edits reject command text, mixed batches, core hosts and invalid sizes',()=>{
+ const tray={type:'create_native_tray',fromPoint:[0,0,0],toPoint:[3000,0,0],width:400,height:150};
+ assert.equal(schemas.edit.safeParse({...base,operations:[tray]}).success,true);
+ const label={type:'add_native_tray_label',handle:'A',position:[1500,800,0],landingPoint:[2500,800,0]};
+ assert.equal(schemas.edit.safeParse({...base,operations:[label]}).success,true);
+ assert.equal(schemas.edit.safeParse({...base,operations:[{...label,landingPoint:label.position}]}).success,false);
+ assert.equal(schemas.edit.safeParse({...base,operations:[{...tray,nativeModel:'injected'}]}).success,false);
+ for(const request of [{...base,host:'core',operations:[tray]},{...base,operations:[tray,{type:'erase',handles:['A']}]},{...base,operations:[{...tray,toPoint:[0,0,0]}]},{...base,operations:[{...tray,height:0}]},{...base,operations:[{...tray,toPoint:[1e-10,0,0]}]},{...base,operations:[{...tray,command:'tel_set'}]}])assert.equal(schemas.edit.safeParse(request).success,false);
+});
 test('editing cannot accept code, output overrides, ambiguous handles or non-planar transforms',()=>{
  for(const operation of [{type:'run_command',command:'ERASE ALL'},{type:'move',handles:['A','a'],delta:[0,0,0]},{type:'move',handles:['A'],delta:[0,0,1]},{type:'scale',handles:['A'],center:[0,0,0],factor:0},{type:'mirror',handles:['A'],axisStart:[0,0,0],axisEnd:[0,0,0]}])assert.equal(schemas.edit.safeParse({...base,operations:[operation]}).success,false);
  assert.equal(schemas.edit.safeParse({...base,output:'source.dwg',operations:[{type:'erase',handles:['A']}]}).success,false);

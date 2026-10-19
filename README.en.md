@@ -2,7 +2,7 @@
 
 A local MCP and Skill connector between your existing CAD software and AI client. The preview preserves read, takeoff, constrained batch editing, file protection, task recovery and pagination capabilities.
 
-**v0.2.0-preview.4 Windows user preview.** Tested scope: Windows 10 x64, Chinese AutoCAD 2022, optional Tangent Electrical V8 and WorkBuddy 5.3.8. Use your own normally licensed software.
+**v0.2.0-preview.5 Windows user preview.** Tested scope: Windows 10 x64, Chinese AutoCAD 2022, optional Tangent Electrical V8 and WorkBuddy 5.3.8. Use your own normally licensed software.
 
 Extract the complete user ZIP, open **开始使用.exe**, choose your drawing folder and connect WorkBuddy. Complete its first-trust confirmation and select the connector in your task. The [offline illustrated guide](使用说明.html) explains the steps. Portable runtimes, locked dependencies and the project plugin are included; development tools and administrator rights are unnecessary.
 
@@ -14,6 +14,6 @@ Run npm test and npm run check -- --static for source verification. Tests requir
 
 Clean Windows, a separate standard account, browser download prompts and other CAD/client versions remain unverified. Prior WorkBuddy desktop acceptance is user-assisted; embedded CAD preview and unattended desktop setup are not claimed.
 
-[中文](README.md) · [Release notes](docs/releases/v0.2.0-preview.4.md) · [Tools](docs/tools.md) · [Contributing](CONTRIBUTING.md) · [MIT](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+[中文](README.md) · [Release notes](docs/releases/v0.2.0-preview.5.md) · [Tools](docs/tools.md) · [Contributing](CONTRIBUTING.md) · [MIT](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
-Preview 4 adds cad_query_entities, cad_edit and cad_export: scoped ordinary-entity editing, managed route updates, dimensions, layouts, and actual CAD PDF/PNG plotting. See [editing scope](docs/editing.md). Vendor-native cable trays and proprietary command workflows remain unverified and unavailable.
+The existing 18 tools retain scoped editing, managed route updates, dimensions, layouts, and actual CAD PDF/PNG plotting. Preview 5 adds real Tangent V8 independent straight channel-type (槽式) cable trays, catalog-matched dimensions/models and associated proprietary labels through cad_edit. See [editing scope](docs/editing.md) and [native tray limits](docs/native-trays.md). Connected fittings, other tray families and complete vendor statistics remain outside scope.

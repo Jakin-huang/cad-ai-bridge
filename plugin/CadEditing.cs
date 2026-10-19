@@ -13,6 +13,8 @@ namespace CadAgent {
   static Dictionary<string,object> Describe(Entity e,Transaction tr){
    var row=new Dictionary<string,object>{{"handle",e.Handle.ToString()},{"type",e.GetRXClass().DxfName},{"layer",e.Layer},{"color",e.ColorIndex}};
    var layer=(LayerTableRecord)tr.GetObject(e.LayerId,OpenMode.ForRead);row["locked"]=layer.IsLocked;
+   if(e.GetRXClass().DxfName=="TCH_CABLETRY")row["native"]=NativeTrayProperties(e);
+   if(e.GetRXClass().DxfName=="TCH_CABLEDIM")row["native"]=NativeLabelProperties(e);
    var m=Metadata(e,tr);if(m!=null){row["id"]=m.id;row["managedKind"]=m.kind;}
    try{var b=e.GeometricExtents;row["bounds"]=new{min=XY(b.MinPoint),max=XY(b.MaxPoint)};}catch{}
    var br=e as BlockReference;if(br!=null){row["blockName"]=br.Name;row["position"]=XY(br.Position);row["rotationRadians"]=br.Rotation;row["attributes"]=Attributes(br,tr);row["dynamic"]=br.IsDynamicBlock;}

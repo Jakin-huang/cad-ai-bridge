@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0-preview.5 — 2026-10-19
+
+Add native Tangent V8 straight channel-type (槽式) cable trays, installed-catalog dimension/model matching and associated TCH_CABLEDIM labels through the existing cad_edit tool. Verify saved native associations and actual rendered label updates. Select the full Tangent pipe module before object enablers; confirm completion before reclaiming owned CAD worker trees. Preserve both original electrical UUIDs and preview.4 ordinary-edit UUIDs. See docs/releases/v0.2.0-preview.5.md.
+
 ## 0.2.0-preview.4 — 2026-10-19
 
 Add scoped entity queries and batch edits, managed route updates, dimensions/layouts, and actual CAD PDF/PNG plotting. Preserve original files, atomic rollback and saved v0.2 UUID compatibility. Vendor-native trays and proprietary annotations remain unavailable. See docs/releases/v0.2.0-preview.4.md.

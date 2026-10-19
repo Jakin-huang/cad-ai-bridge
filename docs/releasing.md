@@ -1,6 +1,6 @@
 # GitHub 预览版发布准备
 
-当前发行标识为 v0.2.0-preview.4，内部包与插件兼容版本为0.2.0。用户附件为 cad-ai-bridge-0.2.0-preview.4-windows-x64.zip 和同名 .sha256；GitHub 发布标记 Pre-release。 [发布说明](releases/v0.2.0-preview.4.md)
+当前发行标识为 v0.2.0-preview.5，内部包与插件兼容版本为0.2.0。用户附件为 cad-ai-bridge-0.2.0-preview.5-windows-x64.zip 和同名 .sha256；GitHub 发布标记 Pre-release。 [发布说明](releases/v0.2.0-preview.5.md)
 
 ## 文件边界
 
@@ -12,7 +12,7 @@
 
 npm test 运行无CAD测试。没有维护者的外部需求数据时，相关专项明确跳过；CI不宣称完成私有案例或真实CAD验证。npm run check -- --static 核对公开文件、链接、依赖锁定和禁止资产。
 
-完整本机验证运行 tests/integration.mjs、tests/tangent-integration.mjs、tests/mcp-results.mjs；配置外部输入后可运行 tests/school-mcp.mjs。npm run check 核对当前插件、普通/天正及协议报告。--with-local-projects 另外要求外部工程/项目交付与当前源码相符；历史报告不能代替新代码的专项验证。
+完整本机验证运行 tests/integration.mjs、tests/tangent-integration.mjs、tests/mcp-results.mjs及tests/native-tangent.mjs，并分别运行tests/editing-integration.mjs的普通/天正宿主验收。CAD验收顺序执行，避免争用同一本机宿主。配置外部输入后可运行 tests/school-mcp.mjs。npm run check 核对当前插件、普通/天正、原生标注和协议报告，以及旧电气/preview.4普通编辑的UUID兼容性。--with-local-projects 另外要求外部工程/项目交付与当前源码相符；历史报告不能代替新代码的专项验证。
 
 完成代码提交并创建对应标签后运行 node scripts/package-release.mjs --user --frozen。工作树须干净，标签指向HEAD，清单记录源码提交与tree。ZIP和解压暂存保存在项目外验证目录的dist中，不覆盖已有冻结包。
 

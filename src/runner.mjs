@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {spawn} from 'node:child_process';
-import {schemas} from './contracts.mjs';
+import {schemas,nativeOperations} from './contracts.mjs';
 import {loadConfig,projectRoot as root} from './config.mjs';
 import {diagnose} from './diagnostics.mjs';
 import {snapshotDrawing,hashFile} from './drawings.mjs';
@@ -12,6 +12,7 @@ import {failure} from './errors.mjs';
 import {atomicJson} from './files.mjs';
 import {verifyPlugin} from './setup.mjs';
 import {dataHome} from './local-paths.mjs';
+import {resolveNativeModels} from './native-catalog.mjs';
 const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply','edit']);
 export async function launchHost(exe,args){
  return new Promise((resolve,reject)=>{
@@ -39,13 +40,14 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
   const mark=async phase=>{stage=phase;if(task){task.phase=phase;task.updatedAt=new Date().toISOString();await atomicJson(path.join(job,'task.json'),task);}};
   try{
    let t=performance.now();settings=await getSettings();const allowedRoot=await fs.realpath(settings.workspace);timings.configurationMs=Math.round(performance.now()-t);
-   const backend=action==='native_status'?'tangent':parsed.host||'core';
+   const backend=action==='native_status'||parsed.operations?.some(op=>nativeOperations.has(op.type))?'tangent':parsed.host||'core';
    if(backend==='tangent'&&(!settings.tangentRoot||!settings.tangentProfile))throw Error('TANGENT_NOT_CONFIGURED: run cadbridge setup and select Tangent V8.');
    await fs.mkdir(runs,{recursive:true});job=await fs.mkdtemp(path.join(runs,'job-'));
    const {drawing,expectedSha256,host:requestedHost,detail,...payload}=parsed,request={...payload,action};
    if(['create_test_drawing','create_drawing'].includes(action)){request.requestId=crypto.randomUUID();request.units='mm';}
    task={jobId:path.basename(job),action,requestId:request.requestId,backend,ownerPid:process.pid,status:'preparing',startedAt:new Date().toISOString()};await mark('snapshot');
    t=performance.now();if(drawing)inputSha256=await snapshotDrawing(drawing,[allowedRoot,runs],job,expectedSha256);timings.snapshotMs=Math.round(performance.now()-t);
+   if(action==='edit'&&request.operations?.some(op=>nativeOperations.has(op.type)))Object.assign(request,await resolveNativeModels(request.operations,settings.tangentRoot));
    const encoded=JSON.stringify(request);if(Buffer.byteLength(encoded)>1024*1024)throw Error('REQUEST_TOO_LARGE: request exceeds 1 MiB');
    await fs.writeFile(path.join(job,'request.json'),encoded);
    t=performance.now();

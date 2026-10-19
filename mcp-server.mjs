@@ -7,7 +7,7 @@ const {McpServer}=await dependency('@modelcontextprotocol/server');
 const {serveStdio}=await dependency('@modelcontextprotocol/server/stdio');
 const definitions=[
  ['cad_query_entities','query_entities','只读查询模型空间对象：按图层、类型、区域、文字、图块属性或句柄筛选，返回位置、几何、属性、图层、布局与命名视图。句柄必须与本次文件摘要一起使用。'],
- ['cad_edit','edit','在受管理图纸副本中批量移动、复制、旋转、缩放、镜像、阵列、删除普通对象，修改文字/属性/图层，补画、偏移、直线修剪延伸、标注、视图和布局；支持受管理设备移动、路线修改及关联路线标签。失败整批回滚，另存新 DWG。'],
+ ['cad_edit','edit','在图纸副本中批量编辑普通对象、属性、文字、图层、尺寸标注及布局，调整受管理设备和路线；支持天正 V8 独立直线槽式桥架创建、尺寸型号修改、原生关联桥架标注。天正原生操作单独成批。失败回滚，另存新 DWG，保留原图。'],
  ['cad_export','export','用真实 AutoCAD 打印引擎将图纸或局部区域导出 PDF/PNG，支持指定布局。仅处理副本；PNG 可作为可视反馈。失败不重放任何编辑。'],
  ['cad_doctor','doctor','检查 CAD AI Bridge 的配置、工作目录与插件，给出修复建议。不启动 CAD；即使 CAD 或配置缺失也可调用。refresh=true 强制重新检测。'],
  ['cad_get_job','get_job','查询已有任务和保存结果；提供 jobId，或用原请求 requestId 查找相关任务。无需 CAD，不重放任何修改；断连或超时后先调用本工具。'],
