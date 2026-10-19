@@ -19,7 +19,7 @@ run(powershell,['-NoProfile','-NonInteractive','-Command',"Add-Type -AssemblyNam
 const folders=await fs.readdir(destination);assert.equal(folders.length,1);const folder=path.join(destination,folders[0]);
 const manifest=parseLocalJSON(await fs.readFile(path.join(folder,'release-manifest.json'),'utf8'));assert.equal(manifest.offlineSetup,true);
 for(const file of manifest.files)assert.equal(hash(await fs.readFile(path.join(folder,file.file))),file.sha256,file.file);
-const maintenance=new Set(['scripts/verify-user-repack.mjs','scripts/package-release.mjs','scripts/public-files.mjs','scripts/check-release.mjs','scripts/summarize-maintenance.mjs','scripts/summarize-windows-user.mjs','scripts/prepare-clean-windows.mjs','scripts/prepare-clean-vm.mjs']);
+const maintenance=new Set(['scripts/verify-user-repack.mjs','scripts/build-user-launcher.ps1','scripts/package-release.mjs','scripts/public-files.mjs','scripts/check-release.mjs','scripts/summarize-maintenance.mjs','scripts/summarize-windows-user.mjs','scripts/summarize-practical.mjs','scripts/verify-practical.mjs','scripts/prepare-clean-windows.mjs','scripts/prepare-clean-vm.mjs']);
 const product=file=>!maintenance.has(file)&&(!/^(?:docs|tests|\.github)\//.test(file))&&(/\.(?:mjs|ps1|cmd|cs)$/.test(file)||/^(?:src|runtime-archives|node_modules|plugin|skills)\//.test(file)||['package.json','package-lock.json','scripts/runtime-assets.json','开始使用.exe','使用说明.html'].includes(file));
 const old=new Map(accepted.verifiedManifest.filter(entry=>product(entry.file)).map(entry=>[entry.file,entry.sha256]));
 const current=new Map(manifest.files.filter(entry=>product(entry.file)).map(entry=>[entry.file,entry.sha256]));
@@ -31,8 +31,8 @@ const server=parseLocalJSON(await fs.readFile(path.join(home,'mcp.json'),'utf8')
 const client=new Client({name:'final-user-package-verification',version:'0.2.0'});
 try{
  await client.connect(new StdioClientTransport({command:server.command,args:server.args,env:{...process.env,...server.env},stderr:'pipe'}));
- assert.equal((await client.listTools()).tools.length,18);
+ assert.equal((await client.listTools()).tools.length,21);
  const doctor=parseLocalJSON((await client.callTool({name:'cad_doctor',arguments:{}})).content[0].text);assert.equal(doctor.ok,true);
 }finally{await client.close();}
-const report={ok:true,checkedAt:new Date().toISOString(),archive:zip,sha256,bytes:(await fs.stat(zip)).size,extracted:folder,verifiedFiles:manifest.files.length,matchingProductFiles:current.size,acceptedCandidateSHA256:accepted.packageSha256,checks:['ZIP sidecar and all extracted files match SHA-256 manifest','Every runtime, dependency, plugin, Skill and product entry is identical to the accepted candidate','Fresh isolated setup succeeds offline with minimal PATH','Generated MCP entry discovers 18 tools and diagnostic passes'],cleanWindowsVerified:false,separateStandardAccountVerified:false};
+const report={ok:true,checkedAt:new Date().toISOString(),archive:zip,sha256,bytes:(await fs.stat(zip)).size,extracted:folder,verifiedFiles:manifest.files.length,matchingProductFiles:current.size,acceptedCandidateSHA256:accepted.packageSha256,checks:['ZIP sidecar and all extracted files match SHA-256 manifest','Every runtime, dependency, plugin, Skill and product entry is identical to the accepted candidate','Fresh isolated setup succeeds offline with minimal PATH','Generated MCP entry discovers 21 tools and diagnostic passes'],cleanWindowsVerified:false,separateStandardAccountVerified:false};
 await fs.writeFile(projectPath('artifacts/windows-user-final-package-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));

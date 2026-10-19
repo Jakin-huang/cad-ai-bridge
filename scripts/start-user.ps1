@@ -32,7 +32,7 @@ $copy=Button '复制第一条任务' 30 457 170;$copy.Enabled=$false
 $logs=Button '查看日志' 218 457 112;$logs.Enabled=$false
 $foot=Label '接入不会修改原图纸。请保留整个解压目录，移动后重新接入。' 30 517 660 35
 $foot.ForeColor=[Drawing.Color]::DimGray
-$example='使用 CAD AI Bridge 检查连接，新建天正适配测试图，在 (0,0) 和 (3000,0) 各放一盏灯，连接 WL1，编号 L-001、L-002。一次批量修改后保存，重开核对两盏灯、3000 毫米路线和编号，返回可点击的 DWG/DXF 文件。'
+$example='使用 CAD AI Bridge 检查连接，在毫米制新图中画两条长3000毫米、间隔1000毫米的水平线，并写“测试”。把文字替换为“CAD AI Bridge”，保存后重开核对，生成按对象类型和图层分组的CSV及PNG预览，返回实际DWG和交付文件链接。'
 $browse.Add_Click({
   $picker=New-Object Windows.Forms.FolderBrowserDialog
   try{$picker.Description='选择已有图纸所在的文件夹，也可以新建文件夹';$picker.ShowNewFolderButton=$true;if(Test-Path -LiteralPath $folder.Text -PathType Container){$picker.SelectedPath=$folder.Text};if($picker.ShowDialog($form) -eq 'OK'){$folder.Text=$picker.SelectedPath}}finally{$picker.Dispose()}

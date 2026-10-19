@@ -21,6 +21,7 @@ namespace CadAgent
         public Operation[] operations;
         public Scene scene;
         public EntityFilter filter;
+        public QueryScope scope;
         public int limit;
         public string format,layout;
         public QueryRegion region;

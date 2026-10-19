@@ -1,5 +1,7 @@
 # 已有图纸编辑与实际 CAD 出图
 
+开发候选增加只读scope参数：layout选择布局，includeNested展开本地嵌套，maxDepth为1—8、默认4。返回实例路径和WCS点/边界；嵌套标量使用definition_字段，外参内容不展开。默认查询仍是模型空间根层，编辑范围不随只读展开而扩大。新通用任务及当前会话见[实施记录](practical-development.md)。
+
 v0.2.0-preview.4 新增 cad_query_entities、cad_edit、cad_export，原有15个工具保留。新增能力是结构化操作，仍在输入快照中执行，输出新DWG/DXF；没有任意命令、LISP或输出覆盖入口。普通用户沿用同一中文开始入口和Skill，无需学习句柄、请求UUID或版本信息。
 
 ## 查询与执行

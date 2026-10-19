@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.Geometry;
 namespace CadAgent {
  public sealed class QueryRegion { public double[] min,max; public string mode; }
  public sealed class EntityFilter { public string[] handles,ids,types,layers; public string blockName,textContains; public Dictionary<string,string> attributes; public QueryRegion region; }
+ public sealed class QueryScope { public string layout;public bool includeNested;public int maxDepth=4; }
  public static partial class Commands {
   static double[] XY(Point3d p){return new[]{p.X,p.Y,p.Z};}
   static string TextOf(Entity e){var text=e as DBText;if(text!=null)return text.TextString;var mt=e as MText;return mt==null?null:mt.Contents;}
@@ -17,7 +18,7 @@ namespace CadAgent {
    if(e.GetRXClass().DxfName=="TCH_CABLEDIM")row["native"]=NativeLabelProperties(e);
    var m=Metadata(e,tr);if(m!=null){row["id"]=m.id;row["managedKind"]=m.kind;}
    try{var b=e.GeometricExtents;row["bounds"]=new{min=XY(b.MinPoint),max=XY(b.MaxPoint)};}catch{}
-   var br=e as BlockReference;if(br!=null){row["blockName"]=br.Name;row["position"]=XY(br.Position);row["rotationRadians"]=br.Rotation;row["attributes"]=Attributes(br,tr);row["dynamic"]=br.IsDynamicBlock;}
+   var br=e as BlockReference;if(br!=null){row["blockName"]=br.Name;row["position"]=XY(br.Position);row["rotationRadians"]=br.Rotation;row["attributes"]=Attributes(br,tr);row["dynamic"]=br.IsDynamicBlock;var definition=(BlockTableRecord)tr.GetObject(br.BlockTableRecord,OpenMode.ForRead);row["xref"]=definition.IsFromExternalReference;}
    var text=TextOf(e);if(text!=null){row["text"]=text;row["position"]=XY(e is DBText?((DBText)e).Position:((MText)e).Location);}
    var curve=e as Curve;if(curve!=null){try{row["start"]=XY(curve.StartPoint);row["end"]=XY(curve.EndPoint);row["length"]=curve.GetDistanceAtParameter(curve.EndParam)-curve.GetDistanceAtParameter(curve.StartParam);}catch{}}
    var poly=e as Polyline;if(poly!=null){row["vertices"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>XY(poly.GetPoint3dAt(i))).ToArray();row["closed"]=poly.Closed;row["width"]=poly.ConstantWidth;}
@@ -25,7 +26,7 @@ namespace CadAgent {
    var dim=e as Dimension;if(dim!=null){row["measurement"]=dim.Measurement;row["dimensionText"]=dim.DimensionText;}
    return row;
   }
-  static bool Matches(Entity e,Transaction tr,EntityFilter f){
+  static bool Matches(Entity e,Transaction tr,EntityFilter f,Matrix3d? transform=null){
    if(f==null)return true;
    if(f.handles!=null&&!f.handles.Contains(e.Handle.ToString(),StringComparer.OrdinalIgnoreCase))return false;
    var m=Metadata(e,tr);if(f.ids!=null&&(m==null||!f.ids.Contains(m.id)))return false;
@@ -34,7 +35,7 @@ namespace CadAgent {
    var br=e as BlockReference;if(f.blockName!=null&&(br==null||!String.Equals(br.Name,f.blockName,StringComparison.OrdinalIgnoreCase)))return false;
    if(f.textContains!=null&&(TextOf(e)==null||TextOf(e).IndexOf(f.textContains,StringComparison.OrdinalIgnoreCase)<0))return false;
    if(f.attributes!=null){if(br==null)return false;var a=Attributes(br,tr);foreach(var kv in f.attributes)if(!a.ContainsKey(kv.Key)||a[kv.Key]!=kv.Value)return false;}
-   if(f.region!=null){try{var b=e.GeometricExtents;var lo=Point(f.region.min);var hi=Point(f.region.max);
+   if(f.region!=null){try{var b=e.GeometricExtents;if(transform.HasValue)b.TransformBy(transform.Value);var lo=Point(f.region.min);var hi=Point(f.region.max);
     if(f.region.mode=="contains"){if(b.MinPoint.X<lo.X||b.MaxPoint.X>hi.X||b.MinPoint.Y<lo.Y||b.MaxPoint.Y>hi.Y)return false;}
     else if(b.MaxPoint.X<lo.X||b.MinPoint.X>hi.X||b.MaxPoint.Y<lo.Y||b.MinPoint.Y>hi.Y)return false;
    }catch{return false;}}
@@ -42,12 +43,12 @@ namespace CadAgent {
   }
   static object QueryEntities(Database db,Request request){
    using(var tr=db.TransactionManager.StartOpenCloseTransaction()){
-    var items=new List<object>();int total=0;var errors=new List<object>();
-    foreach(var e in Entities(db,tr)){try{if(!Matches(e,tr,request.filter))continue;total++;if(items.Count<request.limit)items.Add(Describe(e,tr));}catch(System.Exception ex){if(errors.Count<100)errors.Add(new{handle=e.Handle.ToString(),message=ex.Message});}}
+    var items=new List<object>();int total=0;var errors=new List<object>();bool scopeTruncated=false;
+    ReadQueryScope(db,tr,request,items,errors,ref total,ref scopeTruncated);
     var layers=new List<object>();foreach(ObjectId id in (LayerTable)tr.GetObject(db.LayerTableId,OpenMode.ForRead)){var l=(LayerTableRecord)tr.GetObject(id,OpenMode.ForRead);layers.Add(new{name=l.Name,color=l.Color.ColorIndex,locked=l.IsLocked,off=l.IsOff,frozen=l.IsFrozen});}
     var layouts=new List<object>();foreach(DBDictionaryEntry kv in (DBDictionary)tr.GetObject(db.LayoutDictionaryId,OpenMode.ForRead)){var l=(Layout)tr.GetObject(kv.Value,OpenMode.ForRead);layouts.Add(new{name=l.LayoutName,model=l.ModelType});}
     var views=new List<object>();foreach(ObjectId id in (ViewTable)tr.GetObject(db.ViewTableId,OpenMode.ForRead)){var v=(ViewTableRecord)tr.GetObject(id,OpenMode.ForRead);views.Add(new{name=v.Name,center=new[]{v.CenterPoint.X,v.CenterPoint.Y,0},width=v.Width,height=v.Height});}
-    return new{total=total,returned=items.Count,truncated=total>items.Count,entities=items,layers=layers,layouts=layouts,views=views,errors=errors,scope="Model-space roots; region matches WCS bounding boxes. Handles are valid only with this input SHA-256. Refine filters when truncated."};
+    return new{total=total,returned=items.Count,truncated=total>items.Count||scopeTruncated,entities=items,layers=layers,layouts=layouts,views=views,errors=errors,units=db.Insunits.ToString(),scope=request.scope!=null?"Explicit layout; optional local nested expansion with instancePath. Nested coordinates are WCS bounds/points; nested scalar sizes remain definition values. Xref contents excluded. Nested and paper-space entities are read only.":"Model-space roots; region matches WCS bounding boxes. Handles are valid only with this input SHA-256. Refine filters when truncated."};
    }
   }
   static Entity ByHandle(Database db,Transaction tr,string handle){

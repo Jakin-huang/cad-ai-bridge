@@ -1,5 +1,7 @@
 # 工具与数据契约
 
+v0.5.0-preview.1提供cad_capabilities、cad_workflow和cad_session，保留原18个工具。任务形态、会话保存/取消边界及兼容读取见[四阶段实施记录](practical-development.md)。只读模式使用受限schema保留复合工具的只读分支，不暴露其编辑或插件接入操作。
+
 MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的严格 schema。图纸路径必须位于 setup 配置的 workspace 或本项目任务输出目录，解析真实路径后检查边界。输出路径由宿主生成，调用者不能指定覆盖源图。
 
 ## 诊断与已有任务

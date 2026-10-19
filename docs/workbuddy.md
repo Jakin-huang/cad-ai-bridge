@@ -54,4 +54,4 @@ CAD AI Bridge 连接本机 CAD 与现有 AI 客户端。WorkBuddy 不需要另�
 
 ## Preview.4 工具扩展
 
-新版共18个工具，全局Skill增加已有图纸编辑与出图指导。重新连接已有MCP后，在新任务中检查cad_query_entities、cad_edit、cad_export是否可用。新版通过实际安装配置进行SDK查询、编辑和PNG出图测试；上文15工具的桌面会话属于历史验收，不作为新版新增操作的桌面自然语言验收。
+新版共21个工具，全局Skill增加通用任务和当前文档会话指导。重新连接已有MCP后，在新任务中检查cad_capabilities、cad_workflow、cad_session是否可用。新版通过实际安装配置进行SDK查询、编辑和PNG出图测试；上文15工具的桌面会话属于历史验收，不作为新版新增操作的桌面自然语言验收。

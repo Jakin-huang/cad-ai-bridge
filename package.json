@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Local MCP and CLI bridge for AutoCAD electrical workflows and observed Tangent V8 metadata",
+  "description": "Local MCP and CLI bridge for practical CAD workflows, current-document collaboration and optional Tangent V8 extensions",
   "license": "MIT",
   "bin": {
     "cadbridge": "bin/cadbridge.mjs"

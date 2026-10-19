@@ -1,0 +1,12 @@
+// Product facts are independent of CAD discovery so a broken host remains diagnosable.
+export function capabilities(){
+ return {ok:true,product:'CAD AI Bridge',compatibilityVersion:'0.2.0',scope:'local CAD and AI client bridge',
+  validatedEnvironment:{os:'Windows 10 x64',cad:'AutoCAD 2022 zh-CN',optionalExtension:'Tangent Electrical V8',client:'WorkBuddy 5.3.8'},
+  execution:{default:'snapshot-copy',writes:'new DWG; original preserved',coordinates:'planar WCS XY',writeUnits:['mm'],currentUserDocument:true,sessionStatus:'experimental',sessionDispatch:'One ROT-visible AutoCAD 2022 instance; PID is checked before entering a fixed native command. No arbitrary code or command input.'},
+  workflows:['replace_text','organize','takeoff','edit','export_batch'],
+  ordinaryEdits:['move','copy','rotate','scale','mirror','array','erase','set_text','set_attributes','set_layer','upsert_layer','add_geometry','insert_block','offset','trim','extend_line','add_dimension','upsert_view','create_layout'],
+  limits:{queryEntities:5000,operationsPerBatch:100,pageRecords:100,queryScope:'Model-space roots by default; explicit layouts and local nested read-only expansion',region:'WCS bounding boxes',nestedDepth:8,nestedTraversalBudget:100000},
+  unsupportedWrites:['nested entities','dynamic blocks','xrefs','unknown custom objects and associations','non-millimeter or undefined drawing units'],
+  acceptance:{freshWindows:false,independentStandardAccount:false,currentDocumentSession:true,externalUserTrial:false},
+  next:'Use cad_doctor for this machine, cad_workflow for complete tasks, and existing tools for individual operations.'};
+}

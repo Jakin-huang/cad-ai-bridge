@@ -1,141 +1,70 @@
-# 开源项目对标与 GitHub 发布方案
+# CAD AI Bridge 开源对标与产品差距
 
-调研日期：2026-10-15（Asia/Shanghai）。社区数据由 GitHub 公共 API 当次读取，原始筛选记录见 [research/github-projects-2026-10-15.json](research/github-projects-2026-10-15.json)。星标会变化；最近推送时间也不等于最近正式发行或已完成生产验证。
+更新日期：2026-10-19（Asia/Shanghai）。项目基线：v0.2.0-preview.6。实施顺序与验收见[下一步计划](connector-plan.md)。
 
-推荐以独立的 CAD AI 连接器仓库维护现有实现，采用“MCP 服务 + 电气 Skills / 客户端插件 + CAD 执行后端 + 可重现示例”的形态，配套 Windows 安装包 / 便携包。补充调研后，AutoCAD 接入优先对标 bimwright/dwg-mcp，能力封装与分发优先对标 earthtojake/text-to-cad；CC Switch、MCP for Blender、FreeCAD MCP 和 Inspector 分别提供配置体验、自动安装、分层与调试方面的参考。
+本页是本轮开发前的对比基线；四阶段的新实现与验收状态以[实施记录](practical-development.md)为准。表内“差距”不能直接当作当前开发候选仍然缺失的功能。
 
-本次阅读了项目仓库、README、包配置及若干 LICENSE，未安装运行其 CAD 功能。下表的第三方功能为项目维护者所述；我们自己已验证的能力仍以本项目的 AutoCAD 2022 验收记录为准。
+## 定位与比较方法
 
-## 补充主对标：dwg-mcp 与 text-to-cad
+CAD AI Bridge 是连接用户已有 CAD 软件与 AI 客户端的本地中间层。AutoCAD 是当前已验证的宿主，天正是已有专业扩展。产品价值是减少读图、改图、统计和交付中的重复操作，并让用户能核对实际结果。
 
-本文的名称分别指 [bimwright/dwg-mcp](https://github.com/bimwright/dwg-mcp) 与 [earthtojake/text-to-cad](https://github.com/earthtojake/text-to-cad)。补充调查直接阅读了其仓库与官方文档，未将网页计数作为新的 GitHub API 快照。
+本轮检查了本项目 README、工具契约、执行调度、MCP 图像返回、编辑及原生桥架实现和本机验收报告，并查询下列上游仓库。第三方功能来自维护者的公开说明及部分实现文档，未在本机安装运行，没有同机性能、可靠性或专业兼容性的横向实测。本文的优先级是结合当前代码与使用目标作出的产品判断。
 
-### bimwright/dwg-mcp：AutoCAD 执行与部署
+受欢迎项目用于观察产品形式，同类项目用于比较具体能力。星标不作为工程可靠性的分数。2026-10-19 页面显示 MCP for Blender 约31.6k、text-to-cad 约21.6k、FreeCAD MCP 约2.9k，均为页面约数。旧的精确 API 快照保留在[2026-10-15 原始筛选记录](research/github-projects-2026-10-15.json)，不能当作当前数据。
 
-该项目采用外部 .NET MCP 网关与 AutoCAD 内部插件，按宿主年份拆分插件壳，覆盖源码层面的 2022–2027 目标；目前文档将 2022–2024 的本机通信描述为 TCP NDJSON，将 2025–2027 描述为命名管道。详见 [架构说明](https://github.com/bimwright/dwg-mcp/blob/master/ARCHITECTURE.md)。这与我们拟扩展的常驻 AutoCAD 模式比一般 COM 示例更贴近。
+## 主要项目对比
 
-其安装方案提供自包含服务器、ApplicationPlugins bundle、固定的 server/current 路径、客户端配置备份与失败回滚，适合直接研究其工程组织和发行形式。[安装器源码](https://github.com/bimwright/dwg-mcp/blob/master/scripts/install.ps1)
-
-需要区分主分支功能、已发布功能、发行包内实际编译年份和真实宿主验收。README 明确要求查看 ZIP 内 manifest，其他年份可能需要相应 SDK 自行构建；不能只根据标题的 2022–2027 就承诺本机 2022 即装即用。部分主分支能力仍标记 Unreleased / installed-host acceptance pending。[README](https://github.com/bimwright/dwg-mcp#readme) / [Releases](https://github.com/bimwright/dwg-mcp/releases)
-
-建议将其列为交互式后端的基座候选。若评估复用，应先在本机 2022 完成编译、加载、图纸身份与同类电气任务回归，再决定采用适配器、维护分叉或向上游贡献。项目提供批量工具不自动证明与我们现有的整项事务回滚、请求幂等及另存副本语义等价。
-
-### earthtojake/text-to-cad：Skills、插件与预览的能力产品
-
-它的重点是本地参数化三维建模、机械工程及相关二维输出，主要使用 build123d / OpenCascade，输出 STEP、GLB、STL、3MF，并有 DXF 和工程图工作流。它不提供现成的 AutoCAD 电气业务内核。[项目说明](https://github.com/earthtojake/text-to-cad#readme)
-
-最值得借鉴的是将工作流 Skills、运行时 CLI、可选 MCP 服务和预览组合成一个能力产品；为不同 Agent 提供插件适配，并将稳定分发与开发分支区分。可以把同样形式用于电气布置、连线、编号、统计与复核，将具体任务步骤交给 Skills，将确定的图纸修改交给结构化工具。
-
-因此，发布优先级调整为先打包稳定 MCP / CLI 和电气 Skills，提供自测及图纸预览，再用桌面向导增强配置体验。Skills 单独安装能教会 Agent 流程，但实际写入 AutoCAD 仍需本机执行后端。
-
-### 同名方向：dimitrovakulenko/dwg-mcp-server
-
-[该仓库](https://github.com/dimitrovakulenko/dwg-mcp-server) 主要通过 LibreDWG 读取、查询和渲染 DWG / DXF，源文件保持只读，支持在内存中修改部分属性后检查和渲染。它与 bimwright 的 AutoCAD 宿主插件属于不同方向。
-
-它的 npm 启动器按平台获取发行二进制、核对校验和并缓存，值得借鉴分发方式；若希望增加无 AutoCAD 的读图和预览，可作为候选。当前不能据此承诺原生 AutoCAD 插件、自定义对象或工程 DWG 回写能力。[README](https://github.com/dimitrovakulenko/dwg-mcp-server#readme)
-
-补充许可证记录：bimwright/dwg-mcp 标注 Apache-2.0；earthtojake/text-to-cad 的 [LICENSE](https://github.com/earthtojake/text-to-cad/blob/main/LICENSE) 为 MIT；dimitrovakulenko/dwg-mcp-server 标注 GPL-3.0。若实际纳入代码或二进制，再单独核对相应版本的组件边界和许可证声明。
-
-## 优先参考项目
-
-| 项目 | 当次星标 / 最近推送 UTC | 已观察到的形式 | 对本项目的启发 |
+| 项目与角色 | 上游公开能力或形式 | 本项目的现状与差距 | 建议采用的做法 |
 | --- | --- | --- | --- |
-| [ahujasid/mcp-for-blender](https://github.com/ahujasid/mcp-for-blender) | 30,912 / 2026-10-06 | 原名 blender-mcp；宿主 addon + MCP server；提供 setup、addon 安装、多客户端配置和原配置备份 | 把客户端检测、插件部署、配置备份收敛到一个 setup 流程；首页先给出可复现演示 |
-| [neka-nat/freecad-mcp](https://github.com/neka-nat/freecad-mcp) | 2,881 / 2026-10-13 | addon 与 src/freecad_mcp 分离；docs、examples、tests 独立；客户端启动协议服务 | 将 AutoCAD 插件、MCP 服务和专业示例分开维护；新增 CAD 适配器时保持工具契约稳定 |
-| [daobataotie/CAD-MCP](https://github.com/daobataotie/CAD-MCP) | 609 / 2026-09-15 | 直接面向 AutoCAD / GCAD / ZWCAD 的项目；README 描述 COM 接入、查询、图元编辑、图块、截图反馈及协议输出 | 作为同类功能对照，建立“读图—操作—核对”的演示；其跨 CAD 支持仍需我们各自验证 |
-| [farion1231/cc-switch](https://github.com/farion1231/cc-switch) | 144,656 / 2026-10-15 | Tauri 桌面程序；Windows MSI 与便携 ZIP；MCP 配置同步、原子写入、自动备份、托盘与更新 | 对普通设计人员提供清楚的连接状态、配置向导、诊断、恢复和发行包 |
-| [modelcontextprotocol/inspector](https://github.com/modelcontextprotocol/inspector) | 11,082 / 2026-10-14 | 面向 MCP 的 Web / CLI / TUI 检查工具；支持工具发现、调用与调试 | 将 Inspector 作为开发者排障和协议验收入口；展示实际工具返回和错误语义 |
+| [MCP for Blender](https://github.com/ahujasid/mcp-for-blender)：热门宿主连接器 | 自动准备依赖、检测客户端、安装宿主 addon、增量修改并备份配置 | 已有中文入口、便携运行时及 WorkBuddy 接入；其他客户端安装体验与外部机器验证仍有限 | 复用安装内核，提供清楚的连接状态、首个成功任务和恢复入口 |
+| [text-to-cad](https://github.com/earthtojake/text-to-cad)：热门能力产品 | Skills、固定运行时、客户端插件、查看器及任务工作流一起交付；区分稳定分发与开发分支 | 已有 MCP/CLI/Skill 与真实 PNG，通用 CAD 任务入口和成果展示仍需完善 | 按文字批改、统计、布置、出图组织工作流，复用现有出图 |
+| [FreeCAD MCP](https://github.com/neka-nat/freecad-mcp)：热门 CAD 集成 | 宿主内 addon 与外部 MCP 分工；创建、编辑、检查模型及 FEM 工作流 | 已有外部服务和 C# 插件；当前主要执行独立副本任务，未接入用户当前选择集和未保存文档 | 先读取当前上下文，再开放受约束的会话编辑 |
+| [bimwright/dwg-mcp](https://github.com/bimwright/dwg-mcp)：AutoCAD 会话与分发 | 宿主内插件、文档锁、常驻本地通信、分年份插件、自包含安装及配置备份 | 本项目有批处理保护与恢复，没有同等的已打开文档接入 | 研究实例发现、文档绑定和部署；保持原有契约，先做2022专项试验 |
+| [daobataotie/CAD-MCP](https://github.com/daobataotie/CAD-MCP)：通用操作对照 | 声明 AutoCAD/GCAD/ZWCAD COM 接入，查询编辑、截图、结构化输出和进度通知 | 通用编辑有较多重叠；宿主范围、连续反馈和部分复杂操作仍有限 | 补任务所需操作与阶段反馈，每个新增宿主单独验收 |
+| [beiming183-cloud/AutoCAD-MCP](https://github.com/beiming183-cloud/AutoCAD-MCP)：可靠写入对照 | 文档版本、原生事务、幂等日志、请求/实际对照和交付证据；区分原生与兼容路径的回滚边界 | 本项目已有摘要、身份、回滚和重放；这些已是同类产品的重要基础，不能仅凭机制存在宣称领先 | 提供清楚的变更摘要、保存状态和结果证据，扩展会话时保留可证明的保护 |
+| [MaxShevtcov/autocad-mcp](https://github.com/MaxShevtcov/autocad-mcp)：图纸理解与任务组织 | 声明 COM/DXF 双后端、图纸理解、差异及拓扑检查、统计和工具按需发现 | 本项目以结构化查询和已管理对象为主，通用差异、检查和表格交付尚未形成统一流程 | 先做有对象依据的统计、前后差异及常见问题检查 |
+| [CADCraft](https://github.com/storytold/cadcraft)：命令与反馈参考 | 自研 CAD，统一命令、CLI/MCP、查询、渲染和桌面控制；仍标为早期开发 | 与连接已有 CAD 的定位不同；README提示未建模实体不会在保存时保留 | 借鉴命令一致性、区域反馈和能力说明，当前不替换真实工程图执行内核 |
+| [dimitrovakulenko/dwg-mcp-server](https://github.com/dimitrovakulenko/dwg-mcp-server)：文件查询参考 | LibreDWG、打开时建立索引、会话内查询和区域渲染；源文件只读 | 本项目分页复用结果，但新查询通常仍启动宿主；离线后端对天正等自定义对象的覆盖未知 | 先优化结果复用与失效，有需求时再验证无 CAD 只读后端 |
 
-上述项目的主要参考来源：
+dwg-mcp 的源码年份目标、发行包实际编译年份和宿主验收是不同证据。其 README 要求检查包内 manifest，不能将2022–2027的源码目标直接视为2022即装即用承诺。详见[架构](https://github.com/bimwright/dwg-mcp/blob/master/ARCHITECTURE.md)和[发行页](https://github.com/bimwright/dwg-mcp/releases)。
 
-- [MCP for Blender 安装和组件说明](https://github.com/ahujasid/mcp-for-blender#quickstart)
-- [FreeCAD MCP 快速开始和文档目录](https://github.com/neka-nat/freecad-mcp#quick-start)
-- [CAD-MCP README](https://github.com/daobataotie/CAD-MCP#readme)
-- [CC Switch 安装发行](https://github.com/farion1231/cc-switch#download--installation)、[功能说明](https://github.com/farion1231/cc-switch#readme)
-- [MCP Inspector README](https://github.com/modelcontextprotocol/inspector#readme)
+这些项目的通用命令、代码执行、三维建模或自研界面不必全部引入。复用第三方源码或二进制前，再针对实际版本记录来源与许可证；本轮没有引入第三方实现。
 
-## 补充比较
+## 当前能力基线
 
-[thewisekape/autocad-mcp](https://github.com/thewisekape/autocad-mcp) 当次为 7 星、最近推送 2026-04-05。它的 README 描述 File IPC、COM、ezdxf 三种后端及批量工具，适合参考后端分类；社区规模和当前维护信号不足以支持将它列为主要成熟基座。其宣称的支持范围与性能百分比未在本机验证。
+“已有”表示在已声明环境和对象范围内实现，不表示所有图纸、CAD版本或客户端均支持。
 
-[CherryHQ/cherry-studio](https://github.com/CherryHQ/cherry-studio) 当次为 52,663 星、最近推送 2026-10-15。可参考桌面应用的文档、用户引导和发行组织；本项目的主要价值是 CAD 能力接入，完整模型聊天工作台会增加维护范围。
-
-## 产品形态建议
-
-对用户表现为一个 CAD AI Connector，暂以 `cad-ai-bridge` 作为工作名称，正式仓库与包名称发布前再确认。
-
-### 使用流程
-
-1. 从 GitHub Releases 下载 Windows 安装包或自包含便携包。
-2. 自动检测 CAD；多版本并存时由用户选择，显示该版本是否已验证。
-3. 选择工作目录与 AI 客户端，显示将写入的配置条目，备份后增量配置。
-4. 执行自测，完成“创建测试图—布置—连线—编号—保存—重开—统计”。
-5. 日常在现有 AI 客户端发起任务，在连接器中查看状态、输出图纸和诊断。
-
-连接器配置现有 AI 客户端的 MCP 能力，模型鉴权继续由客户端管理。不同客户端使用各自的配置适配器；不能假设 JSON、TOML 或其他配置格式相同，也不能假设所有网页端 AI 都能启动本地 stdio 服务。
-
-### 共用一份安装和检测逻辑
-
-0.2 预览已实现以下命令；实际使用见 [README](../README.md)：
-
-```text
-cadbridge setup       检测 CAD、构建插件、备份并生成项目本地配置
-cadbridge doctor      检查宿主、插件；可选 --native 检查原生运行时
-cadbridge mcp         启动 stdio MCP 服务
-cadbridge selftest    运行生成图纸的完整闭环
-cadbridge demo        一条命令生成并验证合成图
-```
-
-桌面向导调用同一套 setup / doctor 服务，避免 CLI 和 GUI 各自实现一份注册表、路径和配置修改规则。安装器采用固定版本内容和可核对的校验和，配置写入支持备份、幂等和恢复。
-
-### 技术取舍
-
-现阶段保留已验证的 Node MCP 层、C# AutoCAD 插件和 Core Console 批处理。先解除开发机依赖，再封装分发；桌面 UI 可采用 .NET，也可评估 CC Switch 的 Tauri 形式。UI 框架的选择以维护者熟悉程度、安装体积和外部进程控制验证结果为依据。
-
-协议服务负责契约和任务状态；CAD 后端负责宿主执行；电气图块和规则独立成为可版本化的目录。以后增加常驻 GUI、命名管道或其他 CAD 后端时，优先复用现有电气工具契约。
-
-REA 保持为维护者的接口调查工具。0.2 已移除对其本地运行目录的回退依赖，使用项目自己的锁定依赖。配置为项目所有文件；客户端专用配置写入器、桌面向导与卸载器保留为后续工作。
-
-## GitHub 仓库组织
-
-下面是演进目标，不要求在首次公开前机械拆成很多独立包：
-
-```text
-cad-ai-bridge/
-  src/                       MCP 服务、任务和宿主调度
-  plugins/autocad/           C# 插件及版本适配
-  apps/desktop/              配置和诊断界面
-  tests/unit/               无 CAD 的契约、配置和路径测试
-  tests/integration/        真实 CAD 的保存、重开和回滚回归
-  docs/                     安装、兼容表、工具、排障、开发指南
-  packaging/                安装包和便携包构建
-  .github/                  Issue、PR 模板和工作流
-```
-
-首页突出用户可理解的成果：短演示视频、测试图、三步安装、已验证版本、工具列表、常见错误、问题反馈。提供中文和英文入口，Issue 模板收集软件版本、doctor 报告、预期行为和最小复现。
-
-公开贡献采用 Issue / PR 流程、版本化 Changelog 和 GitHub Releases。普通 CI 跑无 CAD 的测试；真实 CAD 回归在维护者有相应安装环境的测试机受控运行，发行说明附上该版本的运行证据。不要把模拟后端通过当作真实 CAD 兼容通过。
-
-## 0.2 落实情况与后续验收
-
-| 项目 | 当前观察 | 下一步验收 |
+| 领域 | 已有能力 | 当前限制与证据 |
 | --- | --- | --- |
-| 分发依赖 | 独立依赖、锁文件、setup.cmd、开发者预览 ZIP 与校验清单 | 带运行时的离线包与干净机器安装验收 |
-| CAD 检测 | 注册表发现、多实例选择、所选实例的语言和 profile | 其他版本与语言的真实兼容验证 |
-| AI 配置 | setup 生成并备份项目本地 MCP 配置，保留客户端设置 | 专用客户端配置适配、增量写入、恢复 |
-| 插件加载 | 双宿主、安全加载、临时信任与 Tips 恢复、明确预载完整天正内核 | 常驻宿主与升级/卸载归属验证 |
-| 测试 | 无 CAD 单元测试、16 项 CAD、11 项原生天正、4 项 MCP 结果验收 | 干净机器、更多授权样图和版本组合 |
-| GitHub 基础 | MIT、贡献指南、第三方声明、Changelog、CI、Issue/PR 模板与发布检查 | 维护者实际创建远程并发布；本次不推送 |
-| 示例 | 可重建测试图、实际 DXF 派生的合成 SVG、脱敏验收摘要 | 更真实的授权图块目录与专业对照样例 |
+| 接入分发 | 中文开始入口、工作目录选择、便携 Node/PowerShell、WorkBuddy 配置合并、升级恢复、CLI/MCP | 本机 Windows 10 x64、AutoCAD 2022 中文及 WorkBuddy 5.3.8；干净系统和独立标准账户仍待验收。[用户包](windows-user-release.md) |
+| 诊断恢复 | 无 CAD 诊断、已有任务查询、输出状态、分页、环境缓存和分阶段耗时 | 已保存结果可以恢复查询；尚无完整用户任务中心和通用安全取消。[契约](tools.md) |
+| 图纸读取 | 普通根层实体、图层、块属性、区域筛选、审计及独立 DXF | 查询上限5000，分页复用已保留记录；截断需缩小范围。嵌套、外参及未知对象不代表完整支持。[编辑](editing.md) |
+| 通用改图 | 移动/复制/旋转/均匀缩放/镜像/阵列，文字、实例属性、图层，部分补画、偏移、直线修剪延伸 | 写入在受管理毫米制副本内执行；动态块、外参、嵌套及未知关联对象拒绝写入；没有通用完整修剪能力。[编辑](editing.md) |
+| 出图复核 | 真实 CAD PDF/PNG、布局和区域出图，小于约定大小的 PNG 作为 MCP 图像返回 | 显示取决于客户端；批量交付、前后对比及打印标准核验仍需完善。[编辑](editing.md) |
+| 文件保护 | 快照、源摘要、文档身份、版本、回滚、UUID重放及另存结果 | 副本执行的保护不能直接推定为用户会话中未保存修改的保护。[工程验证](project-validation.md) |
+| 专业扩展 | 电气设备和导线字段识别、受管理布置/路线/编号、天正独立直线槽式桥架及关联标注 | 图面统计不能直接代表采购净量；桥架网络及完整厂家拓扑未支持。[原生范围](native-trays.md) |
 
-仓库范围限定在中间层源码、文档和自行生成的示例；现有工程原图、REA 源码副本、运行缓存及 AutoCAD 安装组件留在本地。发布的插件包包含我们构建的组件，CAD 宿主引用由构建和运行环境提供。
+当前18个工具已经覆盖多种操作。扩大工具数量不能自动解决范围歧义、保存意图、视觉核对或故障恢复。
 
-当前按可复现安装的开发者预览发布边界准备，再演进为带向导的 Windows 安装版。首次支持表只承诺已验收的 Windows x64 / AutoCAD 2022 / 天正 V8 读取和受控合成图写入；其余版本与专业对象通过独立兼容证据逐项扩大。详见 [技术方案](technical-plan.md) 和 [打包说明](releasing.md)。
+## 影响实用性的差距
 
-## 许可证与引用记录
+| 差距 | 对用户的实际影响 | 第一项改进 | 优先级 |
+| --- | --- | --- | --- |
+| 通用工作流组织不足 | 工具存在，一次批改仍可能有较多调用和人工检查 | 五类固定任务流程，自动传递内部身份与摘要 | P1 |
+| 范围和覆盖说明不足 | 图例、重复视图、嵌套块可能让统计失真 | 统一空间/区域/图层范围、单位、截断与排除项 | P1 |
+| 结果呈现分散 | 成功后仍需找文件、逐项核对 | 变更摘要、局部前后图、输出清单与可打开入口 | P1 |
+| 当前 CAD 上下文缺失 | 不能直接指代已选对象和未保存内容 | 实例、文档、选择集与视图的只读接入 | P2 |
+| 真实图纸通用性有限 | 非毫米图、复杂块、外参、缺字体可能阻断任务 | 先检测并解释，再按失败频率扩展，避免隐式转换单位 | P1检测/P3扩展 |
+| 连续调用成本与反馈 | 多次查询编辑预览等待明显，用户不知道进展 | 测量完整任务、复用证据、真实阶段反馈，试验会话复用 | P1/P2 |
+| 外部用户证据有限 | 开发机通过不足以证明用户可独立使用 | 外部实体机、标准账户、真实客户端及自备图纸试用 | P0 |
+| 文档混有旧阶段描述 | 已完成的向导和原生桥架仍被列作未来项 | 统一当前范围入口，发布时同步相关说明 | P0 |
 
-CC Switch、MCP for Blender、neka-nat/freecad-mcp 和 CAD-MCP 的当次 LICENSE 为 MIT；thewisekape/autocad-mcp 为 Apache-2.0；Cherry Studio 为 AGPL-3.0。Inspector 的 GitHub API 显示 NOASSERTION，其 README / LICENSE 说明存在 Apache-2.0、原 MIT 代码和文档 CC-BY-4.0 的过渡安排，因此不能仅凭过去印象标为纯 MIT。
+P0表示发行与事实一致性；P1表示利用现有后端获得直接收益；P2表示当前会话专项；P3表示按需求扩展覆盖。工作包和完成标准见[实施计划](connector-plan.md)。
 
-许可证来源：[CC Switch](https://github.com/farion1231/cc-switch/blob/main/LICENSE)、[Blender](https://github.com/ahujasid/mcp-for-blender/blob/main/LICENSE)、[FreeCAD](https://github.com/neka-nat/freecad-mcp/blob/main/LICENSE)、[CAD-MCP](https://github.com/daobataotie/CAD-MCP/blob/main/LICENSE)、[Inspector](https://github.com/modelcontextprotocol/inspector/blob/main/LICENSE)、[Cherry Studio](https://github.com/CherryHQ/cherry-studio#license)、[thewisekape](https://github.com/thewisekape/autocad-mcp/blob/main/LICENSE)。
+## 产品判断
 
-本轮产出为形式和维护策略对标，没有导入第三方项目源码。本项目可优先考虑 MIT 开源形式；实际选定 LICENSE、纳入外部代码或素材时，分别记录来源、版本、许可证和所需声明。此文不替代对将发布内容的逐项检查。
+先把“找对象—批量操作—核对—交付”做可靠，再连接用户正在操作的 CAD，随后扩展常见复杂对象与宿主版本。保留当前 Node MCP、C# 插件和双宿主执行路径，根据测量引入会话适配，无需先整体重构。
+
+通用能力优先服务已有图纸的重复劳动，新图创建保持受约束的几何、图块和模板工作流。专业能力沿用相同桥接、任务和核验机制，分别维护对象契约和验收，不让单一专业决定整体方向。
+
+项目展示围绕可复现任务：输入条件、用户指令、操作范围、结果和限制。公开仓库与发行包继续遵守[资料隔离边界](asset-separation.md)，不恢复分发工程图、图库、示例需求或历史预览资产。图纸由用户自备，验收可按测试代码临时生成合成输入。

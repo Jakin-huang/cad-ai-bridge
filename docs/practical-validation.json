@@ -1,0 +1,192 @@
+{
+  "release": "0.5.0-preview.1",
+  "status": "four-stage-development-validated-on-existing-machine",
+  "checkedAt": "2026-10-19T14:18:07.972Z",
+  "pluginSHA256": "D3024796EC8F636B36D79349AE28DA12E0EEF81AC1B2CC4142EA2B48D3834331",
+  "environment": {
+    "os": "Windows 10 x64",
+    "cad": "AutoCAD 2022 zh-CN",
+    "optionalExtension": "Tangent Electrical V8",
+    "client": "WorkBuddy 5.3.8 configuration via official MCP SDK"
+  },
+  "stages": [
+    {
+      "stage": 1,
+      "status": "local-development-complete",
+      "delivered": [
+        "Capabilities without CAD",
+        "Existing offline setup, diagnostics and restoration retained",
+        "21 MCP tools and general-purpose Skill"
+      ]
+    },
+    {
+      "stage": 2,
+      "status": "local-development-complete",
+      "delivered": [
+        "Five generic workflows",
+        "Frozen input and output hashes",
+        "Actual CSV, PDF, PNG, persisted readback and replay"
+      ]
+    },
+    {
+      "stage": 3,
+      "status": "experimental-local-acceptance-passed",
+      "delivered": [
+        "Live document/view/selection",
+        "Memory revision conflicts and document switch protection",
+        "Transactions, undo, independent copies, recovery and cancellation",
+        "30 mixed requests with client reconnect"
+      ]
+    },
+    {
+      "stage": 4,
+      "status": "bounded-extension-complete",
+      "delivered": [
+        "Local nested read-only queries and distinct instance paths",
+        "WCS point/bounds transforms and definition scalar labels",
+        "Layout reads, xref identification, real units and explicit truncation"
+      ]
+    }
+  ],
+  "unitTests": {
+    "passed": 91,
+    "failed": 0,
+    "skipped": 0
+  },
+  "sessionSequence": {
+    "requests": 30,
+    "passed": true,
+    "handlesBefore": 1949,
+    "handlesAfter": 1937
+  },
+  "evidence": [
+    {
+      "report": "workflows-report.json",
+      "checkedAt": "2026-10-19T13:36:24.531Z",
+      "checks": 9,
+      "scope": "Actual AutoCAD 2022 via official MCP SDK. This is automated host evidence, not external-user or desktop-dialogue acceptance.",
+      "passed": true
+    },
+    {
+      "report": "session-report.json",
+      "checkedAt": "2026-10-19T14:09:00.629Z",
+      "checks": 19,
+      "scope": "Owned AutoCAD 2022 interactive instance, official MCP SDK, real external COM edits/selection/undo/document switching. No external-user or new-machine claim.",
+      "passed": true
+    },
+    {
+      "report": "query-scope-report.json",
+      "checkedAt": "2026-10-19T13:38:08.240Z",
+      "checks": 10,
+      "scope": "AutoCAD 2022 actual ordinary nested blocks, WCS bounds, xref identification, paper-space reading and meter-unit read-only coverage; no new CAD version or custom-object write support claimed.",
+      "passed": true
+    },
+    {
+      "report": "integration-report.json",
+      "checkedAt": "2026-10-19T13:39:01.190Z",
+      "checks": 16,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "editing-report.json",
+      "checkedAt": "2026-10-19T13:41:11.147Z",
+      "checks": 17,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "tangent-integration-report.json",
+      "checkedAt": "2026-10-19T13:43:24.771Z",
+      "checks": 11,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "editing-tangent-report.json",
+      "checkedAt": "2026-10-19T13:55:16.076Z",
+      "checks": 17,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "native-tangent-report.json",
+      "checkedAt": "2026-10-19T14:05:48.684Z",
+      "checks": 16,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "mcp-results-report.json",
+      "checkedAt": "2026-10-19T14:05:57.852Z",
+      "checks": 4,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "school-mcp-report.json",
+      "checkedAt": "2026-10-19T14:06:14.758Z",
+      "checks": 7,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "maintenance-mcp-report.json",
+      "checkedAt": "2026-10-19T14:06:32.972Z",
+      "checks": 8,
+      "scope": "Official SDK protocol verification; does not establish WorkBuddy UI compatibility.",
+      "passed": true
+    },
+    {
+      "report": "workbuddy-installed-report.json",
+      "checkedAt": "2026-10-19T14:07:22.005Z",
+      "checks": 8,
+      "scope": "Official MCP SDK using actual installed WorkBuddy configuration; not a desktop conversation test",
+      "passed": true
+    },
+    {
+      "report": "editing-legacy-upgrade-report.json",
+      "checkedAt": "2026-10-19T14:06:39.656Z",
+      "checks": 3,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "preview4-editing-upgrade-report.json",
+      "checkedAt": "2026-10-19T14:06:46.374Z",
+      "checks": 3,
+      "scope": "Current-machine regression",
+      "passed": true
+    }
+  ],
+  "clientNaturalLanguage": {
+    "checkedAt": "2026-10-19T14:15:33.878Z",
+    "scope": "Installed WorkBuddy bundled CLI and existing login; exact candidate Skill copied into isolated documented project scope. No desktop, global discovery or external-user assertion.",
+    "checks": [
+      "Candidate Skill loaded for a Chinese general-CAD request",
+      "Actual scene creation, generic replacement and takeoff completed",
+      "Saved text, two 3000 mm horizontal lines, 1000 mm spacing and three-entity CSV counts verified",
+      "Actual PNG and CSV files retained with verified hashes",
+      "Original synthetic DWG remains unchanged",
+      "Client returned a successful natural-language result"
+    ],
+    "elapsedMs": 266785,
+    "recoveredInputValidationErrors": 2,
+    "performanceScope": "One synthetic first-task client trace; no manual baseline or user productivity claim."
+  },
+  "pending": [
+    "Fresh Windows installation",
+    "Independent standard account",
+    "Browser download and trust prompts",
+    "External user trials and time-saved measurements",
+    "New-feature desktop natural-language acceptance",
+    "Long-term production reliability and additional CAD versions"
+  ],
+  "limitations": [
+    "Session editing is experimental and targets one COM-visible AutoCAD 2022 instance with PID checks",
+    "Nested, paper-space, xref, dynamic block and non-millimeter writes are unsupported",
+    "Traversal limits and definition-space scalar quantities must not be treated as complete procurement quantities",
+    "Historical desktop evidence does not establish acceptance of new tools"
+  ],
+  "dataPolicy": "No drawings, private paths, tokens or detailed job outputs are included in this public summary."
+}

@@ -13,6 +13,9 @@ import {atomicJson} from './files.mjs';
 import {verifyPlugin} from './setup.mjs';
 import {dataHome} from './local-paths.mjs';
 import {resolveNativeModels} from './native-catalog.mjs';
+import {capabilities} from './capabilities.mjs';
+import {runWorkflow} from './workflows.mjs';
+import {executeSession,sessionHome} from './sessions.mjs';
 const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply','edit']);
 export async function launchHost(exe,args){
  return new Promise((resolve,reject)=>{
@@ -28,6 +31,12 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
   let parsed;try{if(!schemas[action])throw Error('INVALID_ACTION: unsupported action');parsed=schemas[action].parse(args);}catch(error){return failure(error);}
   // Evidence reads remain responsive while a CAD job is in flight.
   try{
+   if(action==='capabilities')return capabilities();
+   if(action==='session')return await executeSession(parsed,{getSettings:async()=>({...await getSettings(),runs})});
+   if(action==='workflow'){
+    if(process.env.CADBRIDGE_READ_ONLY==='1'&&!['takeoff','export_batch'].includes(parsed.plan.type))throw Error('READ_ONLY: write workflow is disabled');
+    return await runWorkflow(execute,runs,parsed);
+   }
    if(action==='doctor')return await diagnose(parsed);
    if(action==='read_result')return await readResultPage(runs,parsed);
    if(action==='get_job')return await getJob(runs,parsed);
@@ -46,7 +55,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    const {drawing,expectedSha256,host:requestedHost,detail,...payload}=parsed,request={...payload,action};
    if(['create_test_drawing','create_drawing'].includes(action)){request.requestId=crypto.randomUUID();request.units='mm';}
    task={jobId:path.basename(job),action,requestId:request.requestId,backend,ownerPid:process.pid,status:'preparing',startedAt:new Date().toISOString()};await mark('snapshot');
-   t=performance.now();if(drawing)inputSha256=await snapshotDrawing(drawing,[allowedRoot,runs],job,expectedSha256);timings.snapshotMs=Math.round(performance.now()-t);
+   t=performance.now();if(drawing){const sessionOutputs=await fs.realpath(path.join(sessionHome(),'jobs')).catch(()=>undefined);inputSha256=await snapshotDrawing(drawing,[allowedRoot,runs,...(sessionOutputs?[sessionOutputs]:[])],job,expectedSha256);}timings.snapshotMs=Math.round(performance.now()-t);
    if(action==='edit'&&request.operations?.some(op=>nativeOperations.has(op.type)))Object.assign(request,await resolveNativeModels(request.operations,settings.tangentRoot));
    const encoded=JSON.stringify(request);if(Buffer.byteLength(encoded)>1024*1024)throw Error('REQUEST_TOO_LARGE: request exceeds 1 MiB');
    await fs.writeFile(path.join(job,'request.json'),encoded);

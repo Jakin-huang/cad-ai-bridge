@@ -1,11 +1,15 @@
 import {dependency} from './dependencies.mjs';
 import {schemas,execute} from './bridge.mjs';
+import {readonlyWorkflowSchema,readonlySessionSchema} from './src/contracts.mjs';
 import {boundForTransport} from './src/results.mjs';
 import {failure} from './src/errors.mjs';
 import fs from 'node:fs/promises';
 const {McpServer}=await dependency('@modelcontextprotocol/server');
 const {serveStdio}=await dependency('@modelcontextprotocol/server/stdio');
 const definitions=[
+ ['cad_session','session','读取已接入AutoCAD 2022的当前文档、视图和选择集，按明确文档身份与版本查询、受约束编辑或保存副本。先list再context；人工修改后须重新读取。修改只作用当前内存文档，默认另存副本，不覆盖原文件。'],
+ ['cad_capabilities','capabilities','说明CAD AI Bridge实际支持的宿主、对象、单位、操作与限制；不启动CAD，不表示本机已连接。'],
+ ['cad_workflow','workflow','在图纸副本中完成通用任务：文字替换、属性图层整理、统计CSV、普通批量编辑或批量PDF/PNG。自动冻结输入、保存重开复核、交付变更清单与可选前后图。传唯一requestId；断连先查任务，勿换UUID重复写入。'],
  ['cad_query_entities','query_entities','只读查询模型空间对象：按图层、类型、区域、文字、图块属性或句柄筛选，返回位置、几何、属性、图层、布局与命名视图。句柄必须与本次文件摘要一起使用。'],
  ['cad_edit','edit','在图纸副本中批量编辑普通对象、属性、文字、图层、尺寸标注及布局，调整受管理设备和路线；支持天正 V8 独立直线槽式桥架创建、尺寸型号修改、原生关联桥架标注。天正原生操作单独成批。失败回滚，另存新 DWG，保留原图。'],
  ['cad_export','export','用真实 AutoCAD 打印引擎将图纸或局部区域导出 PDF/PNG，支持指定布局。仅处理副本；PNG 可作为可视反馈。失败不重放任何编辑。'],
@@ -29,8 +33,9 @@ await serveStdio(()=>{
  const server=new McpServer({name:'cad-ai-bridge',version:'0.2.0'});
  for(const [name,action,description]of definitions){
    if(process.env.CADBRIDGE_READ_ONLY==='1'&&['apply','edit','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action))continue;
-   server.registerTool(name,{description,inputSchema:schemas[action],annotations:{readOnlyHint:!['apply','edit','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
-     try{const result=boundForTransport(await execute(action,args));const content=[{type:'text',text:JSON.stringify(result)}];if(action==='export'&&args.format==='png'&&result.ok&&result.exported.bytes<=4*1024*1024)content.push({type:'image',mimeType:'image/png',data:(await fs.readFile(result.exported.file)).toString('base64')});return{content,isError:!result.ok};}
+   const readOnly=process.env.CADBRIDGE_READ_ONLY==='1',inputSchema=readOnly&&action==='workflow'?readonlyWorkflowSchema:readOnly&&action==='session'?readonlySessionSchema:schemas[action];
+   server.registerTool(name,{description,inputSchema,annotations:{readOnlyHint:readOnly||!['session','workflow','apply','edit','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
+     try{const result=boundForTransport(await execute(action,args));const content=[{type:'text',text:JSON.stringify(result)}];if(action==='export'&&args.format==='png'&&result.ok&&result.exported.bytes<=4*1024*1024)content.push({type:'image',mimeType:'image/png',data:(await fs.readFile(result.exported.file)).toString('base64')});if(action==='workflow')for(const file of (result.files||[]).filter(f=>['before-png','after-png'].includes(f.kind)&&f.bytes<=4*1024*1024).slice(0,2))content.push({type:'image',mimeType:'image/png',data:(await fs.readFile(file.file)).toString('base64')});return{content,isError:!result.ok};}
      catch(error){return{content:[{type:'text',text:JSON.stringify(failure(error))}],isError:true};}
    });
  }

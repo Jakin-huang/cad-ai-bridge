@@ -1,10 +1,10 @@
 {
   "status": "user-preview-validated-on-existing-windows",
-  "checkedAt": "2026-10-19T02:19:21.319Z",
+  "checkedAt": "2026-10-19T14:26:12.782Z",
   "version": "0.2.0",
   "distribution": "Windows user preview",
   "environment": "Windows 10 x64; non-elevated process; isolated client, minimal PATH and offline bootstrap",
-  "unitChecks": 63,
+  "unitChecks": 91,
   "checks": {
     "package": [
       "Windows process is not elevated",
@@ -13,8 +13,11 @@
       "Offline upgrade with Node, PowerShell 7 and winget excluded extracts bundled runtimes without UAC",
       "Side-by-side upgrade inherits prior drawing workspace and preserves unrelated client settings",
       "Packaged CLI works with Node and PowerShell 7 absent from PATH",
-      "Packaged runtimes discover 15 tools, pass doctor, save two lights and reopen their route/numbering with no issues",
+      "Packaged runtimes discover 21 tools, pass doctor, save two lights and reopen their route/numbering with no issues",
       "Packaged PowerShell loads native Tangent host and restores its user settings after exit",
+      "New query, connected-device edit and actual CAD PNG export work from the extracted user package",
+      "Packaged capability discovery and generic takeoff produce two verified CSV files from actual saved CAD entities",
+      "Bundled Node resolves the installed native catalog; real native tray and associated label persist after reopen and actual PNG plotting",
       "Repeat offline setup succeeds with exactly the same connector parameters",
       "Recovery command restores previous runnable release and Skill while retaining later services and new DWG",
       "Machine and user PATH remain unchanged"
@@ -37,6 +40,22 @@
       "Windows ACL denies installation-directory writes",
       "Setup stops with actionable read-only error before runtime download or client changes"
     ],
+    "userOnboarding": [
+      "Non-elevated real worker accepts Chinese, spaces and apostrophe paths and returns prepared status with client trust instructions",
+      "Directory selection persists and a reopened launcher can show the verified prior preparation",
+      "A cached success is not reused after manual changes to the connector configuration",
+      "User entry preserves unrelated services and the WorkBuddy-owned proxy",
+      "Changing the folder through the same worker updates the workspace without editing configuration",
+      "An invalid folder gives a Chinese recovery action and leaves the existing connector unchanged",
+      "Relative or empty folder input cannot trigger installation",
+      "Missing CAD, corrupt/offline dependencies, network failure, conflicting configuration, concurrent install and read-only package have Chinese next actions"
+    ],
+    "publisherCache": [
+      "Matching source, binary and builder preserve the accepted executable exactly",
+      "Changed C# source rebuilds instead of reusing stale output",
+      "Changed executable bytes force a rebuild",
+      "Changed publisher recipe rebuilds and refreshes its digest"
+    ],
     "savedOutput": [
       "Independent DXF and saved snapshot agree on two light positions, L-001/L-002 and 3000 mm WL1 route"
     ]
@@ -57,5 +76,12 @@
   "pending": [
     "Fresh Windows evidence from an independent physical or external test environment",
     "Independent standard Windows account evidence"
-  ]
+  ],
+  "releaseVersion": "0.5.0-preview.1",
+  "compatibilityVersion": "0.2.0",
+  "unitScope": {
+    "suite": "Source test suite",
+    "node": "v22.20.0",
+    "packageRuntime": "Bundled Node/PowerShell verified separately by extracted-package SDK and real CAD tasks"
+  }
 }

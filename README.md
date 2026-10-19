@@ -2,7 +2,7 @@
 
 连接用户已有 CAD 与 AI 的本地中间层，通过 MCP 和 Skill 提供读图、统计与受约束的批量修改能力。保留软件原有工作方式，减少配置和重复操作。
 
-当前为 **v0.2.0-preview.6 用户预览版**。已验证 Windows 10 x64、AutoCAD 2022 简体中文、可选天正电气 V8 和 WorkBuddy 5.3.8。CAD 与客户端由用户正常安装和使用。
+当前为 **v0.5.0-preview.1 用户预览版**。已验证 Windows 10 x64、AutoCAD 2022 简体中文、可选天正电气 V8 和 WorkBuddy 5.3.8。CAD 与客户端由用户正常安装和使用。
 
 ## 普通用户开始使用
 
@@ -18,7 +18,10 @@
 
 | 能力 | 当前范围 |
 | --- | --- |
-| 接入与诊断 | 本地 stdio MCP、全局 Skill、18 个工具、CLI 与中文接入入口 |
+| 接入与诊断 | 本地 stdio MCP、全局 Skill、21 个工具、CLI 与中文接入入口 |
+| 通用任务 | 文字替换、属性/图层整理、CSV清单、批量编辑与PDF/PNG导出，带变更记录和输出校验 |
+| 当前文档（实验性） | 按需接入AutoCAD2022，读取视图/选择集，按文档身份和内存版本编辑、另存、恢复与取消 |
+| 兼容读取 | 本地嵌套块实例、WCS点/边界、布局、外参标志及真实单位；嵌套/图纸空间对象只读 |
 | 识别与统计 | 已观察的天正 V8 电气实例、导线字段、回路标签分组和统计 |
 | 已有图纸编辑 | 对象筛选、移动/复制/旋转/缩放/镜像/阵列、文字/属性/图层修改、补画、偏移、直线修剪延伸、尺寸标注与布局 |
 | 实际 CAD 出图 | PDF、局部 PNG、MCP 图像反馈；调用真实 CAD 打印引擎 |
@@ -28,7 +31,7 @@
 | 稳定性与效率 | 批量操作、任务结果恢复、分页读取、环境发现缓存、分阶段耗时 |
 | 扩展工作流 | 工程副本审计及修复、基于用户自备需求的受限项目生成 |
 
-工具不等于完整天正 SDK 或工程审查系统。嵌套块、外参、动态块写入、连接桥架弯头/三通、其他桥架系列、厂家全套统计和其他 CAD 版本仍需适配。统计覆盖与单位假设随结果说明；缺少拓扑时，标签分组不能当作实际回路数量。[原生桥架范围](docs/native-trays.md)
+工具不等于完整天正 SDK 或工程审查系统。嵌套块、外参和动态块的写入，连接桥架弯头/三通、其他桥架系列、厂家全套统计和其他 CAD 版本仍需适配。统计覆盖与单位假设随结果说明；缺少拓扑时，标签分组不能当作实际回路数量。[原生桥架范围](docs/native-trays.md)
 
 WorkBuddy 桌面流程曾通过用户辅助验收，文件卡片与手动打开已确认；不宣称内嵌 CAD 预览或完整无人值守桌面流程。**干净 Windows、独立标准账户及浏览器下载安全提示流程仍待验收。**
 
@@ -40,6 +43,6 @@ npm test 运行无 CAD 测试；npm run check -- --static 检查公开源码和�
 
 项目生成的可选工作流必须提供自己的需求 JSON；不再有默认学校示例或示例交付下载。[输入契约与范围](docs/school-project.md)
 
-[English](README.en.md) · [MIT](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md) · [变更记录](CHANGELOG.md) · [本版说明](docs/releases/v0.2.0-preview.6.md)
+[English](README.en.md) · [MIT](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md) · [变更记录](CHANGELOG.md) · [本版说明](docs/releases/v0.5.0-preview.1.md)
 
-新版编辑范围、使用步骤与边界见[编辑与出图](docs/editing.md)。
+四阶段实现、验收与限制见[实施记录](docs/practical-development.md)。通用任务从cad_capabilities和cad_workflow开始；当前图纸交互使用cad_session。工具契约与可运行步骤见[通用工作流](skills/cadbridge-electrical/references/general-workflows.md)、[会话操作](skills/cadbridge-electrical/references/session-workflow.md)和[编辑与出图](docs/editing.md)。

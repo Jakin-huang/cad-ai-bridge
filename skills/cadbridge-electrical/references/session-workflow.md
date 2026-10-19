@@ -1,0 +1,16 @@
+# 当前 CAD 会话
+
+仅在用户明确指代正在使用的CAD、当前图纸或选择集时使用cad_session。普通文件任务继续使用cad_workflow及原有工具。先读取cad_capabilities。
+
+1. action=list查看已有会话；没有时action=connect可自动接入正在运行的AutoCAD2022。不要让用户手工NETLOAD或输入内部字段。PID不符、忙碌或旧插件必须准确报告，不接管另一个窗口，不关闭用户CAD。
+2. action=context读取目标sessionId的当前文档、revision、视图和selectedHandles。用户说“这些对象”时，将这些句柄显式带入query或operations；没有选择且范围不清楚时澄清，不默认全选。
+3. query绑定sessionId/documentId/expectedRevision；编辑使用query返回后的context.revision。人工改动或文档切换后，重新读取并重新核对意图，不用新UUID绕过冲突。
+4. edit用唯一requestId、受约束普通operations，默认saveCopy=true。修改当前内存图并另存DWG；原磁盘文件不自动保存。只有用户希望仅在当前文档继续编辑时才选择saveCopy=false，并说明未保存状态。
+5. 正常CAD撤销可以撤销成功批次。重放已撤销的UUID只返回历史结果，不能据此说当前图纸仍含这些修改。需要重新应用时应作为明确的新任务。
+6. 断连/超时用recover和原sessionId/requestId读取本地结果。无最终记录时保留状态待核实，不盲目重写。用户要求取消时用cancel；返回cancellationRequested后仍需读取原请求确认，已提交结果不能靠取消自动撤销。
+
+snapshot可将当前未保存状态复制到新DWG，供现有出图/统计工具继续处理。当前图纸必须位于配置工作目录或任务输出内；无磁盘路径的文档需明确allowUnsaved=true。不要把这类授权扩展到其他文件夹。
+
+view字段用于显示宿主视图状态，包含扭转角；本版不自动把旋转视图转换为WCS区域筛选。需要按范围操作时，使用实际选择句柄或明确的WCS区域，不能直接用视图中心和宽高推定修改范围。
+
+当前会话写入仍限明确毫米制、普通平面对象；电气身份、原生天正、布局修改和任意脚本使用各自已验证工具或明确报告不支持。连接器不负责替用户关闭CAD、保存其他图纸或处理软件授权。

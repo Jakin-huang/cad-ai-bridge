@@ -47,6 +47,11 @@ if(!staticOnly){
  assert.deepEqual(build.sourceDigests.map(s=>s.file).sort(),sources);
  for(const source of build.sourceDigests)assert.equal(digest(await fs.readFile(projectPath('plugin',source.file))),source.sha256.toLowerCase());
  const builtAt=(await fs.stat(projectPath('plugin/bin/CadAgent.dll'))).mtimeMs;
+ for(const [file,count]of [['workflows-report.json',9],['session-report.json',19],['query-scope-report.json',10]]){
+  const report=await readJSON('artifacts/'+file);assert.equal(report.ok,true);assert.equal(report.checks.length,count);assert.ok(Date.parse(report.checkedAt)>=builtAt,'Re-run '+file+' for current DLL');assert.equal(report.pluginSHA256.toLowerCase(),build.sha256.toLowerCase(),'Practical acceptance must exercise the packaged DLL');
+  if(file==='session-report.json'){assert.equal(report.results.sequence.length,30);assert.ok(report.results.sequence.every(item=>item.ok));assert.ok(report.results.resources.after.handleCount-report.results.resources.before.handleCount<100);}
+  pass(file+': '+count+' real CAD checks against the final DLL');
+ }
  for(const [file,count]of [['integration-report.json',16],['tangent-integration-report.json',11]]){
   const report=await readJSON('artifacts/'+file);assert.equal(report.ok,true);assert.equal(report.checks.length,count);assert.ok(Date.parse(report.checkedAt)>=builtAt,'Re-run '+file+' for current DLL');
   let executed=0;

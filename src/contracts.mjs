@@ -86,7 +86,30 @@ const editOperation=z.discriminatedUnion('type',[
  z.strictObject({type:z.literal('move_devices'),ids:z.array(id).min(1).max(1000).refine(a=>new Set(a).size===a.length,'Duplicate device IDs'),delta:point}),
  z.strictObject({type:z.literal('add_route_label'),id,position:point,height:z.number().positive().max(10000).default(120),layer:cadLayer})
 ]);
-schemas.query_entities=z.strictObject({drawing:str,host,filter:z.strictObject({handles:handles.optional(),ids:z.array(id).min(1).max(1000).optional(),types:z.array(z.enum(['LINE','LWPOLYLINE','ARC','CIRCLE','TEXT','MTEXT','INSERT','DIMENSION','SOLID','TCH_CABLETRY','TCH_CABLEDIM'])).min(1).max(11).optional(),layers:z.array(cadLayer).min(1).max(100).optional(),blockName:z.string().min(1).max(255).optional(),textContains:z.string().min(1).max(128).optional(),attributes:properties.optional(),region:region.optional()}).default({}),limit:z.number().int().min(1).max(5000).default(1000)});
+const queryScope=z.strictObject({layout:z.string().min(1).max(255).default('Model'),includeNested:z.boolean().default(false),maxDepth:z.number().int().min(1).max(8).default(4)});
+schemas.query_entities=z.strictObject({drawing:str,host,scope:queryScope.optional(),filter:z.strictObject({handles:handles.optional(),ids:z.array(id).min(1).max(1000).optional(),types:z.array(z.enum(['LINE','LWPOLYLINE','ARC','CIRCLE','TEXT','MTEXT','INSERT','DIMENSION','SOLID','TCH_CABLETRY','TCH_CABLEDIM'])).min(1).max(11).optional(),layers:z.array(cadLayer).min(1).max(100).optional(),blockName:z.string().min(1).max(255).optional(),textContains:z.string().min(1).max(128).optional(),attributes:properties.optional(),region:region.optional()}).default({}),limit:z.number().int().min(1).max(5000).default(1000)});
 export const nativeOperations=new Set(['create_native_tray','set_native_tray_size','add_native_tray_label']);
 schemas.edit=schemas.apply.extend({operations:z.array(z.union([operation,editOperation])).min(1).max(100)}).superRefine((v,ctx)=>{if(v.operations.some(op=>nativeOperations.has(op.type))){if(v.host==='core')ctx.addIssue({code:'custom',message:'Native operations require the Tangent host'});if(v.operations.some(op=>!nativeOperations.has(op.type)))ctx.addIssue({code:'custom',message:'Run native operations in their own batch'});}});
 schemas.export=z.strictObject({drawing:str,host,format:z.enum(['pdf','png']),layout:z.string().min(1).max(255).default('Model'),region:region.optional()});
+schemas.capabilities=z.strictObject({});
+const workflowPlans=z.discriminatedUnion('type',[
+ z.strictObject({type:z.literal('replace_text'),search:z.string().min(1).max(512),replacement:z.string().min(1).max(512).regex(/^[^\x00\r\n]*$/),match:z.enum(['exact','contains']).default('exact'),caseSensitive:z.boolean().default(true)}),
+ z.strictObject({type:z.literal('organize'),attributes:properties.optional(),layer:cadLayer.optional()}).refine(v=>v.attributes||v.layer,'Provide attributes or layer'),
+ z.strictObject({type:z.literal('takeoff'),groupBy:z.array(z.enum(['type','layer','blockName'])).min(1).max(3).default(['type','layer','blockName']),attributeTags:z.array(z.string().min(1).max(64)).max(10).default([])}),
+ z.strictObject({type:z.literal('edit'),operations:z.array(editOperation).min(1).max(100).refine(ops=>ops.every(op=>!nativeOperations.has(op.type)),'Native workflows require the existing dedicated edit tools')}),
+ z.strictObject({type:z.literal('export_batch'),items:z.array(z.strictObject({name:id,format:z.enum(['pdf','png']),layout:z.string().min(1).max(255).default('Model'),region:region.optional()})).min(1).max(50).refine(items=>new Set(items.map(i=>(i.name+'.'+i.format).toLowerCase())).size===items.length,'Duplicate output names')})
+]);
+schemas.workflow=z.strictObject({drawing:str,requestId:z.uuid(),host,filter:schemas.query_entities.shape.filter,plan:workflowPlans,preview:z.boolean().default(true),reviewRegion:region.optional()});
+const sessionEditTypes=new Set(['move','copy','rotate','scale','mirror','array','erase','set_text','set_attributes','set_layer','upsert_layer','add_geometry','insert_block','offset','trim','extend_line','add_dimension']);
+schemas.session=z.discriminatedUnion('action',[
+ z.strictObject({action:z.literal('list')}),
+ z.strictObject({action:z.literal('connect'),pid:z.number().int().positive().optional()}),
+ z.strictObject({action:z.literal('context'),sessionId:z.uuid()}),
+ z.strictObject({action:z.literal('recover'),sessionId:z.uuid(),requestId:z.uuid()}),
+ z.strictObject({action:z.literal('cancel'),sessionId:z.uuid(),requestId:z.uuid()}),
+ z.strictObject({action:z.literal('query'),sessionId:z.uuid(),documentId:z.uuid(),expectedRevision:z.number().int().nonnegative(),filter:schemas.query_entities.shape.filter,limit:z.number().int().min(1).max(5000).default(1000),allowUnsaved:z.boolean().default(false)}),
+ z.strictObject({action:z.literal('snapshot'),sessionId:z.uuid(),documentId:z.uuid(),expectedRevision:z.number().int().nonnegative(),requestId:z.uuid(),allowUnsaved:z.boolean().default(false)}),
+ z.strictObject({action:z.literal('edit'),sessionId:z.uuid(),documentId:z.uuid(),expectedRevision:z.number().int().nonnegative(),requestId:z.uuid(),operations:z.array(editOperation).min(1).max(100).refine(ops=>ops.every(op=>sessionEditTypes.has(op.type)),'Only ordinary session edit operations are supported'),saveCopy:z.boolean().default(true),allowUnsaved:z.boolean().default(false)})
+]);
+export const readonlyWorkflowSchema=schemas.workflow.extend({plan:z.discriminatedUnion('type',workflowPlans.options.filter(plan=>['takeoff','export_batch'].includes(plan.shape.type.value)))});
+export const readonlySessionSchema=z.discriminatedUnion('action',schemas.session.options.filter(action=>['list','context','query','recover','snapshot'].includes(action.shape.action.value)));

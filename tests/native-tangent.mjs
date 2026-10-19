@@ -17,7 +17,7 @@ const tray={type:'create_native_tray',fromPoint:[0,0,0],toPoint:[3000,0,0],width
 const labelRegion={min:[1300,600,0],max:[6500,1600,0]};
 async function imageData(file){const b=await fs.readFile(file),parts=[];for(let p=8;p+12<=b.length;){const n=b.readUInt32BE(p);if(b.toString('ascii',p+4,p+8)==='IDAT')parts.push(b.subarray(p+8,p+8+n));p+=12+n;}assert.ok(parts.length);return Buffer.concat(parts);}
 try{
- await client.connect(transport);assert.equal((await client.listTools()).tools.length,18);
+ await client.connect(transport);assert.equal((await client.listTools()).tools.length,21);
  const seed=results.seed=await call('cad_create_drawing',{scene:{layers:[{name:'NATIVE_TEST',color:7}],symbols:[],entities:[{kind:'line',points:[[-1000,-1000,0],[-500,-1000,0]],layer:'NATIVE_TEST'}]}});ok(seed);
  const plan=request(seed,[{...tray,fromPoint:[3000,0,0],toPoint:[0,0,0]},{...tray,fromPoint:[0,5000,0],toPoint:[4000,5000,0]}]);
  const created=results.created=await call('cad_edit',plan);ok(created);

@@ -34,12 +34,12 @@ function connect(folder,extra=[],env=process.env){
 }
 async function serverAt(){return parseLocalJSON(await fs.readFile(path.join(home,'mcp.json'),'utf8')).mcpServers['cad-ai-bridge'];}
 async function skillTree(folder){const files={};async function walk(dir,relative=''){for(const e of await fs.readdir(dir,{withFileTypes:true})){assert.equal(e.isSymbolicLink(),false);const name=relative?relative+'/'+e.name:e.name;if(e.isDirectory())await walk(path.join(dir,e.name),name);else files[name]=hash(await fs.readFile(path.join(dir,e.name)));}}await walk(folder);return files;}
-async function smoke(server,write=false,expectedTools=18){
+async function smoke(server,write=false,expectedTools=21){
  const client=new Client({name:'windows-user-package-acceptance',version:'0.2.0'});
  try{
   await client.connect(new StdioClientTransport({command:server.command,args:server.args,env:{...process.env,...server.env},stderr:'pipe'}));
   const discovered=(await client.listTools()).tools.length;
-  if(expectedTools===null)assert.ok([15,18].includes(discovered));else assert.equal(discovered,expectedTools);
+  if(expectedTools===null)assert.ok([15,18,21].includes(discovered));else assert.equal(discovered,expectedTools);
   async function call(name,args={}){const reply=await client.callTool({name,arguments:args},{timeout:180000});const result=parseLocalJSON(reply.content[0].text);assert.equal(result.ok,true,JSON.stringify(result.error));return result;}
   const doctor=await call('cad_doctor');
   if(!write)return{doctor};
@@ -51,6 +51,8 @@ async function smoke(server,write=false,expectedTools=18){
   ]});
   const takeoff=await call('electrical_takeoff',{drawing:applied.drawing}),validation=await call('electrical_validate',{drawing:applied.drawing});
   assert.equal(takeoff.snapshot.devices.length,2);assert.equal(takeoff.snapshot.routes.length,1);assert.deepEqual(validation.snapshot.issues,[]);
+  const capabilities=await call('cad_capabilities');assert.ok(capabilities.workflows.includes('takeoff'));
+  const generic=await call('cad_workflow',{drawing:applied.drawing,requestId:crypto.randomUUID(),filter:{types:['INSERT']},plan:{type:'takeoff',groupBy:['type','blockName']},preview:false});assert.equal(generic.statistics.entityCount,2);assert.equal(generic.files.length,2);for(const file of generic.files)assert.equal(hash(await fs.readFile(file.file)),file.sha256);
   const native=await call('cad_native_status',{drawing:applied.drawing});assert.equal(native.nativeHost.nativeKernelLoaded,true);
   const cleanup=parseLocalJSON(await fs.readFile(path.join(native.jobRoot,'cleanup.json'),'utf8'));assert.equal(cleanup.ok,true);assert.equal(cleanup.originalTipRestored,true);
   const query=await call('cad_query_entities',{drawing:applied.drawing,filter:{ids:['L1']}});assert.equal(query.query.entities.length,1);
@@ -69,7 +71,7 @@ async function smoke(server,write=false,expectedTools=18){
   const lengths=nativeQuery.query.entities.filter(e=>e.type==='TCH_CABLETRY').map(e=>e.length).sort((a,b)=>a-b);assert.ok(Math.abs(lengths[0]-3000)<1e-5&&Math.abs(lengths[1]-3000)<1e-5&&Math.abs(lengths[2]-Math.hypot(3000,3000))<1e-5);
   const nativePreview=await call('cad_export',{drawing:nativeLabeled.drawing,host:'tangent',format:'png'});assert.ok(nativePreview.exported.bytes>1000);
   assert.equal(hash(await fs.readFile(applied.drawing)),applied.drawingSha256);assert.equal(hash(await fs.readFile(fixture.drawing)),fixture.drawingSha256);
-  return{doctor,fixture,applied,takeoff,validation,native,query,edited,preview,nativeTrays:{created:nativeCreated,labeled:nativeLabeled,query:nativeQuery,preview:nativePreview}};
+  return{doctor,fixture,applied,takeoff,validation,capabilities,generic,native,query,edited,preview,nativeTrays:{created:nativeCreated,labeled:nativeLabeled,query:nativeQuery,preview:nativePreview}};
  }finally{await client.close();}
 }
 const home=path.join(base,'隔离 WorkBuddy'),workspace=path.join(base,'用户图纸');
@@ -95,8 +97,9 @@ try{
  checks.push('Offline upgrade with Node, PowerShell 7 and winget excluded extracts bundled runtimes without UAC');
  checks.push('Side-by-side upgrade inherits prior drawing workspace and preserves unrelated client settings');
  const cli=run(process.env.ComSpec||'cmd.exe',['/d','/s','/c','""'+path.join(newFolder,'cadbridge.cmd')+'" help"'],env);assert.match(cli,/CAD AI Bridge/);checks.push('Packaged CLI works with Node and PowerShell 7 absent from PATH');
- results.upgraded=await smoke(newServer,true);checks.push('Packaged runtimes discover 18 tools, pass doctor, save two lights and reopen their route/numbering with no issues');checks.push('Packaged PowerShell loads native Tangent host and restores its user settings after exit');
+ results.upgraded=await smoke(newServer,true);checks.push('Packaged runtimes discover 21 tools, pass doctor, save two lights and reopen their route/numbering with no issues');checks.push('Packaged PowerShell loads native Tangent host and restores its user settings after exit');
  checks.push('New query, connected-device edit and actual CAD PNG export work from the extracted user package');
+ checks.push('Packaged capability discovery and generic takeoff produce two verified CSV files from actual saved CAD entities');
  checks.push('Bundled Node resolves the installed native catalog; real native tray and associated label persist after reopen and actual PNG plotting');
  const savedHash=hash(await fs.readFile(results.upgraded.applied.drawing));
  // Repeat setup offline, then restore the original version from its transaction journal.
