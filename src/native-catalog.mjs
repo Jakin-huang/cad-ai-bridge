@@ -5,6 +5,10 @@ import crypto from 'node:crypto';
 // Read the installed manufacturer's catalog. Never execute SQL stored in it or
 // redistribute its contents. The first supported native family is槽式桥架.
 export async function resolveNativeModels(operations,tangentRoot){
+ // V8's jig does not terminate reliably when its second point is WCS origin.
+ // Planar independent trays have no flow direction; keep the same two endpoints
+ // while moving origin to the first input. The caller's request is not mutated.
+ operations=operations.map(op=>op.type==='create_native_tray'&&op.toPoint.every(n=>n===0)?{...op,fromPoint:[...op.toPoint],toPoint:[...op.fromPoint]}:op);
  if(operations.every(op=>op.type==='add_native_tray_label'))return{operations};
  const file=path.join(tangentRoot,'sys','AecCable.db');
  const bytes=await fs.readFile(file).catch(error=>{throw Error('NATIVE_CATALOG_UNAVAILABLE: cannot read the selected Tangent tray catalog ('+error.code+')');});

@@ -2,7 +2,7 @@
 
 连接用户已有 CAD 与 AI 的本地中间层，通过 MCP 和 Skill 提供读图、统计与受约束的批量修改能力。保留软件原有工作方式，减少配置和重复操作。
 
-当前为 **v0.2.0-preview.5 用户预览版**。已验证 Windows 10 x64、AutoCAD 2022 简体中文、可选天正电气 V8 和 WorkBuddy 5.3.8。CAD 与客户端由用户正常安装和使用。
+当前为 **v0.2.0-preview.6 用户预览版**。已验证 Windows 10 x64、AutoCAD 2022 简体中文、可选天正电气 V8 和 WorkBuddy 5.3.8。CAD 与客户端由用户正常安装和使用。
 
 ## 普通用户开始使用
 
@@ -40,6 +40,6 @@ npm test 运行无 CAD 测试；npm run check -- --static 检查公开源码和�
 
 项目生成的可选工作流必须提供自己的需求 JSON；不再有默认学校示例或示例交付下载。[输入契约与范围](docs/school-project.md)
 
-[English](README.en.md) · [MIT](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md) · [变更记录](CHANGELOG.md) · [本版说明](docs/releases/v0.2.0-preview.5.md)
+[English](README.en.md) · [MIT](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md) · [变更记录](CHANGELOG.md) · [本版说明](docs/releases/v0.2.0-preview.6.md)
 
 新版编辑范围、使用步骤与边界见[编辑与出图](docs/editing.md)。

@@ -19,7 +19,7 @@ async function imageData(file){const b=await fs.readFile(file),parts=[];for(let 
 try{
  await client.connect(transport);assert.equal((await client.listTools()).tools.length,18);
  const seed=results.seed=await call('cad_create_drawing',{scene:{layers:[{name:'NATIVE_TEST',color:7}],symbols:[],entities:[{kind:'line',points:[[-1000,-1000,0],[-500,-1000,0]],layer:'NATIVE_TEST'}]}});ok(seed);
- const plan=request(seed,[tray,{...tray,fromPoint:[0,5000,0],toPoint:[4000,5000,0]}]);
+ const plan=request(seed,[{...tray,fromPoint:[3000,0,0],toPoint:[0,0,0]},{...tray,fromPoint:[0,5000,0],toPoint:[4000,5000,0]}]);
  const created=results.created=await call('cad_edit',plan);ok(created);
  const loaded=JSON.parse(await fs.readFile(path.join(created.jobRoot,'native-runtime.json'),'utf8'));
  const preloads=JSON.parse(await fs.readFile(path.join(created.jobRoot,'native-preload.json'),'utf8'));
