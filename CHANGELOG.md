@@ -2,7 +2,7 @@
 
 ## 0.5.0-preview.1 — 2026-10-19
 
-Add five generic CAD workflows with frozen inputs, CSV, before/after plots, persisted readback and verified replay. Add experimental AutoCAD 2022 current-document sessions with document/revision guards, fixed-command dispatch, transactions, independent copies, undo, cancellation and durable recovery. Add read-only nested block/layout queries, instance paths, transformed geometry, xref flags and actual units. Preserve the original 18 tools and saved v0.2 UUID compatibility; expose 21 tools with constrained read-only schemas. External release version advances while internal/plugin compatibility stays 0.2.0. Preserve the accepted Windows launcher during documentation-only freezing, with source/binary/builder digest checks and cache invalidation. See docs/releases/v0.5.0-preview.1.md.
+Add five generic CAD workflows with frozen inputs, CSV, before/after plots, persisted readback and verified replay. Add experimental AutoCAD 2022 current-document sessions with document/revision guards, fixed-command dispatch, transactions, independent copies, undo, cancellation and durable recovery. Add read-only nested block/layout queries, instance paths, transformed geometry, xref flags and actual units. Preserve the original 18 tools and saved v0.2 UUID compatibility; expose 21 tools with constrained read-only schemas. External release version advances while internal/plugin compatibility stays 0.2.0. Preserve the accepted Windows launcher during documentation-only freezing, with source/binary/compiler-recipe digest checks and cache invalidation. See docs/releases/v0.5.0-preview.1.md.
 
 ## 0.2.0-preview.6 — 2026-10-19
 

@@ -1,6 +1,6 @@
 {
   "status": "user-preview-validated-on-existing-windows",
-  "checkedAt": "2026-10-19T14:26:12.782Z",
+  "checkedAt": "2026-10-19T14:32:00.914Z",
   "version": "0.2.0",
   "distribution": "Windows user preview",
   "environment": "Windows 10 x64; non-elevated process; isolated client, minimal PATH and offline bootstrap",
@@ -51,10 +51,10 @@
       "Missing CAD, corrupt/offline dependencies, network failure, conflicting configuration, concurrent install and read-only package have Chinese next actions"
     ],
     "publisherCache": [
-      "Matching source, binary and builder preserve the accepted executable exactly",
+      "Matching source, binary and compilation recipe preserve the accepted executable exactly",
       "Changed C# source rebuilds instead of reusing stale output",
       "Changed executable bytes force a rebuild",
-      "Changed publisher recipe rebuilds and refreshes its digest"
+      "Changed compiler arguments invalidate the compilation recipe and rebuild the executable"
     ],
     "savedOutput": [
       "Independent DXF and saved snapshot agree on two light positions, L-001/L-002 and 3000 mm WL1 route"
