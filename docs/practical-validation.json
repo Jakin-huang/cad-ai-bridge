@@ -1,8 +1,8 @@
 {
-  "release": "0.6.0-preview.1",
-  "status": "p0-v06-development-validated-on-existing-machine",
-  "checkedAt": "2026-10-20T02:47:23.068Z",
-  "pluginSHA256": "08A55869E3029A22A25293E03DFE4C2C4A627413AEC8F27214D09F42E7C4F4E3",
+  "release": "2.0.0-preview.1",
+  "status": "v2-development-validated-on-existing-machine",
+  "checkedAt": "2026-10-20T05:15:58.743Z",
+  "pluginSHA256": "51CB1B8DA30F2A2ADADEC2D31862A29D4230F22E2798EC78F88DC3AF1AC04D27",
   "environment": {
     "os": "Windows 10 x64",
     "cad": "AutoCAD 2022 zh-CN",
@@ -16,7 +16,7 @@
       "delivered": [
         "Capabilities without CAD",
         "Existing offline setup, diagnostics and restoration retained",
-        "22 MCP tools and general-purpose Skill"
+        "24 MCP tools, projects, analysis and general-purpose Skill"
       ]
     },
     {
@@ -49,118 +49,139 @@
     }
   ],
   "unitTests": {
-    "passed": 115,
+    "passed": 150,
     "failed": 0,
     "skipped": 0
   },
   "sessionSequence": {
     "requests": 30,
     "passed": true,
-    "handlesBefore": 1983,
-    "handlesAfter": 1971
+    "handlesBefore": 1913,
+    "handlesAfter": 1927
   },
   "evidence": [
     {
+      "report": "v2-integration-report.json",
+      "checkedAt": "2026-10-20T04:51:05.902Z",
+      "checks": 7,
+      "scope": "Current-machine regression",
+      "passed": true
+    },
+    {
+      "report": "v2-mcp-report.json",
+      "checkedAt": "2026-10-20T04:51:17.108Z",
+      "checks": 9,
+      "scope": "Actual local MCP SDK/stdio and one real AutoCAD takeoff project; not desktop natural language or external users",
+      "passed": true
+    },
+    {
+      "report": "batch-export-performance-report.json",
+      "checkedAt": "2026-10-20T04:09:47.510Z",
+      "checks": 3,
+      "scope": "Two observations per mode on the existing Windows/AutoCAD 2022 account. Native export execution only; no AI latency, human verification, external users or competitive superiority conclusion.",
+      "passed": true
+    },
+    {
       "report": "practical-v06-report.json",
-      "checkedAt": "2026-10-20T02:12:01.697Z",
+      "checkedAt": "2026-10-20T04:08:40.150Z",
       "checks": 12,
       "scope": "Actual AutoCAD 2022 synthetic 6204-entity drawing on the existing Windows account. No external users, new machine, manual time baseline, all-font appearance or arbitrary vendor-object preservation claim.",
       "passed": true
     },
     {
       "report": "workflows-report.json",
-      "checkedAt": "2026-10-20T02:10:06.941Z",
+      "checkedAt": "2026-10-20T04:50:31.871Z",
       "checks": 9,
       "scope": "Actual AutoCAD 2022 via official MCP SDK. This is automated host evidence, not external-user or desktop-dialogue acceptance.",
       "passed": true
     },
     {
       "report": "session-report.json",
-      "checkedAt": "2026-10-20T02:12:41.052Z",
+      "checkedAt": "2026-10-20T04:11:10.297Z",
       "checks": 19,
       "scope": "Owned AutoCAD 2022 interactive instance, official MCP SDK, real external COM edits/selection/undo/document switching. No external-user or new-machine claim.",
       "passed": true
     },
     {
       "report": "query-scope-report.json",
-      "checkedAt": "2026-10-20T02:13:15.538Z",
+      "checkedAt": "2026-10-20T04:11:44.517Z",
       "checks": 11,
       "scope": "AutoCAD 2022 actual ordinary nested blocks, WCS bounds, xref identification, paper-space reading and meter-unit read-only coverage; no new CAD version or custom-object write support claimed.",
       "passed": true
     },
     {
       "report": "integration-report.json",
-      "checkedAt": "2026-10-20T02:13:52.705Z",
+      "checkedAt": "2026-10-20T04:12:22.840Z",
       "checks": 16,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "editing-report.json",
-      "checkedAt": "2026-10-20T02:15:23.993Z",
+      "checkedAt": "2026-10-20T04:13:52.865Z",
       "checks": 17,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "tangent-integration-report.json",
-      "checkedAt": "2026-10-20T02:16:42.899Z",
+      "checkedAt": "2026-10-20T04:15:20.486Z",
       "checks": 11,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "editing-tangent-report.json",
-      "checkedAt": "2026-10-20T02:25:03.777Z",
+      "checkedAt": "2026-10-20T04:23:55.526Z",
       "checks": 17,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "native-tangent-report.json",
-      "checkedAt": "2026-10-20T02:32:52.926Z",
+      "checkedAt": "2026-10-20T04:31:32.524Z",
       "checks": 16,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "mcp-results-report.json",
-      "checkedAt": "2026-10-20T02:32:58.622Z",
+      "checkedAt": "2026-10-20T04:31:38.007Z",
       "checks": 4,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "school-mcp-report.json",
-      "checkedAt": "2026-10-20T02:33:11.199Z",
+      "checkedAt": "2026-10-20T04:31:49.849Z",
       "checks": 7,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "maintenance-mcp-report.json",
-      "checkedAt": "2026-10-20T02:33:22.389Z",
+      "checkedAt": "2026-10-20T04:32:02.473Z",
       "checks": 8,
       "scope": "Official SDK protocol verification; does not establish WorkBuddy UI compatibility.",
       "passed": true
     },
     {
       "report": "workbuddy-installed-report.json",
-      "checkedAt": "2026-10-20T02:33:55.816Z",
+      "checkedAt": "2026-10-20T04:51:41.623Z",
       "checks": 8,
       "scope": "Official MCP SDK using actual installed WorkBuddy configuration; not a desktop conversation test",
       "passed": true
     },
     {
       "report": "editing-legacy-upgrade-report.json",
-      "checkedAt": "2026-10-20T02:33:27.395Z",
+      "checkedAt": "2026-10-20T04:32:06.852Z",
       "checks": 3,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "preview4-editing-upgrade-report.json",
-      "checkedAt": "2026-10-20T02:33:32.031Z",
+      "checkedAt": "2026-10-20T04:32:11.474Z",
       "checks": 3,
       "scope": "Current-machine regression",
       "passed": true
@@ -169,17 +190,37 @@
   "clientNaturalLanguage": {
     "accepted": true,
     "status": "passed-existing-account-cli",
-    "checkedAt": "2026-10-20T02:47:22.746Z",
-    "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. No desktop, global discovery, new-machine, manual productivity or external-user assertion.",
+    "checkedAt": "2026-10-20T05:07:53.504Z",
+    "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. Visible assistant stream is validated even when the final result refers to an earlier delivery message. No desktop, global discovery, new-machine, manual productivity or external-user assertion.",
     "checks": [
       "Candidate Skill loaded for a Chinese general-CAD request",
       "Actual scene creation, generic replacement and takeoff completed",
       "Saved text, two 3000 mm horizontal lines, 1000 mm spacing and three-entity CSV counts verified",
       "Actual PNG and CSV files retained with verified hashes",
       "Original synthetic DWG remains unchanged",
-      "Client returned a successful natural-language result"
+      "User-visible assistant delivery contains exact clickable DWG, CSV and PNG links after actual CAD execution"
     ],
-    "elapsedMs": 88373,
+    "elapsedMs": 157347,
+    "auxiliaryToolAttempts": [
+      {
+        "tool": "Bash",
+        "denied": true
+      },
+      {
+        "tool": "Glob",
+        "denied": false
+      },
+      {
+        "tool": "Grep",
+        "denied": false
+      },
+      {
+        "tool": "Write",
+        "denied": true
+      }
+    ],
+    "verificationReplay": true,
+    "verificationCorrection": "Verified the actual visible delivery frame; the final result is only a later footer. Original raw trace is unchanged.",
     "recoveredInputValidationErrors": 0,
     "performanceScope": "One synthetic first-task client trace; no manual baseline or user productivity claim."
   },
@@ -201,7 +242,7 @@
     "syntheticDrawingEntities": 6204,
     "indexedPages": 60,
     "indexedEntities": 6000,
-    "pagingElapsedMs": 2686,
+    "pagingElapsedMs": 2778,
     "physicalPdf": {
       "checks": [
         "Displayed A3 landscape orientation",
@@ -380,8 +421,18 @@
         "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. No desktop, global discovery, new-machine, manual productivity or external-user assertion."
       },
       {
-        "checkedAt": "2026-10-20T02:47:22.746Z",
+        "checkedAt": "2026-10-20T05:07:53.504Z",
         "finalPlugin": true,
+        "elapsedMs": 157347,
+        "validationErrors": 0,
+        "bridgeCalls": 3,
+        "functionCalls": 12,
+        "hostLaunches": 5,
+        "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. Visible assistant stream is validated even when the final result refers to an earlier delivery message. No desktop, global discovery, new-machine, manual productivity or external-user assertion."
+      },
+      {
+        "checkedAt": "2026-10-20T02:47:22.746Z",
+        "finalPlugin": false,
         "elapsedMs": 88373,
         "validationErrors": 0,
         "bridgeCalls": 3,
@@ -397,9 +448,21 @@
         "scope": "One earlier current-machine CLI attempt exceeded its limit; no final client result, not counted as success. Subsequent tests used independent new synthetic drawings."
       },
       {
+        "outcome": "CLIENT_DELIVERY_NOT_LINKED",
+        "checkedAt": "2026-10-20T05:08:50.877Z",
+        "configuredFinalPlugin": true,
+        "elapsedMs": 108898,
+        "cadToolCalls": [
+          "mcp__cad-ai-bridge__cad_doctor",
+          "mcp__cad-ai-bridge__cad_create_drawing",
+          "mcp__cad-ai-bridge__cad_workflow"
+        ],
+        "scope": "CAD artifact checks passed before final-link validation, but the final response did not link the actual DWG, CSV and PNG. Not client acceptance."
+      },
+      {
         "outcome": "CLIENT_SERVICE_RATE_LIMIT",
         "checkedAt": "2026-10-20T02:39:56.513Z",
-        "configuredFinalPlugin": true,
+        "configuredFinalPlugin": false,
         "elapsedMs": 88615,
         "cadToolCalls": [
           "mcp__cad-ai-bridge__cad_doctor"

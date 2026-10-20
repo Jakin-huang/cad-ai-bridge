@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "release": "2.0.0-preview.1",
+  "checkedAt": "2026-10-20T05:20:40.506Z",
+  "status": "implemented-and-validated-on-existing-machine-preview",
+  "compatibilityVersion": "0.2.0",
+  "pluginSHA256": "51CB1B8DA30F2A2ADADEC2D31862A29D4230F22E2798EC78F88DC3AF1AC04D27",
+  "unitTests": {
+    "passed": 150,
+    "failed": 0,
+    "skipped": 0
+  },
+  "currentMachine": {
+    "core": [
+      "Native capture exposes text size/basis, block handedness, solid vertices and polyline bulges",
+      "Actual saved/reopened text, block, solid and polyline scale/rotation/reflection pass independent geometry and preservation",
+      "Actual frozen scan yields exact 2.7 m rule quantity and object-bound check issues without CAD launch",
+      "One native host preserves successful PDF/PNG around a failed batch item",
+      "Real two-drawing project completes verified edit and quantity register on independent frozen copies",
+      "Completed project UUID returns retained result without launching writes again",
+      "Original DWG remains unchanged through transformations, analysis, partial export and project work"
+    ],
+    "protocol": [
+      "Actual MCP discovers 24 tools including typed project and engineering-analysis entrypoints",
+      "MCP engineering analysis retains correct physical totals while returning a bounded summary",
+      "New analysis detail kind pages exact source SHA and instance provenance through MCP",
+      "Final same-byte index verifier pages all 6000 retained real-CAD lines without launching CAD again",
+      "MCP project start/status completes one frozen-copy register and exposes paginated item state",
+      "Protocol replay returns recorded project without repeating its child task",
+      "MCP delivers exact clickable files both in structured metadata and a ready-to-copy text block",
+      "Read-only discovery retains project recovery and analysis while hiding write plans",
+      "Read-only MCP rejects a project write at the tool boundary"
+    ],
+    "nativeBatchExport": [
+      "Same input, paper requests and output checks in all four measurements",
+      "Paired order single/batch/batch/single; 3 vs 1 CAD host launches",
+      "Source SHA-256 unchanged"
+    ],
+    "browser": [
+      "Actual IAB browser submitted a generated DWG takeoff project and observed completion",
+      "Final UI lists paginated historical tasks with Chinese action names",
+      "Completed project displays source/execution/delivery verification in Chinese",
+      "Browser downloaded registered summary CSV with matching SHA-256",
+      "Actual isolated read-only browser disables text modification while preserving statistics/export choices",
+      "Missing configured CAD host displays the specific configuration failure and passing independent checks",
+      "Authenticated browser shutdown closes its isolated local service",
+      "Current final source served in a fresh browser: generic CAD workflow shows tiered proof, loaded 1600x1280 PNG and exact SHA-matching summary CSV download"
+    ],
+    "packagedEntry": [
+      "Actual packaged Windows launcher script starts bundled Node with minimal PATH and offline runtimes",
+      "Extracted package serves the complete authenticated task-center UI and CSP",
+      "Packaged task center exposes v2 release identity and project/analysis capabilities while refusing unauthenticated history",
+      "Packaged task center diagnostic passes with bundled Node 22.23.3 and its own isolated configuration",
+      "Authenticated page shutdown closes the packaged local entry without a CAD process kill"
+    ],
+    "fullRegressionSteps": 26
+  },
+  "performance": {
+    "records": [
+      {
+        "mode": "single",
+        "elapsedMs": 11224,
+        "hostLaunches": 3
+      },
+      {
+        "mode": "batch",
+        "elapsedMs": 3769,
+        "hostLaunches": 1
+      },
+      {
+        "mode": "batch",
+        "elapsedMs": 4099,
+        "hostLaunches": 1
+      },
+      {
+        "mode": "single",
+        "elapsedMs": 9993,
+        "hostLaunches": 3
+      }
+    ],
+    "scope": "Two observations per mode on the existing Windows/AutoCAD 2022 account. Native export execution only; no AI latency, human verification, external users or competitive superiority conclusion."
+  },
+  "clientNaturalLanguage": {
+    "accepted": true,
+    "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. Visible assistant stream is validated even when the final result refers to an earlier delivery message. No desktop, global discovery, new-machine, manual productivity or external-user assertion.",
+    "elapsedMs": 157347,
+    "checks": [
+      "Candidate Skill loaded for a Chinese general-CAD request",
+      "Actual scene creation, generic replacement and takeoff completed",
+      "Saved text, two 3000 mm horizontal lines, 1000 mm spacing and three-entity CSV counts verified",
+      "Actual PNG and CSV files retained with verified hashes",
+      "Original synthetic DWG remains unchanged",
+      "User-visible assistant delivery contains exact clickable DWG, CSV and PNG links after actual CAD execution"
+    ],
+    "bridgeCalls": 3,
+    "hostLaunches": 5,
+    "functionCalls": 12,
+    "auxiliaryToolAttempts": [
+      {
+        "tool": "Bash",
+        "denied": true
+      },
+      {
+        "tool": "Glob",
+        "denied": false
+      },
+      {
+        "tool": "Grep",
+        "denied": false
+      },
+      {
+        "tool": "Write",
+        "denied": true
+      }
+    ],
+    "verificationReplay": true,
+    "verificationCorrection": "Verified the actual visible delivery frame; the final result is only a later footer. Original raw trace is unchanged."
+  },
+  "delivery": {
+    "candidatePackageSHA256": "4c765a2ff342cde7c6f782f2e604c052d91e60d1b4376a4f921f8b9267e354e4",
+    "packageChecks": 14,
+    "entryProtocolVerified": true,
+    "sourceDataPolicy": "No drawings, test screenshots, private inputs, local settings or raw logs in source/user ZIP"
+  },
+  "scope": {
+    "host": "AutoCAD 2022 zh-CN on existing Windows account; optional Tangent Electrical V8",
+    "edits": "Millimeter model-space roots; constrained ordinary 2D objects",
+    "projects": "Independent frozen drawing copies; no cross-DWG transaction; only unstarted items resume",
+    "analysis": "Complete frozen captures; explicit versioned rules; partial physical measurements remain partial",
+    "verification": "Declared operation postconditions and DXF record subsets; visual and full database semantics are separate",
+    "backends": "Executable extension contracts; no additional runtime host accepted"
+  },
+  "acceptance": {
+    "implementationComplete": true,
+    "currentMachineBackendAndSdkAutomated": true,
+    "currentClientCLI": true,
+    "currentBrowser": true,
+    "packagedEntry": true,
+    "freshPhysicalWindows": false,
+    "independentStandardAccount": false,
+    "externalUsers": false,
+    "manualProductivity": false,
+    "competitiveSuperiority": false,
+    "stableReleaseGate": false
+  },
+  "pending": [
+    "Fresh external physical Windows and independent standard account",
+    "New-feature WorkBuddy desktop natural-language acceptance",
+    "External users and paired manual productivity",
+    "Long-term production reliability",
+    "Additional licensed CAD hosts and unsupported object/unit writes",
+    "Independent same-condition competitive trials"
+  ],
+  "knownLimits": [
+    "Offsets and parts of layout/dimension semantics lack complete independent postconditions",
+    "All dictionaries, opaque vendor associations, fonts and engineering compliance are not proven",
+    "The task center is a local queue/result interface, not a complete CAD viewport or a new model service",
+    "Two native export observations per mode do not establish user productivity or competitive superiority"
+  ]
+}

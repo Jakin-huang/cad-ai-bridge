@@ -1,5 +1,7 @@
 # 四阶段实施与验收记录
 
+本页保留原四阶段及 v0.6 的实施历史。当前一次性交付 v2.0 的实现、本机验证和待验收边界见 [v2 发行说明](releases/v2.0.0-preview.1.md)及[验证摘要](v2-validation.json)。
+
 更新日期：2026-10-20。目标产品为 CAD AI Bridge，AutoCAD 是已验证宿主，天正为专业扩展。四阶段在v0.5.0-preview.1完成限定范围开发与本机验收；后续P0和v0.6增强的实现、实际测试与待验收项在下文单独记录。最新[脱敏验收摘要](practical-validation.json)与版本对应；早期[对标](open-source-benchmarks.md)与[计划](connector-plan.md)用于记录决策依据。
 
 ## 阶段与完成范围
