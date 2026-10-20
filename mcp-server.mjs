@@ -3,9 +3,11 @@ import {schemas,execute} from './bridge.mjs';
 import {publicWorkflowSchema,readonlyWorkflowSchema,readonlySessionSchema,readonlyProjectSchema,publicProjectSchema} from './src/contracts.mjs';
 import {toolResponse} from './src/tool-response.mjs';
 import {failure} from './src/errors.mjs';
+import {readonlyEngineeringSchema} from './src/engineering-contracts.mjs';
 const {McpServer}=await dependency('@modelcontextprotocol/server');
 const {serveStdio}=await dependency('@modelcontextprotocol/server/stdio');
 const definitions=[
+ ['cad_design_project','engineering','工程设计试验入口：prepare接收AI从需求和证据解释的项目约束；design计算并生成普通照明设计；deliver通过真实CAD新建、布置、重开及出图；revise修改需求重算，review记录待审意见。先核对status和modelSHA256；原始设计图仅用于事后对照。当前仅支持明确边界的普通照明设计与利用系数法估算，不提供医院全专业或规范签审。'],
  ['cad_project','project','创建、查看、取消或恢复多图项目任务。start立即返回jobId，再status查看真实进度；源图先冻结，各图另存副本。cancel在当前图保存后停止后续项，resume只继续未开始项，状态不明的写入不自动重做。'],
  ['cad_analyze','analyze','对cad_scan_drawing的完整冻结结果执行工程检查和逐对象计量，不启动CAD。支持重复/必需属性、旧文字、图层、最小长度、文字高度；显式计量规则可设系数损耗及进位，缺少世界长度或单位时不声称完整总量。'],
  ['cad_scan_drawing','scan','一次只读捕获图纸至多100000条实体并建立本地索引。默认返回统计和jobId；随后cad_read_result按filter、fields分页，无需重启CAD。truncated表示捕获不完整，不能声称全图统计；支持显式布局和嵌套只读。'],
@@ -35,8 +37,8 @@ await serveStdio(()=>{
  const server=new McpServer({name:'cad-ai-bridge',version:'0.2.0'});
  for(const [name,action,description]of definitions){
    if(process.env.CADBRIDGE_READ_ONLY==='1'&&['apply','edit','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action))continue;
-   const readOnly=process.env.CADBRIDGE_READ_ONLY==='1',inputSchema=action==='workflow'?(readOnly?readonlyWorkflowSchema:publicWorkflowSchema):action==='project'?(readOnly?readonlyProjectSchema:publicProjectSchema):readOnly&&action==='session'?readonlySessionSchema:schemas[action];
-   server.registerTool(name,{description,inputSchema,annotations:{readOnlyHint:readOnly||!['project','session','workflow','apply','edit','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
+   const readOnly=process.env.CADBRIDGE_READ_ONLY==='1',inputSchema=action==='workflow'?(readOnly?readonlyWorkflowSchema:publicWorkflowSchema):action==='project'?(readOnly?readonlyProjectSchema:publicProjectSchema):readOnly&&action==='session'?readonlySessionSchema:readOnly&&action==='engineering'?readonlyEngineeringSchema:schemas[action];
+   server.registerTool(name,{description,inputSchema,annotations:{readOnlyHint:readOnly||!['engineering','project','session','workflow','apply','edit','create_drawing','create_test_drawing','prepare_project','repair_copy'].includes(action),destructiveHint:false,openWorldHint:false}},async args=>{
      try{return await toolResponse(action,args,await execute(action,args));}
      catch(error){return{content:[{type:'text',text:JSON.stringify(failure(error))}],isError:true};}
    });

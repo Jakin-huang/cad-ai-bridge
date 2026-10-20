@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "baseline": "v2.0.0-preview.1",
+  "target": "complex-engineering-design-to-human-review",
+  "updated": "2026-10-20",
+  "pilot": "hospital-ordinary-lighting-retrospective-reconstruction",
+  "stages": [
+    {
+      "id": "E1",
+      "status": "bounded_pilot_verified",
+      "limits": [
+        "Historical architectural extraction, not independent issued architecture",
+        "Inferred room boundaries and assumed entrances",
+        "Global architecture capture truncation retained as gap"
+      ]
+    },
+    {
+      "id": "E2",
+      "status": "bounded_retrospective_verified_original_customer_brief_missing",
+      "limits": [
+        "Three source-PDF-bound standard clauses",
+        "Actual installed AI client independently extracted all 48 room/rule pairs from the authorized hospital-derived test brief",
+        "Source identity and architecture preserved through local seed SHA binding",
+        "Original customer brief missing; one retrospective case is not general understanding acceptance"
+      ]
+    },
+    {
+      "id": "E3",
+      "status": "bounded_pilot_verified",
+      "limits": [
+        "Six selected spaces, ordinary lighting only",
+        "Flux-method estimate, assumed catalogue, no point photometry or UGR",
+        "Oversized scope blocks pending plan pagination"
+      ]
+    },
+    {
+      "id": "E4",
+      "status": "current_machine_verified",
+      "limits": [
+        "Actual AI-created revision 0 continued through native CAD: 19 luminaires, six circuits, five sheets",
+        "Original brief: 19 luminaires, six circuits, five sheets",
+        "R2 simulated brief change: 18 luminaires, separate delivery",
+        "Saved CAD readback, PDF physical size and visual review passed"
+      ]
+    },
+    {
+      "id": "E5",
+      "status": "bounded_pilot_verified",
+      "limits": [
+        "118 bounded independent checks; main AI delivery has 15 explicit pending items, not full engineering compliance",
+        "Reference comparison is candidate counts and positions, not full circuit/control/discipline acceptance"
+      ]
+    },
+    {
+      "id": "E6",
+      "status": "workflow_verified_human_review_pending",
+      "limits": [
+        "Simulation tested, professional review not authenticated",
+        "Revision invalidates old review",
+        "No professional or construction approval"
+      ]
+    },
+    {
+      "id": "E7",
+      "status": "current_machine_verified_unreleased",
+      "limits": [
+        "MCP and CLI-source entrypoints",
+        "Task-center engineering view, actual PNG preview and CSV download",
+        "Frozen v2 package does not include this increment",
+        "New machine and external users pending"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "status": "bounded_local_pipeline_verified_external_gates_pending"
+    },
+    {
+      "id": "M2",
+      "status": "not_complete"
+    },
+    {
+      "id": "M3",
+      "status": "not_complete"
+    },
+    {
+      "id": "M4",
+      "status": "not_complete"
+    }
+  ],
+  "acceptance": {
+    "boundedPilotImplementation": true,
+    "currentMachinePipeline": true,
+    "fullHospitalDesign": false,
+    "independentProspectiveDesign": false,
+    "externalUsers": false,
+    "humanProfessionalReview": false,
+    "constructionApproval": false,
+    "hospitalDerivedTestBriefAIClientIntake": true,
+    "originalCustomerBrief": false,
+    "actualClientToNativeCad": true
+  },
+  "knownInputGaps": [
+    "Original client brief not located",
+    "Independent architectural drawing not located",
+    "Luminaire IES/LDT data not located",
+    "Upstream supply and protective coordination conditions unverified"
+  ],
+  "nextPriorities": [
+    "P0-1 independent complete architecture and spatial model",
+    "P0-2 source-bound requirement interpretation and unit validation",
+    "P0-3 real product photometry and lighting-quality optimization",
+    "P0-4 standard coverage and applicability",
+    "P1 detailed engineering drawings, incremental edit, review identity and interruption recovery"
+  ],
+  "plan": "docs/engineering-design-plan.md",
+  "validation": "docs/engineering-design-validation.json"
+}

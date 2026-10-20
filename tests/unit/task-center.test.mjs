@@ -3,8 +3,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import {startTaskCenter} from '../../src/task-center.mjs';
+import {startTaskCenter,taskCenterDocument} from '../../src/task-center.mjs';
+import crypto from 'node:crypto';
 import {hashFile} from '../../src/drawings.mjs';
+
+test('Windows and Unix HTML yield the same browser-normalized inline-script CSP digest',()=>{const unix='<script>\nconst message="ready";\n</script>',windows=unix.replaceAll('\n','\r\n'),a=taskCenterDocument(unix),b=taskCenterDocument(windows);assert.deepEqual(a,b);assert.equal(b.scriptHash,crypto.createHash('sha256').update('\nconst message="ready";\n').digest('base64'));});
 test('task center requires local authentication, rejects foreign origins and serves only registered unchanged outputs',async t=>{
  const runs=await fs.mkdtemp(path.join(os.tmpdir(),'cad-center-'));t.after(()=>fs.rm(runs,{recursive:true,force:true}));const job=path.join(runs,'job-a');await fs.mkdir(job);const file=path.join(job,'output.csv');await fs.writeFile(file,'test');await fs.writeFile(path.join(job,'task.json'),JSON.stringify({action:'workflow',status:'completed',updatedAt:'2026-10-20'}));await fs.writeFile(path.join(job,'result.json'),JSON.stringify({ok:true,files:[{kind:'csv',file,sha256:await hashFile(file)}]}));const calls=[];
  const center=await startTaskCenter({runs,execute:async(action,args)=>{calls.push({action,args});return {ok:true};}});t.after(()=>center.close());const auth={Authorization:'Bearer '+center.token};

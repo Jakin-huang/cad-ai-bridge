@@ -6,7 +6,8 @@ import {fileURLToPath} from 'node:url';
 import {jobDirectory,jobJson,registeredFiles} from './jobs.mjs';
 import {isWithin} from './drawings.mjs';
 import {boundForTransport} from './results.mjs';
-const actions=new Set(['capabilities','doctor','get_job','read_result','project','analyze','scan','workflow']);
+const actions=new Set(['capabilities','doctor','get_job','read_result','project','analyze','scan','workflow','engineering']);
+export function taskCenterDocument(raw){const html=raw.replace(/\r\n?/g,'\n'),script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1]??'';return {html,scriptHash:crypto.createHash('sha256').update(script).digest('base64')};}
 export async function listJobs(runs,{offset=0,limit=30,snapshot}={}){
  const entries=(await fs.readdir(runs,{withFileTypes:true}).catch(e=>{if(e.code==='ENOENT')return [];throw e;})).filter(entry=>entry.isDirectory()&&/^job-[A-Za-z0-9_-]+$/.test(entry.name)),ranked=[],jobs=[];
  // Reading every historical journal is costly on Windows and unnecessary for
@@ -20,8 +21,7 @@ export async function listJobs(runs,{offset=0,limit=30,snapshot}={}){
 }
 export async function startTaskCenter({execute,runs,port=0}={}){
  if(typeof execute!=='function')throw Error('TASK_EXECUTOR_REQUIRED');
- const token=crypto.randomBytes(32).toString('hex'),html=await fs.readFile(fileURLToPath(new URL('./task-center.html',import.meta.url)),'utf8');
- const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1]??'',scriptHash=crypto.createHash('sha256').update(script).digest('base64');
+ const token=crypto.randomBytes(32).toString('hex'),{html,scriptHash}=taskCenterDocument(await fs.readFile(fileURLToPath(new URL('./task-center.html',import.meta.url)),'utf8'));
  let origin;
  const snapshots=new Map();
  const server=http.createServer(async(req,res)=>{
@@ -45,7 +45,7 @@ export async function startTaskCenter({execute,runs,port=0}={}){
     const job=await jobDirectory(runs,url.searchParams.get('jobId')??''),result=await jobJson(job,'result.json'),index=Number(url.searchParams.get('index')),file=registeredFiles(result)[index];
     if(!Number.isSafeInteger(index)||!file)return send(404,{ok:false,error:'No registered deliverable'});
     const resolved=await fs.realpath(file.file),root=await fs.realpath(runs);if(!isWithin(root,resolved))return send(403,{ok:false,error:'Deliverable escapes task outputs'});
-    if(!['.dwg','.dxf','.pdf','.png','.csv','.json'].includes(path.extname(resolved).toLowerCase()))return send(403,{ok:false,error:'Unsupported deliverable format'});
+    if(!['.dwg','.dxf','.pdf','.png','.csv','.json','.html'].includes(path.extname(resolved).toLowerCase()))return send(403,{ok:false,error:'Unsupported deliverable format'});
     const bytes=await fs.readFile(resolved);if(crypto.createHash('sha256').update(bytes).digest('hex')!==file.sha256)return send(409,{ok:false,error:'Deliverable changed since verification'});
     res.writeHead(200,{'Content-Type':path.extname(resolved).toLowerCase()==='.png'?'image/png':'application/octet-stream','Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(path.basename(resolved))}`,'Content-Length':bytes.length});return res.end(bytes);
    }

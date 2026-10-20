@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {engineeringSchema} from './engineering-contracts.mjs';
 const str=z.string().min(1).max(260);
 const id=z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 const layerName=z.string().regex(/^(?:0|[A-Z][A-Z0-9_-]{0,63})$/);
@@ -143,4 +144,5 @@ schemas.project=z.discriminatedUnion('action',[
 ]);
 schemas.export_many=z.strictObject({drawing:str,host,items:workflowPlans.options.find(p=>p.shape.type.value==='export_batch').shape.items});
 export const readonlyProjectSchema=z.discriminatedUnion('action',schemas.project.options.map(option=>option.shape.action.value==='start'?option.extend({items:z.array(projectItem.extend({plan:readonlyWorkflowSchema.shape.plan})).min(1).max(100)}):option));
+schemas.engineering=engineeringSchema;
 export const publicProjectSchema=z.discriminatedUnion('action',schemas.project.options.map(option=>option.shape.action.value==='start'?option.extend({items:z.array(projectItem.extend({plan:publicWorkflowSchema.shape.plan})).min(1).max(100)}):option));

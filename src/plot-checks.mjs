@@ -14,3 +14,11 @@ export function verifyPlotBytes(bytes,format,contract){
  if(contract){if(!pages.length||boxes.length!==pages.length)throw Error('PLOT_PAPER_UNVERIFIED: PDF has no readable page dictionaries');let expected=sizes[contract.paper];if(contract.orientation==='landscape')expected=[expected[1],expected[0]];if(displayed.some(b=>b.some((v,i)=>Math.abs(v-expected[i])>1)))throw Error('PLOT_PAPER_MISMATCH: displayed PDF page differs from requested paper/orientation');}
  return {ok:true,mediaBoxesMm:boxes,pageRotationDegrees:rotations,displayedPageSizesMm:displayed,requestedPaperVerified:Boolean(contract),scope:'PDF displayed page size/orientation including inherited rotation; scale is checked against host settings, fonts and content remain visual checks'};
 }
+// A basename can legitimately occur once per format (sheet.pdf + sheet.png).
+// Never attach the first same-name item's host metadata to both files.
+export function selectBatchExport(outputs,item,index){
+ const exact=(outputs||[]).filter(e=>e.name===item.name&&(e.format??e.exported?.format)===item.format);
+ if(exact.length===1)return exact[0];
+ const ordered=outputs?.[index];if(!ordered?.ok&&ordered?.name===item.name)return ordered;
+ return undefined;
+}

@@ -3,6 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {atomicJson,csvCell} from './files.mjs';
 import {hashFile} from './drawings.mjs';
+import {selectBatchExport} from './plot-checks.mjs';
 import {failure} from './errors.mjs';
 import {matchesRow} from './query-index.mjs';
 import {readDxf,unchangedRecords} from './dxf-audit.mjs';
@@ -58,8 +59,8 @@ export async function runWorkflow(execute,runs,args){
  async function exportsDelivery(drawing,items,previewRows){
   const prepared=items.map(item=>{const padded=item.format==='png'&&!item.region&&(item.layout||'Model')==='Model'&&previewRows?.length&&previewRows.every(r=>r.bounds)?reviewRegion(previewRows):undefined;return {...item,region:item.region||padded,automaticPreviewPadding:Boolean(padded)};}),outputs=[];
   const batch=items.length>1?await call('export_many',{drawing,host:args.host,items:prepared.map(({automaticPreviewPadding,...item})=>item)}):undefined;
-  for(const item of prepared){
-   const result=batch?(batch.exports?.find(e=>e.name===item.name)??{ok:false,error:batch.error,jobRoot:batch.jobRoot}):await call('export',{drawing,host:args.host,format:item.format,layout:item.layout,region:item.region,plot:item.plot});
+  for(const [index,item]of prepared.entries()){
+   const result=batch?(selectBatchExport(batch.exports,item,index)??{ok:false,error:batch.error,jobRoot:batch.jobRoot}):await call('export',{drawing,host:args.host,format:item.format,layout:item.layout,region:item.region,plot:item.plot});
    if(result.ok){const file=path.join(job,item.name+'.'+item.format);await fs.copyFile(result.exported.file,file,fs.constants.COPYFILE_EXCL);await retain(file,item.format);outputs.push({name:item.name,ok:true,exported:{...result.exported,file,automaticPreviewPadding:item.automaticPreviewPadding}});}else outputs.push({name:item.name,ok:false,error:result.error,jobRoot:result.jobRoot||batch?.jobRoot});
   }return outputs;
  }

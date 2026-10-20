@@ -1,0 +1,71 @@
+// Recompute postconditions from persisted model relationships. Never trust the
+// generator's ok flag, its room totals, or an existing signed-off state.
+export function auditEngineeringDesign(m){
+ const checks=[],pending=[],p=m.input,add=(id,ok,detail,refs=[])=>checks.push({id,ok,detail,refs});
+ const near=(a,b,t=1e-4)=>Math.abs(a-b)<=t;
+ const sourceMap=new Map(p.sources.map(s=>[s.id,s]));
+ const inPoly=(v,ps)=>{let winding=0;for(let i=0;i<ps.length;i++){const a=ps[i],b=ps[(i+1)%ps.length],cross=(b[0]-a[0])*(v[1]-a[1])-(v[0]-a[0])*(b[1]-a[1]);if(a[1]<=v[1]&&b[1]>v[1]&&cross>0)winding++;else if(a[1]>v[1]&&b[1]<=v[1]&&cross<0)winding--;}return winding!==0;};
+ const constraint=(r,k)=>p.requirements.find(q=>q.rule===k&&q.roomIds.includes(r.id));
+ add('identity_unique',new Set(m.devices.map(d=>d.id)).size===m.devices.length&&new Set(m.circuits.map(c=>c.id)).size===m.circuits.length&&new Set(m.controls.map(c=>c.id)).size===m.controls.length,'Physical device, circuit and control identifiers are unique');
+ add('project_no_automatic_approval',m.reviewStatus==='awaiting_human_review'&&m.professionalApproval===false,'Design engine cannot sign professional approval');
+ for(const room of p.rooms){
+  const ds=m.devices.filter(d=>d.roomId===room.id),c=m.roomCalculations.find(c=>c.roomId===room.id),v=room.polygon,base=v[0];let signed=0;for(let i=1;i<v.length-1;i++)signed+=(v[i][0]-base[0])*(v[i+1][1]-base[1])-(v[i][1]-base[1])*(v[i+1][0]-base[0]);const area=Math.abs(signed)/2e6;
+  add('room_geometry_'+room.id,area>=1&&ds.length>0&&ds.every(d=>inPoly(d.position,v)&&!room.obstacles.some(o=>inPoly(d.position,o))),'Room has measurable area and all fixtures lie inside its clear polygon',[room.id]);
+  const flux=ds.reduce((n,d)=>{const f=p.luminaires.find(f=>f.id===d.fixture);return n+(f?f.lumens*f.utilizationFactor*f.maintenanceFactor:NaN);},0),watts=ds.reduce((n,d)=>n+d.watts,0),expectedW=ds.reduce((n,d)=>n+(p.luminaires.find(f=>f.id===d.fixture)?.watts??NaN),0);
+  add('room_calculation_'+room.id,!!c&&near(c.areaM2,area)&&c.count===ds.length&&near(c.estimatedLux,flux/area)&&near(c.lpd,watts/area)&&near(watts,expectedW),'Independently reconcile area, physical count, fixture flux, power and persisted calculation',[room.id]);
+  add('room_constraints_'+room.id,flux/area+1e-4>=constraint(room,'target_lux').value&&watts/area<=constraint(room,'max_lpd').value+1e-4,'Explicit room illuminance estimate and power-density targets',[room.id]);
+  add('room_mounting_'+room.id,ds.every(d=>near(d.mountingHeightM,constraint(room,'mounting_height').value)&&d.mountingHeightM<=room.heightM&&d.mountingHeightM>room.workplaneM),'Installation height follows the room requirement and architectural ceiling/workplane bounds',[room.id]);
+  if(room.use==='corridor')add('corridor_control_'+room.id,m.controls.filter(c=>c.roomId===room.id).every(c=>['regional_manual','occupancy_manual'].includes(c.mode)),'Corridor control includes a regional or occupancy/manual mode',[room.id]);
+  const spacing=constraint(room,'max_spacing').value*1000;
+  const xs=[...new Set(ds.map(d=>d.position[0]))].sort((a,b)=>a-b),ys=[...new Set(ds.map(d=>d.position[1]))].sort((a,b)=>a-b);
+  add('room_spacing_'+room.id,[xs,ys].every((values,axis)=>values.length&&values[0]-Math.min(...room.polygon.map(v=>v[axis]))<=spacing/2+1e-4&&Math.max(...room.polygon.map(v=>v[axis]))-values.at(-1)<=spacing/2+1e-4&&values.slice(1).every((v,i)=>v-values[i]<=spacing+1e-4)),'Fixture axis gaps and bounding edge offsets respect explicit spacing; not photometric uniformity',[room.id]);
+  for(const q of p.requirements.filter(r=>r.roomIds.includes(room.id)))add('trace_'+room.id+'_'+q.id,q.sourceIds.every(s=>sourceMap.has(s))&&c.requirementIds.includes(q.id),'Room decision retains requirement and source references',[q.id]);
+ }
+ const allAssignments=m.circuits.flatMap(c=>c.deviceIds),allControls=m.controls.flatMap(c=>c.deviceIds),physical=new Set(m.devices.map(d=>d.id));
+ add('all_devices_assigned_once',allAssignments.length===physical.size&&new Set(allAssignments).size===physical.size&&allAssignments.every(id=>physical.has(id)),'Each physical luminaire belongs to exactly one circuit');
+ add('all_devices_controlled_once',allControls.length===physical.size&&new Set(allControls).size===physical.size&&allControls.every(id=>physical.has(id)),'Each luminaire has exactly one explicit control group');
+ for(const c of m.circuits){
+  const ds=c.deviceIds.map(id=>m.devices.find(d=>d.id===id)),w=ds.reduce((n,d)=>n+(d?.watts??NaN),0),current=w/(p.electrical.voltage*p.electrical.powerFactor),r=m.routes.find(r=>r.circuitId===c.id),route=r?r.vertices.slice(1).reduce((n,v,i)=>n+Math.hypot(v[0]-r.vertices[i][0],v[1]-r.vertices[i][1]),0)/1000:NaN,len=route+p.electrical.extraLengthM,drop=2*p.electrical.copperOhmMm2PerM*len*current/p.electrical.wireSectionMm2/p.electrical.voltage*100;
+  add('circuit_reconcile_'+c.id,ds.every(d=>d?.circuitId===c.id&&d.roomId===c.roomId)&&near(c.watts,w)&&near(c.currentA,current)&&near(c.routeLengthM,route)&&near(c.estimatedLengthM,len)&&near(c.dropPercent,drop),'Recompute circuit membership, load, current, route length and voltage-drop estimate',[c.id]);
+  add('circuit_capacity_'+c.id,ds.length<=c.maxDevices&&w<=c.maxWatts&&current<=c.breakerA&&c.breakerA<=c.assumedIzA&&drop<=c.maxDropPercent,'Declared count, watts, breaker/assumed ampacity and drop constraints',[c.id]);
+  const room=p.rooms.find(r=>r.id===c.roomId);add('circuit_input_limits_'+c.id,!!room&&c.maxDevices===Math.floor(constraint(room,'max_devices').value)&&c.maxWatts===constraint(room,'max_circuit_watts').value&&c.maxDropPercent===constraint(room,'max_drop').value&&['breakerA','assumedIzA','wireSectionMm2','shortCircuitProtection','overloadProtection','earthFaultProtection','rcd'].every(k=>c[k]===p.electrical[k]),'Circuit limits and protection declarations retain the actual input constraints, not relaxed model limits',[c.id]);
+  add('circuit_protection_'+c.id,ds.every(Boolean)&&c.conductors==='L+N+PE'&&c.shortCircuitProtection&&c.overloadProtection&&c.earthFaultProtection&&(!ds.some(d=>d?.mountingHeightM<=2.5)||c.rcd),'Required terminal protection, PE and low-mounted normal-lighting RCD',[c.id]);
+  const ctl=m.controls.find(s=>s.circuitId===c.id);add('control_reconcile_'+c.id,!!ctl&&ctl.deviceIds.length===c.deviceIds.length&&ctl.deviceIds.every(id=>c.deviceIds.includes(id))&&ds.every(d=>d?.controlId===ctl.id),'Control schedule and circuit refer to the same physical devices',[c.id]);
+ }
+ const led=m.placements.filter(p=>p.symbol==='ENG_LED');add('drawing_physical_trace',led.length===m.devices.length*2&&m.devices.every(d=>{const ps=led.filter(p=>p.attributes.PHYSICAL_ID===d.id);return ps.length===2&&new Set(ps.map(p=>p.id)).size===2&&ps.every(p=>p.attributes.ROOM===d.roomId&&p.attributes.CIRCUIT===d.circuitId&&p.attributes.CONTROL===d.controlId&&p.attributes.MODEL===d.fixture); }),'Both plan representations preserve physical device room, circuit, control and product identity');
+ const points=[...p.rooms.flatMap(r=>r.polygon),...p.architecture.flatMap(a=>a.points)],minX=Math.min(...points.map(v=>v[0])),minY=Math.min(...points.map(v=>v[1]));add('drawing_physical_positions',m.drawingScale===1&&m.devices.every(d=>['E02','E03'].every(id=>{const s=m.sheets.find(s=>s.id===id),representation=led.find(p=>p.id===d.id+(id==='E03'?'_CTL':''));return !!s&&!!representation&&near(representation.position[0],s.origin[0]+1500+d.position[0]-minX)&&near(representation.position[1],2800+d.position[1]-minY);})), 'Full-size plan coordinates independently reconcile to the physical design, with explicit sheet offsets');
+ for(const s of p.standards)for(const clause of s.clauses){
+  const applies=s.effectiveFrom<=p.designDate&&(!s.effectiveUntil||p.designDate<s.effectiveUntil);
+  const bound=(m.standardEvidence||[]).some(e=>e.standardId===s.id&&e.clauseId===clause.id&&e.sourceSHA256===p.sources.find(src=>src.id===s.sourceId)?.sha256);
+  if(!applies||!clause.verified||!bound||clause.check==='professional_review'){pending.push({standard:s.code,clause:clause.locator,reason:!applies?'outside_design_date':!clause.verified||!bound?'clause_text_unverified':'professional_judgment'});continue;}
+  const rooms=clause.roomIds.length?clause.roomIds:p.rooms.map(r=>r.id),cs=m.circuits.filter(c=>rooms.includes(c.roomId));let ok;
+  if(clause.check==='terminal_protection')ok=cs.length>0&&cs.every(c=>c.shortCircuitProtection&&c.overloadProtection&&c.earthFaultProtection);
+  else if(clause.check==='low_mount_rcd')ok=cs.every(c=>!m.devices.some(d=>c.deviceIds.includes(d.id)&&d.mountingHeightM<=2.5)||c.rcd);
+  else if(clause.check==='corridor_control')ok=m.controls.filter(c=>rooms.includes(c.roomId)&&p.rooms.find(r=>r.id===c.roomId)?.use==='corridor').every(c=>['regional_manual','occupancy_manual'].includes(c.mode));
+  add('standard_'+s.id+'_'+clause.id,ok,'Verified clause interpreted as bounded model postcondition; installed performance is separate',[clause.id]);
+ }
+ pending.push(...m.issues.filter(i=>i.severity==='review').map(i=>({code:i.code,reason:i.message,refs:i.refs})),{code:'PHOTOMETRIC_CHECK_NOT_IMPLEMENTED',reason:'This solver computes a lumen-flux estimate only, even when an IES file is available; point illuminance, uniformity and UGR are not calculated'},{code:'PROTECTION_COORDINATION',reason:'Short-circuit current, disconnection time, upstream supply and installation correction require specialist input'},{code:'HUMAN_REVIEW',reason:'No authenticated independent professional sign-off has been performed'});
+ return {schemaVersion:1,ok:checks.every(c=>c.ok),status:checks.every(c=>c.ok)?'automated_subset_passed_review_pending':'failed',checks,pending,professionalApproval:false};
+}
+
+export function compareEngineeringReference(model,reference){
+ if(!reference||!Array.isArray(reference.luminaires))throw Error('REFERENCE_INVALID');
+ const metrics=model.input.rooms.map(room=>{const inBox=p=>{let on=false;for(let i=0,j=room.polygon.length-1;i<room.polygon.length;j=i++){const a=room.polygon[i],b=room.polygon[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])on=!on;}return on;};const designed=model.devices.filter(d=>d.roomId===room.id),ref=reference.luminaires.filter(d=>inBox(d.position));return {roomId:room.id,generated:designed.length,reference:ref.length,countDelta:designed.length-ref.length,nearestReferenceDistancesMm:designed.map(d=>ref.length?Math.min(...ref.map(r=>Math.hypot(d.position[0]-r.position[0],d.position[1]-r.position[1]))):null),scope:'Count/position comparison only; reference symbols may include alternate lighting roles and are not a correctness oracle'};});
+ return {schemaVersion:1,scope:'Retrospective comparison after model freeze, not independent design acceptance or code compliance',rooms:metrics,referenceSourceSHA256:reference.sourceSHA256,referenceClassification:reference.classification,professionalApproval:false};
+}
+
+export function verifyEngineeringCad(model,query,snapshot){
+ const actual=query.entities,inserts=actual.filter(e=>e.type==='INSERT'&&['ENG_LED','ENG_SWITCH','ENG_PANEL'].includes(e.blockName));
+ const q=p=>p?.slice(0,2).map(n=>Math.round(n*1000)/1000).join(','),lineKey=(layer,ps)=>'LINE|'+layer+'|'+ps.map(q).sort().join('|');
+ const expectedKey=e=>e.kind==='line'?lineKey(e.layer,e.points):e.kind==='text'?'TEXT|'+e.layer+'|'+q(e.position)+'|'+e.text+'|'+Math.round(e.height*1000)/1000:e.kind==='polyline'?'LWPOLYLINE|'+e.layer+'|'+e.points.map(q).join('|')+'|'+e.closed:null;
+ const actualKey=e=>e.type==='LINE'?lineKey(e.layer,[e.start,e.end]):e.type==='TEXT'?'TEXT|'+e.layer+'|'+q(e.position)+'|'+e.text+'|'+Math.round(e.height*1000)/1000:e.type==='LWPOLYLINE'?'LWPOLYLINE|'+e.layer+'|'+e.vertices.map(q).join('|')+'|'+e.closed:null;
+ const counts=new Map();for(const e of actual){const k=actualKey(e);if(k)counts.set(k,(counts.get(k)||0)+1);}const missing=[];for(const e of model.scene.entities){const k=expectedKey(e);if(!k)continue;const n=counts.get(k)||0;if(!n)missing.push({kind:e.kind,layer:e.layer,text:e.text});else counts.set(k,n-1);}
+ const ids=new Set(snapshot.devices.map(d=>d.id)),checks=[
+  {id:'complete_saved_capture',ok:!query.truncated&&!query.errors.length},
+  {id:'representation_count',ok:inserts.length===model.placements.length},
+  {id:'managed_identity',ok:ids.size===model.placements.length&&model.placements.every(p=>ids.has(p.id))},
+  {id:'saved_attributes_and_positions',ok:model.placements.every(p=>inserts.some(e=>e.attributes?.DEVICE_ID===p.id&&['PHYSICAL_ID','ROOM','CIRCUIT','CONTROL','MODEL'].every(k=>e.attributes?.[k]===p.attributes[k])&&Math.hypot(e.position[0]-p.position[0],e.position[1]-p.position[1])<1e-4))},
+  {id:'saved_sheet_lines_and_text',ok:missing.length===0,missing:missing.slice(0,30),expectedPrimitives:model.scene.entities.length,toleranceMm:.001}
+ ];
+ return {ok:checks.every(c=>c.ok),checks,physicalDevices:model.devices.length,representations:model.placements.length,scope:'Independent saved CAD capture checks root drawing primitives/text and attributed instances at declared tolerance; database/visual/engineering semantics remain separate'};
+}

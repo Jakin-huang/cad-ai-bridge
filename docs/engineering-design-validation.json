@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_v2.0.0-preview.1",
+  "workingTreeTools": 25,
+  "frozenV2Tools": 24,
+  "pilot": "Retrospective hospital ordinary-lighting design in five work rooms and one corridor segment",
+  "evidence": {
+    "unitTests": {
+      "passed": 170,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualEngineeringMcpCadPipeline": {
+      "passed": 13,
+      "scope": "Prepare, design, bound standards, model freeze before evaluator, native creation/readback, exports, replay, simulated review, infeasible variant, revised CAD generation, original-file integrity"
+    },
+    "v2NativeRegression": {
+      "passed": 7
+    },
+    "originalWorkflowMcpRegression": {
+      "passed": 9
+    },
+    "actualClientSyntheticIntake": {
+      "passed": 5,
+      "scope": "One installed WorkBuddy CLI run on an independently invented non-private office brief; initial 3 percent unit error was caught and explicitly corrected through revision",
+      "hospitalDataSent": false
+    },
+    "standardEvidence": {
+      "source": "Local GB 55024-2022 PDF",
+      "pdfPage": 19,
+      "clauses": [
+        "4.5.1",
+        "4.5.4",
+        "4.5.8"
+      ],
+      "scope": "Bounded model declarations only; professional applicability and installed performance separate"
+    },
+    "originalBrief": {
+      "spaces": 6,
+      "luminaires": 19,
+      "circuits": 6,
+      "sheets": 5,
+      "boundedChecksPassed": 118,
+      "boundedChecksFailed": 0,
+      "pending": 21
+    },
+    "simulatedRevision": {
+      "revision": 2,
+      "luminaires": 18,
+      "boundedChecksPassed": 118,
+      "pending": 20,
+      "notCustomerApproved": true
+    },
+    "pdf": {
+      "originalSheets": 5,
+      "combinedPages": 5,
+      "paper": "A3 landscape within 0.25 mm",
+      "visualReview": "All five source sheets and merged booklet rendered and inspected; Chinese text, frames and main geometry readable",
+      "parserNote": "Native PDFs contain duplicate PageMode dictionary warnings; parsers and rendering succeeded"
+    },
+    "taskCenter": {
+      "engineeringStatusShown": true,
+      "pngPreview": true,
+      "actualCsvDownloadHashMatched": true,
+      "windowsCspNewlineBugFixed": true,
+      "mainDelivery": "Actual AI task, original retrospective brief, revision 0"
+    },
+    "reference": {
+      "candidateLuminaires": 16,
+      "generatedLuminaires": 19,
+      "roomCountDeltas": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "scope": "Historical candidate classification and positions only; not certified device classification or full circuit/control comparison"
+    },
+    "sourcePrivacy": "Raw DWGs, standard full text, outputs and raw logs remain local. Two named hospital-derived input files were processed by the configured WorkBuddy model service only after explicit authorization. No private assets in public source.",
+    "v2McpProtocolRegression": {
+      "passed": 9,
+      "scope": "25-tool discovery, retained evidence paging, actual project workflow, read-only schema; includes engineering design no-deliver boundary"
+    },
+    "actualClientHospitalDerivedIntake": {
+      "passed": 5,
+      "roomRulePairsChecked": 48,
+      "elapsedMs": 213461,
+      "authorization": "Explicit human consent for the two named inputs to the existing WorkBuddy model service",
+      "method": "Local seed SHA binding plus AI-authored requirements; architecture and all other input fields preserved",
+      "successfulRuns": 1,
+      "priorAttempts": [
+        {
+          "result": "failed",
+          "cause": "Control enumeration not documented; fixed actionable errors, schema descriptions and skill guidance"
+        },
+        {
+          "result": "timeout",
+          "cause": "Full architectural JSON regeneration exceeded 360 seconds; fixed by local seed action"
+        }
+      ],
+      "outsideReadAttemptsDenied": 1,
+      "scope": "Retrospective self-authored test brief, not original client requirements or prospective design"
+    },
+    "actualClientToCadDelivery": {
+      "passed": 7,
+      "scope": "The same actual client-created design record was frozen, independently checked, compared after freeze, delivered through local CAD and reopened; no simulated revision in main delivery",
+      "spaces": 6,
+      "luminaires": 19,
+      "circuits": 6,
+      "sheets": 5,
+      "boundedChecksPassed": 118,
+      "boundedChecksFailed": 0,
+      "pending": 15,
+      "reviewStatus": "awaiting_human_review",
+      "sourceBrief": "Self-authored retrospective test brief, not original customer brief"
+    }
+  },
+  "notAccepted": [
+    "Complete hospital floor or multidisciplinary project design",
+    "Independent prospective architecture and client brief",
+    "Point illuminance, uniformity, UGR and real product performance",
+    "Medical classification, emergency/fire systems and supply/protective coordination",
+    "Authenticated professional review or construction approval",
+    "New-machine installation and external-user practical acceptance",
+    "Competitive superiority",
+    "Original customer brief interpretation or generalization across unseen real projects"
+  ],
+  "remainingEngineeringLimits": [
+    "Plan geometry is kept full-size; scope larger than the supported plan window is blocked pending pagination",
+    "Routes show circuit affiliation rather than coordinated construction routing",
+    "Requirement edits recalculate and generate a new drawing; arbitrary manual CAD edits are not reverse-integrated",
+    "Interrupted new engineering deliveries remain unconfirmed and must be reconciled before retry",
+    "No new user release package built; frozen v2 package remains unchanged"
+  ],
+  "plan": "docs/engineering-design-plan.md"
+}

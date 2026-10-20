@@ -11,6 +11,7 @@ export function normalizeClientEvents(raw){
   }
  });return events;
 }
+export function unwrapDeferredCalls(events){return events.map(e=>{if(e.type!=='function_call'||e.name!=='DeferExecuteTool')return e;const args=typeof e.arguments==='string'?JSON.parse(e.arguments):e.arguments;return {...e,name:args.toolName,arguments:JSON.stringify(args.params),wrapper:e.name};});}
 export function markdownFileLinks(text){
  // Code-formatted paths and links inside code examples are not clickable delivery.
  const visible=String(text??'').replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/g,'').replace(/`[^`\r\n]*`/g,'');

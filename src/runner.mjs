@@ -17,9 +17,10 @@ import {capabilities} from './capabilities.mjs';
 import {runWorkflow} from './workflows.mjs';
 import {executeSession,sessionHome} from './sessions.mjs';
 import {buildQueryIndex} from './query-index.mjs';
-import {verifyPlotBytes} from './plot-checks.mjs';
+import {verifyPlotBytes,selectBatchExport} from './plot-checks.mjs';
 import {runAnalysis} from './engineering-analysis.mjs';
 import {createProjectManager} from './project-tasks.mjs';
+import {createEngineeringManager} from './engineering-projects.mjs';
 import {builtInBackends,requireBackendCapability} from './backend-contracts.mjs';
 const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply','edit']);
 export async function launchHost(exe,args){
@@ -33,6 +34,7 @@ async function runtimeSettings(){const settings=await loadConfig();await verifyP
 export function createExecutor({getSettings=runtimeSettings,launch=launchHost,runs=path.join(dataHome(),'runs')}={}){
  let queue=Promise.resolve(),bootstrap;
  const projects=createProjectManager({execute,getSettings,runs});
+ const engineering=createEngineeringManager({execute,runs,getInputRoot:async()=>(await getSettings()).workspace});
  async function execute(action,args={}){
   let parsed;try{if(!schemas[action])throw Error('INVALID_ACTION: unsupported action');parsed=schemas[action].parse(args);}catch(error){return failure(error);}
   // Evidence reads remain responsive while a CAD job is in flight.
@@ -48,6 +50,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    if(action==='get_job')return await getJob(runs,parsed);
    if(action==='analyze')return await runAnalysis(runs,parsed);
    if(action==='project')return await projects.run(parsed);
+   if(action==='engineering')return await engineering.run(parsed);
   }catch(error){return failure(error,{stage:'result'});}
   const enqueued=performance.now(),work=queue.then(()=>run(action,parsed,enqueued));queue=work.catch(()=>{});return work;
  }
@@ -98,7 +101,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    const verifyExport=async(exported,item,file)=>{const bytes=await fs.readFile(file),verification=verifyPlotBytes(bytes,item.format,item.plot);if(item.plot){const actual=exported?.actualPlot;if(!actual||item.plot.scale==='fixed'&&(actual.useStandardScale||Math.abs(actual.scaleNumerator/actual.scaleDenominator-1/item.plot.denominator)>1e-9)||item.plot.style&&actual.style?.toLowerCase()!==item.plot.style.toLowerCase())throw Error('PLOT_SETTINGS_MISMATCH');}return {...exported,file,bytes:bytes.length,sha256:await hashFile(file),verification};};
    if(action==='export'&&result.ok)result.exported=await verifyExport(result.exported,parsed,path.join(job,'output.'+parsed.format));
    if(action==='export_many'&&result.ok){
-    const outputs=[];for(const item of parsed.items){const entry=result.exports?.find(e=>e.name===item.name);try{if(!entry?.ok)throw Error((entry?.error?.code||'PLOT_ITEM_MISSING')+': '+(entry?.error?.message||item.name));outputs.push({...entry,exported:await verifyExport(entry.exported,item,path.join(job,item.name+'.'+item.format))});}catch(error){outputs.push({name:item.name,ok:false,error:{code:error.message.split(':')[0],message:error.message}});}}
+    const outputs=[];for(const [index,item]of parsed.items.entries()){const entry=selectBatchExport(result.exports,item,index);try{if(!entry?.ok)throw Error((entry?.error?.code||'PLOT_ITEM_MISSING')+': '+(entry?.error?.message||item.name));outputs.push({...entry,format:item.format,exported:await verifyExport(entry.exported,item,path.join(job,item.name+'.'+item.format))});}catch(error){outputs.push({name:item.name,format:item.format,ok:false,error:{code:error.message.split(':')[0],message:error.message}});}}
     result.exports=outputs;if(outputs.some(e=>!e.ok)){result.ok=false;result.error={code:'PARTIAL_EXPORT_FAILURE',message:'Successful exports retained; failed items can be retried without editing.'};}
    }
    if(action==='takeoff'&&result.snapshot){const s=result.snapshot,groups={};for(const d of s.devices){const key=`${d.blockName}|${d.attributes.MODEL||''}`;groups[key]=(groups[key]||0)+1;}result.takeoff={deviceCount:s.deviceCount,routeCount:s.routeCount,routeLengthMm:s.routeLengthMm,groups,coverage:s.coverage};}

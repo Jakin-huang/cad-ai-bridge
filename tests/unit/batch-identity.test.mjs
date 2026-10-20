@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {selectBatchExport} from '../../src/plot-checks.mjs';
+test('same-basename PDF and PNG keep their own host settings and source formats',()=>{const outputs=[{name:'E01',ok:true,exported:{format:'pdf',device:'PDF',requestedPlot:{paper:'A3'}}},{name:'E01',ok:true,exported:{format:'png',device:'PNG',requestedPlot:null}}];assert.equal(selectBatchExport(outputs,{name:'E01',format:'png'},1).exported.device,'PNG');assert.equal(selectBatchExport(outputs,{name:'E01',format:'pdf'},0).exported.device,'PDF');assert.equal(selectBatchExport(outputs,{name:'E02',format:'pdf'},0),undefined);});
+test('failed native same-basename item is matched by original position without borrowing success',()=>{const outputs=[{name:'E01',ok:true,exported:{format:'pdf'}},{name:'E01',ok:false,error:{code:'PNG_FAILED'}}];assert.equal(selectBatchExport(outputs,{name:'E01',format:'png'},1).error.code,'PNG_FAILED');});
