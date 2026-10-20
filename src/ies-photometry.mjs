@@ -22,7 +22,7 @@ export function parseIes(text){
  // At the nadir a single direction cannot have contradictory C-plane intensities.
  if(close(vertical[0],0)&&candela.some(row=>Math.abs(row[0]-candela[0][0])>Math.max(.1,candela[0][0]*.01)))fail('inconsistent nadir');
  const dimensionsM=[width,length,height].map(v=>Math.abs(v)*(units===1?.3048:1));
- return {schemaVersion:1,format:version,type:'C',tilt:'NONE',header,lamps,lumensPerLamp,absolute:lumensPerLamp===-1,multiplier,watts,dimensionsM,vertical,horizontal,candela,convention:'nadir=0; C0=+X; C90=+Y; no tilt; original test candela without lumen normalization'};
+ return {schemaVersion:1,format:version,type:'C',tilt:'NONE',header,lamps,lumensPerLamp,absolute:lumensPerLamp===-1,multiplier,watts,dimensionsM,signedOpeningDimensionsM:[width,length,height].map(v=>v*(units===1?.3048:1)),vertical,horizontal,candela,convention:'nadir=0; C0=+X; C90=+Y; no tilt; original test candela without lumen normalization'};
 }
 function interval(values,v){let lo=0,hi=values.length-1;while(hi-lo>1){const mid=(lo+hi)>>1;if(values[mid]<=v)lo=mid;else hi=mid;}return [lo,hi,(v-values[lo])/(values[hi]-values[lo])];}
 const lerp=(a,b,t)=>a+(b-a)*t;

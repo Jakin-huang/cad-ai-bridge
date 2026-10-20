@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_d26ec31",
+  "engineVersion": "1.5.0",
+  "scope": "One independently invented enclosed office, source-bound real panel IES and interpreted standard subset; native CAD and finite diffuse reflection study, no actual customer or hospital acceptance.",
+  "frozenV2Unchanged": true,
+  "pluginUnchanged": true,
+  "implementation": [
+    "Optional source-linked closed diffuse room conditions covering every room exactly once",
+    "Finite rectangular IES luminous-opening approximation, explicit suspended geometry and footprint collision gates",
+    "Local allowlisted Radiance tools with SHA-bound complete support library, no shell or arbitrary client command",
+    "Mandatory post-layout total-light/convergence gate and persisted raw-output integrity before declared-environment delivery",
+    "Live room/profile status, browser result/CSV access and stopped-recorded-owner calculation recovery with archived partial evidence"
+  ],
+  "evidence": {
+    "unitTests": {
+      "passed": 211,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualMcpRadianceCad": {
+      "passed": 12,
+      "modelSHA256": "62c4018534d9322d3da094da0a58efc5b4546bdb981b99da630ab919ed7cced2",
+      "spaces": 1,
+      "luminaires": 8,
+      "circuits": 1,
+      "sheets": 5,
+      "boundedModelChecks": {
+        "passed": 34,
+        "failed": 0,
+        "pending": 8
+      },
+      "qualityChecks": {
+        "passed": 8,
+        "failed": 0
+      },
+      "roomResults": [
+        {
+          "roomId": "OFFICE",
+          "averageLux": 417.24754304848506,
+          "minimumLux": 321.97249100000005,
+          "maximumLux": 487.9319830000001,
+          "uniformity": 0.7716582071343345,
+          "directAverageLux": 322.24581098181807,
+          "indirectAverageLux": 95.00173206666699,
+          "medium": {
+            "averageLux": 415.13515428484834,
+            "minimumLux": 319.705098,
+            "maximumLux": 485.282246,
+            "uniformity": 0.7701229218969776
+          },
+          "maximumPointChange": 4.224937000000011,
+          "targets": {
+            "minimumLux": 300,
+            "maximumAverageLux": 650,
+            "minimumUniformity": 0.6
+          }
+        }
+      ],
+      "runtimeVersion": "RADIANCE 6.0.2 2026-02-02 LBNL (6.0.c1700d56cc)",
+      "runtimeProfileSHA256": "ad324a7c7285075740d011b156984f4be53d48613e05e08a869a86c655cf1cfb",
+      "runtimeSupportFiles": 146,
+      "settings": [
+        {
+          "id": "direct",
+          "bounces": 0,
+          "samples": 0,
+          "superSamples": 0,
+          "weight": 1e-06,
+          "depth": 20,
+          "sampling": 0.05,
+          "accuracy": 0,
+          "resolution": 0
+        },
+        {
+          "id": "coarse",
+          "bounces": 2,
+          "samples": 128,
+          "superSamples": 32,
+          "weight": 0.001,
+          "depth": -12,
+          "sampling": 0.2,
+          "accuracy": 0.2,
+          "resolution": 32
+        },
+        {
+          "id": "medium",
+          "bounces": 4,
+          "samples": 512,
+          "superSamples": 128,
+          "weight": 0.0005,
+          "depth": -16,
+          "sampling": 0.1,
+          "accuracy": 0.15,
+          "resolution": 64
+        },
+        {
+          "id": "fine",
+          "bounces": 5,
+          "samples": 1024,
+          "superSamples": 256,
+          "weight": 0.0001,
+          "depth": -20,
+          "sampling": 0.1,
+          "accuracy": 0.1,
+          "resolution": 128
+        }
+      ],
+      "profileTiming": [
+        {
+          "bounces": 0,
+          "elapsedMs": 127
+        },
+        {
+          "bounces": 2,
+          "elapsedMs": 1335
+        },
+        {
+          "bounces": 4,
+          "elapsedMs": 23432
+        },
+        {
+          "bounces": 5,
+          "elapsedMs": 112618
+        }
+      ],
+      "overlightNegative": {
+        "directDesignPassed": true,
+        "totalLimitLux": 350,
+        "totalMeanLux": 417.24754304848506,
+        "failedChecks": [
+          "total_mean_and_uniformity_OFFICE"
+        ],
+        "newCadCreated": false
+      },
+      "rawEvidenceTamperDetected": true
+    },
+    "independentQuadrature": {
+      "ok": true,
+      "scope": "Independent midpoint quadrature for finite Lambertian area source and one diffuse wall bounce, not full-room or professional validation",
+      "directTolerance": "0.05 lx + 0.2% of quadrature",
+      "quadrature": {
+        "directCoarse": 80,
+        "directFine": 160,
+        "wallCoarse": 80,
+        "wallFine": 160,
+        "sourceCoarse": 12,
+        "sourceFine": 24,
+        "method": "Independent midpoint surface integration of L*cos(source)*cos(receiver)/r^2; one-bounce wall radiance=rho*E/pi"
+      },
+      "directPoints": 49,
+      "maximumDirectRelativeError": 0.0011787363022386398,
+      "blackEnclosureAddsNoReflections": true,
+      "oneBounce": {
+        "tolerance": "0.1 lx + 2% of independent quadrature",
+        "samples": 131072,
+        "measuredLux": 9.75072069999996,
+        "quadratureLux": 9.967708953424824,
+        "coarseQuadratureLux": 9.967095972772286,
+        "relativeError": 0.021769120109622436
+      },
+      "runtimeVersion": "RADIANCE 6.0.2 2026-02-02 LBNL (6.0.c1700d56cc)",
+      "runtimeProfileSHA256": "ad324a7c7285075740d011b156984f4be53d48613e05e08a869a86c655cf1cfb",
+      "tools": [
+        {
+          "file": "ies2rad.exe",
+          "sha256": "e0b062448b0d1392cebaa62f532a7ad8b20bcf09f0103e4e68367dce6bb857df"
+        },
+        {
+          "file": "xform.exe",
+          "sha256": "1e7cc646139a706ba6aa66ed892dedef4fedfc6b4ec0d0f9540434d22fc67186"
+        },
+        {
+          "file": "oconv.exe",
+          "sha256": "e0bc7240ee2645d6590c33ef5a6a783f4bfe81246dce23bfefdc66966cba60a2"
+        },
+        {
+          "file": "rtrace.exe",
+          "sha256": "edb01ac56b31ad79263c1f42a686413c0d369829f460e83a170340a6f821b5c9"
+        }
+      ],
+      "sourceSHA256": "6bf0aca583140c486e24868cca23b68aec63306757e9dc15bd641c7b06a2faa3",
+      "professionalApproval": false
+    },
+    "higherSettingSensitivity": {
+      "ok": true,
+      "scope": "Same Radiance engine, higher-sample six-bounce sensitivity comparison; not independent software validation or a rigorous error bound",
+      "sameScene": true,
+      "sameSensors": true,
+      "points": 165,
+      "modelSHA256": "62c4018534d9322d3da094da0a58efc5b4546bdb981b99da630ab919ed7cced2",
+      "sceneSHA256": "659f6bb3b9f86e3f9c4d8fd7da9f52d354a3b201dcac9de0717b84f9e2682a07",
+      "tolerance": "1 lx + 1% of the higher-sample six-bounce result",
+      "maximumPointChange": 2.795084999999972,
+      "meanAbsoluteDifference": 0.9383516303030275,
+      "maximumRelativeDifference": 0.006915197491663165,
+      "actualSettings": {
+        "id": "fine",
+        "bounces": 5,
+        "samples": 1024,
+        "superSamples": 256,
+        "weight": 0.0001,
+        "depth": -20,
+        "sampling": 0.1,
+        "accuracy": 0.1,
+        "resolution": 128
+      },
+      "higherSettings": [
+        "-I+",
+        "-h-",
+        "-u-",
+        "-n",
+        1,
+        "-ab",
+        6,
+        "-av",
+        0,
+        0,
+        0,
+        "-aw",
+        0,
+        "-aa",
+        0.1,
+        "-ar",
+        128,
+        "-ad",
+        2048,
+        "-as",
+        512,
+        "-lw",
+        0.0001,
+        "-lr",
+        -20,
+        "-dt",
+        0,
+        "-dc",
+        1,
+        "-dj",
+        0,
+        "-ds",
+        0.1,
+        "scene.oct"
+      ],
+      "professionalApproval": false,
+      "finalRawOutputIdentical": true,
+      "sensorSHA256": "7e9c9ad09786fe166da5eba266e07b3f5bc4ca84c6346dde0291a42390dfeeab"
+    },
+    "browser": {
+      "scope": "Maintainer browser verification on current machine; not an external-user study",
+      "runningRoomAndProfileVisible": true,
+      "deliveredStageAndPendingProfessionalWarningVisible": true,
+      "totalsExpandedNearAction": true,
+      "downloadedCsvSHA256": "f200440e8d175d37defdf38e3f5db86ce6db7da0cb913523815280878f9da096",
+      "registeredBytesMatched": true,
+      "progressScreenshotSHA256": "c5f40bdeeaeb03306ef7488da5120e42a0d6e5cdaceb1bc19d9904a2137ced3b",
+      "resultScreenshotSHA256": "acd0abb16fff845023d6fd9e6629a2d4f44463aba6827f09e45153ec1e3c4ea9",
+      "professionalApproval": false
+    },
+    "interruptionRecovery": {
+      "ok": true,
+      "scope": "Recorded parent stopped after client interruption; old partial outputs retained, no CAD replay; general child state and native CAD recovery not certified",
+      "partialEvidenceRetained": true,
+      "cadReplayed": false
+    },
+    "pdfReview": {
+      "status": "agent_inspected_all_five_pages",
+      "scope": "Legibility, clipping and diagram label placement checked; professional engineering drawing acceptance remains pending",
+      "pointVersusTotal": "CAD calculation sheet uses point-source layout estimate; finite-source direct/total results are in the separately bound CSV/HTML/JSON",
+      "professionalApproval": false
+    },
+    "privateReviewBundle": {
+      "zipSHA256": "05e364878e32ba9392d6d7e9477753c7201088e1b9ee46dc698130ff114d22e9",
+      "pages": 5,
+      "mergedRenderIdentical": true,
+      "rawSimulationArtifactsIncluded": true,
+      "fullStandardPdfsIncluded": false,
+      "runtimeBinariesIncluded": false
+    }
+  },
+  "limitations": [
+    "Source geometry is a uniform luminous-opening approximation of far-field IES, not independently measured near-field optical performance",
+    "Closed opaque diffuse enclosure only; no actual apertures, internal obstructions, glazing, daylight or specular materials",
+    "Unsupported/missing IES opening geometry and flush ceiling placements fail closed",
+    "Two finite numerical settings satisfying observed-change thresholds do not establish a rigorous error bound",
+    "Direct-only layout selection remains; reflected-light feedback has not optimized device count or placement",
+    "At most 10 rooms/100 luminaires/1000 points per assessment; current-machine single-room timing does not establish whole-floor usability",
+    "UGR, product Ra/CCT/electrical evidence and actual architectural/finish conditions remain unaccepted",
+    "Hospital DUTY/TEACH classification and full-floor spatial completeness remain blocked",
+    "Recorded-owner recovery is confined to calculation state; general child process handling and interrupted CAD delivery recovery remain unaccepted",
+    "New machine, independent customers/projects, authenticated professional review and construction approval remain pending"
+  ],
+  "professionalApproval": false,
+  "constructionApproval": false,
+  "milestones": {
+    "M2": "not_complete",
+    "M3": "not_complete",
+    "M4": "not_complete"
+  }
+}

@@ -56,3 +56,18 @@ allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指�
 有效最低照度和均匀度取任务/标准较高值，LPD上限取任务/强制性当前基准较低值；不自动使用小房间或照度级差上浮，也不把推荐目标值冒称当前强制限值。必须启用明确的直射逐点模式，声明Ra低于最低值的候选不能入选；Ra真实性、UGR、反射光、版本现行性及项目适用性仍待专业核对。源PDF、核读图或解释配置变化会在设计/交付前阻断，不能沿用旧模型。
 
 当前控制图采用分组母线归属示意，开关分开且置于声明房间内；不等于现场敷设路线、开关线数或安装位置已经协调。
+
+
+## 有限光源与漫反射复核
+
+布局选择仍采用有来源的IES直射网格。需要附加反射总照度时，在输入中显式登记 `lightingEnvironment={model:"closed_diffuse_rooms",geometry:"ies_rectangular_opening",sourceIds,status,description,rooms:[...]}`，逐空间声明 roomId、enclosure="closed_opaque"、floorReflectance/wallReflectance/ceilingReflectance（0—0.9）、sourceIds、status（documented/interpreted/assumed）和描述，必须恰好覆盖全部房间。反射率不是通用医院事实；没有装修表时只能明确作为假设。
+
+维护者先独立核验官方Radiance运行时来源和发行摘要，再用 `node scripts/register-radiance-runtime.mjs TRUSTED-ROOT NEW-PRIVATE-PROFILE.json` 登记四个工具及完整lib支持文件摘要。配置 CADBRIDGE_RADIANCE_RUNTIME 或本机 dataHome/radiance-runtime.json。该脚本不下载、不认证发布者；私有配置和二进制不放进源码/通用发行包。
+
+设计冻结后调用 `assess_lighting`，传 jobId、requestId、expectedModelSHA256。当前只接受IES原始正宽/正长、零厚度矩形发光面，采用均匀发光面近似；尺寸缺失、负编码、障碍高度缺失、发光面相交/越界或需要吊顶开孔时拒绝，不用猜测尺寸或点光源替换。灯具至少低于封闭顶面20mm，本模式没有真实门窗开口、内部遮挡、日光或镜面材质。当前上限10房间、100灯具、1000网格点；超限明确分区，不暗改网格。
+
+复核保存有限光源直射及2/4/5次漫反射的四档结果，包含固定采样、环境插值、低权重射线的有界Russian roulette设置和命令记录。逐点两档变化须不超过1 lx加较大值的2%，平均变化不超过0.5 lx加较大平均值的1%；中/精两档都要满足冻结的最低照度、最高平均值和均匀度。该收敛观测不是严格误差界。不能把直射可行当作总照度合格，复核失败会阻断声明本条件项目的deliver。
+
+`status` 可读取 lighting_quality；运行时显示当前房间/档次。报告、CSV、原场景/IES及逐档输出摘要被绑定，篡改会阻断读取/交付；需求修订使旧复核失效。UGR、真实发光面分布及产品条件、完整规范、专业签审仍须另验。
+
+客户端中断后先读status与记录。只有已核实记录进程停止、模型一致，且原阶段为assess_lighting时，才可调用 `recover_lighting`（jobId、requestId、expectedModelSHA256）。它归档旧锁并保留旧计算目录，旧结果不复用，可在新目录另发复核；不认证所有子进程状态，不处理CAD创建/交付中断，也不重放CAD。活进程或无法核实的进程拒绝恢复；CAD交付仍按原不确定状态处理。

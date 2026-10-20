@@ -32,9 +32,10 @@
       "limits": [
         "Original hospital main delivery remains a six-space retrospective flux-method study",
         "New source-bound IES Type C direct-point mode verified on three invented room conditions with real products",
-        "No diffuse reflections, daylight, UGR, detailed obstruction heights, near-field or full lighting-quality acceptance",
+        "Optional finite-source closed diffuse subset now verified on invented conditions; actual reflections/daylight/UGR/obstructions/near-field and full project quality remain unaccepted",
         "Independent synthetic floor source intake and A1 physical output remain verified; hospital full-floor geometry unresolved",
-        "Three explicitly classified synthetic conditions with actual standard base constraints: 36 lights/4 circuits/5 sheets; not hospital acceptance"
+        "Three explicitly classified synthetic conditions with actual standard base constraints: 36 lights/4 circuits/5 sheets; not hospital acceptance",
+        "Source-bound finite rectangular IES diffuse assessment, total-light upper-bound failure, raw-evidence tamper gate and native CAD delivery verified; direct-only layout optimizer remains"
       ]
     },
     {
@@ -71,7 +72,8 @@
         "MCP and CLI-source entrypoints",
         "Task-center engineering view, actual PNG preview and CSV download",
         "Frozen v2 package does not include this increment",
-        "New machine and external users pending"
+        "New machine and external users pending",
+        "Maintainer browser shows actual diffuse-calculation progress/results and downloads exact CSV bytes; stopped-recorded-owner calculation recovery verified, not general native CAD recovery"
       ]
     }
   ],
@@ -112,7 +114,8 @@
     "realProductPhotometryStatus": "source_bound_direct_model_verified_full_quality_pending",
     "sourceBoundLightingStandardSubset": true,
     "fullLightingQuality": false,
-    "professionalStandardApplicability": false
+    "professionalStandardApplicability": false,
+    "finiteDiffuseSubset": true
   },
   "knownInputGaps": [
     "Original client brief not located",
@@ -122,10 +125,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 reflected-light/UGR quality and independent product parameter evidence",
+    "P0 UGR/observer and actual luminaire evidence, then reflected-light-driven layout optimization",
     "P0 complete hospital spatial inputs and source-linked functional classification",
     "P0 actual customer requirements and professional standard applicability/full coverage",
-    "P1 detailed installation routing, incremental edit, authenticated review and interruption recovery"
+    "P1 installation routing, incremental professional CAD edits, authenticated review and native interruption recovery"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -139,5 +142,6 @@
     "sourceBoundLightingSubsetLocalPipeline": true
   },
   "photometryValidation": "docs/photometry-validation.json",
-  "lightingStandardsValidation": "docs/lighting-standards-validation.json"
+  "lightingStandardsValidation": "docs/lighting-standards-validation.json",
+  "lightingQualityValidation": "docs/lighting-quality-validation.json"
 }
