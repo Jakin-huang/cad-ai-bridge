@@ -8,6 +8,7 @@ import {matchesRow} from './query-index.mjs';
 import {readDxf,unchangedRecords} from './dxf-audit.mjs';
 import {verifyGeometry} from './geometry-checks.mjs';
 import {verificationReport} from './verification.mjs';
+import {deliveryMarkdown} from './delivery.mjs';
 
 const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])):value;
 const digest=value=>crypto.createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex');
@@ -71,6 +72,7 @@ export async function runWorkflow(execute,runs,args){
   const write=Boolean(mutationAttempted),exports=record.exports||[],visualRequested=files.some(f=>['png','pdf','before-png','after-png'].includes(f.kind));
   record.verification=verificationReport({write,execution:proofs.execution??{status:children.some(c=>!c.ok)?'failed':before?'passed':'unknown'},source:{status:!input||!sourceNow?'unknown':sourceNow===input?'passed':'failed',expectedSha256:input,actualSha256:sourceNow},saved:saved?{status:mismatched.includes('dwg')?'failed':'passed',sha256:saved.drawingSha256}:undefined,reopened:proofs.reopened,geometry:proofs.geometry,preservation:proofs.preservation,render:visualRequested||exports.length?{status:exports.some(e=>!e.ok)||warnings.some(w=>w.stage?.includes('preview'))?'partial':'passed',files:files.filter(f=>['png','pdf','before-png','after-png'].includes(f.kind)).map(f=>({kind:f.kind,sha256:f.sha256}))}:undefined,delivery:{status:!record.ok||mismatched.length?'failed':'passed',mismatched},visualRequested});
   const manifest=path.join(job,'delivery.json');await atomicJson(manifest,{schemaVersion:2,ok:record.ok,workflow:record.workflow,outcome:record.outcome,sourceSha256:record.inputSha256,drawing:record.drawing,coverage:record.coverage,verification:record.verification,review:record.review,metrics,files:[...files],pending:['External-user acceptance, fresh-machine installation and manual productivity comparison are not established by this job.']});record.delivery={manifest,files:files.map(({kind,file,bytes})=>({kind,file,bytes})),verificationPassed:record.verification.requiredSatisfied,verificationScope:'Declared machine-checkable postconditions only; see verification.levels and pending',coverage:record.coverage};
+  record.delivery.markdown=deliveryMarkdown(files);record.delivery.presentation='Use these exact Markdown links in the final answer; inline-code paths do not count as clickable delivery.';
   task.status=record.ok?'completed':'failed';task.updatedAt=new Date().toISOString();task.outcome=record.outcome;await atomicJson(path.join(job,'task.json'),task);await atomicJson(path.join(job,'result.json'),record);return record;
   }catch(error){return {...record,ok:false,error:{code:'WORKFLOW_JOURNAL_FAILED',stage:'journal',message:error.message,next:'保留已返回的DWG和摘要；日志未完整写入，不要重放修改。'},previousError:record.error,evidenceComplete:false,safeToRetry:false};}
  }

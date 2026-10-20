@@ -19,6 +19,6 @@ description: "通过 CAD AI Bridge 查询、修改和统计已有 CAD 图纸，�
 
 超时、断连、保存或后续验证/展示失败，先以原jobId/requestId查已有结果。查看outcome、drawingSaved、mutationCommitted和保留文件。已有DWG不因导出失败而重做修改；unconfirmed不是重试许可，不能换UUID绕过冲突。只读导出失败可单独重做失败项。
 
-最终简短返回：可点击的实际DWG/所需交付文件链接、测得的结果和重要缺口。客户端提供文件展示工具时使用返回的确切文件；没有时使用完整绝对路径Markdown链接，不用代码块或省略路径。不列UUID、插件指纹或完整执行日志。文件卡片、PNG预览和能否打开CAD分别报告；保护DXF记录和主要几何通过不等于完整厂商数据库、所有字体或工程合规通过。
+最终简短返回：优先直接采用工具返回的 delivery.markdown 中的实际文件链接，再说明测得结果和重要缺口；未提供该字段时，由已返回的确切路径生成 Markdown 链接。客户端提供文件展示工具时也使用确切文件。不要把链接改成反引号包住的路径、代码块或纯路径清单；这些不算可点击交付。不列UUID、插件指纹或完整执行日志。文件卡片、PNG预览和能否打开CAD分别报告；保护DXF记录和主要几何通过不等于完整厂商数据库、所有字体或工程合规通过。
 
 仅在对应任务需要时读专业资料：[普通编辑](references/editing-workflow.md)、[天正原生桥架](references/native-tray-workflow.md)、[电气、工程模板及既有流程](references/specialist-workflows.md)、[有自备需求的学校流程](references/school-workflow.md)。专业图面不得用普通折线/文字冒充厂商原生对象；学校流程的本地CLI不是通用MCP工具。

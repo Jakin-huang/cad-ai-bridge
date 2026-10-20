@@ -31,3 +31,5 @@ cad_workflow 自动冻结输入、查询、在毫米制副本执行、重新打�
 PDF可显式plot:{paper:"A3",orientation:"landscape",scale:"fixed",denominator:100,style:"monochrome.ctb"}。固定比例只支持毫米制Model，超出保守可打印范围时拒绝而非静默裁切；布局固定比例需另行设置视口。PDF页大小/方向和CAD实际比例设置会核对，字体外观仍需看图。
 
 保存后比较未选中ENTITIES/BLOCKS的DXF记录及主要平面几何；表、字典、厂商内部关联不是完整保留证明。review.pendingGeometry列出尚无独立几何后置检查的操作，不能声称全面验证。保存后验证或导出失败仍保留DWG，先恢复原任务，不能重放写入。
+
+最终交付直接逐行采用返回的 delivery.markdown，里面已经包含本次真实 DWG、CSV、PNG/PDF 的 Markdown 链接。保持方括号和链接目标，不改写成反引号路径或纯路径清单；不要重构、猜测或缩短文件地址。链接之后只需简述核对结果与未验证项。
