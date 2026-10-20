@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {atomicJson} from './files.mjs';
-import {hashFile,snapshotDrawing} from './drawings.mjs';
+import {hashFile,snapshotDrawing,isWithin} from './drawings.mjs';
 import {jobDirectory,jobJson} from './jobs.mjs';
 import {compactVerification} from './verification.mjs';
 const canonical=v=>Array.isArray(v)?v.map(canonical):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,canonical(v[k])])):v;
@@ -14,8 +14,10 @@ async function lease(job){
  try{const h=await fs.open(file,'wx');await h.writeFile(JSON.stringify({pid:process.pid,token:crypto.randomUUID()}));await h.close();return async()=>fs.unlink(file);}
  catch(e){if(e.code!=='EEXIST')throw e;const owner=JSON.parse(await fs.readFile(file,'utf8'));if(!Number.isInteger(owner.pid)||alive(owner.pid))throw Error('PROJECT_WORKER_ACTIVE: an existing worker may still be running');await fs.unlink(file);return lease(job);}
 }
-async function checkedResult(job){
- const result=await jobJson(job,'result.json');for(const file of result.files??[])if(await hashFile(file.file)!==file.sha256)throw Error('PROJECT_OUTPUT_CHANGED: child output hash mismatch');return result;
+async function checkedResult(job,item,runs){
+ const result=await jobJson(job,'result.json');
+ if(item.childRequestId&&result.requestId?.toLowerCase()!==item.childRequestId.toLowerCase()||result.inputSha256&&result.inputSha256!==item.inputSha256||item.childRequestId&&result.ok&&!result.inputSha256)throw Error('PROJECT_CHILD_IDENTITY_MISMATCH: result does not belong to this frozen item');
+ const root=await fs.realpath(runs);for(const file of result.files??[]){const resolved=await fs.realpath(file.file);if(!isWithin(root,resolved))throw Error('PROJECT_OUTPUT_OUTSIDE_RUNS');if(await hashFile(resolved)!==file.sha256)throw Error('PROJECT_OUTPUT_CHANGED: child output hash mismatch');}return result;
 }
 const itemResult=r=>({ok:r.ok,outcome:r.outcome,drawingSaved:r.drawingSaved,drawing:r.drawing,drawingSha256:r.drawingSha256,error:r.error,verification:r.verification,summary:r.summary,statistics:r.statistics,coverage:r.coverage,files:r.files,jobRoot:r.jobRoot,metrics:r.metrics,delivery:r.delivery,exports:r.exports});
 const visibleResult=result=>result?{...result,summary:result.summary?{changed:result.summary.changed,created:result.summary.created,removed:result.summary.removed,skippedCount:result.summary.skipped?.length}:undefined,files:result.files?.slice(0,10),fileCount:result.files?.length,filesTruncated:result.files?.length>10,exports:result.exports?.map(({name,ok,error})=>({name,ok,error})),delivery:result.delivery?{manifest:result.delivery.manifest,verificationPassed:result.delivery.verificationPassed}:undefined,verification:compactVerification(result.verification),details:{jobId:result.jobRoot?path.basename(result.jobRoot):undefined,tool:'cad_get_job'}}:undefined;
@@ -25,7 +27,7 @@ export function createProjectManager({execute,getSettings,runs}){
  function summary(state,{offset=0,limit=20,full=false}={}){return {ok:true,jobId:state.jobId,status:state.status,phase:state.phase,currentItem:state.currentItem,requestId:state.requestId,updatedAt:state.updatedAt,cancelRequested:state.cancelRequested,items:state.items.slice(offset,offset+limit).map(({spec,...item})=>full?item:{...item,result:visibleResult(item.result),deliveryRetryCount:item.deliveryRetries?.length,deliveryRetries:item.deliveryRetries?.slice(-3).map(visibleResult)}),itemCount:state.items.length,offset,nextOffset:offset+limit,hasMore:offset+limit<state.items.length,totals:Object.fromEntries(['pending','running','completed','failed','blocked','cancelled'].map(status=>[status,state.items.filter(i=>i.status===status).length])),safeToRetry:false,note:'Per-drawing copies; no cross-DWG transaction. Resume continues only unstarted items. Saved or unconfirmed writes are never replayed.'};}
  async function reconcile(job,state){
   for(const item of state.items.filter(i=>['running','completed','failed'].includes(i.status))){
-   try{const child=await jobDirectory(runs,item.childJobId),result=await checkedResult(child);item.result=itemResult(result);item.status=result.ok?'completed':'failed';item.recovered=true;}
+   try{const child=await jobDirectory(runs,item.childJobId),result=await checkedResult(child,item,runs);item.result=itemResult(result);item.status=result.ok?'completed':'failed';item.recovered=true;}
    catch(error){item.status='blocked';item.error={code:'PROJECT_WRITE_UNCONFIRMED',message:error.message,next:'Inspect the retained child journal and DWG. Automatic write replay is disabled.'};}
   }
   await save(job,state);

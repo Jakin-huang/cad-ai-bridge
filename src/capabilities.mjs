@@ -3,7 +3,7 @@ import {builtInBackends} from './backend-contracts.mjs';
 export function capabilities(){
  return {ok:true,product:'CAD AI Bridge',compatibilityVersion:'0.2.0',scope:'local CAD and AI client bridge',
   validatedEnvironment:{os:'Windows 10 x64',cad:'AutoCAD 2022 zh-CN',optionalExtension:'Tangent Electrical V8',client:'WorkBuddy 5.3.8'},
-  execution:{default:'snapshot-copy',writes:'new DWG; original preserved',coordinates:'planar WCS XY',writeUnits:['mm'],currentUserDocument:true,sessionStatus:'experimental',sessionDispatch:'One ROT-visible AutoCAD 2022 instance; PID is checked before entering a fixed native command. No arbitrary code or command input.'},
+  execution:{default:'snapshot-copy',readOnly:process.env.CADBRIDGE_READ_ONLY==='1',writes:'new DWG; original preserved',coordinates:'planar WCS XY',writeUnits:['mm'],currentUserDocument:true,sessionStatus:'experimental',sessionDispatch:'One ROT-visible AutoCAD 2022 instance; PID is checked before entering a fixed native command. No arbitrary code or command input.'},
   workflows:['replace_text','organize','takeoff','edit','export_batch'],
   projectTasks:{actions:['start','status','list','cancel','resume'],copies:'All inputs frozen before the first operation; per-drawing outputs; no global DWG transaction',recovery:'Only unstarted items continue; saved/unconfirmed writes are not repeated',cancel:'Between drawings; current CAD operation finishes'},
   engineeringAnalysis:{source:'Complete cad_scan_drawing results; no CAD restart',checks:['duplicate_attribute','required_attributes','forbidden_text','allowed_layers','minimum_length','text_height'],quantities:'Versioned count/physical-length rules with factors, waste, rounding and source SHA/instancePath; unavailable physical lengths remain partial'},

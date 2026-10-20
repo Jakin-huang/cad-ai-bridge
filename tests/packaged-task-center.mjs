@@ -1,0 +1,21 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
+import {spawn} from 'node:child_process';
+import {localPath,parseLocalJSON} from '../src/local-paths.mjs';
+const pkg=parseLocalJSON(await fs.readFile(localPath('artifacts','windows-user-package-report.json'),'utf8'));assert.equal(pkg.ok,true);
+const [name]=await fs.readdir(path.join(pkg.base,'新版本')),folder=path.join(pkg.base,'新版本',name),stdout=path.join(pkg.base,'task-center-'+crypto.randomUUID()+'.json');
+const env={...process.env,PATH:[path.join(process.env.WINDIR,'System32'),process.env.WINDIR,path.join(process.env.WINDIR,'System32/WindowsPowerShell/v1.0')].join(';'),CADBRIDGE_RUNTIME_HOME:pkg.isolatedRuntimes,CADBRIDGE_RUNTIME_ISOLATED:'1',CADBRIDGE_OFFLINE:'1',CADBRIDGE_DATA_HOME:path.join(pkg.base,'task-center-data')};
+for(const key of ['CADBRIDGE_CONFIG','CADBRIDGE_TEST_HOME','CADBRIDGE_RUNTIME_CACHE','CADAGENT_POWERSHELL','CADAGENT_ALLOWED_ROOT','CADAGENT_CAD_ROOT','CADBRIDGE_READ_ONLY'])delete env[key];
+const checks=[];let info;
+try{
+ const helper=spawn(path.join(process.env.WINDIR,'System32/WindowsPowerShell/v1.0/powershell.exe'),['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(folder,'scripts/start-center.ps1'),'-ReportFile',stdout],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});let errors='';helper.stderr.on('data',b=>errors+=b);await new Promise((resolve,reject)=>{helper.once('error',reject);helper.once('close',code=>code===0?resolve():reject(Error(errors)));});
+ const deadline=Date.now()+60000;while(Date.now()<deadline){try{info=JSON.parse(await fs.readFile(stdout,'utf8'));break;}catch{await new Promise(resolve=>setTimeout(resolve,100));}}assert.ok(info?.url,'Packaged task center did not start; inspect '+stdout);checks.push('Actual packaged Windows launcher script starts bundled Node with minimal PATH and offline runtimes');
+ const url=new URL(info.url),token=new URLSearchParams(url.hash.slice(1)).get('token'),headers={Authorization:'Bearer '+token,'Content-Type':'application/json'};
+ const page=await fetch(url.origin),html=await page.text();assert.equal(page.status,200);assert.ok(html.includes('任务中心')&&html.includes('关闭本地入口'));assert.ok(page.headers.get('content-security-policy').includes('sha256-'));checks.push('Extracted package serves the complete authenticated task-center UI and CSP');
+ assert.equal((await fetch(url.origin+'/api/jobs')).status,401);const capability=await(await fetch(url.origin+'/api/call',{method:'POST',headers,body:JSON.stringify({action:'capabilities',args:{}})})).json();assert.ok(capability.projectTasks&&capability.engineeringAnalysis);checks.push('Packaged task center exposes project/analysis capabilities while refusing unauthenticated history');
+ const doctor=await(await fetch(url.origin+'/api/call',{method:'POST',headers,body:JSON.stringify({action:'doctor',args:{refresh:true}})})).json();assert.equal(doctor.ok,true,JSON.stringify(doctor));assert.ok(doctor.checks.some(c=>c.name==='node'&&c.detail==='22.23.3'));checks.push('Packaged task center diagnostic passes with bundled Node 22.23.3 and its own isolated configuration');
+ const stop=await fetch(url.origin+'/api/shutdown',{method:'POST',headers});assert.equal((await stop.json()).ok,true);checks.push('Authenticated page shutdown closes the packaged local entry without a CAD process kill');
+ const report={ok:true,checkedAt:new Date().toISOString(),packageSha256:pkg.packageSha256,checks,scope:'Existing Windows account; actual extracted launcher, bundled runtimes, offline/minimal PATH and completed default-browser launch request. Default-browser pixels/trust prompts are not observed; no clean-machine or WorkBuddy desktop claim',defaultBrowserLaunchRequestCompleted:true,defaultBrowserRenderingObserved:false};await fs.writeFile(localPath('artifacts','v2-packaged-center-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:true,checks:checks.length}));
+}finally{if(info?.url){const url=new URL(info.url),token=new URLSearchParams(url.hash.slice(1)).get('token');await fetch(url.origin+'/api/shutdown',{method:'POST',headers:{Authorization:'Bearer '+token}}).catch(()=>{});}}

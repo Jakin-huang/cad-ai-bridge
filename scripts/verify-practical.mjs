@@ -30,6 +30,7 @@ try{
  await run('workflows',['tests/workflows-integration.mjs']);
  await run('practical-v06',['tests/practical-v06-integration.mjs']);
  await run('v2-core',['tests/v2-integration.mjs']);
+ await run('v2-protocol',['tests/v2-mcp.mjs']);
  await run('batch-export-performance',['tests/batch-export-performance.mjs']);
  await run('pdf-physical',['tests/plot-pdf-physical.py',localPath('artifacts','practical-v06-report.json'),localPath('artifacts','plot-pdf-physical-report.json')],process.env.CADBRIDGE_PYTHON||'python');
  if(!['sessions','query-scope'].every(name=>state.steps.some(item=>item.name===name&&item.status==='passed'))){

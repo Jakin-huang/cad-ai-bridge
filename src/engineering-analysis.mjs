@@ -13,6 +13,7 @@ export const entityIdentity=row=>({handle:row.handle,instancePath:row.instancePa
 function excluded(row,exclude){return exclude&&(exclude.layers?.some(v=>fold(v)===fold(row.layer))||exclude.handles?.some(v=>fold(v)===fold(row.handle))||exclude.blockNames?.some(v=>fold(v)===fold(row.blockName))||exclude.regions?.some(region=>matchesRow(row,{region})));}
 export function analyzeCapture(capture,{filter={},exclude,checks=[],quantities=[]}={}){
  if(!capture.ok||!capture.query||!Array.isArray(capture.query.entities)||capture.query.truncated||capture.query.errors?.length)throw Error('ANALYSIS_CAPTURE_INCOMPLETE: a successful complete frozen scan is required');
+ if(!/^[a-fA-F0-9]{64}$/.test(capture.inputSha256??''))throw Error('ANALYSIS_SOURCE_IDENTITY_MISSING');
  const all=capture.query.entities,rows=all.filter(row=>matchesRow(row,filter)&&!excluded(row,exclude));
  if(rows.length*(checks.length+quantities.length)>300000)throw Error('ANALYSIS_TOO_LARGE: narrow filters or split rules to keep at most 300000 entity-rule evaluations');
  const sourceSha256=capture.inputSha256,units=capture.query.units??capture.snapshot?.units,mm=unitToMm[units],issues=[],checkResults=[];
@@ -44,7 +45,8 @@ export function analyzeCapture(capture,{filter={},exclude,checks=[],quantities=[
    if(computed===undefined)missing++;else total+=computed;
    quantityRows.push({ruleId:rule.id,...entityIdentity(row),sourceSha256,measure:rule.measure,raw:value,factor:rule.factor,value:computed,unit:rule.measure==='count'?'each':rule.unit,status:computed===undefined?'unavailable':'measured',reason:computed===undefined?!mm?'Drawing unit is unknown or unsupported':'No world-space length; definition lengths are not transformed into physical quantities':undefined});
   }
-  const withWaste=total*(1+rule.wastePercent/100),rounded=rule.roundUpTo?Math.ceil(withWaste/rule.roundUpTo)*rule.roundUpTo:withWaste;
+  const withWaste=total*(1+rule.wastePercent/100);let rounded=withWaste;
+  if(rule.roundUpTo){const quotient=withWaste/rule.roundUpTo,nearest=Math.round(quotient),tolerance=Number.EPSILON*Math.max(1,Math.abs(quotient))*16,steps=Math.ceil(Math.abs(quotient-nearest)<=tolerance?nearest:quotient);if(!Number.isSafeInteger(steps))throw Error('ANALYSIS_QUANTITY_PRECISION_UNSUPPORTED');rounded=Number((steps*rule.roundUpTo).toPrecision(15));}
   if(!Number.isFinite(rounded))throw Error('ANALYSIS_QUANTITY_OVERFLOW');
   quantityResults.push({id:rule.id,meaning:rule.meaning,measure:rule.measure,unit:rule.measure==='count'?'each':rule.unit,selected:selected.length,measured:selected.length-missing,missing,measuredSubtotal:total,wastePercent:rule.wastePercent,roundUpTo:rule.roundUpTo,total:missing?null:rounded,partialSubtotal:missing?rounded:undefined,status:missing?'partial':'complete',ruleVersion:rule.version,authority:rule.authority??'User-supplied quantity rule; occurrence counts do not establish installed or procurement quantities',provenance:'quantityRows bound to sourceSha256 and instancePath'});
  }
@@ -54,7 +56,9 @@ export function analyzeCapture(capture,{filter={},exclude,checks=[],quantities=[
 export async function runAnalysis(runs,args){
  const captureJob=await jobDirectory(runs,args.captureJobId),captureFile=path.join(captureJob,'result.json'),bytes=await fs.readFile(captureFile),sha=createHash('sha256').update(bytes).digest('hex');
  if(args.expectedResultSha256&&sha!==args.expectedResultSha256.toLowerCase())throw Error('RESULT_CHANGED: frozen capture differs from the expected result SHA-256');
- const capture=await jobJson(captureJob,'result.json'),task=await jobJson(captureJob,'task.json');
+ // Analyze exactly the bytes whose digest was checked, without a second read
+ // that could select a different record or reinterpret drawing text as paths.
+ const capture=JSON.parse(bytes.toString('utf8').replace(/^\uFEFF/,'')),task=await jobJson(captureJob,'task.json');
  if(task.action!=='scan')throw Error('ANALYSIS_SCAN_REQUIRED: use cad_scan_drawing to create a complete capture first');
  const result=analyzeCapture(capture,args),job=await fs.mkdtemp(path.join(runs,'job-analysis-'));
  const files=[];for(const [name,columns,rows]of [['issues',['ruleId','severity','handle','instancePath','layout','message','sourceSha256'],result.issues],['quantities',['ruleId','handle','instancePath','layout','raw','factor','value','unit','status','reason','sourceSha256'],result.quantityRows]]){

@@ -29,6 +29,7 @@ test('attribute and literal checks report source identity without claiming engin
 });
 test('incomplete captures and invalid rules cannot yield complete totals',()=>{
  assert.throws(()=>analyzeCapture({...capture,query:{...capture.query,truncated:true}},request({quantities:[{id:'x',version:'1',measure:'count'}]})),/CAPTURE_INCOMPLETE/);
+ assert.throws(()=>analyzeCapture({...capture,inputSha256:undefined},request({quantities:[{id:'x',version:'1',measure:'count'}]})),/SOURCE_IDENTITY_MISSING/);
  assert.equal(schemas.analyze.safeParse({captureJobId:'job-a',checks:[]}).success,false);assert.equal(schemas.analyze.safeParse({captureJobId:'job-a',quantities:[{id:'x',version:'1',measure:'count',factor:-1}]}).success,false);
 });
 test('retained analysis binds capture hash, supports pages and guards spreadsheet formulas',async t=>{
@@ -36,4 +37,7 @@ test('retained analysis binds capture hash, supports pages and guards spreadshee
  const args=request({checks:[{id:'model',type:'duplicate_attribute',tag:'MODEL'}],quantities:[{id:'devices',version:'1',measure:'count'}]});args.expectedResultSha256=await hashFile(path.join(job,'result.json'));
  const r=await runAnalysis(runs,args);assert.equal(r.captureResultSha256,args.expectedResultSha256);assert.equal(r.quantityRows.length,5);const page=await readResultPage(runs,{jobId:path.basename(r.jobRoot),kind:'quantityRows',limit:2});assert.equal(page.total,5);assert.equal(page.items.length,2);assert.equal(page.hasMore,true);
  await fs.appendFile(path.join(job,'result.json'),' ');await assert.rejects(runAnalysis(runs,args),/RESULT_CHANGED/);
+});
+test('decimal quantity rounding does not add an extra quantum for floating-point noise',()=>{
+ const c={...capture,snapshot:{units:'Millimeters'},query:{truncated:false,entities:[{handle:'A',type:'LINE',length:100},{handle:'B',type:'LINE',length:200}]}},args=request({quantities:[{id:'m',version:'1',measure:'length',unit:'m',roundUpTo:.1}]});assert.equal(analyzeCapture(c,args).quantityResults[0].total,.3);c.query.entities[1].length=200.01;assert.equal(analyzeCapture(c,args).quantityResults[0].total,.4);
 });
