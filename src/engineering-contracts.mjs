@@ -49,6 +49,8 @@ export const engineeringSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('ugr_basis')}),
  z.strictObject({action:z.literal('assess_lighting'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
  z.strictObject({action:z.literal('optimize_lighting'),jobId,requestId:z.uuid(),expectedModelSHA256:digest,maxCandidates:z.number().int().min(1).max(6).default(4),maxMinutes:z.number().int().min(2).max(60).default(20)}),
+ z.strictObject({action:z.literal('solve_lighting'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,maxCandidates:z.number().int().min(1).max(6).default(4),maxMinutes:z.number().int().min(2).max(60).default(20)}),
+ z.strictObject({action:z.literal('recover_initial_lighting'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest}),
  z.strictObject({action:z.literal('adopt_lighting'),jobId,requestId:z.uuid(),expectedModelSHA256:digest,expectedOptimizationSHA256:digest}),
  z.strictObject({action:z.literal('recover_lighting'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
  z.strictObject({action:z.literal('prepare'),requestId:z.uuid(),project:engineeringInputSchema}),

@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_4d1aa7b",
+  "engineVersion": "1.8.0",
+  "frozenV2Unchanged": true,
+  "pluginUnchanged": true,
+  "implemented": [
+    "Input-bound initial total-light search without a prior feasible or measured baseline",
+    "Complete physical assessment of every required room before first model publication at unchanged input revision",
+    "Actual failed-attempt feedback reranking; bounded construction rejection; no invented baseline gain",
+    "Stopped recorded-owner initial-calculation recovery; partial files retained, no automatic publication/CAD replay",
+    "Source identity, request replay, raw evidence and native delivery gates; initial-study task-center display and package"
+  ],
+  "evidence": {
+    "unitTests": {
+      "passed": 232,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualMcpRadianceCadChecks": 27,
+    "cases": [
+      {
+        "case": "one_room_no_direct_baseline",
+        "developmentCase": true,
+        "heldOutProject": false,
+        "inputSHA256": "bb56ef70652ad9308ec950fad98385588f7a9547d05dbe86911e807c22cb238a",
+        "inputBytesUnchanged": true,
+        "inputRevision": 0,
+        "publishedRevision": 0,
+        "noPriorModel": true,
+        "directSearchFailedWithoutPublication": true,
+        "measuredBaselinePresent": false,
+        "baselinePowerOrSavingsClaim": false,
+        "selectedModelSHA256": "c7facd0eafae42b133054ebedd91be147623da0cee454e67646c53127961797e",
+        "rooms": 1,
+        "devices": 6,
+        "circuits": 1,
+        "calculatedIesWatts": 138,
+        "targetAverageLux": [
+          300,
+          350
+        ],
+        "minimumUniformity": 0.6,
+        "maximumPowerDensityWm2": 3,
+        "maximumStandingReferenceUgr": 19,
+        "summary": [
+          {
+            "roomId": "OFFICE",
+            "averageLux": 324.32627156969704,
+            "minimumLux": 211.38235300000002,
+            "maximumLux": 392.200456,
+            "uniformity": 0.6517583419219691,
+            "directAverageLux": 277.95941338787884,
+            "indirectAverageLux": 46.3668581818182,
+            "medium": {
+              "averageLux": 323.078279230303,
+              "minimumLux": 210.206144,
+              "maximumLux": 391.149547,
+              "uniformity": 0.6506353336435742
+            },
+            "maximumPointChange": 2.478255000000047,
+            "targets": {
+              "minimumLux": 300,
+              "maximumAverageLux": 350,
+              "minimumUniformity": 0.6
+            }
+          }
+        ],
+        "ugr": [
+          {
+            "roomId": "OFFICE",
+            "maximumUgr": 18.47203585789046
+          }
+        ],
+        "search": {
+          "measuredBaselinePresent": false,
+          "expensiveAssessments": 1,
+          "examinedPlans": 1,
+          "feedbackRounds": 0,
+          "optimalityProven": false,
+          "elapsedMs": 126616,
+          "limits": {
+            "maxCandidates": 2,
+            "maxMinutes": 12,
+            "beam": 32,
+            "perProductPointPool": 16,
+            "maxExaminedPlans": 64
+          }
+        },
+        "actualMcpRadianceCadChecks": 15,
+        "checks": [
+          "Actual direct-only search cannot meet the frozen constraints and publishes no model",
+          "No CAD can be created from the failed direct-only attempt",
+          "Initial calculation exposes live candidate/profile progress without claiming an existing model",
+          "Stopping only the owned MCP calculation tree is reported as an interrupted input-only solve",
+          "Recovery returns the exact input to prepared state, keeps partial files and supports request replay",
+          "Fresh initial solve reports live work without an invented direct-feasible or measured baseline",
+          "Only complete total-light/UGR evidence publishes the initial model at the original input revision",
+          "Search evidence explicitly contains no measured baseline, baseline power or invented gain",
+          "Every declared room meets the original total mean, uniformity, power and requested UGR limits",
+          "Input bytes remain unchanged and solve request replay does not recalculate",
+          "Changed source decision evidence blocks replay and native delivery",
+          "An empty bounded pool publishes no model, performs no physical trace and does not claim global infeasibility",
+          "An unknown standard class is not silently substituted to start initial design",
+          "Initial total-light model reaches actual CAD saved readback with source study and quality outputs",
+          "Source input and professional approval state remain unchanged after CAD output"
+        ],
+        "modelChecks": {
+          "passed": 36,
+          "failed": 0,
+          "pending": 10
+        },
+        "qualityCheckCounts": {
+          "passed": 34,
+          "failed": 0
+        },
+        "cadSavedReadback": true,
+        "sheets": 5,
+        "pageVisualReview": "All five final A3 pages inspected for clipping, overlaps, labels and declared scope; attribution schematic and direct diagnostic table are not construction drawing approval",
+        "independentReferenceObservers": 4,
+        "professionalApproval": false
+      },
+      {
+        "case": "two_rooms_all_required",
+        "developmentCase": true,
+        "heldOutProject": false,
+        "inputSHA256": "d5652be5336fa73851d9d25d106b3071ce1c91d50d6524ea4bd58eed0b452109",
+        "inputBytesUnchanged": true,
+        "inputRevision": 0,
+        "publishedRevision": 0,
+        "noPriorModel": true,
+        "directSearchFailedWithoutPublication": true,
+        "measuredBaselinePresent": false,
+        "baselinePowerOrSavingsClaim": false,
+        "selectedModelSHA256": "c1c9d8275cfd4527af0cc9a124f12251deb31688482008e53169753ab5fab222",
+        "rooms": 2,
+        "devices": 12,
+        "circuits": 2,
+        "calculatedIesWatts": 276,
+        "targetAverageLux": [
+          300,
+          350
+        ],
+        "minimumUniformity": 0.6,
+        "maximumPowerDensityWm2": 3,
+        "maximumStandingReferenceUgr": 19,
+        "summary": [
+          {
+            "roomId": "OFFICE",
+            "averageLux": 324.32627156969704,
+            "minimumLux": 211.38235300000002,
+            "maximumLux": 392.200456,
+            "uniformity": 0.6517583419219691,
+            "directAverageLux": 277.95941338787884,
+            "indirectAverageLux": 46.3668581818182,
+            "medium": {
+              "averageLux": 323.078279230303,
+              "minimumLux": 210.206144,
+              "maximumLux": 391.149547,
+              "uniformity": 0.6506353336435742
+            },
+            "maximumPointChange": 2.478255000000047,
+            "targets": {
+              "minimumLux": 300,
+              "maximumAverageLux": 350,
+              "minimumUniformity": 0.6
+            }
+          },
+          {
+            "roomId": "OFFICE_B",
+            "averageLux": 319.4220892363638,
+            "minimumLux": 205.11216199999998,
+            "maximumLux": 387.84646,
+            "uniformity": 0.6421351838576902,
+            "directAverageLux": 277.95941338787884,
+            "indirectAverageLux": 41.462675848484935,
+            "medium": {
+              "averageLux": 318.4647006848485,
+              "minimumLux": 204.25403599999999,
+              "maximumLux": 387.190962,
+              "uniformity": 0.6413710391159774
+            },
+            "maximumPointChange": 1.9768760000000043,
+            "targets": {
+              "minimumLux": 300,
+              "maximumAverageLux": 350,
+              "minimumUniformity": 0.6
+            }
+          }
+        ],
+        "ugr": [
+          {
+            "roomId": "OFFICE",
+            "maximumUgr": 18.47203585789046
+          },
+          {
+            "roomId": "OFFICE_B",
+            "maximumUgr": 18.63799108031332
+          }
+        ],
+        "search": {
+          "measuredBaselinePresent": false,
+          "expensiveAssessments": 1,
+          "examinedPlans": 1,
+          "feedbackRounds": 0,
+          "optimalityProven": false,
+          "elapsedMs": 248091,
+          "limits": {
+            "maxCandidates": 2,
+            "maxMinutes": 12,
+            "beam": 32,
+            "perProductPointPool": 16,
+            "maxExaminedPlans": 64
+          }
+        },
+        "actualMcpRadianceCadChecks": 12,
+        "checks": [
+          "Actual direct-only search cannot meet the frozen constraints and publishes no model",
+          "No CAD can be created from the failed direct-only attempt",
+          "Fresh initial solve reports live work without an invented direct-feasible or measured baseline",
+          "Only complete total-light/UGR evidence publishes the initial model at the original input revision",
+          "Search evidence explicitly contains no measured baseline, baseline power or invented gain",
+          "Every declared room meets the original total mean, uniformity, power and requested UGR limits",
+          "Input bytes remain unchanged and solve request replay does not recalculate",
+          "Changed source decision evidence blocks replay and native delivery",
+          "An empty bounded pool publishes no model, performs no physical trace and does not claim global infeasibility",
+          "An unknown standard class is not silently substituted to start initial design",
+          "Initial total-light model reaches actual CAD saved readback with source study and quality outputs",
+          "Source input and professional approval state remain unchanged after CAD output"
+        ],
+        "modelChecks": {
+          "passed": 61,
+          "failed": 0,
+          "pending": 12
+        },
+        "qualityCheckCounts": {
+          "passed": 61,
+          "failed": 0
+        },
+        "cadSavedReadback": true,
+        "sheets": 5,
+        "pageVisualReview": "All five final A3 pages inspected for clipping, overlaps, labels and declared scope; attribution schematic and direct diagnostic table are not construction drawing approval",
+        "independentReferenceObservers": 8,
+        "professionalApproval": false
+      }
+    ],
+    "independentReference": {
+      "observers": 12,
+      "maximumRelativeDirectEyeDifference": 0.00022037119884988593,
+      "tolerance": ".1 lx + 0.2% of finite-opening quadrature prediction",
+      "scope": "Independent formula, reference observer coordinates and finite-opening direct vertical eye illuminance; no independent diffuse-background or actual product approval"
+    },
+    "recovery": {
+      "actualTestOwnedMcpTreeForcedStop": true,
+      "stopBeforePublication": true,
+      "partialEvidenceRetained": true,
+      "sameInputAndNewRequestRequired": true,
+      "recoveryApiCertifiesOnlyRecordedOwnerStopped": true,
+      "publicationOrCadCrashRecoveryProven": false
+    },
+    "browser": {
+      "initialCandidateTitleAnd276WVisible": true,
+      "qualityResultsForBothRoomsVisible": true,
+      "actualDownloadedDecisionSHA256": "cd8e53bce0dbfd9758d9f815e42bb2cdff99d75abd7c3d53b16b0f1b0e91fd66",
+      "downloadMatchedRegisteredSHA256": true
+    },
+    "uniqueA3PagesVisuallyInspected": 10,
+    "externalModelCallsInThisIncrement": 0
+  },
+  "limits": {
+    "maximumRoomsPerAssessment": 10,
+    "maximumDevicesPerAssessment": 100,
+    "maximumGridPointsPerAssessment": 1000,
+    "fullFloorPerformanceValidated": false,
+    "globalOptimalityProven": false
+  },
+  "remaining": [
+    "Independent hospital architectural source, full space inventory, doors/ceilings and customer brief missing",
+    "Hospital DUTY/TEACH functional standard classification unresolved; full floor remains blocked",
+    "Sitting-reference blank cells and observer coverage; actual source opening and product rating reconciliation pending",
+    "IES23W versus product nominal24W remains unresolved; no measured savings or approved electrical product selection",
+    "Drawing table remains direct diagnostic; accepted total and reference UGR are separate source-bound reports; routing is attribution schematic",
+    "Publication-started crash reconciliation, actual engineering routing, manual edit uptake and authenticated professional review incomplete",
+    "External users, clean machines, held-out real projects, medical specialty design and professional acceptance unverified"
+  ],
+  "milestones": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "professionalApproval": false
+}
