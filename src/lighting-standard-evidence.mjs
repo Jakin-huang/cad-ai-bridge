@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 import {z} from 'zod';
 import {dataHome} from './local-paths.mjs';
 import {hashFile} from './drawings.mjs';
+import {requestedLightingUses,intersectUseRules,sharedUseMethod} from './lighting-use-assessment.mjs';
 const id=z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,63}$/),sha=z.string().regex(/^[a-f0-9]{64}$/i),day=z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const uses=z.array(z.enum(['office','duty','teaching','corridor','pantry','clinical','unknown'])).min(1).max(7);
 const witness=z.strictObject({id,sourceId:id,locator:z.string().min(1).max(150),pdfPage:z.number().int().positive(),pixelSHA256:sha,transcriptionMethod:z.literal('visual_transcription_cross_checked'),reviewer:z.string().min(1).max(150),crossCheckFile:z.string().min(1).max(2000),crossCheckSHA256:sha});
@@ -40,12 +41,17 @@ export async function resolveLightingStandards(input,options){
  }
  const rooms=[];
  for(const room of input.rooms){
-  const classification=room.standardSpace,rule=profile.classes.find(c=>c.id===classification?.classId);
-  if(!classification||!rule){add('LIGHTING_SPACE_CLASS_UNRESOLVED','Explicit, source-linked standard-space classification is required',[room.id]);continue;}
-  if(!rule.allowedUses.includes(room.use)){add('LIGHTING_SPACE_CLASS_CONFLICT','Declared use conflicts with the selected standard-space class',[room.id,rule.id]);continue;}
-  if(Math.abs(room.workplaneM-rule.workplaneM)>1e-6)add('LIGHTING_REFERENCE_PLANE_CONFLICT','Room workplane '+room.workplaneM+'m differs from the selected standard '+rule.workplaneM+'m; source-linked correction required',[room.id,rule.id]);
-  const upper=input.requirements.find(r=>r.rule==='max_avg_lux'&&r.roomIds.includes(room.id));if(upper&&upper.value<rule.minimumLux)add('LIGHTING_STANDARD_LUX_RANGE_CONFLICT','Project upper illuminance bound is below the selected standard minimum',[room.id,rule.id]);
-  rooms.push({...rule,roomId:room.id,classification,tableEvidence:profile.tables.filter(t=>rule.tableIds.includes(t.id)).map(({id,sourceId,locator,pdfPage,pixelSHA256,transcriptionMethod})=>({id,sourceId,locator,pdfPage,pixelSHA256,transcriptionMethod}))});
+  const uses=requestedLightingUses(room),records=[];
+  for(const use of uses){const classification=use.classification,rule=profile.classes.find(c=>c.id===classification?.classId),refs=[room.id,...(use.relationship==='secondary_use'?[use.labelId]:[])];
+   if(!classification||!rule){add('LIGHTING_SPACE_CLASS_UNRESOLVED','Every declared use requires an explicit source-linked standard class',refs);continue;}
+   if(!rule.allowedUses.includes(use.use)){add('LIGHTING_SPACE_CLASS_CONFLICT','Declared use conflicts with the selected standard-space class',[...refs,rule.id]);continue;}
+   if(Math.abs(use.workplaneM-rule.workplaneM)>1e-6||Math.abs(room.workplaneM-rule.workplaneM)>1e-6)add('LIGHTING_REFERENCE_PLANE_CONFLICT','The shared room/use workplane differs from selected standard '+rule.workplaneM+'m; no silent plane substitution',[...refs,rule.id]);
+   const upper=input.requirements.find(r=>r.rule==='max_avg_lux'&&r.roomIds.includes(room.id));if(upper&&upper.value<rule.minimumLux)add('LIGHTING_STANDARD_LUX_RANGE_CONFLICT','Project upper illuminance bound is below a declared-use standard minimum',[...refs,rule.id]);
+   records.push({...use,rule,tableEvidence:profile.tables.filter(t=>rule.tableIds.includes(t.id)).map(({id,sourceId,locator,pdfPage,pixelSHA256,transcriptionMethod})=>({id,sourceId,locator,pdfPage,pixelSHA256,transcriptionMethod}))});
+  }
+  if(records.length!==uses.length)continue;const primary=records[0];
+  if(uses.length===1)rooms.push({...primary.rule,roomId:room.id,classification:primary.classification,tableEvidence:primary.tableEvidence});
+  else{const tableIds=[...new Set(records.flatMap(r=>r.rule.tableIds))],composite={...primary.rule,...intersectUseRules(records.map(r=>r.rule)),roomId:room.id,classification:primary.classification,label:records.map(r=>r.rule.label).join(' + ')+' (用途交集)',aggregation:sharedUseMethod,useClassIds:records.map(r=>r.rule.id),useAssessments:records,tableIds,tableEvidence:profile.tables.filter(t=>tableIds.includes(t.id)).map(({id,sourceId,locator,pdfPage,pixelSHA256,transcriptionMethod})=>({id,sourceId,locator,pdfPage,pixelSHA256,transcriptionMethod})),classificationNote:'Computed intersection of all explicit same-condition uses; individual classifications and applicability remain subject to professional review'};delete composite.recommendedLpdTarget;rooms.push(composite);}
  }
  if(!input.photometricDesign)add('LIGHTING_POINT_MODEL_REQUIRED','Standard-bound design needs the declared direct-point mode; flux estimates cannot stand in for uniformity');
  return {schemaVersion:1,profileId:profile.id,profileSHA256:sha256,manifestSHA256:profile.manifestSHA256,sourceScope:profile.sourceScope,sources:sourceBindings,rooms,issues,sourceIntegrity:true,lpdAdjustments:'Conservative unadjusted base limit; no automatic small-room or illuminance-step uplift',pending:['Selected classification and project/current standard applicability require professional confirmation','Direct-point precheck is not total reflected-light/UGR or installed lighting compliance','Nominal Ra and other product fields require independent product evidence; standard subset is not full code coverage'],professionalApproval:false};

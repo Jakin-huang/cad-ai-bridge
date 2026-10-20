@@ -3,6 +3,8 @@ import {inspectEngineeringInput} from './engineering-contracts.mjs';
 import {sceneSchema} from './contracts.mjs';
 import {evaluateRoomPhotometry,roomPhotometricGrid} from './engineering-photometry.mjs';
 import {selectEngineeringPlanSheet} from './engineering-sheets.mjs';
+import {declaredRoomUses,auditSharedUseBasis} from './lighting-use-assessment.mjs';
+import {sampleLightingGeometry} from './lighting-geometry-pool.mjs';
 
 export const engineeringDigest=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export const polygonArea=ps=>Math.abs(ps.reduce((s,p,i)=>{const q=ps[(i+1)%ps.length];return s+p[0]*q[1]-q[0]*p[1];},0))/2;
@@ -35,7 +37,7 @@ function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{sele
  const direct=!!p.photometricDesign,candidates=[];
  for(const fixture of p.luminaires){
   if(normative&&fixture.ra<normative.minimumRa)continue;
-  if(fixture.allowedRoomUses&&!fixture.allowedRoomUses.includes(room.use))continue;
+  if(fixture.allowedRoomUses&&!declaredRoomUses(room).every(use=>fixture.allowedRoomUses.includes(use)))continue;
   const need=Math.ceil(targetLux*areaM2/(fixture.lumens*fixture.utilizationFactor*fixture.maintenanceFactor));
   const minX=Math.max(1,Math.ceil(width/1000/maxSpacingM)),minY=Math.max(1,Math.ceil(height/1000/maxSpacingM));
   const powerCount=Math.min(500,Math.floor(maxLpd*areaM2/fixture.watts)),maxX=Math.min(40,direct?Math.max(minX+8,Math.ceil(powerCount/minY)):minX+20),maxY=Math.min(40,direct?Math.max(minY+8,Math.ceil(powerCount/minX)):minY+20);
@@ -65,7 +67,7 @@ function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{sele
   else{
    // Round-robin catalog coverage prevents one product's many removal variants
    // from consuming the entire photometric budget before another is examined.
-   const groups=p.luminaires.map(f=>candidates.filter(c=>c.fixture===f.id).slice(0,16)),pool=[];
+   const groups=p.luminaires.map(f=>{const sampled=sampleLightingGeometry(candidates.filter(c=>c.fixture===f.id),16);return sampled.choices.map(c=>({...c,geometryPoolCoverage:sampled.coverage}));}),pool=[];
    for(let i=0;i<16;i++)for(const group of groups)if(group[i])pool.push(group[i]);candidates.splice(0,candidates.length,...pool.slice(0,200));
   }
  }
@@ -80,6 +82,7 @@ export function engineeringLightingChoices(model){return model.input.rooms.map(r
 export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[],architecturalEvidence,photometricEvidence=[],lightingStandardEvidence,layoutSelections}={}){
  const intake=inspectEngineeringInput(raw);if(!intake.ok)return {ok:false,stage:'requirements',issues:intake.issues};
  const p=intake.input;if(p.lightingStandards&&(!lightingStandardEvidence||lightingStandardEvidence.profileId!==p.lightingStandards.profileId||lightingStandardEvidence.profileSHA256!==p.lightingStandards.expectedProfileSHA256.toLowerCase()||lightingStandardEvidence.issues.some(i=>i.severity==='blocking')||lightingStandardEvidence.rooms.length!==p.rooms.length))throw Error('LIGHTING_STANDARD_EVIDENCE_REQUIRED');if(lightingStandardEvidence&&!p.lightingStandards)throw Error('LIGHTING_STANDARD_UNREQUESTED');
+ if(p.rooms.some(r=>r.secondaryUseAssessments?.length&&!auditSharedUseBasis(r,lightingStandardEvidence?.rooms.find(n=>n.roomId===r.id))))throw Error('MULTI_USE_LIGHTING_EVIDENCE_REQUIRED');
  if(layoutSelections&&(!p.photometricDesign||!p.lightingEnvironment||layoutSelections.length!==p.rooms.length||new Set(layoutSelections.map(s=>s.roomId)).size!==p.rooms.length||layoutSelections.some(s=>!p.rooms.some(r=>r.id===s.roomId)||!/^[a-f0-9]{64}$/.test(s.choiceSHA256??''))))throw Error('LIGHTING_SELECTION_COVERAGE');
  const roomCalculations=p.rooms.map(r=>layoutRoom(p,r,photometricEvidence,lightingStandardEvidence,{selection:layoutSelections?.find(s=>s.roomId===r.id)?.choiceSHA256})),fixtures=new Map(p.luminaires.map(f=>[f.id,f])),devices=[],circuits=[],controls=[],routes=[];
  for(const room of p.rooms){
@@ -101,7 +104,7 @@ export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[],archit
   devices.push(...roomDevices);
  }
  devices.forEach((d,i)=>d.label='L'+String(i+1).padStart(2,'0'));controls.forEach((c,i)=>c.label='S'+String(i+1).padStart(2,'0'));
- const model={schemaVersion:1,engineVersion:'1.9.0',...(layoutSelections?{lightingDesignBasis:'finite_diffuse_required',layoutSelections}:{} ),controlRouting:'schematic_bus',ok:true,projectId:p.projectId,title:p.title,revision,inputSHA256:engineeringDigest(p),designDate:p.designDate,input:p,standardEvidence,architecturalEvidence,photometricEvidence,lightingStandardEvidence,roomCalculations,devices,circuits,controls,routes,issues:intake.issues,decisions:roomCalculations.map(c=>({roomId:c.roomId,fixture:c.fixture,count:c.count,reason:layoutSelections?'Bounded source-derived candidate; finite diffuse total-light and requested UGR assessment mandatory before adoption/delivery':p.photometricDesign?'Lowest installed watts in the bounded explicit grids satisfying maintained direct-point mean, uniformity and maximum mean; no reflected-light or UGR acceptance':'Lowest installed watts among feasible explicit grid candidates',requirementIds:c.requirementIds,formula:c.formula,alternatives:c.alternatives})),reviewStatus:'awaiting_human_review',professionalApproval:false};
+ const model={schemaVersion:1,engineVersion:'1.10.0',...(layoutSelections?{lightingDesignBasis:'finite_diffuse_required',layoutSelections}:{} ),controlRouting:'schematic_bus',ok:true,projectId:p.projectId,title:p.title,revision,inputSHA256:engineeringDigest(p),designDate:p.designDate,input:p,standardEvidence,architecturalEvidence,photometricEvidence,lightingStandardEvidence,roomCalculations,devices,circuits,controls,routes,issues:intake.issues,decisions:roomCalculations.map(c=>({roomId:c.roomId,fixture:c.fixture,count:c.count,reason:layoutSelections?'Bounded source-derived candidate; finite diffuse total-light and requested UGR assessment mandatory before adoption/delivery':p.photometricDesign?'Lowest installed watts in the bounded explicit grids satisfying maintained direct-point mean, uniformity and maximum mean; no reflected-light or UGR acceptance':'Lowest installed watts among feasible explicit grid candidates',requirementIds:c.requirementIds,formula:c.formula,alternatives:c.alternatives})),reviewStatus:'awaiting_human_review',professionalApproval:false};
  const drawing=makeEngineeringScene(model);return {...model,...drawing};
 }
 
@@ -115,6 +118,7 @@ export function makeEngineeringScene(model){
  function sheet(id,title){const isPlan=['E02','E03'].includes(id),spec=isPlan?plan:{paper:'A3',denominator:100,width:39000,height:26000},d=spec.denominator,x=cursor,W=spec.width,H=spec.height,s={id,title,paper:spec.paper,paperDenominator:d,origin:[x,0],planOffset:isPlan?spec.planOffset:undefined,region:{min:[x,0,0],max:[x+W,H,0]},view:{name:id,center:[x+W/2,H/2,0],width:W,height:H}};cursor+=Math.max(45000,W+6000);sheets.push(s);for(const [a,b]of [[[5*d,5*d],[W-5*d,5*d]],[[W-5*d,5*d],[W-5*d,H-5*d]],[[W-5*d,H-5*d],[5*d,H-5*d]],[[5*d,H-5*d],[5*d,5*d]],[[5*d,H-25*d],[W-5*d,H-25*d]]])line([x+a[0],a[1]],[x+b[0],b[1]]);text([x+12*d,H-15*d],p.title+' - '+title,4.2*d);text([x+12*d,11*d],id+' | 修订 '+model.revision+' | '+p.designDate+' | 待人工审核，非签审施工文件',2.4*d);return s;}
  let notes=sheet('E01','设计说明及依据'),notePage=1,y=22200;const note=t=>{for(let i=0;i<t.length;){let end=Math.min(i+65,t.length);if(/[A-Za-z0-9_.]/.test(t[end-1]??'')&&/[A-Za-z0-9_.]/.test(t[end]??'')){const space=t.lastIndexOf(' ',end);if(space>i+20)end=space+1;else while(end<t.length&&/[A-Za-z0-9_.]/.test(t[end]))end++;}if(y<3000){notes=sheet('E01-'+(++notePage),'设计说明及依据（续）');y=22200;}text([notes.origin[0]+1500,y],t.slice(i,end),280);y-=600;i=end;}};
  for(const t of ['设计范围：'+p.scope,model.lightingDesignBasis==='finite_diffuse_required'?'设计方法：总照度与已请求的UGR复核选择候选布局；图中计算表保留直射口径，完整复核另附报告。':p.photometricDesign?'设计方法：IES直射点源计算选择网格；维持照度Eavg、Emin/Eavg及上限约束。无反射光、日光或UGR验收。':'设计方法：房间功能与明确约束驱动的网格候选选择、利用系数法估算、回路和控制同源生成。',p.photometricDesign?'计算 E=sum(I*cos(gamma)/r^2*MF)；房间墙体按不透明竖直边界；点源远场适用性待复核。':'估算公式 E=N*Phi*UF*MF/A；LPD=N*W/A。无IES时不判定逐点照度、均匀度、UGR合格。',...(model.lightingStandardEvidence?.rooms??[]).map(r=>'标准类别 '+r.roomId+' = '+r.label+'；维持照度至少'+r.minimumLux+'lx，U0至少'+r.minimumUniformity+'；工作面'+r.workplaneM+'m；现行LPD基准上限'+r.maximumLpd+'W/m2；UGR待审'),...p.luminaires.map(f=>'灯具 '+f.id+' = '+f.label+'；'+f.watts+'W / '+f.lumens+'lm；MF='+f.maintenanceFactor+'；候选用途 '+(f.allowedRoomUses?.join('/')??'按项目条件')),'配电：L、N、PE分开；终端短路、过负荷及接地故障保护按设计模型。保护配合与敷设修正待专项复核。','照明连线表示回路归属；吊顶、梁、风口、现场敷设及开关线数量需深化协调。',...p.standards.map(s=>'依据：'+s.code+' '+s.edition+'；生效 '+s.effectiveFrom+'；本机证据条款 '+model.standardEvidence.filter(c=>c.standardId===s.id).map(c=>c.locator).join('/')),'输入：'+(p.sources.some(s=>s.derivedFromFinalDrawing)?'历史成图剥离建筑条件；回溯复现测试，不是独立新项目验收。':'项目提供建筑条件。'),'主要待审：'+[...new Set(model.issues.filter(i=>i.severity==='review').map(i=>i.code))].join('、')])note(t);
+ for(const room of p.rooms)for(const use of room.secondaryUseAssessments||[])note('共同用途 '+room.id+'/'+use.labelId+'：'+use.use+'；标准类别 '+use.standardSpace.classId+'；工作面 '+use.workplaneM+'m；同一布局、表面与观察条件全部满足后方可交付，适用性待专业复核。');
  for(const room of p.rooms)for(const label of room.sourceSpaceLabels||[])note('附加标签 '+room.id+'/'+label.id+'：'+label.name+'；'+(label.relationship==='alternate_name'?'别名':'兼用')+'，关系与用途待专业复核；来源 '+label.sourceIds.join('/')+'。');
  const scale=1,map=(s,v)=>[s.origin[0]+s.planOffset[0]+v[0]-b.min[0],s.planOffset[1]+v[1]-b.min[1]];
  for(const [id,title,control]of [['E02','普通照明平面',false],['E03','开关控制及回路归属',true]]){

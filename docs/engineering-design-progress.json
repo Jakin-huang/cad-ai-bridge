@@ -40,7 +40,8 @@
         "Independent synthetic floor source intake and A1 physical output remain verified; hospital full-floor geometry unresolved",
         "Three explicitly classified synthetic conditions with actual standard base constraints: 36 lights/4 circuits/5 sheets; not hospital acceptance",
         "Source-bound finite rectangular IES diffuse assessment, total-light upper-bound failure, raw-evidence tamper gate and native CAD delivery verified; input-only total-light startup and bounded measured-feedback optimization now verified on development cases, not hospital acceptance",
-        "Source-label digest and CAD-note omission gates verified; multiple-use standard intersection and architecture-change impact incomplete"
+        "Source-label digest and CAD-note omission gates verified; source-bound fixed-condition ordinary multi-use intersection verified on an explicit development case; hospital applicability, architecture-change impact and multiple observation/workplane modes incomplete",
+        "Office/meeting shared-use case retains both source classes and project500–700lx; real finite/standing-UGR initial12 lights then adopted10 lights with unchanged input, not actual AI understanding or hospital acceptance"
       ]
     },
     {
@@ -80,7 +81,8 @@
         "New machine and external users pending",
         "Maintainer browser shows actual diffuse-calculation progress/results and downloads exact CSV bytes; stopped-recorded-owner calculation recovery verified, not general native CAD recovery",
         "Architecture task-center text/condition summary and downloaded review SHA verified; standalone HTML browser visual interaction remains unverified after file-protocol policy rejection; local controller tests are separate",
-        "Task-center SHA-bound structured label/note review and actual CSV download verified; standalone HTML browser acceptance remains incomplete"
+        "Task-center SHA-bound structured label/note review and actual CSV download verified; standalone HTML browser acceptance remains incomplete",
+        "Structured common-use view shows individual source classes and effective project500–700lx target; actual selected-revision CSV download SHA verified"
       ]
     }
   ],
@@ -132,10 +134,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 UGR/observer and actual luminaire evidence, then reflected-light-driven layout optimization",
-    "P0 complete hospital spatial inputs and source-linked functional classification",
-    "P0 actual customer requirements and professional standard applicability/full coverage",
-    "P1 installation routing, incremental professional CAD edits, authenticated review and native interruption recovery"
+    "Actual client intake of source-bound functional assessments without altering protected architecture/fixture conditions; programmatic seed does not prove understanding",
+    "Architectural change impact and explicit missing-use/geometry/requirement workflow for hospital floor",
+    "Nonrectangular boundaries/openings, whole-floor budget and observer coverage with explicit evidence limits",
+    "Project-approved product/electrical evidence, installation routing, authenticated professional review and new-machine/external-user acceptance"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -152,10 +154,10 @@
   "lightingStandardsValidation": "docs/lighting-standards-validation.json",
   "lightingQualityValidation": "docs/lighting-quality-validation.json",
   "latestSourceIncrement": {
-    "afterCommit": "23d7de8",
-    "engineVersion": "1.9.0",
-    "scope": "physical_space_source_names_and_secondary_use_gates",
-    "validation": "physical-space-labels-validation.json",
+    "afterCommit": "421fa9c",
+    "engineVersion": "1.10.0",
+    "scope": "source_bound_common_use_lighting_and_count_stratified_candidates",
+    "validation": "shared-use-lighting-validation.json",
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"

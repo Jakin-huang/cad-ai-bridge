@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-20T14:40:20.877Z",
+  "engineVersion": "1.10.0",
+  "sourceBaseline": "421fa9c",
+  "developmentCase": true,
+  "heldOutProject": false,
+  "actualAiClientInterpretation": false,
+  "hospitalNewDesign": false,
+  "externalModelCall": false,
+  "professionalApproval": false,
+  "unitTests": {
+    "passed": 261,
+    "failed": 0,
+    "skipped": 0,
+    "newUseTests": 9,
+    "newGeometrySamplingTests": 3
+  },
+  "pipeline": {
+    "passed": 16,
+    "assertions": [
+      "Existing procedural source geometry is recaptured with the explicit secondary label retained",
+      "Retry uses the identical frozen task after bounded-pool failure without changing any input condition",
+      "Functional brief and source-standard classifications prepare a shared-use input without removing the secondary role",
+      "Negative missing_function remains blocked without a published model",
+      "Negative different_plane remains blocked without a published model",
+      "Negative unknown_class remains blocked without a published model",
+      "Shared-use layout publishes only after real finite diffuse and requested UGR assessments pass",
+      "Initial solve request replays before selection revision without recalculating",
+      "Any selected layout revision retains all source uses and actual quality proof",
+      "Both original source classes remain in the standard intersection and project target stays 500lx",
+      "Maintained total mean, uniformity and reference UGR meet the unchanged shared-task targets",
+      "User-facing common-use basis reports both sources and actual project/standard effective targets",
+      "Source input bytes remain unchanged across common-use design and verified layout selection",
+      "Changed private profile blocks native creation without modifying shared global configuration",
+      "Native CAD saves and reopens the shared-use design with source/use notes and complete sheets",
+      "Geometry source and input remain unchanged; human review is still pending"
+    ],
+    "spaces": 1,
+    "sourceNames": 2,
+    "useClasses": [
+      "ordinary_office",
+      "meeting"
+    ],
+    "eachClassMinimumLux": [
+      300,
+      300
+    ],
+    "effectiveProjectTargets": {
+      "minimumLux": 500,
+      "maximumAverageLux": 700,
+      "minimumUniformity": 0.6,
+      "minimumRa": 80,
+      "maximumUgr": 19,
+      "maximumLpd": 8,
+      "workplaneM": 0.75
+    },
+    "initialCommonLayout": {
+      "modelSHA256": "73e25a891fcbd93a3ef8cf5fc6e92001d945172a7b8c50b513dc65fc1d8f3167",
+      "devices": 12,
+      "calculatedWatts": 276
+    },
+    "deliveredRevision": 1,
+    "devices": 10,
+    "circuits": 1,
+    "sheets": 5,
+    "modelSHA256": "d9cd197fc088940028f964fbc31813ac124c4c4f82a621d2695ba5e7fba79ee0",
+    "inputSHA256": "174fef155bbf755bc69da0e9e83743e71bc21dbbb01ffe2b38e54cdf465927c7",
+    "inputBytesUnchanged": true,
+    "modelChecks": {
+      "passed": 41,
+      "failed": 0,
+      "pending": 13
+    },
+    "summary": [
+      {
+        "roomId": "OFFICE",
+        "averageLux": 530.3359395696967,
+        "minimumLux": 339.96771900000005,
+        "maximumLux": 626.4298319999999,
+        "uniformity": 0.6410422029399754,
+        "directAverageLux": 452.58745446666654,
+        "indirectAverageLux": 77.74848510303019,
+        "medium": {
+          "averageLux": 528.3181712909088,
+          "minimumLux": 337.975986,
+          "maximumLux": 624.426285,
+          "uniformity": 0.6397205403217139
+        },
+        "maximumPointChange": 3.2964640000000145,
+        "targets": {
+          "minimumLux": 500,
+          "maximumAverageLux": 700,
+          "minimumUniformity": 0.6
+        }
+      }
+    ],
+    "ugr": [
+      {
+        "roomId": "OFFICE",
+        "maximumUgr": 17.878793539936193
+      }
+    ],
+    "savedReopened": true
+  },
+  "coverageRepair": {
+    "defect": "The old sixteen-slot pool was crowded by count5–8 low-count removal variants although the source geometry family contained counts5–16.",
+    "originalStatus": "budget_exhausted",
+    "originalFullAssessments": 4,
+    "firstCandidateAverageLux": 426.8780446363634,
+    "sameFrozenInput": true,
+    "constraintsRelaxed": false,
+    "repairedCoverage": [
+      {
+        "roomId": "OFFICE",
+        "countCoverage": [
+          {
+            "fixture": "LED",
+            "availableCandidates": 157,
+            "availableCounts": [
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "sampledCounts": [
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "pointPoolLimit": 16,
+            "method": "count_strata_then_bounded_geometry_variants",
+            "scope": "Bounded diagnostic geometry sample, including one representative per count when the count family fits; flux proximity is ranking only; not exhaustive or a feasibility proof"
+          }
+        ],
+        "geometryAndPointChoices": 16,
+        "shortlisted": 16,
+        "productsRepresented": [
+          "LED"
+        ],
+        "gainScope": "No measured baseline or gain; direct diagnostics order initial trials and are not a total-light prediction"
+      }
+    ],
+    "initialFullAssessments": 1,
+    "initialElapsedMs": 194119,
+    "exhaustive": false,
+    "optimalityProven": false,
+    "originalFailedRawEvidenceRetained": true
+  },
+  "feedback": {
+    "status": "feasible_found",
+    "baselineWatts": 276,
+    "selectedWatts": 230,
+    "fullAssessments": 1,
+    "examinedPlans": 2
+  },
+  "negatives": [
+    {
+      "kind": "missing_function",
+      "status": "blocked",
+      "modelPublished": false
+    },
+    {
+      "kind": "different_plane",
+      "status": "blocked",
+      "modelPublished": false
+    },
+    {
+      "kind": "unknown_class",
+      "status": "blocked",
+      "modelPublished": false
+    }
+  ],
+  "independent": {
+    "ok": true,
+    "observers": 4,
+    "integrationSamplesPerSource": 25600,
+    "maximumDirectEyeDifferenceLux": 0.052712898347607506,
+    "maximumRelativeDifference": 0.0003852180817704564,
+    "tolerance": ".1 lx + 0.2% of quadrature prediction",
+    "scope": "Independent arithmetic and finite-opening direct vertical irradiance, not diffuse background or actual product approval"
+  },
+  "delivery": {
+    "uniqueA3PagesVisuallyInspected": 5,
+    "mergedPdfRenderIdentical": true,
+    "filesVerified": 669,
+    "zipSHA256": "f094a9cff43af27881b97d59a027e3e6eb7896202a46dcaf4b46ec7fcc3e0998"
+  },
+  "browser": {
+    "structuredCommonUseView": true,
+    "eachClassExpanded": true,
+    "effective500to700LuxShown": true,
+    "actualCsvDownloadedSHA256": "602b002df4fece9e53fa185a31f0e5196ddc622558f3d14fb4f27a4493bfbefb",
+    "standaloneSpatialHtmlVisuallyAccepted": false
+  },
+  "limits": [
+    "Explicit programmatic brief and known 8x6m procedural geometry, not independent or held-out/customer understanding validation",
+    "Fixed shared layout/workplane/surfaces and standing observations only; no seated or separately timed/dimmed modes",
+    "Interpreted functional applicability and source relationship pending professional review",
+    "IES23W versus leaflet24W unresolved; calculated power change is not measured saving or product approval",
+    "Independent reference checks formula/coordinates/direct eye only, not diffuse background or real product luminance",
+    "Control routing is schematic; whole-floor performance, independent hospital geometry and customer brief remain unverified",
+    "Frozen v2 preview unchanged; source increment unreleased; M2–M4 incomplete"
+  ],
+  "nextPriorities": [
+    "Actual client intake of source-bound functional assessments without altering protected architecture/fixture conditions; programmatic seed does not prove understanding",
+    "Architectural change impact and explicit missing-use/geometry/requirement workflow for hospital floor",
+    "Nonrectangular boundaries/openings, whole-floor budget and observer coverage with explicit evidence limits",
+    "Project-approved product/electrical evidence, installation routing, authenticated professional review and new-machine/external-user acceptance"
+  ]
+}
