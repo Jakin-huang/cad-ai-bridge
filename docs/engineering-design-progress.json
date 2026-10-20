@@ -22,7 +22,8 @@
         "Three source-PDF-bound standard clauses",
         "Actual installed AI client independently extracted all 48 room/rule pairs from the authorized hospital-derived test brief",
         "Source identity and architecture preserved through local seed SHA binding",
-        "Original customer brief missing; one retrospective case is not general understanding acceptance"
+        "Original customer brief missing; one retrospective case is not general understanding acceptance",
+        "Additional source-bound lighting table subset locally enforced; professional applicability and full coverage pending"
       ]
     },
     {
@@ -32,7 +33,8 @@
         "Original hospital main delivery remains a six-space retrospective flux-method study",
         "New source-bound IES Type C direct-point mode verified on three invented room conditions with real products",
         "No diffuse reflections, daylight, UGR, detailed obstruction heights, near-field or full lighting-quality acceptance",
-        "Independent synthetic floor source intake and A1 physical output remain verified; hospital full-floor geometry unresolved"
+        "Independent synthetic floor source intake and A1 physical output remain verified; hospital full-floor geometry unresolved",
+        "Three explicitly classified synthetic conditions with actual standard base constraints: 36 lights/4 circuits/5 sheets; not hospital acceptance"
       ]
     },
     {
@@ -107,20 +109,23 @@
     "hospitalFullFloorSpatialAcceptance": false,
     "realProductPhotometry": false,
     "sourceBoundIesDirectPoint": true,
-    "realProductPhotometryStatus": "source_bound_direct_model_verified_full_quality_pending"
+    "realProductPhotometryStatus": "source_bound_direct_model_verified_full_quality_pending",
+    "sourceBoundLightingStandardSubset": true,
+    "fullLightingQuality": false,
+    "professionalStandardApplicability": false
   },
   "knownInputGaps": [
     "Original client brief not located",
     "Independent architectural drawing not located",
-    "Luminaire IES/LDT data not located",
-    "Upstream supply and protective coordination conditions unverified"
+    "Upstream supply and protective coordination conditions unverified",
+    "Real public manufacturer IES candidates available; project-approved product catalogue, independent quality/electrical evidence and LDT still missing",
+    "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0-1 independent complete architecture and spatial model",
-    "P0-2 source-bound requirement interpretation and unit validation",
-    "P0-3 real product photometry and lighting-quality optimization",
-    "P0-4 standard coverage and applicability",
-    "P1 detailed engineering drawings, incremental edit, review identity and interruption recovery"
+    "P0 reflected-light/UGR quality and independent product parameter evidence",
+    "P0 complete hospital spatial inputs and source-linked functional classification",
+    "P0 actual customer requirements and professional standard applicability/full coverage",
+    "P1 detailed installation routing, incremental edit, authenticated review and interruption recovery"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -129,7 +134,10 @@
     "localCompilationExtracted": true,
     "lightingAndHospitalBooksFound": true,
     "fullTextAndApplicabilityAccepted": false,
-    "rawAssetsPublished": false
+    "rawAssetsPublished": false,
+    "selectedFullTextPagesVisuallyInspected": true,
+    "sourceBoundLightingSubsetLocalPipeline": true
   },
-  "photometryValidation": "docs/photometry-validation.json"
+  "photometryValidation": "docs/photometry-validation.json",
+  "lightingStandardsValidation": "docs/lighting-standards-validation.json"
 }

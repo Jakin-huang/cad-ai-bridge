@@ -43,3 +43,16 @@ boundaryLayers 声明的是明确房间边界图层，必须是可验证闭合�
 allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指定图面示意符号。程序不替用户认证这些用途。产品功率、型号映射和源摘要见灯具CSV及说明页；逐点输出见 point-illuminance.csv，Eavg/Emin/Emax/Emin/Eavg见计算CSV和审核HTML。deliver前再次核对IES摘要；私有待审打包保存原始IES供审核，禁止把它放进源码或通用发行包。
 
 当前网格不包含反射光、日光、UGR及复杂遮挡，点源远场适用性须复核；有障碍而没有高度时阻止本模式。有限网格搜索无解或预算耗尽不能说明现实工程不可能，保留理由并扩充经证据绑定的候选或输入条件，不暗中放宽目标、灯具输出或项目日期。
+
+
+## 本机照明标准子集
+
+先调用 `{action:"lighting_basis"}`，取得 configured、profileId、profileSHA256、sources、classes 和表格定位；configured=false 表示尚未配置，不能声称标准已核验。此只读动作返回摘要和解释指标，不返回完整标准或本机路径。标准全文、清单、交叉核读页图和配置只保存在用户本地资料区。
+
+由维护者逐页核读后，通过 `scripts/import-lighting-evidence.py MANIFEST.json EXPECTED-SHA256 NEW-PROFILE.json` 导入新版本。清单须记录原PDF和公告页摘要、表所在PDF页及渲染像素摘要、独立核读表图摘要、来源URL、实施日期和分类解释。导入器核对字节/页图，**不自动认证数值转录或专业适用性**。配置环境变量 CADBRIDGE_ENGINEERING_LIGHTING_RULES 指向私有配置，或放在本机 dataHome/engineering-lighting-rules.json；禁止把这些资料提交到源码或用户通用包。换版使用新文件并复核摘要。
+
+输入增加 `lightingStandards={profileId,expectedProfileSHA256}`；逐房间增加 `standardSpace={classId,classification,sourceIds,reason}`。classification 只能为 documented/interpreted/assumed，sourceIds 必须存在。project.standards 必须明确登记所选版本、来源SHA及生效日期。不可凭房间中文名称自动把“值班室”归为办公室、“示教室”归为会议室；缺乏功能依据时保留未分类并阻断。工作面冲突也必须通过有来源的条件修订解决，不能暗改原任务书。
+
+有效最低照度和均匀度取任务/标准较高值，LPD上限取任务/强制性当前基准较低值；不自动使用小房间或照度级差上浮，也不把推荐目标值冒称当前强制限值。必须启用明确的直射逐点模式，声明Ra低于最低值的候选不能入选；Ra真实性、UGR、反射光、版本现行性及项目适用性仍待专业核对。源PDF、核读图或解释配置变化会在设计/交付前阻断，不能沿用旧模型。
+
+当前控制图采用分组母线归属示意，开关分开且置于声明房间内；不等于现场敷设路线、开关线数或安装位置已经协调。

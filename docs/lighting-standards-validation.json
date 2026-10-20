@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_a7ecf92",
+  "engineVersion": "1.4.1",
+  "frozenV2Unchanged": true,
+  "pluginUnchanged": true,
+  "standardInterpretation": {
+    "id": "CN_LIGHTING_2024_LOCAL",
+    "manifestSHA256": "ef0c65421ebc58c63547fcf0b5199674e14270b5ae595fc9146acd7ee8cd5f7f",
+    "sourceScope": "inspected_edition_subset_not_professional_applicability",
+    "classes": [
+      {
+        "id": "ordinary_office",
+        "label": "普通办公室",
+        "allowedUses": [
+          "office"
+        ],
+        "tableIds": [
+          "L_OFFICE",
+          "E_OFFICE"
+        ],
+        "minimumLux": 300,
+        "minimumUniformity": 0.6,
+        "maximumUgr": 19,
+        "minimumRa": 80,
+        "workplaneM": 0.75,
+        "maximumLpd": 8,
+        "lpdBasis": "mandatory_current_unadjusted_base",
+        "classificationNote": "Table note covers offices in all building types; actual workroom function still needs source-linked classification"
+      },
+      {
+        "id": "meeting",
+        "label": "会议室",
+        "allowedUses": [
+          "office",
+          "teaching"
+        ],
+        "tableIds": [
+          "L_OFFICE",
+          "E_OFFICE"
+        ],
+        "minimumLux": 300,
+        "minimumUniformity": 0.6,
+        "maximumUgr": 19,
+        "minimumRa": 80,
+        "workplaneM": 0.75,
+        "maximumLpd": 8,
+        "lpdBasis": "mandatory_current_unadjusted_base",
+        "classificationNote": "Only when the actual task is explicitly classified as meeting use; a hospital teaching room must not be guessed to be a meeting room"
+      },
+      {
+        "id": "hospital_corridor",
+        "label": "医疗建筑走廊",
+        "allowedUses": [
+          "corridor"
+        ],
+        "tableIds": [
+          "L_HOSPITAL",
+          "E_HOSPITAL"
+        ],
+        "minimumLux": 100,
+        "minimumUniformity": 0.6,
+        "maximumUgr": 22,
+        "minimumRa": 80,
+        "workplaneM": 0,
+        "maximumLpd": 4,
+        "lpdBasis": "mandatory_current_unadjusted_base",
+        "classificationNote": "Medical-specific corridor category; do not substitute generic circulation or evaluate on a 0.75m plane"
+      }
+    ],
+    "professionalApproval": false,
+    "profileSHA256": "914d6b9286f62e6c70c65e90c1fd74d306819131be2aa3ebaaba97afc9ff6790",
+    "sources": [
+      {
+        "id": "LIGHT2024",
+        "code": "GB/T 50034-2024",
+        "edition": "2024",
+        "effectiveFrom": "2024-08-01",
+        "sha256": "a780b306e95ebcba836129fab1d4a0930579bb4dcdb6e3ac750607c76d2a5f2a",
+        "url": "https://zcsys.ncepu.edu.cn/docs/2025-01/d5c197c2837e4892ac7d02faae298500.pdf",
+        "publicationStatus": "design_standard",
+        "noticePdfPage": 3,
+        "noticePixelSHA256": "44c29fc01a1c3d4937600abb213dfa137a7349aea20527e749b47d1e40cc5aa5"
+      },
+      {
+        "id": "ENERGY2021",
+        "code": "GB 55015-2021",
+        "edition": "2021",
+        "effectiveFrom": "2022-04-01",
+        "sha256": "e2f20031fcf7696c47fd4813a97c378be08c77903a1423e1db27d7454ef68150",
+        "url": "https://snamr.shaanxi.gov.cn/sy/ztzl/sbgxhxfpyjhx/bzcx/gjbz/202410/P020250320618912933247.pdf",
+        "publicationStatus": "mandatory_code",
+        "noticePdfPage": 4,
+        "noticePixelSHA256": "7060d72156007b51aba601b4c284a6830607da4c6c5fee95f1e80bcbfddc733a"
+      }
+    ],
+    "tables": [
+      {
+        "id": "L_OFFICE",
+        "sourceId": "LIGHT2024",
+        "locator": "表5.3.2",
+        "pdfPage": 37,
+        "pixelSHA256": "6a443245cdb37f6e75eaddad47deef9a40441d73061f3542236cd64f85bdb143",
+        "transcriptionMethod": "visual_transcription_cross_checked",
+        "reviewer": "Codex local page-and-CHM visual cross-check; professional applicability/sign-off pending",
+        "crossCheckSHA256": "c5e90c7b7042fa2c795772486b2e751dce2d1f68abd60302665828f3a2a40b61"
+      },
+      {
+        "id": "L_HOSPITAL",
+        "sourceId": "LIGHT2024",
+        "locator": "表5.3.6",
+        "pdfPage": 39,
+        "pixelSHA256": "eac4e2efba455515b8b9843be0fd1e728c7b7aa0a30d2309fec0f35b8fd45550",
+        "transcriptionMethod": "visual_transcription_cross_checked",
+        "reviewer": "Codex local page-and-CHM visual cross-check; professional applicability/sign-off pending",
+        "crossCheckSHA256": "36677e3cde7de1f42e37998a5546838c79bba62016fc3aa715b0ef71de57f524"
+      },
+      {
+        "id": "E_OFFICE",
+        "sourceId": "ENERGY2021",
+        "locator": "表3.3.7-3",
+        "pdfPage": 43,
+        "pixelSHA256": "bc359f01bd8d9255d5faa112bcf465c6df5c0831ed6a36c1ae51961658ee8f5b",
+        "transcriptionMethod": "visual_transcription_cross_checked",
+        "reviewer": "Codex local page-and-CHM visual cross-check; professional applicability/sign-off pending",
+        "crossCheckSHA256": "a967c5fcdb5ff413852039f9bc74c2a74ba4c322b582ca7c227eaa348828fa89"
+      },
+      {
+        "id": "E_HOSPITAL",
+        "sourceId": "ENERGY2021",
+        "locator": "表3.3.7-6",
+        "pdfPage": 44,
+        "pixelSHA256": "efce1f84298fbcf54f72fc1d413de45b8fb92320edf8791fcc7ef9ca55cad60f",
+        "transcriptionMethod": "visual_transcription_cross_checked",
+        "reviewer": "Codex local page-and-CHM visual cross-check; professional applicability/sign-off pending",
+        "crossCheckSHA256": "1ad7bcf238a67ec2011c07e8a8defc6a037d630276e148a76b16bf91c17daf7f"
+      }
+    ]
+  },
+  "acceptanceScope": "Three independently invented room conditions, source-bound interpreted standard subset and native CAD pipeline; not an independent hospital design or professional applicability/compliance acceptance",
+  "evidence": {
+    "unitTests": {
+      "passed": 203,
+      "failed": 0,
+      "skipped": 0
+    },
+    "importFaultChecks": {
+      "ok": true,
+      "checks": [
+        {
+          "case": "manifest",
+          "expectedError": "MANIFEST_CHANGED",
+          "blocked": true,
+          "profileCreated": false
+        },
+        {
+          "case": "source",
+          "expectedError": "PDF_SOURCE_CHANGED",
+          "blocked": true,
+          "profileCreated": false
+        },
+        {
+          "case": "notice",
+          "expectedError": "NOTICE_WITNESS_CHANGED",
+          "blocked": true,
+          "profileCreated": false
+        },
+        {
+          "case": "table",
+          "expectedError": "TABLE_WITNESS_CHANGED",
+          "blocked": true,
+          "profileCreated": false
+        },
+        {
+          "case": "crosscheck",
+          "expectedError": "CROSSCHECK_CHANGED",
+          "blocked": true,
+          "profileCreated": false
+        },
+        {
+          "case": "overwrite",
+          "expectedError": "PROFILE_EXISTS",
+          "blocked": true,
+          "profileCreated": false
+        }
+      ],
+      "goodProfileUnchanged": true,
+      "scope": "Negative importer tests on manifest copies; original sources and profile unchanged"
+    },
+    "actualMcpCadPipeline": {
+      "passed": 12,
+      "spaces": 3,
+      "luminaires": 36,
+      "circuits": 4,
+      "sheets": 5,
+      "modelSHA256": "be4db1b33d6c30782273dbac9222b641353fa061c9b67c443020d268fe9877a0",
+      "boundedChecks": {
+        "passed": 91,
+        "failed": 0,
+        "pending": 11
+      },
+      "rooms": [
+        {
+          "roomId": "OFFICE",
+          "fixture": "PRODUCT_1",
+          "count": 8,
+          "averageLux": 323.55641867902824,
+          "minimumLux": 220.00869597097523,
+          "uniformity": 0.6799701173266677,
+          "points": 165,
+          "lpd": 6.333333
+        },
+        {
+          "roomId": "MEETING",
+          "fixture": "PRODUCT_1",
+          "count": 5,
+          "averageLux": 332.3502292918558,
+          "minimumLux": 206.74653212486132,
+          "uniformity": 0.6220742876133398,
+          "points": 77,
+          "lpd": 7.916667
+        },
+        {
+          "roomId": "CORRIDOR",
+          "fixture": "PRODUCT_2",
+          "count": 23,
+          "averageLux": 103.99755605034034,
+          "minimumLux": 68.5868717188605,
+          "uniformity": 0.6595046491829174,
+          "points": 93,
+          "lpd": 3.953125
+        }
+      ]
+    },
+    "independentRadiance": {
+      "ok": true,
+      "version": "RADIANCE 6.0.2 2026-02-02 LBNL (6.0.c1700d56cc)",
+      "cases": 3,
+      "points": 335,
+      "maximumRelativeDifference": 5.493484675151507e-05,
+      "tolerance": "0.05 lx + 1% of predicted direct illuminance per point",
+      "scope": "Independent ies2rad, xform, oconv and rtrace; point opening override, direct only, no diffuse reflections. Not real luminaire near-field or UGR acceptance.",
+      "tools": [
+        {
+          "file": "ies2rad.exe",
+          "sha256": "e0b062448b0d1392cebaa62f532a7ad8b20bcf09f0103e4e68367dce6bb857df"
+        },
+        {
+          "file": "xform.exe",
+          "sha256": "1e7cc646139a706ba6aa66ed892dedef4fedfc6b4ec0d0f9540434d22fc67186"
+        },
+        {
+          "file": "oconv.exe",
+          "sha256": "e0bc7240ee2645d6590c33ef5a6a783f4bfe81246dce23bfefdc66966cba60a2"
+        },
+        {
+          "file": "rtrace.exe",
+          "sha256": "edb01ac56b31ad79263c1f42a686413c0d369829f460e83a170340a6f821b5c9"
+        }
+      ]
+    },
+    "hospitalPreflight": {
+      "status": "blocked",
+      "blocking": [
+        {
+          "code": "LIGHTING_SPACE_CLASS_UNRESOLVED",
+          "severity": "blocking",
+          "message": "Explicit, source-linked standard-space classification is required",
+          "refs": [
+            "DUTY"
+          ]
+        },
+        {
+          "code": "LIGHTING_SPACE_CLASS_UNRESOLVED",
+          "severity": "blocking",
+          "message": "Explicit, source-linked standard-space classification is required",
+          "refs": [
+            "TEACH"
+          ]
+        }
+      ],
+      "originalInputUnchanged": true,
+      "newCadCreated": false,
+      "originalCorridorWorkplaneM": 0,
+      "scope": "Original case not replaced; no new AI call or project upload for this local preflight"
+    },
+    "drawingReview": {
+      "status": "agent_inspected_all_five_pages",
+      "scope": "Drawing legibility only; control-bus diagram does not prove installation routing or professional drawing approval",
+      "changedPagesInspected": [
+        "E01",
+        "E03"
+      ],
+      "unchangedPagesPixelIdenticalToInspectedPredecessor": [
+        "E02",
+        "E04",
+        "E05"
+      ],
+      "professionalApproval": false
+    },
+    "privateReviewBundle": {
+      "zipSHA256": "3362d255009c052c9d5bb2ac11a52df706ea1ff1c2e194d524037fd5c7c7bfa8",
+      "pages": 5,
+      "mergedRenderIdentical": true,
+      "fullStandardPdfsIncluded": false,
+      "professionalApproval": false
+    }
+  },
+  "completedChanges": [
+    "Explicit source-bound standard space classes, edition/date/source and workplane conflict gates",
+    "Stricter project/standard mean and uniformity minima, lower project/current-base LPD maxima; no automatic LPD uplift",
+    "Bounded single-removal layouts and power-budget axis expansion find missed five-light meeting and 23-light single-row corridor without changing input values",
+    "Separated interior schematic controls, group bus representation and label avoidance; independently verified persisted CAD",
+    "Per-standard source/table witnesses and interpretation identity in review evidence"
+  ],
+  "pending": [
+    "Whole hospital room inventory, independent architectural boundaries, entrances and ceiling conditions",
+    "Actual customer requirements and functional classification; DUTY and TEACH intentionally unresolved",
+    "Reflected light, UGR, finite luminous surface/near-field validity, daylight and detailed obstructions",
+    "Independent product Ra/CCT, electrical parameters, procurement and project suitability evidence",
+    "Full standard coverage, current legal status and project applicability confirmed by qualified reviewer",
+    "Actual installation routing, conductor counts, short-circuit/protection coordination and medical/emergency specialties",
+    "Incremental preservation of professional CAD edits, authenticated review identity and interruption recovery",
+    "Independent projects, new machine and external user acceptance"
+  ],
+  "professionalApproval": false,
+  "constructionApproval": false,
+  "milestones": {
+    "M2": "not_complete",
+    "M3": "not_complete",
+    "M4": "not_complete"
+  }
+}
