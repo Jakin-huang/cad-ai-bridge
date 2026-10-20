@@ -7,7 +7,7 @@ using Autodesk.AutoCAD.Geometry;
 namespace CadAgent {
  public sealed class QueryRegion { public double[] min,max; public string mode; }
  public sealed class EntityFilter { public string[] handles,ids,types,layers; public string blockName,textContains; public Dictionary<string,string> attributes; public QueryRegion region; }
- public sealed class QueryScope { public string layout;public bool includeNested;public int maxDepth=4; }
+ public sealed class QueryScope { public string layout;public bool includeNested;public int maxDepth=4;public string[] rootHandles; }
  public static partial class Commands {
   static double[] XY(Point3d p){return new[]{p.X,p.Y,p.Z};}
   static double[] XYZ(Vector3d v){return new[]{v.X,v.Y,v.Z};}
@@ -49,11 +49,11 @@ namespace CadAgent {
   static object QueryEntities(Database db,Request request){
    using(var tr=db.TransactionManager.StartOpenCloseTransaction()){
     var items=new List<object>();int total=0;var errors=new List<object>();bool scopeTruncated=false;
-    ReadQueryScope(db,tr,request,items,errors,ref total,ref scopeTruncated);
+    object traversal;ReadQueryScope(db,tr,request,items,errors,ref total,ref scopeTruncated,out traversal);
     var layers=new List<object>();foreach(ObjectId id in (LayerTable)tr.GetObject(db.LayerTableId,OpenMode.ForRead)){var l=(LayerTableRecord)tr.GetObject(id,OpenMode.ForRead);layers.Add(new{name=l.Name,color=l.Color.ColorIndex,locked=l.IsLocked,off=l.IsOff,frozen=l.IsFrozen});}
     var layouts=new List<object>();foreach(DBDictionaryEntry kv in (DBDictionary)tr.GetObject(db.LayoutDictionaryId,OpenMode.ForRead)){var l=(Layout)tr.GetObject(kv.Value,OpenMode.ForRead);layouts.Add(new{name=l.LayoutName,model=l.ModelType});}
     var views=new List<object>();foreach(ObjectId id in (ViewTable)tr.GetObject(db.ViewTableId,OpenMode.ForRead)){var v=(ViewTableRecord)tr.GetObject(id,OpenMode.ForRead);views.Add(new{name=v.Name,center=new[]{v.CenterPoint.X,v.CenterPoint.Y,0},width=v.Width,height=v.Height});}
-    return new{total=total,returned=items.Count,truncated=total>items.Count||scopeTruncated,entities=items,layers=layers,layouts=layouts,views=views,errors=errors,units=db.Insunits.ToString(),scope=request.scope!=null?"Explicit layout; optional local nested expansion with instancePath. Nested coordinates are WCS bounds/points; nested scalar sizes remain definition values. Xref contents excluded. Nested and paper-space entities are read only.":"Model-space roots; region matches WCS bounding boxes. Handles are valid only with this input SHA-256. Refine filters when truncated."};
+    return new{total=total,returned=items.Count,truncated=total>items.Count||scopeTruncated,entities=items,layers=layers,layouts=layouts,views=views,errors=errors,units=db.Insunits.ToString(),traversal=traversal,scope=request.scope!=null?"Explicit layout and optional selected root handles; optional local nested expansion with instancePath. Nested coordinates are WCS bounds/points; nested scalar sizes remain definition values. Xref contents excluded and reported. Nested and paper-space entities are read only.":"Model-space roots; region matches WCS bounding boxes. Handles are valid only with this input SHA-256. Refine filters when truncated."};
    }
   }
   static Entity ByHandle(Database db,Transaction tr,string handle){

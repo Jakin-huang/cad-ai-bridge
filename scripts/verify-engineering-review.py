@@ -18,6 +18,9 @@ report = json.loads(report_file.read_text(encoding="utf8"))
 assert report["ok"]
 qa = bundle.parent / (bundle.name + "-visual-qa")
 qa.mkdir()
+model = json.loads((Path(report["jobRoot"]) / ("model-" + str(report.get("deliveredRevision", 0)) + ".json")).read_text(encoding="utf8"))
+sheets = {sheet["id"]: sheet for sheet in model["sheets"]}
+paper_mm = {"A3": (420, 297), "A2": (594, 420), "A1": (841, 594), "A0": (1189, 841)}
 writer, pages, previews = PdfWriter(), [], []
 for item in report["initialDelivery"]["files"]:
     if item["kind"] != "pdf":
@@ -28,14 +31,16 @@ for item in report["initialDelivery"]["files"]:
     assert len(reader.pages) == 1
     page = reader.pages[0]
     width, height = float(page.mediabox.width) * 25.4 / 72, float(page.mediabox.height) * 25.4 / 72
-    assert abs(width - 420) < .25 and abs(height - 297) < .25
+    paper = sheets[source.stem].get("paper", "A3")
+    expected_width, expected_height = paper_mm[paper]
+    assert abs(width - expected_width) < .5 and abs(height - expected_height) < .5
     assert len(page.extract_text()) > 100
     document = pdfium.PdfDocument(str(source))
     image = document[0].render(scale=1.25).to_pil().convert("RGB")
     image.save(qa / (source.stem + ".png"))
     previews.append(image)
     writer.append(reader)
-    pages.append({"file": source.name, "widthMm": width, "heightMm": height, "sha256": item["sha256"]})
+    pages.append({"file": source.name, "paper": paper, "widthMm": width, "heightMm": height, "sha256": item["sha256"]})
 assert len(pages) == report["sheets"]
 combined = bundle / "原任务待审图册.pdf"
 with combined.open("xb") as stream:

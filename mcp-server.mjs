@@ -7,10 +7,10 @@ import {readonlyEngineeringSchema} from './src/engineering-contracts.mjs';
 const {McpServer}=await dependency('@modelcontextprotocol/server');
 const {serveStdio}=await dependency('@modelcontextprotocol/server/stdio');
 const definitions=[
- ['cad_design_project','engineering','工程设计试验入口：prepare接收AI从需求和证据解释的项目约束；design计算并生成普通照明设计；deliver通过真实CAD新建、布置、重开及出图；revise修改需求重算，review记录待审意见。先核对status和modelSHA256；原始设计图仅用于事后对照。当前仅支持明确边界的普通照明设计与利用系数法估算，不提供医院全专业或规范签审。'],
+ ['cad_design_project','engineering','工程设计试验入口：inspect_architecture按建筑根块与房间清单核对空间完整性；prepare_from_seed可用摘要绑定建筑包；prepare接收AI从需求和证据解释的项目约束；design计算并生成普通照明设计；deliver通过真实CAD新建、布置、重开及出图；revise修改需求重算，review记录待审意见。先核对status和modelSHA256；原始设计图仅用于事后对照。当前仅支持明确边界的普通照明设计与利用系数法估算，不提供医院全专业或规范签审。'],
  ['cad_project','project','创建、查看、取消或恢复多图项目任务。start立即返回jobId，再status查看真实进度；源图先冻结，各图另存副本。cancel在当前图保存后停止后续项，resume只继续未开始项，状态不明的写入不自动重做。'],
  ['cad_analyze','analyze','对cad_scan_drawing的完整冻结结果执行工程检查和逐对象计量，不启动CAD。支持重复/必需属性、旧文字、图层、最小长度、文字高度；显式计量规则可设系数损耗及进位，缺少世界长度或单位时不声称完整总量。'],
- ['cad_scan_drawing','scan','一次只读捕获图纸至多100000条实体并建立本地索引。默认返回统计和jobId；随后cad_read_result按filter、fields分页，无需重启CAD。truncated表示捕获不完整，不能声称全图统计；支持显式布局和嵌套只读。'],
+ ['cad_scan_drawing','scan','一次只读捕获图纸至多100000条实体并建立本地索引。默认返回统计和jobId；随后cad_read_result按filter、fields分页，无需重启CAD。truncated表示捕获不完整，不能声称全图统计；支持显式布局、scope.rootHandles限定根实体和嵌套只读；traversal单列遍历范围、预算、缺失根实体和排除外参。'],
  ['cad_session','session','读取已接入AutoCAD 2022的当前文档、视图和选择集，按明确文档身份与版本查询、受约束编辑或保存副本。先list再context；人工修改后须重新读取。修改只作用当前内存文档，默认另存副本，不覆盖原文件。'],
  ['cad_capabilities','capabilities','说明CAD AI Bridge实际支持的宿主、对象、单位、操作与限制；不启动CAD，不表示本机已连接。'],
  ['cad_workflow','workflow','在副本中完成文字替换、属性图层整理、CSV统计、批量编辑或出图。delivery可同时交付编辑后全根层CSV和PDF/PNG，减少调用；普通任务设response=summary、preview=false。自动冻结输入、保存重开、校验保护内容与主要几何。传唯一requestId；断连先cad_get_job，勿换UUID重复写。'],

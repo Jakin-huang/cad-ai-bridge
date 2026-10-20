@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import {inspectEngineeringInput} from './engineering-contracts.mjs';
 import {sceneSchema} from './contracts.mjs';
+import {selectEngineeringPlanSheet} from './engineering-sheets.mjs';
 
 export const engineeringDigest=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export const polygonArea=ps=>Math.abs(ps.reduce((s,p,i)=>{const q=ps[(i+1)%ps.length];return s+p[0]*q[1]-q[0]*p[1];},0))/2;
@@ -35,7 +36,7 @@ function layoutRoom(p,room){
  return {...candidates[0],roomId:room.id,method:'lumen_flux_estimate',formula:'E=N*Phi*UF*MF/A; LPD=N*W/A',requirementIds:p.requirements.filter(r=>r.roomIds.includes(room.id)).map(r=>r.id),alternatives:candidates.slice(1,4).map(({fixture,count,lpd,estimatedLux})=>({fixture,count,lpd,estimatedLux}))};
 }
 
-export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[]}={}){
+export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[],architecturalEvidence}={}){
  const intake=inspectEngineeringInput(raw);if(!intake.ok)return {ok:false,stage:'requirements',issues:intake.issues};
  const p=intake.input,roomCalculations=p.rooms.map(r=>layoutRoom(p,r)),fixtures=new Map(p.luminaires.map(f=>[f.id,f])),devices=[],circuits=[],controls=[],routes=[];
  for(const room of p.rooms){
@@ -57,36 +58,36 @@ export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[]}={}){
   devices.push(...roomDevices);
  }
  devices.forEach((d,i)=>d.label='L'+String(i+1).padStart(2,'0'));controls.forEach((c,i)=>c.label='S'+String(i+1).padStart(2,'0'));
- const model={schemaVersion:1,engineVersion:'1.0.0',ok:true,projectId:p.projectId,title:p.title,revision,inputSHA256:engineeringDigest(p),designDate:p.designDate,input:p,standardEvidence,roomCalculations,devices,circuits,controls,routes,issues:intake.issues,decisions:roomCalculations.map(c=>({roomId:c.roomId,fixture:c.fixture,count:c.count,reason:'Lowest installed watts among feasible explicit grid candidates',requirementIds:c.requirementIds,formula:c.formula,alternatives:c.alternatives})),reviewStatus:'awaiting_human_review',professionalApproval:false};
+ const model={schemaVersion:1,engineVersion:'1.2.0',ok:true,projectId:p.projectId,title:p.title,revision,inputSHA256:engineeringDigest(p),designDate:p.designDate,input:p,standardEvidence,architecturalEvidence,roomCalculations,devices,circuits,controls,routes,issues:intake.issues,decisions:roomCalculations.map(c=>({roomId:c.roomId,fixture:c.fixture,count:c.count,reason:'Lowest installed watts among feasible explicit grid candidates',requirementIds:c.requirementIds,formula:c.formula,alternatives:c.alternatives})),reviewStatus:'awaiting_human_review',professionalApproval:false};
  const drawing=makeEngineeringScene(model);return {...model,...drawing};
 }
 
 export function makeEngineeringScene(model){
- const p=model.input,entities=[],sheets=[],placements=[],geometryWarnings=[],layers=[['E-ARCH',8],['E-LIGHT',2],['E-WIRE',3],['E-CONTROL',6],['E-TEXT',7],['E-FRAME',7]].map(([name,color])=>({name,color}));
+ const p=model.input,entities=[],sheets=[],placements=[],geometryWarnings=[],layers=[['E-ARCH',8],['E-LIGHT',7],['E-WIRE',3],['E-CONTROL',6],['E-TEXT',7],['E-FRAME',7]].map(([name,color])=>({name,color}));
  const point=p=>[...p,0],line=(a,b,layer='E-FRAME')=>{if(distance(a,b)<1e-6){geometryWarnings.push({code:'DEGENERATE_SEGMENT_OMITTED',layer,position:a,reason:'Zero-length segment has no drawable extent'});return;}entities.push({kind:'line',layer,points:[point(a),point(b)]});};
  const text=(pos,t,h=250,layer='E-TEXT')=>entities.push({kind:'text',layer,position:point(pos),text:String(t).replace(/[\r\n]/g,' '),height:h,rotationRadians:0});
  const symbol=(name,geometry)=>({name,geometry,attributes:['DEVICE_ID','ROOM','CIRCUIT','CONTROL','MODEL','PHYSICAL_ID'].map((tag,i)=>({tag,position:[0,-300-i*200,0],height:160,visible:false,value:''}))});
  const symbols=[symbol('ENG_LED',[{kind:'polyline',layer:'0',points:[[-300,-120,0],[300,-120,0],[300,120,0],[-300,120,0]],closed:true},{kind:'line',layer:'0',points:[[-250,0,0],[250,0,0]]}]),symbol('ENG_SWITCH',[{kind:'circle',layer:'0',position:[0,0,0],radius:100}]),symbol('ENG_PANEL',[{kind:'polyline',layer:'0',points:[[-250,-350,0],[250,-350,0],[250,350,0],[-250,350,0]],closed:true}])];
- function sheet(id,title){const x=sheets.length*45000,factor=['E02','E03'].includes(id)?.5:1,s={id,title,paperDenominator:factor*100,origin:[x,0],region:{min:[x,0,0],max:[x+39000*factor,26000*factor,0]},view:{name:id,center:[x+19500*factor,13000*factor,0],width:39000*factor,height:26000*factor}};sheets.push(s);for(const [a,b]of [[[500,500],[38500,500]],[[38500,500],[38500,25500]],[[38500,25500],[500,25500]],[[500,25500],[500,500]],[[500,23500],[38500,23500]]])line([x+a[0]*factor,a[1]*factor],[x+b[0]*factor,b[1]*factor]);text([x+1200*factor,24500*factor],p.title+' - '+title,420*factor);text([x+1200*factor,1100*factor],id+' | 修订 '+model.revision+' | '+p.designDate+' | 待人工审核，非签审施工文件',240*factor);return s;}
+ const allPoints=[...p.rooms.flatMap(r=>r.polygon),...p.architecture.flatMap(a=>a.points),p.electrical.panelPosition,...model.controls.map(c=>c.position),...model.routes.flatMap(r=>r.vertices)],b=bounds(allPoints),plan=selectEngineeringPlanSheet(b.max[0]-b.min[0],b.max[1]-b.min[1]);let cursor=0;
+ function sheet(id,title){const isPlan=['E02','E03'].includes(id),spec=isPlan?plan:{paper:'A3',denominator:100,width:39000,height:26000},d=spec.denominator,x=cursor,W=spec.width,H=spec.height,s={id,title,paper:spec.paper,paperDenominator:d,origin:[x,0],planOffset:isPlan?spec.planOffset:undefined,region:{min:[x,0,0],max:[x+W,H,0]},view:{name:id,center:[x+W/2,H/2,0],width:W,height:H}};cursor+=Math.max(45000,W+6000);sheets.push(s);for(const [a,b]of [[[5*d,5*d],[W-5*d,5*d]],[[W-5*d,5*d],[W-5*d,H-5*d]],[[W-5*d,H-5*d],[5*d,H-5*d]],[[5*d,H-5*d],[5*d,5*d]],[[5*d,H-25*d],[W-5*d,H-25*d]]])line([x+a[0],a[1]],[x+b[0],b[1]]);text([x+12*d,H-15*d],p.title+' - '+title,4.2*d);text([x+12*d,11*d],id+' | 修订 '+model.revision+' | '+p.designDate+' | 待人工审核，非签审施工文件',2.4*d);return s;}
  let notes=sheet('E01','设计说明及依据'),notePage=1,y=22200;const note=t=>{for(let i=0;i<t.length;i+=65){if(y<3000){notes=sheet('E01-'+(++notePage),'设计说明及依据（续）');y=22200;}text([notes.origin[0]+1500,y],t.slice(i,i+65),280);y-=600;}};
  for(const t of ['设计范围：'+p.scope,'设计方法：房间功能与明确约束驱动的网格候选选择、利用系数法估算、回路和控制同源生成。','估算公式 E=N*Phi*UF*MF/A；LPD=N*W/A。无IES时不判定逐点照度、均匀度、UGR合格。','配电：L、N、PE分开；终端短路、过负荷及接地故障保护按设计模型。保护配合与敷设修正待专项复核。','照明连线表示回路归属；吊顶、梁、风口、现场敷设及开关线数量需深化协调。',...p.standards.map(s=>'依据：'+s.code+' '+s.edition+'；生效 '+s.effectiveFrom+'；本机证据条款 '+model.standardEvidence.filter(c=>c.standardId===s.id).map(c=>c.locator).join('/')),'输入：'+(p.sources.some(s=>s.derivedFromFinalDrawing)?'历史成图剥离建筑条件；回溯复现测试，不是独立新项目验收。':'项目提供建筑条件。'),'主要待审：'+[...new Set(model.issues.filter(i=>i.severity==='review').map(i=>i.code))].join('、')])note(t);
- const allPoints=[...p.rooms.flatMap(r=>r.polygon),...p.architecture.flatMap(a=>a.points)],b=bounds(allPoints),w=b.max[0]-b.min[0],h=b.max[1]-b.min[1],scale=Math.min(1,16500/w,8000/h),map=(s,v)=>[s.origin[0]+1500+(v[0]-b.min[0])*scale,2800+(v[1]-b.min[1])*scale];
- if(scale<1)throw Error('PLAN_PAGINATION_REQUIRED: architecture exceeds the current full-size plan window; split the scope instead of shrinking model geometry');
+ const scale=1,map=(s,v)=>[s.origin[0]+s.planOffset[0]+v[0]-b.min[0],s.planOffset[1]+v[1]-b.min[1]];
  for(const [id,title,control]of [['E02','普通照明平面',false],['E03','开关控制及回路归属',true]]){
   const s=sheet(id,title);
   for(const a of p.architecture){const ps=a.points.map(v=>map(s,v));for(let i=1;i<ps.length;i++)line(ps[i-1],ps[i],'E-ARCH');if(a.closed)line(ps.at(-1),ps[0],'E-ARCH');}
-  for(const room of p.rooms){text(map(s,[Math.min(...room.polygon.map(v=>v[0]))+150,Math.max(...room.polygon.map(p=>p[1]))-300]),room.name,140);}
-  for(const d of model.devices){const pos=map(s,d.position),representationId=d.id+(control?'_CTL':'');placements.push({symbol:'ENG_LED',id:representationId,position:point(pos),layer:'E-LIGHT',attributes:{DEVICE_ID:representationId,ROOM:d.roomId,CIRCUIT:d.circuitId,CONTROL:d.controlId,MODEL:d.fixture,PHYSICAL_ID:d.id}});text([pos[0]+100,pos[1]-300],d.label,110);}
+  for(const room of p.rooms){text(map(s,[Math.min(...room.polygon.map(v=>v[0]))+150,Math.max(...room.polygon.map(p=>p[1]))-300]),room.name+' ['+room.id+']',2.8*s.paperDenominator);}
+  for(const d of model.devices){const pos=map(s,d.position),representationId=d.id+(control?'_CTL':'');placements.push({symbol:'ENG_LED',id:representationId,position:point(pos),layer:'E-LIGHT',attributes:{DEVICE_ID:representationId,ROOM:d.roomId,CIRCUIT:d.circuitId,CONTROL:d.controlId,MODEL:d.fixture,PHYSICAL_ID:d.id}});text([pos[0]+2*s.paperDenominator,pos[1]-6*s.paperDenominator],d.label,2.2*s.paperDenominator);}
   if(control)for(const c of model.controls){const sw=map(s,c.position);placements.push({symbol:'ENG_SWITCH',id:c.id,position:point(sw),layer:'E-CONTROL',attributes:{DEVICE_ID:c.id,ROOM:c.roomId,CIRCUIT:c.circuitId,CONTROL:c.mode,MODEL:'SWITCH',PHYSICAL_ID:c.id}});for(const d of model.devices.filter(d=>c.deviceIds.includes(d.id)))line(sw,map(s,d.position),'E-CONTROL');}
   else{for(const r of model.routes)for(let i=1;i<r.vertices.length;i++)line(map(s,r.vertices[i-1]),map(s,r.vertices[i]),'E-WIRE');placements.push({symbol:'ENG_PANEL',id:p.electrical.panelId,position:point(map(s,p.electrical.panelPosition)),layer:'E-WIRE',attributes:{DEVICE_ID:p.electrical.panelId,ROOM:'SUPPLY',CIRCUIT:'INCOMING',CONTROL:'MANUAL',MODEL:'PANEL',PHYSICAL_ID:p.electrical.panelId}});}
-  text([s.origin[0]+900,1600],'显示系数 '+scale.toFixed(5)+'；图框输出1:'+s.paperDenominator+'；回路为归属示意，敷设/吊顶待核对。',130);
+  text([s.origin[0]+18*s.paperDenominator,32*s.paperDenominator],'显示系数 '+scale.toFixed(5)+'；图框输出1:'+s.paperDenominator+'；回路为归属示意，敷设/吊顶待核对。',2.6*s.paperDenominator);
  }
  for(let offset=0;offset<model.circuits.length;offset+=27){const system=sheet(offset?'E04-'+(offset/27+1):'E04','照明配电系统及回路表');text([system.origin[0]+1800,22000],p.electrical.panelId+'  '+p.electrical.voltage+'V | 支路L+N+PE | 总负荷 '+model.circuits.reduce((s,c)=>s+c.watts,0)+'W',300);line([system.origin[0]+2200,21200],[system.origin[0]+2200,3000],'E-WIRE');
  model.circuits.slice(offset,offset+27).forEach((c,i)=>{const yy=20100-i*600;line([system.origin[0]+2200,yy],[system.origin[0]+5000,yy],'E-WIRE');text([system.origin[0]+5500,yy],`${c.id}  ${c.watts}W  Ib=${c.currentA.toFixed(2)}A  ${c.breakerA}A  Cu ${c.wireSectionMm2}mm2  L+N+PE`,230);});}
  for(let offset=0;offset<model.roomCalculations.length;offset+=24){const calc=sheet(offset?'E05-'+(offset/24+1):'E05','计算及灯具清单');text([calc.origin[0]+1500,22200],'房间 | 灯具数 | 估算lx/目标lx | W/m2 | 灯具型号',280);
- model.roomCalculations.slice(offset,offset+24).forEach((c,i)=>text([calc.origin[0]+1500,21200-i*700],`${p.rooms.find(r=>r.id===c.roomId).name} | ${c.count} | ${c.estimatedLux.toFixed(1)}/${c.targetLux} | ${c.lpd.toFixed(2)} | ${c.fixture}`,260));
+ model.roomCalculations.slice(offset,offset+24).forEach((c,i)=>text([calc.origin[0]+1500,21200-i*700],`${p.rooms.find(r=>r.id===c.roomId).name} [${c.roomId}] | ${c.count} | ${c.estimatedLux.toFixed(1)}/${c.targetLux} | ${c.lpd.toFixed(2)} | ${c.fixture}`,260));
  text([calc.origin[0]+1500,3500],'本表照度为利用系数法估算；光度、眩光和实际保护条件仍需专业复核。',270);}
  const {name:initialViewName,...initialView}=sheets.find(s=>s.id==='E02').view;
  const scene=sceneSchema.parse({layers,symbols,entities,views:sheets.map(s=>s.view),view:initialView});
- return {scene,placements,sheets,geometryWarnings,drawingScale:scale,representations:{luminairePlan:'E02',controlPlan:'E03'}};
+ return {scene,placements,sheets,geometryWarnings,drawingOrigin:b.min,drawingScale:scale,representations:{luminairePlan:'E02',controlPlan:'E03'}};
 }

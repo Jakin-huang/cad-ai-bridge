@@ -7,11 +7,12 @@
   "stages": [
     {
       "id": "E1",
-      "status": "bounded_pilot_verified",
+      "status": "selected_root_capture_and_spatial_gate_verified_hospital_geometry_incomplete",
       "limits": [
         "Historical architectural extraction, not independent issued architecture",
-        "Inferred room boundaries and assumed entrances",
-        "Global architecture capture truncation retained as gap"
+        "Hospital selected architectural root fully captured: 4434 visited, no budget truncation or read errors",
+        "43 source-derived candidate spaces: 39 inferred, four unresolved and three interior-overlap ambiguities; full-floor intake blocked",
+        "Independent room schedule, entrances and ceiling conditions still missing"
       ]
     },
     {
@@ -28,9 +29,10 @@
       "id": "E3",
       "status": "bounded_pilot_verified",
       "limits": [
-        "Six selected spaces, ordinary lighting only",
+        "Six selected hospital spaces, ordinary lighting only",
         "Flux-method estimate, assumed catalogue, no point photometry or UGR",
-        "Oversized scope blocks pending plan pagination"
+        "Independent synthetic 12-room floor now verified through source-bound intake and physical A1 1:100 plans; not hospital acceptance",
+        "A3 through A0 sheets selected without shrinking source geometry; beyond A0 1:200 still requires explicit partitioning"
       ]
     },
     {
@@ -78,7 +80,7 @@
     },
     {
       "id": "M2",
-      "status": "not_complete"
+      "status": "architecture_intake_and_floor_output_implemented_local_tests_passed_real_hospital_and_photometry_gates_pending"
     },
     {
       "id": "M3",
@@ -99,7 +101,11 @@
     "constructionApproval": false,
     "hospitalDerivedTestBriefAIClientIntake": true,
     "originalCustomerBrief": false,
-    "actualClientToNativeCad": true
+    "actualClientToNativeCad": true,
+    "selectedArchitecturalRootCapture": true,
+    "sourceBoundSyntheticFloorPipeline": true,
+    "hospitalFullFloorSpatialAcceptance": false,
+    "realProductPhotometry": false
   },
   "knownInputGaps": [
     "Original client brief not located",
@@ -115,5 +121,12 @@
     "P1 detailed engineering drawings, incremental edit, review identity and interruption recovery"
   ],
   "plan": "docs/engineering-design-plan.md",
-  "validation": "docs/engineering-design-validation.json"
+  "validation": "docs/engineering-design-validation.json",
+  "architectureValidation": "docs/architectural-intake-validation.json",
+  "standardPreparation": {
+    "localCompilationExtracted": true,
+    "lightingAndHospitalBooksFound": true,
+    "fullTextAndApplicabilityAccepted": false,
+    "rawAssetsPublished": false
+  }
 }

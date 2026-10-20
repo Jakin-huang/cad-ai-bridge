@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_4400406",
+  "frozenV2Unchanged": true,
+  "pluginSHA256": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34",
+  "evidence": {
+    "unitTests": {
+      "passed": 182,
+      "failed": 0,
+      "skipped": 0
+    },
+    "taskCenterAfterDeepLinkChange": {
+      "passed": 2,
+      "browserArchitectureDetailVerified": true,
+      "showsHospitalIncomplete": true
+    },
+    "sourceBoundArchitectureMcpCadPipeline": {
+      "passed": 12,
+      "source": "Independent synthetic source DWG, not the hospital or original customer architecture",
+      "spaces": 12,
+      "luminaires": 108,
+      "circuits": 12,
+      "sheets": [
+        {
+          "id": "E01",
+          "paper": "A3",
+          "denominator": 100
+        },
+        {
+          "id": "E02",
+          "paper": "A1",
+          "denominator": 100
+        },
+        {
+          "id": "E03",
+          "paper": "A1",
+          "denominator": 100
+        },
+        {
+          "id": "E04",
+          "paper": "A3",
+          "denominator": 100
+        },
+        {
+          "id": "E05",
+          "paper": "A3",
+          "denominator": 100
+        }
+      ],
+      "boundedModelChecks": {
+        "passed": 224,
+        "failed": 0,
+        "pending": 5
+      },
+      "sourceSHA256": "51c0965862d71b4fa9aeea12adaf9aa9cf268af990f5c7a4e3a44587b556d08a",
+      "modelSHA256": "d32056fcaa4ac952ab0e82dcb480ac80c5886bafaa0b5bd88f7905b62967caaf",
+      "scope": "Independent synthetic source DWG through typed architecture intake, SHA-bound project seed, full-size floor design and actual CAD/PDF; not hospital origin, real photometry or professional acceptance"
+    },
+    "nativeRegressions": {
+      "v2Core": 7,
+      "hospitalSelectedSpaces": 13
+    },
+    "hospitalArchitecturalRoot": {
+      "sourceOrigin": "historical_final_drawing",
+      "inventoryOrigin": "source_labels",
+      "visitedEntities": 4434,
+      "budgetExceeded": false,
+      "missingRootCount": 0,
+      "excludedXrefs": 0,
+      "completeSelectedRootCapture": true,
+      "status": "blocked",
+      "expectedCandidateSpaces": 43,
+      "resolvedSpaces": 39,
+      "observedClosedBoundaries": 0,
+      "inferredRooms": 39,
+      "missingBoundaries": 4,
+      "overlapAmbiguities": 3,
+      "fullFloorAcceptance": false
+    },
+    "pdf": {
+      "pages": [
+        {
+          "file": "E01.pdf",
+          "paper": "A3",
+          "widthMm": 420.1583333333333,
+          "heightMm": 297.0388888888889,
+          "sha256": "5b83058e55cfc61157d145426e6bdb715ee7cb5216d46ceed1a738af37e2b190"
+        },
+        {
+          "file": "E02.pdf",
+          "paper": "A1",
+          "widthMm": 841.0222222222222,
+          "heightMm": 594.0777777777778,
+          "sha256": "0a77f3e3e9ad99acd878fc6d0ab984ce327dccd60a7faaff72a2d2710cf02739"
+        },
+        {
+          "file": "E03.pdf",
+          "paper": "A1",
+          "widthMm": 841.0222222222222,
+          "heightMm": 594.0777777777778,
+          "sha256": "2160a03afecc4d140ad686cc6eee24d6be524ee169a2638b5190ce4f74285843"
+        },
+        {
+          "file": "E04.pdf",
+          "paper": "A3",
+          "widthMm": 420.1583333333333,
+          "heightMm": 297.0388888888889,
+          "sha256": "51f16a788940548afa60c553904960445c8457a3f7db988f7d9c976f4ee6bd4b"
+        },
+        {
+          "file": "E05.pdf",
+          "paper": "A3",
+          "widthMm": 420.1583333333333,
+          "heightMm": 297.0388888888889,
+          "sha256": "4e3c7825df18e0a88876da66c8d703f5009d76a9d728e6284125c8f4558902f0"
+        }
+      ],
+      "mergedRenderIdentical": true,
+      "visualReview": "All five final page renders inspected: text, frames, distinct room IDs, complete geometry and physical paper fit; control lines remain declared schematic, not installation-detail acceptance",
+      "bundleSHA256": "1a9f6552543c488667740d8a79f2c3ae3bafbf398a7b81f20b93ac58cbd73b64",
+      "parserNote": "Native PageMode duplicate dictionary warnings retained; parse and render succeeded"
+    },
+    "privacy": "No additional external model invocation. Hospital and standards full text, DWG, generated files and raw logs remain outside public source."
+  },
+  "implemented": [
+    "Selected layout-root traversal coverage; missing roots, truncation, depth and xrefs explicit",
+    "Room inventory with source instance paths and explicit straight closed boundary validation",
+    "Blocking omitted/ambiguous/open/curved/non-planar/self-intersecting/overlapping geometry; inferred rooms remain review-only",
+    "Source/capture/record SHA-bound architectural pack input and design evidence",
+    "Full-size model geometry with A3/A2/A1/A0 selection and explicit beyond-A0 partitioning boundary",
+    "Independent plan paper-fit and architectural/wiring/control emitted-line checks",
+    "Task-center architectural coverage, blocked issues, registered file downloads and direct task link"
+  ],
+  "standardPreparation": {
+    "localCompilationExtracted": true,
+    "lightingHospitalElectricalAndGeneralHospitalBooksFound": true,
+    "clausesAndEditionApplicabilityAccepted": false
+  },
+  "notAccepted": [
+    "Independent issued hospital architecture and project room schedule",
+    "Full hospital floor design",
+    "Real luminaire photometry, point illuminance, uniformity and glare",
+    "New standard full text and applicability coverage",
+    "Detailed cable routing, ceiling/structural coordination and installation detail",
+    "External users, clean machine and authenticated professional review",
+    "M2, M3 or M4 completion"
+  ],
+  "next": [
+    "Resolve source-bound architectural ambiguities without inventing project conditions",
+    "Verify local lighting and hospital standard full text, version and applicability",
+    "Implement real photometry with primary format references and independent calculation comparison"
+  ],
+  "professionalApproval": false
+}

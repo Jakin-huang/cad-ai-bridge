@@ -5,10 +5,11 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 namespace CadAgent {
  public static partial class Commands {
-  static void ReadQueryScope(Database db,Transaction tr,Request request,List<object> items,List<object> errors,ref int total,ref bool truncated){
+  static void ReadQueryScope(Database db,Transaction tr,Request request,List<object> items,List<object> errors,ref int total,ref bool truncated,out object coverage){
    var scope=request.scope??new QueryScope{layout="Model"};string layoutName=scope.layout??"Model";BlockTableRecord owner=null;bool model=true;
    foreach(DBDictionaryEntry entry in (DBDictionary)tr.GetObject(db.LayoutDictionaryId,OpenMode.ForRead)){var layout=(Layout)tr.GetObject(entry.Value,OpenMode.ForRead);if(layout.LayoutName.Equals(layoutName,StringComparison.OrdinalIgnoreCase)){owner=(BlockTableRecord)tr.GetObject(layout.BlockTableRecordId,OpenMode.ForRead);model=layout.ModelType;break;}}
-   Require(owner!=null,"LAYOUT_NOT_FOUND",layoutName);int matched=0,visited=0;bool incomplete=false;
+   Require(owner!=null,"LAYOUT_NOT_FOUND",layoutName);int matched=0,visited=0,rootsVisited=0;bool incomplete=false;
+   var requested=scope.rootHandles==null?null:new HashSet<string>(scope.rootHandles,StringComparer.OrdinalIgnoreCase);var found=new HashSet<string>(StringComparer.OrdinalIgnoreCase);var excludedXrefs=new List<object>();
    Action<Entity,Matrix3d,List<string>,int,HashSet<ObjectId>> visit=null;
    visit=(entity,matrix,parents,depth,definitions)=>{
     if(++visited>100000){incomplete=true;return;}
@@ -26,13 +27,15 @@ namespace CadAgent {
       }
      }
      var block=entity as BlockReference;if(!scope.includeNested||block==null)return;
-     var definition=(BlockTableRecord)tr.GetObject(block.BlockTableRecord,OpenMode.ForRead);if(definition.IsFromExternalReference)return;
+     var definition=(BlockTableRecord)tr.GetObject(block.BlockTableRecord,OpenMode.ForRead);if(definition.IsFromExternalReference){if(excludedXrefs.Count<100)excludedXrefs.Add(new{handle=entity.Handle.ToString(),instancePath=identity,name=definition.Name});return;}
      if(depth>=scope.maxDepth||definitions.Contains(definition.ObjectId)){incomplete=true;if(errors.Count<100)errors.Add(new{handle=entity.Handle.ToString(),message="Nested traversal depth/cycle limit reached; counts are incomplete."});return;}
      var ancestry=new HashSet<ObjectId>(definitions);ancestry.Add(definition.ObjectId);var transform=matrix*block.BlockTransform;
      foreach(ObjectId id in definition){var child=tr.GetObject(id,OpenMode.ForRead) as Entity;if(child!=null&&!(child is AttributeDefinition))visit(child,transform,identity,depth+1,ancestry);if(visited>100000)break;}
     }catch(System.Exception ex){if(errors.Count<100)errors.Add(new{handle=entity.Handle.ToString(),message=ex.Message});}
    };
-   foreach(ObjectId id in owner){var entity=tr.GetObject(id,OpenMode.ForRead) as Entity;if(entity!=null)visit(entity,Matrix3d.Identity,new List<string>(),0,new HashSet<ObjectId>());if(visited>100000)break;}
+   foreach(ObjectId id in owner){var entity=tr.GetObject(id,OpenMode.ForRead) as Entity;if(entity==null)continue;var handle=entity.Handle.ToString();if(requested!=null&&!requested.Contains(handle))continue;found.Add(handle);rootsVisited++;visit(entity,Matrix3d.Identity,new List<string>(),0,new HashSet<ObjectId>());if(visited>100000)break;}
+   var missing=requested==null?new string[0]:requested.Where(h=>!found.Contains(h)).ToArray();if(missing.Length>0){incomplete=true;errors.Add(new{message="Requested root handles are missing from the selected layout or were not reached before the traversal budget.",handles=missing});}
+   coverage=new{layout=layoutName,requestedRootHandles=scope.rootHandles,selectedRootHandles=requested==null?null:found.ToArray(),rootsVisited=rootsVisited,visitedEntities=Math.Min(visited,100000),visitBudget=100000,budgetExceeded=visited>100000,missingRootHandles=missing,excludedXrefs=excludedXrefs,externalContentsRead=false,completeLocalScope=!incomplete&&errors.Count==0};
    total=matched;truncated=incomplete;
   }
  }

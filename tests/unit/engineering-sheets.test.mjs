@@ -1,0 +1,4 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {selectEngineeringPlanSheet} from '../../src/engineering-sheets.mjs';
+test('physical paper selection covers declared extents and centers full-size geometry without arbitrary scaling',()=>{for(const [w,h,paper,denominator]of [[8000,6000,'A3',50],[30000,14000,'A3',100],[48000,25000,'A2',100],[70000,40000,'A1',100],[100000,70000,'A0',100],[200000,130000,'A0',200]]){const s=selectEngineeringPlanSheet(w,h);assert.equal(s.paper,paper);assert.equal(s.denominator,denominator);assert.ok(s.planOffset[0]>=30*denominator&&s.planOffset[0]+w<=s.width-30*denominator);assert.ok(s.planOffset[1]>=56*denominator&&s.planOffset[1]+h<=s.height-44*denominator);}assert.throws(()=>selectEngineeringPlanSheet(300000,200000),/PLAN_PAGINATION_REQUIRED/);});

@@ -1,4 +1,6 @@
 import {z} from 'zod';
+import {architectureInspectionSchema,architecturalPackRef} from './architectural-contracts.mjs';
+import {inspectSpacePolygon,spaceInteriorsOverlap} from './architectural-spaces.mjs';
 
 const id=z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,63}$/);
 const digest=z.string().regex(/^[a-f0-9]{64}$/i);
@@ -15,12 +17,14 @@ export const engineeringInputSchema=z.strictObject({
  discipline:z.literal('ordinary-lighting'),scope:z.string().min(20).max(3000),brief:z.string().min(20).max(16000),
  sources:z.array(source).min(1).max(100),requirements:z.array(requirement).min(1).max(1000),
  standards:z.array(z.strictObject({id,code:z.string().min(1).max(128),edition:z.string().min(1).max(128),effectiveFrom:z.string().regex(/^\d{4}-\d{2}-\d{2}$/),effectiveUntil:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),sourceId:id,clauses:z.array(z.strictObject({id,locator:z.string().min(1).max(128),verified:z.boolean(),summary:z.string().min(1).max(1500),check:z.enum(['terminal_protection','low_mount_rcd','corridor_control','professional_review']),roomIds:z.array(id).max(100)})).max(100)})).max(100),
- rooms:z.array(z.strictObject({id,name:z.string().min(1).max(128),use:z.enum(['office','duty','teaching','corridor','pantry','clinical','unknown']),polygon:z.array(point).min(4).max(100),doors:z.array(point).max(20),obstacles:z.array(z.array(point).min(3).max(50)).max(20).default([]),sourceIds:z.array(id).min(1).max(20),geometryStatus:z.enum(['issued','inferred']),heightM:z.number().min(2).max(10),workplaneM:z.number().min(0).max(2)})).min(1).max(100),
+ rooms:z.array(z.strictObject({id,name:z.string().min(1).max(128),use:z.enum(['office','duty','teaching','corridor','pantry','clinical','unknown']),polygon:z.array(point).min(3).max(100),doors:z.array(point).max(20),obstacles:z.array(z.array(point).min(3).max(50)).max(20).default([]),sourceIds:z.array(id).min(1).max(20),geometryStatus:z.enum(['issued','inferred']),heightM:z.number().min(2).max(10),workplaneM:z.number().min(0).max(2)})).min(1).max(100),
  architecture:z.array(primitive).max(8000),
  luminaires:z.array(z.strictObject({id,label:z.string().min(1).max(128),watts:z.number().positive().max(500),lumens:z.number().positive().max(100000),utilizationFactor:z.number().positive().max(1),maintenanceFactor:z.number().positive().max(1),sourceId:id,photometry:z.enum(['assumed','catalog_only','ies_verified']),ra:z.number().min(0).max(100),cctK:z.number().int().min(2000).max(7000)})).min(1).max(20),
  electrical:z.strictObject({panelId:id,panelPosition:point,voltage:z.number().min(100).max(300),powerFactor:z.number().positive().max(1),wireSectionMm2:z.number().positive().max(25),copperOhmMm2PerM:z.number().positive().max(0.05),assumedIzA:z.number().positive().max(100),breakerA:z.number().positive().max(100),extraLengthM:z.number().nonnegative().max(100),shortCircuitProtection:z.boolean(),overloadProtection:z.boolean(),earthFaultProtection:z.boolean(),rcd:z.boolean(),sourceIds:z.array(id).min(1).max(20)}),
  missingInputs:z.array(z.strictObject({id,description:z.string().min(1).max(1000),severity:z.enum(['blocking','review']),sourceIds:z.array(id).max(20)})).max(100)
 }).superRefine((p,ctx)=>{
+ for(const room of p.rooms)if(!inspectSpacePolygon(room.polygon).ok)ctx.addIssue({code:'custom',message:'Invalid room polygon: '+room.id});
+ for(let i=0;i<p.rooms.length;i++)for(let j=i+1;j<p.rooms.length;j++)if(spaceInteriorsOverlap(p.rooms[i].polygon,p.rooms[j].polygon))ctx.addIssue({code:'custom',message:'Overlapping room interiors: '+p.rooms[i].id+' / '+p.rooms[j].id});
  for(const [label,items] of [['source',p.sources],['room',p.rooms],['requirement',p.requirements],['standard',p.standards],['luminaire',p.luminaires]])if(new Set(items.map(i=>i.id)).size!==items.length)ctx.addIssue({code:'custom',message:'Duplicate '+label+' identity'});
  const sources=new Set(p.sources.map(s=>s.id)),rooms=new Set(p.rooms.map(r=>r.id));
  for(const item of [...p.rooms,...p.requirements,p.electrical,...p.missingInputs])for(const ref of item.sourceIds)if(!sources.has(ref))ctx.addIssue({code:'custom',message:'Unknown source '+ref});
@@ -31,8 +35,9 @@ export const engineeringInputSchema=z.strictObject({
 
 const jobId=z.string().regex(/^job-design-[a-f0-9-]{36}$/i);
 export const engineeringSchema=z.discriminatedUnion('action',[
+ architectureInspectionSchema,
  z.strictObject({action:z.literal('prepare'),requestId:z.uuid(),project:engineeringInputSchema}),
- z.strictObject({action:z.literal('prepare_from_seed'),requestId:z.uuid(),seedFile:z.string().min(1).max(2000),expectedSeedSHA256:digest,requirements:z.array(requirement).min(1).max(1000)}),
+ z.strictObject({action:z.literal('prepare_from_seed'),requestId:z.uuid(),seedFile:z.string().min(1).max(2000),expectedSeedSHA256:digest,requirements:z.array(requirement).min(1).max(1000),architecturalPack:architecturalPackRef.optional()}),
  z.strictObject({action:z.literal('status'),jobId,section:z.enum(['summary','input','model','checks','delivery','review','history']).default('summary')}),
  z.strictObject({action:z.literal('design'),jobId,expectedRevision:z.number().int().nonnegative()}),
  z.strictObject({action:z.literal('deliver'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),

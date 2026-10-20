@@ -135,5 +135,7 @@
     "Interrupted new engineering deliveries remain unconfirmed and must be reconciled before retry",
     "No new user release package built; frozen v2 package remains unchanged"
   ],
-  "plan": "docs/engineering-design-plan.md"
+  "plan": "docs/engineering-design-plan.md",
+  "evidenceBaselineCommit": "4400406",
+  "subsequentArchitectureValidation": "docs/architectural-intake-validation.json"
 }

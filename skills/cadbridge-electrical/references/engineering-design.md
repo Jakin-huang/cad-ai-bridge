@@ -10,6 +10,16 @@
 
 ## 执行动作
 
+新项目先处理建筑条件：`inspect_architecture` 接收 requestId、drawing、expectedSha256、sourceId、sourceOrigin、inventoryOrigin、scope、boundaryLayers、labelLayers、expectedRooms；可提供 geometryLayers、ignoredLabels 和 inferRectangles。scope.rootHandles 是所选布局的根实体句柄，不能填定义内部句柄。先通过根层查询定位建筑块；所列空间同名时用 labelInstancePath 区分。
+
+boundaryLayers 声明的是明确房间边界图层，必须是可验证闭合直线多段线；曲线、开口、重叠、遗漏和未展开外参会阻断完整性结论。geometryLayers 是需要绘制的背景几何，未支持的背景对象保留在捕获中并列为待审。ignoredLabels 必须逐个写排除理由。inventoryOrigin=source_labels 只能说明来源标签清点，不是独立项目空间表。sourceOrigin=historical_final_drawing 必须保留历史成图派生标记。
+
+返回建筑包 jobId、packSHA256、覆盖和问题清单。不能仅凭 ok=true 继续：还须核对 coverage.completeInventory / geometryComplete 与 status。若明确允许矩形推断，也不能将 inferred 改称实测边界。
+
+将建筑包传给 prepare_from_seed.architecturalPack={jobId,sha256,acceptInferredGeometry}，本地 seed.rooms 只需房间 ID、名称、功能、入口、净高、工作面和来源等条件，polygon 与 architecture 由已登记建筑包按摘要合并。来源的 role=architecture、SHA 和派生标记必须匹配；默认拒绝推断几何，允许推断也不能绕过遗漏或重叠。设计模型和审核报告保留建筑包与源捕获摘要。
+
+平面保持真实毫米坐标，按范围选择 A3—A0 与固定比例；房间编号显示在平面和计算表中。大于支持范围时明确要求分区，不通过缩小模型几何塞进图框。该功能不证明整层空间用途、入口、吊顶、真实光度或专业签审已经确认。
+
 数值单位固定：target_lux 为 lx，max_lpd 为 W/m²，max_spacing 和 mounting_height 为 m，max_devices 为数量，max_circuit_watts 为 W，max_drop 为百分数数值（3% 填 **3**，不填0.03）。control_mode 只接受 **local**（房间就地）、**regional_manual**（区域集中并具备手动操作）、**occupancy_manual**（感应且可手动）。不要猜测 centralized、group 等其他取值；明确区域集中要求应使用 regional_manual。
 
 1. prepare：传 requestId 和 project，检查返回 issues/status。每个房间需要 target_lux、max_lpd、max_spacing、max_devices、max_circuit_watts、max_drop、control_mode、mounting_height 八类有来源的约束；同类冲突不静默覆盖。
