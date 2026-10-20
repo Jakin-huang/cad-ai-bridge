@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_63d205e",
+  "engineVersion": "1.6.0",
+  "scope": "One independently invented office, explicit standing Appendix A reference protocol; no hospital or seated project acceptance",
+  "frozenV2Unchanged": true,
+  "pluginUnchanged": true,
+  "method": {
+    "sourceCode": "GB/T 50034-2024",
+    "sourceSHA256": "a780b306e95ebcba836129fab1d4a0930579bb4dcdb6e3ac750607c76d2a5f2a",
+    "pdfPages": [
+      80,
+      82,
+      83,
+      84
+    ],
+    "profileId": "CN_UGR_2024_LOCAL",
+    "profileSHA256": "872ce2ff1f3ec08ea287540d6eded3ae2718a09dfa2d4cc251d36f544b3e197f",
+    "positionTableNotPublished": true,
+    "interpretation": "minimum_active_bracket_value_no_extrapolation_no_dash_substitution",
+    "initialMaintenanceFactor": 1,
+    "symmetryTolerance": "1% of peak candela; local numerical model condition, not normative threshold",
+    "ratingStabilityCriterion": 0.25,
+    "stabilityIsFormalErrorBound": false
+  },
+  "evidence": {
+    "unitTests": {
+      "passed": 219,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualMcpRadianceCad": {
+      "passed": 11,
+      "modelSHA256": "b9aedbdc54083ad04f8c49a9b3b3f650f228b1606fa7dbaaa183ba8a57b5028d",
+      "spaces": 1,
+      "luminaires": 8,
+      "circuits": 1,
+      "sheets": 5,
+      "boundedModelChecks": {
+        "passed": 34,
+        "failed": 0,
+        "pending": 9
+      },
+      "qualityChecks": {
+        "passed": 34,
+        "failed": 0
+      },
+      "roomResults": [
+        {
+          "roomId": "OFFICE",
+          "averageLux": 406.72724005454535,
+          "minimumLux": 289.08893800000004,
+          "maximumLux": 500.48847500000005,
+          "uniformity": 0.7107685680487762,
+          "directAverageLux": 339.93002051515174,
+          "indirectAverageLux": 66.79721953939361,
+          "medium": {
+            "averageLux": 405.04623803636366,
+            "minimumLux": 286.74547,
+            "maximumLux": 498.8767590000001,
+            "uniformity": 0.7079326829206521
+          },
+          "maximumPointChange": 3.333695999999918,
+          "targets": {
+            "minimumLux": 300,
+            "maximumAverageLux": 650,
+            "minimumUniformity": 0.6
+          }
+        }
+      ],
+      "standingReferenceUgr": [
+        {
+          "roomId": "OFFICE",
+          "observers": [
+            {
+              "id": "WALL_X_MIN",
+              "ugr": 18.182796804132764,
+              "maximumUgr": 19,
+              "observedChange": 0.05083158667813592
+            },
+            {
+              "id": "WALL_X_MAX",
+              "ugr": 18.201489720457513,
+              "maximumUgr": 19,
+              "observedChange": 0.09107492148134
+            },
+            {
+              "id": "WALL_Y_MIN",
+              "ugr": 17.027785015462428,
+              "maximumUgr": 19,
+              "observedChange": 0.05298166561831508
+            },
+            {
+              "id": "WALL_Y_MAX",
+              "ugr": 17.050580054956345,
+              "maximumUgr": 19,
+              "observedChange": 0.0736545901720298
+            }
+          ]
+        }
+      ]
+    },
+    "independentPython": {
+      "observers": [
+        {
+          "roomId": "OFFICE",
+          "observer": "WALL_X_MIN",
+          "ugr": 18.182796804132764,
+          "independentDirectEyeLux": 206.60914100917145,
+          "radianceDirectEyeLux": 206.60663300000002,
+          "absoluteDifferenceLux": 0.0025080091714357877,
+          "relativeDifference": 0.000012138907113139086
+        },
+        {
+          "roomId": "OFFICE",
+          "observer": "WALL_X_MAX",
+          "ugr": 18.20148972045751,
+          "independentDirectEyeLux": 206.60914100917157,
+          "radianceDirectEyeLux": 206.60663300000002,
+          "absoluteDifferenceLux": 0.0025080091715494746,
+          "relativeDifference": 0.00001213890711368933
+        },
+        {
+          "roomId": "OFFICE",
+          "observer": "WALL_Y_MIN",
+          "ugr": 17.027785015462428,
+          "independentDirectEyeLux": 238.61529911281107,
+          "radianceDirectEyeLux": 238.72800400000003,
+          "absoluteDifferenceLux": 0.11270488718895422,
+          "relativeDifference": 0.0004723288389638013
+        },
+        {
+          "roomId": "OFFICE",
+          "observer": "WALL_Y_MAX",
+          "ugr": 17.050580054956345,
+          "independentDirectEyeLux": 238.61529911281107,
+          "radianceDirectEyeLux": 238.72889899999998,
+          "absoluteDifferenceLux": 0.11359988718891145,
+          "relativeDifference": 0.0004760796462392983
+        }
+      ],
+      "areaSamplesPerSource": 25600,
+      "tolerance": ".1 lx + 0.2% of quadrature prediction",
+      "maximumRelativeDirectEyeDifference": 0.0004760796462392983,
+      "scope": "Independent arithmetic and finite-opening direct vertical irradiance, not diffuse background or actual product approval"
+    },
+    "importerFaultChecks": {
+      "passed": 11,
+      "optimizationFlag": "-O",
+      "scope": "Source, pixel, cross-file, axes, matrix, values, limits, coverage, existing-file and valid-import checks; not transcription certification"
+    },
+    "negativeControls": {
+      "nominalUgr19ProductOverLimit": {
+        "maximumUgr": 19.125351434888277,
+        "requiredLimit": 19,
+        "newCadCreated": false
+      },
+      "seatedPositionIndexDash": "unresolved and blocked; no substitute standing acceptance",
+      "asymmetricProduct": "rejected at original-angle/mirror knots, no symmetrization to force success",
+      "changedUgrCsv": "status and new delivery rejected"
+    },
+    "browser": {
+      "liveProgressObserved": true,
+      "resultsObserved": true,
+      "actualCsvSHA256": "82cb28faac38660d25e9c114407359f760235c79bd8c2ba7673f89de6923025f",
+      "downloadIdentityMatched": true,
+      "downloadRaceFoundAndFixed": "Former quality-only indices could become another PDF after delivery reordered files. UI now binds exact SHA; real HTTP reorder/removal tests and browser download verified."
+    },
+    "pdf": {
+      "a3Pages": 5,
+      "mergedRenderIdentical": true,
+      "visualReview": "agent_checked_all_5_rendered_pages",
+      "professionalDrawingReview": false
+    },
+    "reviewPackage": {
+      "verifiedFiles": 173,
+      "sha256": "ae48248789a85ec076ce9e1c83ea8b67a34a55ce3577005b6c6f518caea32a4f",
+      "rawPositiveAndOverlimitDataIncluded": true,
+      "independentReferenceAndBrowserFixIncluded": true,
+      "fullStandardPdfsIncluded": false,
+      "fullPositionTableIncluded": false,
+      "runtimeBinariesIncluded": false
+    }
+  },
+  "productSourceDiscrepancy": {
+    "product": "Signify RC461B 910505100245",
+    "iesWatts": 23,
+    "catalogWatts": 24,
+    "iesLumens": 3398.9,
+    "catalogLumens": 3400,
+    "sourceRawBytesNotRenormalized": true,
+    "electricalSelectionApproved": false
+  },
+  "limitations": [
+    "Only rectangular, unobstructed reference cuboids with aligned downward rectangular openings, uniform mounting plane and supported position-table cells",
+    "Conservative active-bracket interpretation, double-symmetry tolerance and actual standard applicability need professional review",
+    "Uniform luminous-opening approximation from far-field IES; no measured nonuniform brightness, actual near-field or workstation field-of-view acceptance",
+    "Seated lookup gaps, actual hospital conditions, daylight, openings, internal objects and full-floor quality remain unaccepted",
+    "Layout optimizer still uses direct light; failed diffuse/UGR checks do not yet automatically reselect or rearrange fixtures",
+    "Nominal electrical power discrepancy remains explicit; calculation and source-bound model checks are not product/electrical approval",
+    "Current-machine bounded studies do not establish whole-floor performance or clean-machine/customer usability",
+    "Authenticated professional review, independent architectural inputs, hospital specialist design and independent project trials remain pending"
+  ],
+  "professionalApproval": false,
+  "constructionApproval": false,
+  "milestones": {
+    "M2": "not_complete",
+    "M3": "not_complete",
+    "M4": "not_complete"
+  }
+}

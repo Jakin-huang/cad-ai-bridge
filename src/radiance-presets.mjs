@@ -1,0 +1,2 @@
+// Fixed numerical presets; caller conditions never change these settings.
+export const qualityProfiles=[{id:'direct',bounces:0,samples:0,superSamples:0,weight:.000001,depth:20,sampling:.05,accuracy:0,resolution:0},{id:'coarse',bounces:2,samples:128,superSamples:32,weight:.001,depth:-12,sampling:.2,accuracy:.2,resolution:32},{id:'medium',bounces:4,samples:512,superSamples:128,weight:.0005,depth:-16,sampling:.1,accuracy:.15,resolution:64},{id:'fine',bounces:5,samples:1024,superSamples:256,weight:.0001,depth:-20,sampling:.1,accuracy:.1,resolution:128}];

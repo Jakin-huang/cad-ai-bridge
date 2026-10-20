@@ -1,0 +1,13 @@
+// Shared, allowlisted scene execution for horizontal illuminance and observer eyes.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {hashFile} from './drawings.mjs';
+import {runRadiance} from './radiance-runtime.mjs';
+export async function traceRadianceScene({runtime,folder,scene,lamps,sensors,profiles,onProfile}){
+ await fs.mkdir(folder);const commands=[];const run=async(tool,args,input)=>{if(await hashFile(path.join(runtime.root,'bin',tool+'.exe'))!==runtime.tools.find(t=>t.file===tool+'.exe').sha256.toLowerCase())throw Error('RADIANCE_RUNTIME_CHANGED: '+tool);const start=Date.now(),r=await runRadiance(runtime,tool,args,{cwd:folder,input,timeoutMs:tool==='rtrace'?180000:120000});commands.push({tool,args,exitCode:r.code,elapsedMs:Date.now()-start,stderr:r.stderr});return r.stdout;};
+ for(const [i,lamp] of lamps.entries()){const name='lamp'+i;await fs.copyFile(lamp.sourceFile,path.join(folder,name+'.ies'),fs.constants.COPYFILE_EXCL);if(await hashFile(path.join(folder,name+'.ies'))!==lamp.sourceSHA256)throw Error('IES_SOURCE_CHANGED');await run('ies2rad',['-t','default','-m',lamp.maintenanceFactor,'-o',name,name+'.ies']);const converted=await fs.readFile(path.join(folder,name+'.rad'),'utf8');if(/^\s*!/m.test(converted))throw Error('RADIANCE_INLINE_COMMAND_REJECTED');scene+=(await run('xform',['-rz',lamp.rotationDegrees,'-t',...lamp.positionM,name+'.rad'])).toString('utf8');}
+ await fs.writeFile(path.join(folder,'scene.rad'),scene,{flag:'wx'});await fs.writeFile(path.join(folder,'scene.oct'),await run('oconv',['scene.rad']),{flag:'wx'});
+ if(!sensors.length||sensors.some(s=>s.positionM.length!==3||s.normal.length!==3||![...s.positionM,...s.normal].every(Number.isFinite)||Math.abs(Math.hypot(...s.normal)-1)>1e-8))throw Error('RADIANCE_SENSORS_INVALID');const input=sensors.map(s=>[...s.positionM,...s.normal].join(' ')).join('\n')+'\n';await fs.writeFile(path.join(folder,'sensors.txt'),input,{flag:'wx'});const values={};
+ for(const p of profiles){await onProfile?.(p.id);const args=['-I+','-h-','-u-','-n',1,'-ab',p.bounces,'-av',0,0,0,'-aw',0,'-aa',p.accuracy,'-ar',p.resolution,'-ad',p.samples,'-as',p.superSamples,'-lw',p.weight,'-lr',p.depth,'-dt',0,'-dc',1,'-dj',0,'-ds',p.sampling,'scene.oct'],raw=await run('rtrace',args,input);await fs.writeFile(path.join(folder,p.id+'.txt'),raw,{flag:'wx'});const rows=raw.toString('utf8').trim().split(/\r?\n/).map(line=>line.trim().split(/\s+/).map(Number));if(rows.length!==sensors.length||rows.some(r=>r.length!==3||r.some(v=>!Number.isFinite(v)||v<0)))throw Error('RADIANCE_GRID_INVALID');values[p.id]=rows.map(([r,g,b])=>179*(.265*r+.670*g+.065*b));}
+ return {values,commands};
+}

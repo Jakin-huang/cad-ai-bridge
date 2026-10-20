@@ -42,8 +42,13 @@ export async function startTaskCenter({execute,runs,port=0}={}){
     const {orderedJobIds,...result}=await listJobs(runs,{offset,limit,snapshot:requested?snapshots.get(requested).ids:undefined}),snapshotId=requested??crypto.randomBytes(12).toString('hex');if(!requested){while(snapshots.size>=8)snapshots.delete(snapshots.keys().next().value);snapshots.set(snapshotId,{at:Date.now(),ids:orderedJobIds});}return send(200,{...result,snapshotId});
    }
    if(req.method==='GET'&&url.pathname==='/api/file'){
-    const job=await jobDirectory(runs,url.searchParams.get('jobId')??''),result=await jobJson(job,'result.json'),index=Number(url.searchParams.get('index')),file=registeredFiles(result)[index];
-    if(!Number.isSafeInteger(index)||!file)return send(404,{ok:false,error:'No registered deliverable'});
+    const job=await jobDirectory(runs,url.searchParams.get('jobId')??''),result=await jobJson(job,'result.json'),index=Number(url.searchParams.get('index')),expected=url.searchParams.get('sha256'),files=registeredFiles(result);
+    if(expected&&!/^[a-f0-9]{64}$/i.test(expected))return send(400,{ok:false,error:'Invalid deliverable identity'});
+    // A completed CAD delivery can reorder the earlier quality-only file list.
+    // Resolve the exact displayed bytes rather than an obsolete array position.
+    const file=expected?files.find(f=>f.sha256.toLowerCase()===expected.toLowerCase()):files[index];
+    if(expected&&!file)return send(409,{ok:false,error:'Deliverable list changed; refresh the task'});
+    if(!expected&&(!Number.isSafeInteger(index)||!file))return send(404,{ok:false,error:'No registered deliverable'});
     const resolved=await fs.realpath(file.file),root=await fs.realpath(runs);if(!isWithin(root,resolved))return send(403,{ok:false,error:'Deliverable escapes task outputs'});
     if(!['.dwg','.dxf','.pdf','.png','.csv','.json','.html'].includes(path.extname(resolved).toLowerCase()))return send(403,{ok:false,error:'Unsupported deliverable format'});
     const bytes=await fs.readFile(resolved);if(crypto.createHash('sha256').update(bytes).digest('hex')!==file.sha256)return send(409,{ok:false,error:'Deliverable changed since verification'});
