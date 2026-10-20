@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_611ab1f",
+  "engineVersion": "1.7.0",
+  "frozenV2Unchanged": true,
+  "pluginUnchanged": true,
+  "implemented": [
+    "Source-bound baseline feedback, per-product point pool and bounded whole-project beam search",
+    "Total-light candidate basis with direct diagnostics retained; no target, surface, posture, source or maintenance-factor relaxation",
+    "Fresh finite diffuse and requested UGR evidence per candidate; failure/partial data retained",
+    "Separate source-bound study and adopted decision identity; same-input new revision invalidates prior review",
+    "Replay, tamper, budget and interrupted-owner recovery gates; original verified state retained",
+    "Actual task-center candidate progress, power change and decision download; source and rejected baseline in review package"
+  ],
+  "evidence": {
+    "unitTests": {
+      "passed": 225,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualMcpRadianceCadChecks": 26,
+    "cases": [
+      {
+        "case": "overlight_repair",
+        "developmentCase": true,
+        "heldOutProject": false,
+        "dimensionsM": [
+          8,
+          6
+        ],
+        "scope": "One independently invented enclosed office, source-bound real panel IES and interpreted standard subset; native CAD and finite diffuse reflection study, no actual customer or hospital acceptance. Separate invented standing-reference variant; earlier seated lookup unresolved result remains retained and is not replaced. Explicit synthetic standing reference test only; IES 23W and leaflet 24W discrepancy is pending review; no product selection or seated/hospital acceptance. New synthetic task: maintained total average must remain between 300 and 350 lx. Optimize within the identical frozen input; original file, source assumptions and product-rating discrepancy retained.",
+        "inputSHA256": "ef4596d0f207983c7660a05e66c9020617659ce79304869262d1107786276020",
+        "inputUnchanged": true,
+        "sourceModelSHA256": "fcb3f6a2e4f033fc767faefb2f8e011ded295a45822ebff5924b25088494f5ea",
+        "selectedModelSHA256": "22e8851e6c09d88da544f00352e41eccd9600debc96d84b8a3eec623da1ab449",
+        "source": {
+          "devices": 8,
+          "fixture": "LED",
+          "calculatedIesWatts": 184,
+          "totalAverageLux": 406.72724005454535,
+          "maximumReferenceUgr": 18.201489720457513,
+          "failedChecks": [
+            "total_mean_and_uniformity_OFFICE"
+          ],
+          "newCadCreated": false
+        },
+        "selected": {
+          "devices": 6,
+          "fixture": "LED",
+          "calculatedIesWatts": 138,
+          "totalAverageLux": 324.32627156969704,
+          "uniformity": 0.6517583419219691,
+          "directPointAverageLux": 278.8766607464692,
+          "maximumReferenceUgr": 18.47203585789046,
+          "targets": {
+            "minimumLux": 300,
+            "maximumAverageLux": 350,
+            "minimumUniformity": 0.6
+          }
+        },
+        "expensiveAssessments": 1,
+        "examinedPlans": 1,
+        "searchElapsedMs": 120925,
+        "optimalityProven": false,
+        "actualMcpRadianceCadChecks": 13,
+        "modelChecks": {
+          "passed": 36,
+          "failed": 0,
+          "pending": 10
+        },
+        "qualityChecks": {
+          "passed": 34,
+          "failed": 0
+        },
+        "independentReference": {
+          "observers": 4,
+          "maximumRelativeDirectEyeDifference": 0.00022037119884932245,
+          "tolerance": ".1 lx + 0.2% of quadrature prediction",
+          "scope": "Independent arithmetic and finite-opening direct vertical irradiance, not diffuse background or actual product approval"
+        },
+        "cadSavedReadback": true,
+        "sheets": 5,
+        "professionalApproval": false
+      },
+      {
+        "case": "catalog_reselection",
+        "developmentCase": true,
+        "heldOutProject": false,
+        "dimensionsM": [
+          8,
+          5
+        ],
+        "scope": "Development-only invented 8m by 5m office selected after direct-layout screening of twelve rectangular variants. It is not a held-out or customer project. Total average 300..650 lx, uniformity >=.6, standing reference UGR <=19; frozen source products and their pending electrical evidence retained.",
+        "inputSHA256": "8d17f298776e376b780f9186f1551e69e5f9f47b725c08df6b4c76686ee475aa",
+        "inputUnchanged": true,
+        "sourceModelSHA256": "30b4ef618dceb74048b1db579d9a50d614835d2a9748ef9768a76d30a3c52440",
+        "selectedModelSHA256": "474e174ced6c34f85a96b5442533aa998d4f2c0a860a37e701c78c9b1f85e3bc",
+        "source": {
+          "devices": 6,
+          "fixture": "CORELINE",
+          "calculatedIesWatts": 156,
+          "totalAverageLux": 372.85316011851836,
+          "maximumReferenceUgr": 19.34789107700856,
+          "failedChecks": [
+            "ugr_background_and_limit_OFFICE_WALL_X_MIN",
+            "ugr_background_and_limit_OFFICE_WALL_X_MAX"
+          ],
+          "newCadCreated": false
+        },
+        "selected": {
+          "devices": 6,
+          "fixture": "LED",
+          "calculatedIesWatts": 138,
+          "totalAverageLux": 372.90936346666683,
+          "uniformity": 0.6768559755474247,
+          "directPointAverageLux": 317.7439383016293,
+          "maximumReferenceUgr": 18.20641303615913,
+          "targets": {
+            "minimumLux": 300,
+            "maximumAverageLux": 650,
+            "minimumUniformity": 0.6
+          }
+        },
+        "expensiveAssessments": 1,
+        "examinedPlans": 1,
+        "searchElapsedMs": 111429,
+        "optimalityProven": false,
+        "actualMcpRadianceCadChecks": 13,
+        "modelChecks": {
+          "passed": 36,
+          "failed": 0,
+          "pending": 10
+        },
+        "qualityChecks": {
+          "passed": 34,
+          "failed": 0
+        },
+        "independentReference": {
+          "observers": 4,
+          "maximumRelativeDirectEyeDifference": 0.00032026693305691487,
+          "tolerance": ".1 lx + 0.2% of quadrature prediction",
+          "scope": "Independent arithmetic and finite-opening direct vertical irradiance, not diffuse background or actual product approval"
+        },
+        "cadSavedReadback": true,
+        "sheets": 5,
+        "professionalApproval": false
+      }
+    ],
+    "browser": {
+      "liveCandidateProgress": true,
+      "adoptedRevisionAndPowerObserved": true,
+      "actualDecisionDownloadSHA256": "127d5878cbb4a07985835af69274ee0d5c201c0e5d1a843e3552298ba09f991f",
+      "downloadIdentityMatched": true
+    },
+    "pdf": {
+      "pages": 10,
+      "a3": true,
+      "mergedRenderIdentical": true,
+      "visualReview": "agent_checked_all_10_rendered_pages",
+      "professionalDrawingReview": false
+    },
+    "reviewPackage": {
+      "verifiedFiles": 428,
+      "sha256": "35e0ea5506b1330796972812def473338adcfe7e8a76a916152aba08aea06964",
+      "pages": 10,
+      "originalFailedBaselinesAndAllCandidateDataIncluded": true,
+      "independentReferenceAndBrowserEvidenceIncluded": true,
+      "fullStandardPdfsIncluded": false,
+      "fullPositionTableIncluded": false,
+      "runtimeExecutablesIncluded": false
+    }
+  },
+  "limits": {
+    "perProductPointPool": 16,
+    "perRoomPoolCap": 200,
+    "perRoomShortlist": 24,
+    "wholeProjectBeam": 32,
+    "maxFullCandidates": 6,
+    "defaultFullCandidates": 4,
+    "defaultMinutes": 20,
+    "maxMinutes": 60,
+    "deadlineScope": "Checked before the next native profile; an active trace remains governed by its existing timeout, not exact wall-clock termination",
+    "assessmentRooms": 10,
+    "assessmentDevices": 100,
+    "assessmentPoints": 1000
+  },
+  "limitations": [
+    "Requires an existing direct-feasible, fully assessed baseline; prepared-state total-light-only initialization is not yet available",
+    "Only existing catalog, current grid/single-removal families, bounded combinations; no global optimality or infeasibility certificate",
+    "Gain transfer is a ranking heuristic only; all selected optical results are recomputed, not gain-scaled",
+    "Standing reference studies do not resolve earlier seated position-table gaps, nonuniform product luminance or actual workstation suitability",
+    "RC461B raw IES power 23W differs from catalog nominal 24W; absolute electrical/product acceptance remains unresolved",
+    "Catalog scenario selected after twelve development rectangle screens, not an independent or held-out customer trial",
+    "Source/control diagrams and numerical/PDF checks do not establish installation routing, specialist electrical compliance or construction approval",
+    "Hospital architectural independence/full-floor coverage, external users, new machines, authenticated professional review and M2-M4 remain incomplete"
+  ],
+  "milestones": {
+    "M2": "not_complete",
+    "M3": "not_complete",
+    "M4": "not_complete"
+  },
+  "professionalApproval": false,
+  "constructionApproval": false
+}
