@@ -10,7 +10,7 @@ import {listSessions} from '../src/sessions.mjs';
 const resume=process.argv.indexOf('--resume'),runRoot=resume>=0?path.resolve(process.argv[resume+1]):localPath('artifacts','practical-run-'+new Date().toISOString().replace(/[:.]/g,'-'));
 if(!runRoot.startsWith(localPath('artifacts')+path.sep))throw Error('Resume must use a local artifacts run directory');
 await fs.mkdir(runRoot,{recursive:true});
-const reportFile=path.join(runRoot,'progress.json'),state=resume>=0?JSON.parse(await fs.readFile(reportFile,'utf8')):{startedAt:new Date().toISOString(),status:'running',steps:[],scope:'P0/v0.6 development and current-machine automated acceptance; external users and fresh Windows are not simulated.'};state.status='running';delete state.error;
+const reportFile=path.join(runRoot,'progress.json'),state=resume>=0?JSON.parse(await fs.readFile(reportFile,'utf8')):{startedAt:new Date().toISOString(),status:'running',steps:[],scope:'v2.0 implementation and current-machine automated acceptance; external users and fresh Windows are not simulated.'};state.status='running';delete state.error;
 async function run(name,args,exe=process.execPath){
  if(state.steps.some(item=>item.name===name&&item.status==='passed')){console.log('RETAIN '+name);return;}
  const attempt=state.steps.filter(item=>item.name===name).length+1,item={name,attempt,status:'running',startedAt:new Date().toISOString(),log:path.join(runRoot,name+'-'+attempt+'.log')};state.steps.push(item);await atomicJson(reportFile,state);console.log('START '+name);const start=performance.now();
@@ -29,6 +29,8 @@ try{
  await run('static',['scripts/check-release.mjs','--static']);
  await run('workflows',['tests/workflows-integration.mjs']);
  await run('practical-v06',['tests/practical-v06-integration.mjs']);
+ await run('v2-core',['tests/v2-integration.mjs']);
+ await run('batch-export-performance',['tests/batch-export-performance.mjs']);
  await run('pdf-physical',['tests/plot-pdf-physical.py',localPath('artifacts','practical-v06-report.json'),localPath('artifacts','plot-pdf-physical-report.json')],process.env.CADBRIDGE_PYTHON||'python');
  if(!['sessions','query-scope'].every(name=>state.steps.some(item=>item.name===name&&item.status==='passed'))){
  // Start a fresh owned instance so tests never depend on the user's current CAD.

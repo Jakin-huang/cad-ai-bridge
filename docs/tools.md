@@ -1,6 +1,6 @@
 # 工具与数据契约
 
-v0.6.0-preview.1提供22个工具，在四阶段功能上增加cad_scan_drawing和复合交付、统计排除及工程打印参数。任务形态、会话保存/取消边界及兼容读取见[实施记录](practical-development.md)。只读模式使用受限schema保留复合工具的只读分支，不暴露其编辑或插件接入操作。
+v2.0.0-preview.1提供24个工具，新增cad_project和cad_analyze，保留既有接口。多图恢复、工程规则、计量与分级验证见 [v2 使用说明](v2-usage.md)。只读模式收窄项目、工作流和会话schema，执行器还会独立检查写入权限。
 
 MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的严格 schema。图纸路径必须位于 setup 配置的 workspace 或本项目任务输出目录，解析真实路径后检查边界。输出路径由宿主生成，调用者不能指定覆盖源图。
 

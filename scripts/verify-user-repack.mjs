@@ -31,8 +31,8 @@ const server=parseLocalJSON(await fs.readFile(path.join(home,'mcp.json'),'utf8')
 const client=new Client({name:'final-user-package-verification',version:'0.2.0'});
 try{
  await client.connect(new StdioClientTransport({command:server.command,args:server.args,env:{...process.env,...server.env},stderr:'pipe'}));
- assert.equal((await client.listTools()).tools.length,22);
+ assert.equal((await client.listTools()).tools.length,24);
  const doctor=parseLocalJSON((await client.callTool({name:'cad_doctor',arguments:{}})).content[0].text);assert.equal(doctor.ok,true);
 }finally{await client.close();}
-const report={ok:true,checkedAt:new Date().toISOString(),archive:zip,sha256,bytes:(await fs.stat(zip)).size,extracted:folder,verifiedFiles:manifest.files.length,matchingProductFiles:current.size,acceptedCandidateSHA256:accepted.packageSha256,checks:['ZIP sidecar and all extracted files match SHA-256 manifest','Every runtime, dependency, plugin, Skill and product entry is identical to the accepted candidate','Fresh isolated setup succeeds offline with minimal PATH','Generated MCP entry discovers 22 tools and diagnostic passes'],cleanWindowsVerified:false,separateStandardAccountVerified:false};
+const report={ok:true,checkedAt:new Date().toISOString(),archive:zip,sha256,bytes:(await fs.stat(zip)).size,extracted:folder,verifiedFiles:manifest.files.length,matchingProductFiles:current.size,acceptedCandidateSHA256:accepted.packageSha256,checks:['ZIP sidecar and all extracted files match SHA-256 manifest','Every runtime, dependency, plugin, Skill and product entry is identical to the accepted candidate','Fresh isolated setup succeeds offline with minimal PATH','Generated MCP entry discovers 24 tools and diagnostic passes'],cleanWindowsVerified:false,separateStandardAccountVerified:false};
 await fs.writeFile(projectPath('artifacts/windows-user-final-package-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));

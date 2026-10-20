@@ -11,6 +11,8 @@ description: "通过 CAD AI Bridge 查询、修改和统计已有 CAD 图纸，�
 
 用户明确要求检查连接或出现环境错误时，cad_doctor 调用一次即可；它不启动CAD。能力问题才查cad_capabilities，恢复任务才查cad_get_job/cad_read_result。文件任务无需保持CAD打开。Skill已加载、连接器已配置、工具实际可用是不同状态；工具缺失就报告连接发现失败，不伪称CAD故障或拿旧文件作新结果，不自行改客户端设置、重装或编译插件。
 
+多张图使用 cad_project：start 后按 jobId 查看 status，取消仅停止后续图，resume 只继续未开始项，reexport 只重导已失败出图，不重做已保存修改。工程检查和带来源计量使用 cad_scan_drawing 后的 cad_analyze，按需读 [项目、计量与验证](references/project-analysis.md)。工具返回的 verification.levels 分别报告保存、重开、几何、保护和出图；partial/unknown 不得称为完整验证或实用性验收通过。
+
 “当前打开的图纸/当前视图/选择集”任务读 [会话流程](references/session-workflow.md)。cad_session先list（status为别名），必要时connect，再context；使用返回的文档身份、内存版本和句柄，人工修改或切图后重新读取。普通文件工作流仍可独立使用。
 
 由AI传递工具返回的摘要、身份、版本、路径并生成UUID，不要求用户提供技术字段。一个逻辑任务合成批次；不逐对象启动CAD。原图保留、另存结果。未定义单位不能猜测毫米；图例、重复视图和统计排除范围必须说明，图面数量不等于工程净量。大图先cad_scan_drawing，随后按同一结果摘要分页；截断不能称为完整统计。

@@ -122,3 +122,25 @@ schemas.session=z.discriminatedUnion('action',[
 export const readonlyWorkflowSchema=schemas.workflow.extend({plan:z.discriminatedUnion('type',workflowPlans.options.filter(plan=>['takeoff','export_batch'].includes(plan.shape.type.value)))});
 export const readonlySessionSchema=z.discriminatedUnion('action',schemas.session.options.filter(action=>['list','status','context','query','recover','snapshot'].includes(action.shape.action.value)));
 schemas.read_result=schemas.read_result.extend({filter:schemas.query_entities.shape.filter.removeDefault().optional(),fields:z.array(z.string().regex(/^[A-Za-z][A-Za-z0-9_]{0,63}$/)).min(1).max(30).optional(),expectedResultSha256:z.string().regex(/^[a-fA-F0-9]{64}$/).optional()});
+const analysisFilter=schemas.query_entities.shape.filter;
+const ruleBase=z.strictObject({id,filter:analysisFilter,severity:z.enum(['info','warning','error']).default('warning'),authority:z.string().min(1).max(512).optional()});
+schemas.analyze=z.strictObject({captureJobId:z.string().regex(/^job-[A-Za-z0-9_-]+$/),expectedResultSha256:z.string().regex(/^[a-fA-F0-9]{64}$/).optional(),filter:analysisFilter,exclude:exclude.optional(),checks:z.array(z.discriminatedUnion('type',[
+ ruleBase.extend({type:z.literal('duplicate_attribute'),tag:z.string().min(1).max(64),caseSensitive:z.boolean().default(false)}),
+ ruleBase.extend({type:z.literal('required_attributes'),tags:z.array(z.string().min(1).max(64)).min(1).max(20)}),
+ ruleBase.extend({type:z.literal('forbidden_text'),text:z.string().min(1).max(512),caseSensitive:z.boolean().default(false)}),
+ ruleBase.extend({type:z.literal('allowed_layers'),layers:z.array(cadLayer).min(1).max(100)}),
+ ruleBase.extend({type:z.literal('minimum_length'),minimum:z.number().finite().nonnegative().max(1e12),unit:z.enum(['drawing','mm']).default('mm')}),
+ ruleBase.extend({type:z.literal('text_height'),minimumMm:z.number().finite().nonnegative().max(100000),maximumMm:z.number().finite().positive().max(100000)})
+ ])).max(100).default([]),quantities:z.array(z.strictObject({id,version:z.string().min(1).max(64),filter:analysisFilter,meaning:z.enum(['drawing_occurrences','installed_rule','procurement_rule']).default('drawing_occurrences'),measure:z.enum(['count','length']),unit:z.enum(['mm','m']).default('m'),factor:z.number().finite().positive().max(1e6).default(1),wastePercent:z.number().finite().min(0).max(1000).default(0),roundUpTo:z.number().finite().positive().max(1e9).optional(),authority:z.string().min(1).max(512).optional()})).max(100).default([])}).superRefine((v,ctx)=>{const ids=[...v.checks,...v.quantities].map(r=>r.id);if(new Set(ids).size!==ids.length)ctx.addIssue({code:'custom',message:'Rule IDs must be unique'});if(!ids.length)ctx.addIssue({code:'custom',message:'Provide checks or quantity rules'});for(const r of v.checks)if(r.type==='text_height'&&r.minimumMm>r.maximumMm)ctx.addIssue({code:'custom',message:'Invalid text height range'});});
+schemas.read_result=schemas.read_result.extend({kind:z.enum([...schemas.read_result.shape.kind.options,'quantityRows','quantityResults','checkResults','files','items'])});
+const projectItem=schemas.workflow.omit({requestId:true,response:true}).extend({id:id.refine(v=>!/^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/i.test(v),'Reserved Windows file name'),expectedSha256:z.string().regex(/^[a-fA-F0-9]{64}$/).optional()});
+schemas.project=z.discriminatedUnion('action',[
+ z.strictObject({action:z.literal('start'),requestId:z.uuid(),failurePolicy:z.enum(['stop','continue']).default('stop'),items:z.array(projectItem).min(1).max(100).refine(items=>new Set(items.map(i=>i.id.toUpperCase())).size===items.length,'Duplicate item IDs')}),
+ z.strictObject({action:z.literal('list'),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(20)}),
+ z.strictObject({action:z.literal('reexport'),jobId:z.string().regex(/^job-project-[a-fA-F0-9-]{36}$/),itemId:id,requestId:z.uuid(),names:z.array(id).min(1).max(50).optional()}),
+ z.strictObject({action:z.literal('status'),jobId:z.string().regex(/^job-project-[a-fA-F0-9-]{36}$/),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(20).default(20)}),
+ ...['cancel','resume'].map(action=>z.strictObject({action:z.literal(action),jobId:z.string().regex(/^job-project-[a-fA-F0-9-]{36}$/)}))
+]);
+schemas.export_many=z.strictObject({drawing:str,host,items:workflowPlans.options.find(p=>p.shape.type.value==='export_batch').shape.items});
+export const readonlyProjectSchema=z.discriminatedUnion('action',schemas.project.options.map(option=>option.shape.action.value==='start'?option.extend({items:z.array(projectItem.extend({plan:readonlyWorkflowSchema.shape.plan})).min(1).max(100)}):option));
+export const publicProjectSchema=z.discriminatedUnion('action',schemas.project.options.map(option=>option.shape.action.value==='start'?option.extend({items:z.array(projectItem.extend({plan:publicWorkflowSchema.shape.plan})).min(1).max(100)}):option));

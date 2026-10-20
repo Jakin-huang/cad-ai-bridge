@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "target": "2.0.0-preview.1",
+  "baseline": "f9a57b28e1a3012ad317b7b1ef26ae0d423de8b1",
+  "updated": "2026-10-20",
+  "deliveryMode": "single integrated delivery",
+  "packages": [
+    {"id":"V2-01","name":"Tiered verification","status":"implemented_current_machine_core_passed","evidence":["tests/unit/verification.test.mjs","tests/unit/transport-v2.test.mjs","tests/v2-integration.mjs"]},
+    {"id":"V2-02","name":"Engineering checks and traceable quantities","status":"implemented_current_machine_core_passed","evidence":["tests/unit/engineering-analysis.test.mjs","tests/v2-integration.mjs"]},
+    {"id":"V2-03","name":"Project tasks and recovery","status":"implemented_current_machine_core_passed","evidence":["tests/unit/project-tasks.test.mjs","tests/unit/atomic-journal.test.mjs","tests/v2-integration.mjs"]},
+    {"id":"V2-04","name":"Unified task entry and local task center","status":"implemented_final_ui_validation_in_progress","evidence":["tests/unit/task-center.test.mjs"]},
+    {"id":"V2-05","name":"Geometry correctness and measured performance","status":"implemented_current_machine_core_passed","evidence":["tests/unit/geometry-v2.test.mjs","tests/v2-integration.mjs","tests/batch-export-performance.mjs"]},
+    {"id":"V2-06","name":"Backend contracts and reproducible benchmarks","status":"implemented_contract_tests_passed","evidence":["tests/unit/backend-contracts.test.mjs","tests/unit/benchmarks.test.mjs","tests/unit/benchmark-cli.test.mjs"]},
+    {"id":"V2-07","name":"Integrated validation and user package","status":"in_progress","evidence":["scripts/verify-practical.mjs"]}
+  ],
+  "externalAcceptance": {
+    "freshPhysicalWindowsMachine":"not_verified",
+    "independentStandardAccount":"not_verified",
+    "actualDesktopNaturalLanguageTask":"not_verified",
+    "externalUsersAndManualProductivity":"not_verified",
+    "additionalAuthorizedCadHosts":"not_verified",
+    "headToHeadCompetitiveSuperiority":"not_verified"
+  },
+  "deferredByUser":["local VM testing"],
+  "stableUsabilityAccepted":false
+}

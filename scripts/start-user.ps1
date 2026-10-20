@@ -24,6 +24,7 @@ $hint.ForeColor=[Drawing.Color]::DimGray
 $connect=Button '接入 WorkBuddy' 30 221 190
 $connect.BackColor=[Drawing.Color]::FromArgb(31,92,220);$connect.ForeColor=[Drawing.Color]::White;$connect.FlatStyle='Flat'
 $help=Button '一页图文说明' 236 221 144
+$center=Button '打开任务中心' 396 221 174;$center.Enabled=$false
 $progress=New-Object Windows.Forms.ProgressBar;$progress.SetBounds(30,278,660,7);$progress.Style='Marquee';$progress.Visible=$false;$form.Controls.Add($progress)
 $status=Label '选好文件夹后，点击“接入 WorkBuddy”。' 30 302 660 34
 $status.Font=New-Object Drawing.Font('Microsoft YaHei UI',11,[Drawing.FontStyle]::Bold)
@@ -38,14 +39,15 @@ $browse.Add_Click({
   try{$picker.Description='选择已有图纸所在的文件夹，也可以新建文件夹';$picker.ShowNewFolderButton=$true;if(Test-Path -LiteralPath $folder.Text -PathType Container){$picker.SelectedPath=$folder.Text};if($picker.ShowDialog($form) -eq 'OK'){$folder.Text=$picker.SelectedPath}}finally{$picker.Dispose()}
 })
 $help.Add_Click({try{Start-Process -FilePath (Join-Path $project '使用说明.html')}catch{$status.Text='无法打开说明，请双击根目录的“使用说明.html”。'}})
+$center.Add_Click({try{Start-Process -FilePath (Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powershell.exe') -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+(Join-Path $PSScriptRoot 'start-center.ps1')+'"') -WindowStyle Hidden}catch{$status.Text='任务中心未能启动，请查看图文说明。'}})
 $copy.Add_Click({try{[Windows.Forms.Clipboard]::SetText($example);$copy.Text='已复制，请粘贴到任务'}catch{$status.Text='剪贴板暂不可用，请从图文说明中复制示例任务。'}})
 $logs.Add_Click({if($script:log -and (Test-Path -LiteralPath $script:log)){Start-Process -FilePath 'notepad.exe' -ArgumentList ('"'+$script:log+'"')}})
 $timer=New-Object Windows.Forms.Timer;$timer.Interval=400
 function Finish-Setup($result){
   $progress.Visible=$false;$connect.Enabled=$true;$browse.Enabled=$true;$folder.Enabled=$true
   $status.Text=$result.title;$next.Text=$result.next;$logs.Enabled=($script:log -and (Test-Path -LiteralPath $script:log))
-  if($result.ok){$status.ForeColor=[Drawing.Color]::FromArgb(20,116,74);$connect.Text='重新接入 / 更换目录';$copy.Enabled=$true}
-  else{$status.ForeColor=[Drawing.Color]::FromArgb(174,47,40);$connect.Text='重新接入';$copy.Enabled=$false}
+  if($result.ok){$status.ForeColor=[Drawing.Color]::FromArgb(20,116,74);$connect.Text='重新接入 / 更换目录';$copy.Enabled=$true;$center.Enabled=$true}
+  else{$status.ForeColor=[Drawing.Color]::FromArgb(174,47,40);$connect.Text='重新接入';$copy.Enabled=$false;$center.Enabled=$false}
 }
 $timer.Add_Tick({
   if($script:worker -and $script:worker.HasExited){

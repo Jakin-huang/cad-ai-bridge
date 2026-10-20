@@ -18,6 +18,9 @@ import {runWorkflow} from './workflows.mjs';
 import {executeSession,sessionHome} from './sessions.mjs';
 import {buildQueryIndex} from './query-index.mjs';
 import {verifyPlotBytes} from './plot-checks.mjs';
+import {runAnalysis} from './engineering-analysis.mjs';
+import {createProjectManager} from './project-tasks.mjs';
+import {builtInBackends,requireBackendCapability} from './backend-contracts.mjs';
 const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply','edit']);
 export async function launchHost(exe,args){
  return new Promise((resolve,reject)=>{
@@ -29,6 +32,7 @@ export async function launchHost(exe,args){
 async function runtimeSettings(){const settings=await loadConfig();await verifyPlugin();return settings;}
 export function createExecutor({getSettings=runtimeSettings,launch=launchHost,runs=path.join(dataHome(),'runs')}={}){
  let queue=Promise.resolve(),bootstrap;
+ const projects=createProjectManager({execute,getSettings,runs});
  async function execute(action,args={}){
   let parsed;try{if(!schemas[action])throw Error('INVALID_ACTION: unsupported action');parsed=schemas[action].parse(args);}catch(error){return failure(error);}
   // Evidence reads remain responsive while a CAD job is in flight.
@@ -42,6 +46,8 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    if(action==='doctor')return await diagnose(parsed);
    if(action==='read_result')return await readResultPage(runs,parsed);
    if(action==='get_job')return await getJob(runs,parsed);
+   if(action==='analyze')return await runAnalysis(runs,parsed);
+   if(action==='project')return await projects.run(parsed);
   }catch(error){return failure(error,{stage:'result'});}
   const enqueued=performance.now(),work=queue.then(()=>run(action,parsed,enqueued));queue=work.catch(()=>{});return work;
  }
@@ -52,6 +58,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
   try{
    let t=performance.now();settings=await getSettings();const allowedRoot=await fs.realpath(settings.workspace);timings.configurationMs=Math.round(performance.now()-t);
    const backend=action==='native_status'||parsed.operations?.some(op=>nativeOperations.has(op.type))?'tangent':parsed.host||'core';
+   const backendCapability=requireBackendCapability(builtInBackends[backend==='tangent'?1:0],{operation:action==='repair_copy'?'repair':writes.has(action)?'write':['export','export_many'].includes(action)?'render':'read',units:writes.has(action)?parsed.units??(['create_test_drawing','create_drawing'].includes(action)?'mm':undefined):undefined});
    if(backend==='tangent'&&(!settings.tangentRoot||!settings.tangentProfile))throw Error('TANGENT_NOT_CONFIGURED: run cadbridge setup and select Tangent V8.');
    await fs.mkdir(runs,{recursive:true});job=await fs.mkdtemp(path.join(runs,'job-'));
    const {drawing,expectedSha256,host:requestedHost,detail,...payload}=parsed,request={...payload,action:action==='scan'?'query_entities':action};
@@ -78,7 +85,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    try{response=JSON.parse((await fs.readFile(path.join(job,'response.json'),'utf8')).replace(/^\uFEFF/,''));}catch(error){if(host.code===0)throw Error('HOST_NO_RESPONSE: '+error.message);}
    if(!response)throw Error((/TIMEOUT_STATE_UNKNOWN/.test(host.stderr)?'TIMEOUT_STATE_UNKNOWN':'HOST_FAILED')+': '+host.stderr);
    // Preserve plugin evidence even if host cleanup failed after saving.
-   let result={...response,backend,jobRoot:job,elapsedMs:timings.hostMs,inputSha256};
+   let result={...response,backend,backendCapability,jobRoot:job,elapsedMs:timings.hostMs,inputSha256};
    if(host.code!==0)result={...result,ok:false,error:result.error||{code:'HOST_CLEANUP_FAILED',message:host.stderr},hostError:{code:host.code,message:host.stderr}};
    if(backend==='tangent')try{result.nativeHost=JSON.parse((await fs.readFile(path.join(job,'host.json'),'utf8')).replace(/^\uFEFF/,''));}catch{}
    await mark('outputs');t=performance.now();
@@ -88,7 +95,12 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    }
    if(response.auditDxfExported||(result.drawing&&response.ok)){try{if((await fs.stat(path.join(job,'output.dxf'))).isFile())result.dxf=path.join(job,'output.dxf');}catch{}}
    timings.outputsMs=Math.round(performance.now()-t);
-   if(action==='export'&&result.ok){const file=path.join(job,'output.'+parsed.format);const bytes=await fs.readFile(file);const verification=verifyPlotBytes(bytes,parsed.format,parsed.plot);if(parsed.plot){const actual=result.exported.actualPlot;if(!actual||parsed.plot.scale==='fixed'&&(actual.useStandardScale||Math.abs(actual.scaleNumerator/actual.scaleDenominator-1/parsed.plot.denominator)>1e-9)||parsed.plot.style&&actual.style.toLowerCase()!==parsed.plot.style.toLowerCase())throw Error('PLOT_SETTINGS_MISMATCH');}result.exported={...result.exported,file,bytes:bytes.length,sha256:await hashFile(file),verification};}
+   const verifyExport=async(exported,item,file)=>{const bytes=await fs.readFile(file),verification=verifyPlotBytes(bytes,item.format,item.plot);if(item.plot){const actual=exported?.actualPlot;if(!actual||item.plot.scale==='fixed'&&(actual.useStandardScale||Math.abs(actual.scaleNumerator/actual.scaleDenominator-1/item.plot.denominator)>1e-9)||item.plot.style&&actual.style?.toLowerCase()!==item.plot.style.toLowerCase())throw Error('PLOT_SETTINGS_MISMATCH');}return {...exported,file,bytes:bytes.length,sha256:await hashFile(file),verification};};
+   if(action==='export'&&result.ok)result.exported=await verifyExport(result.exported,parsed,path.join(job,'output.'+parsed.format));
+   if(action==='export_many'&&result.ok){
+    const outputs=[];for(const item of parsed.items){const entry=result.exports?.find(e=>e.name===item.name);try{if(!entry?.ok)throw Error((entry?.error?.code||'PLOT_ITEM_MISSING')+': '+(entry?.error?.message||item.name));outputs.push({...entry,exported:await verifyExport(entry.exported,item,path.join(job,item.name+'.'+item.format))});}catch(error){outputs.push({name:item.name,ok:false,error:{code:error.message.split(':')[0],message:error.message}});}}
+    result.exports=outputs;if(outputs.some(e=>!e.ok)){result.ok=false;result.error={code:'PARTIAL_EXPORT_FAILURE',message:'Successful exports retained; failed items can be retried without editing.'};}
+   }
    if(action==='takeoff'&&result.snapshot){const s=result.snapshot,groups={};for(const d of s.devices){const key=`${d.blockName}|${d.attributes.MODEL||''}`;groups[key]=(groups[key]||0)+1;}result.takeoff={deviceCount:s.deviceCount,routeCount:s.routeCount,routeLengthMm:s.routeLengthMm,groups,coverage:s.coverage};}
    result.outcome=result.drawingSaved?'saved':response.mutationCommitted?'modified_not_saved':writes.has(action)?response.ok?'modified':'not_applied':'read_only';result.safeToRetry=false;
    if(result.error)result.error={...result.error,stage:response.failureStage||stage,next:'调用 cad_get_job 查看已有结果；写入失败或保存状态不明时不要自动重放。'};

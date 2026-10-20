@@ -4,6 +4,7 @@ import {failure} from './errors.mjs';
 export async function toolResponse(action,args,raw,{readFile=fs.readFile}={}){
  const original=raw;
  try{
+  if(action==='analyze'){const {quantityRows,issues,...rest}=raw;raw={...rest,issues:issues?.slice(0,20),issuesTruncated:issues?.length>20,quantityRowCount:quantityRows?.length};}
   if(action==='workflow'&&args.response==='summary'){
    const {query,snapshot,children,groups,summary,...rest}=raw;
    raw={...rest,summary:summary?{changed:summary.changed,created:summary.created,removed:summary.removed,skippedCount:summary.skipped?.length}:undefined,snapshot:snapshot?{documentId:snapshot.documentId,revision:snapshot.revision,units:snapshot.units}:undefined,details:{jobId:raw.jobRoot?.split(/[\\/]/).at(-1),tool:'cad_read_result',kinds:query?['entities']:[]}};

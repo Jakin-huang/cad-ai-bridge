@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.PlottingServices;
@@ -9,10 +10,15 @@ using App=Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace CadAgent {
  public sealed class PlotContract { public string paper,orientation,scale,style;public double denominator=1; }
+ public sealed class ExportItem { public string name,format,layout;public PlotContract plot;public QueryRegion region; }
  public static partial class Commands {
-  static object ExportDrawing(Document doc,Request request,string directory){
+  static object ExportMany(Document doc,Request request,string directory){
+   Require(request.items!=null&&request.items.Length>0&&request.items.Length<=50,"INVALID_ARGUMENT","Expected 1..50 exports.");var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);foreach(var item in request.items){Require(item!=null,"INVALID_ARGUMENT","Export item required.");Id(item.name);Require(names.Add(item.name+"."+item.format),"INVALID_ARGUMENT","Duplicate export name.");}
+   var results=new List<object>();foreach(var item in request.items){try{var output=ExportDrawing(doc,new Request{format=item.format,layout=item.layout??"Model",plot=item.plot,region=item.region},directory,item.name);results.Add(new{name=item.name,ok=true,exported=output});}catch(System.Exception error){var fault=error as Fault;results.Add(new{name=item.name,ok=false,error=new{code=fault==null?"PLOT_FAILED":fault.Code,message=error.Message}});}}return results;
+  }
+  static object ExportDrawing(Document doc,Request request,string directory,string outputName="output"){
    Require(request.format=="pdf"||request.format=="png","EXPORT_FORMAT_UNSUPPORTED","Expected PDF or PNG.");
-   string format=request.format,output=Path.Combine(directory,"output."+format);Require(!File.Exists(output),"OUTPUT_EXISTS",output);
+   string format=request.format,output=Path.Combine(directory,outputName+"."+format);Require(!File.Exists(output),"OUTPUT_EXISTS",output);
    var db=doc.Database;var manager=LayoutManager.Current;string previousLayout=manager.CurrentLayout;object background=App.GetSystemVariable("BACKGROUNDPLOT");
    try{
     Require(manager.LayoutExists(request.layout),"LAYOUT_NOT_FOUND",request.layout);manager.CurrentLayout=request.layout;

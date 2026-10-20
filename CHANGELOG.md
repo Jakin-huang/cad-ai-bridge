@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-preview.1 — 2026-10-20
+
+Integrate durable multi-drawing projects, checkpoint recovery and read-only failed-export recovery; engineering checks and versioned quantities with per-instance provenance; a local authenticated task center; explicit verification levels; richer saved-object geometry checks; and native multi-export execution in one host. Add backend contracts and evidence-bound fixed-denominator benchmark adjudication. Preserve internal/plugin compatibility 0.2.0 and previous interfaces; expose 24 MCP tools. Current-machine validation, external usability and competitive superiority remain separate gates. See docs/v2-usage.md and docs/v2-implementation.json for the actual candidate status.
+
 ## 0.6.0-preview.1 — 2026-10-20
 
 Add one-capture, hash-bound large-drawing indexing with filtered/projected result pages (100000-record/traversal budgets), explicit takeoff exclusions and missing-world-length counts. Combine saved-drawing CSV/PDF/PNG delivery into one workflow and offer compact replies. Verify protected unselected DXF entity/block records and principal persisted planar geometry; retain saved drawings when verification or delivery fails and report unsupported geometric checks. Add A4–A0 PDF paper/orientation, fit/fixed scale and installed CTB contracts with host-setting and MediaBox checks. Fix explicit layer 0 declaration and session status discovery, check writable task directories, and guide the Skill toward fewer tool calls. Preserve old tools, file protections and internal/plugin compatibility version 0.2.0; expose 22 tools. Current-machine synthetic acceptance remains separate from fresh-machine, external-user, desktop and manual productivity acceptance. See docs/practical-development.md.

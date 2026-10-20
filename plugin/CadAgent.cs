@@ -25,6 +25,7 @@ namespace CadAgent
         public int limit;
         public bool exportDxf;
         public PlotContract plot;
+        public ExportItem[] items;
         public string format,layout;
         public QueryRegion region;
     }
@@ -344,7 +345,7 @@ namespace CadAgent
                 var request=Json.Deserialize<Request>(raw);Require(request!=null,"INVALID_ARGUMENT","Request required.");
                 executingAction=request.action;
                 var db=doc.Database;bool replay=false;bool repair=request.action=="repair_copy";bool writes=repair||request.action=="create_drawing"||request.action=="create_test_drawing"||request.action=="prepare_project"||request.action=="apply"||request.action=="edit";
-                Require(writes||request.action=="query_entities"||request.action=="export"||request.action=="audit_drawing"||request.action=="inspect"||request.action=="takeoff"||request.action=="validate"||request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status","INVALID_ACTION","Unsupported action.");
+                Require(writes||request.action=="query_entities"||request.action=="export"||request.action=="export_many"||request.action=="audit_drawing"||request.action=="inspect"||request.action=="takeoff"||request.action=="validate"||request.action=="tangent_inspect"||request.action=="tangent_takeoff"||request.action=="native_status","INVALID_ACTION","Unsupported action.");
                 var changes=new List<object>();
                 bool nativeBatch=request.action=="edit"&&request.operations!=null&&request.operations.Any(op=>op!=null&&IsNativeOperation(op.type));
                 string selectedAdapter="generic";
@@ -437,10 +438,11 @@ namespace CadAgent
                 object query=request.action=="query_entities"||nativeBatch?QueryEntities(db,nativeBatch?new Request{limit=1000}:request):null;
                 object exported=null;
                 if(request.action=="export"){mark("plot");exported=ExportDrawing(doc,request,Path.GetDirectoryName(response));}
+                object exports=null;if(request.action=="export_many"){mark("plot_batch");exports=ExportMany(doc,request,Path.GetDirectoryName(response));}
                 if(request.action=="audit_drawing"||request.exportDxf){if(request.action=="audit_drawing")audit=DrawingAudit.Read(db);try{db.DxfOut(dxf,16,DwgVersion.AC1032);auditDxfExported=true;}catch(System.Exception exportError){auditDxfError=exportError.Message;}}
                 var serializer=(request.action=="audit_drawing"||request.action=="query_entities")?new JavaScriptSerializer{MaxJsonLength=134217728,RecursionLimit=50}:Json;
                 mark("response");
-                File.WriteAllText(response,serializer.Serialize(new{ok=true,replayed=replay,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,timings=timings,snapshot=snapshot,tangent=tangent,audit=audit,query=query,changes=changes,exported=exported,auditDxfExported=auditDxfExported,auditDxfError=auditDxfError}),new UTF8Encoding(false));
+                File.WriteAllText(response,serializer.Serialize(new{ok=true,replayed=replay,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,timings=timings,snapshot=snapshot,tangent=tangent,audit=audit,query=query,changes=changes,exported=exported,exports=exports,auditDxfExported=auditDxfExported,auditDxfError=auditDxfError}),new UTF8Encoding(false));
                 doc.Editor.WriteMessage("\nCADAGENT_RUN_OK\n");
             }
             catch(System.Exception ex)

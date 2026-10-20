@@ -10,6 +10,7 @@ namespace CadAgent {
  public sealed class QueryScope { public string layout;public bool includeNested;public int maxDepth=4; }
  public static partial class Commands {
   static double[] XY(Point3d p){return new[]{p.X,p.Y,p.Z};}
+  static double[] XYZ(Vector3d v){return new[]{v.X,v.Y,v.Z};}
   static string TextOf(Entity e){var text=e as DBText;if(text!=null)return text.TextString;var mt=e as MText;return mt==null?null:mt.Contents;}
   static Dictionary<string,object> Describe(Entity e,Transaction tr){
    var row=new Dictionary<string,object>{{"handle",e.Handle.ToString()},{"type",e.GetRXClass().DxfName},{"layer",e.Layer},{"color",e.ColorIndex}};
@@ -18,10 +19,13 @@ namespace CadAgent {
    if(e.GetRXClass().DxfName=="TCH_CABLEDIM")row["native"]=NativeLabelProperties(e);
    var m=Metadata(e,tr);if(m!=null){row["id"]=m.id;row["managedKind"]=m.kind;}
    try{var b=e.GeometricExtents;row["bounds"]=new{min=XY(b.MinPoint),max=XY(b.MaxPoint)};}catch{}
-   var br=e as BlockReference;if(br!=null){row["blockName"]=br.Name;row["position"]=XY(br.Position);row["rotationRadians"]=br.Rotation;row["attributes"]=Attributes(br,tr);row["dynamic"]=br.IsDynamicBlock;var definition=(BlockTableRecord)tr.GetObject(br.BlockTableRecord,OpenMode.ForRead);row["xref"]=definition.IsFromExternalReference;}
+   var br=e as BlockReference;if(br!=null){row["blockName"]=br.Name;row["position"]=XY(br.Position);row["rotationRadians"]=br.Rotation;row["attributes"]=Attributes(br,tr);row["dynamic"]=br.IsDynamicBlock;var cs=br.BlockTransform.CoordinateSystem3d;row["basisX"]=XYZ(cs.Xaxis);row["basisY"]=XYZ(cs.Yaxis);row["basisZ"]=XYZ(cs.Zaxis);var definition=(BlockTableRecord)tr.GetObject(br.BlockTableRecord,OpenMode.ForRead);row["xref"]=definition.IsFromExternalReference;}
    var text=TextOf(e);if(text!=null){row["text"]=text;row["position"]=XY(e is DBText?((DBText)e).Position:((MText)e).Location);}
+   var dbText=e as DBText;if(dbText!=null){row["height"]=dbText.Height;row["widthFactor"]=dbText.WidthFactor;row["rotationRadians"]=dbText.Rotation;row["textStyle"]=((TextStyleTableRecord)tr.GetObject(dbText.TextStyleId,OpenMode.ForRead)).Name;var ocs=Matrix3d.PlaneToWorld(dbText.Normal);var x=new Vector3d(Math.Cos(dbText.Rotation),Math.Sin(dbText.Rotation),0).TransformBy(ocs);var y=new Vector3d(-Math.Sin(dbText.Rotation),Math.Cos(dbText.Rotation),0).TransformBy(ocs);row["basisX"]=XYZ(x*dbText.Height*dbText.WidthFactor*(dbText.IsMirroredInX?-1:1));row["basisY"]=XYZ(y*dbText.Height*(dbText.IsMirroredInY?-1:1));}
+   var mText=e as MText;if(mText!=null){row["height"]=mText.TextHeight;row["textWidth"]=mText.Width;row["rotationRadians"]=mText.Rotation;row["textStyle"]=((TextStyleTableRecord)tr.GetObject(mText.TextStyleId,OpenMode.ForRead)).Name;var x=mText.Direction.GetNormal();row["basisX"]=XYZ(x*mText.TextHeight);row["basisY"]=XYZ(mText.Normal.CrossProduct(x)*mText.TextHeight);}
    var curve=e as Curve;if(curve!=null){try{row["start"]=XY(curve.StartPoint);row["end"]=XY(curve.EndPoint);row["length"]=curve.GetDistanceAtParameter(curve.EndParam)-curve.GetDistanceAtParameter(curve.StartParam);}catch{}}
-   var poly=e as Polyline;if(poly!=null){row["vertices"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>XY(poly.GetPoint3dAt(i))).ToArray();row["closed"]=poly.Closed;try{row["width"]=poly.ConstantWidth;}catch(Autodesk.AutoCAD.Runtime.Exception){row["segmentWidths"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>new[]{poly.GetStartWidthAt(i),poly.GetEndWidthAt(i)}).ToArray();row["variableWidth"]=true;}}
+   var poly=e as Polyline;if(poly!=null){row["vertices"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>XY(poly.GetPoint3dAt(i))).ToArray();row["bulges"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>poly.GetBulgeAt(i)*(poly.Normal.Z<0?-1:1)).ToArray();row["closed"]=poly.Closed;try{row["width"]=poly.ConstantWidth;}catch(Autodesk.AutoCAD.Runtime.Exception){row["segmentWidths"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>new[]{poly.GetStartWidthAt(i),poly.GetEndWidthAt(i)}).ToArray();row["variableWidth"]=true;}}
+   var solid=e as Solid;if(solid!=null)row["vertices"]=Enumerable.Range(0,4).Select(i=>XY(solid.GetPointAt((short)i))).ToArray();
    var circle=e as Circle;if(circle!=null){row["center"]=XY(circle.Center);row["radius"]=circle.Radius;}
    var arc=e as Arc;if(arc!=null){row["center"]=XY(arc.Center);row["radius"]=arc.Radius;}
    var dim=e as Dimension;if(dim!=null){row["measurement"]=dim.Measurement;row["dimensionText"]=dim.DimensionText;}

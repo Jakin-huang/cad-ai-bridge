@@ -10,8 +10,8 @@ import {diagnose} from '../src/diagnostics.mjs';
 import {dataHome,outsideProject} from '../src/local-paths.mjs';
 import {installWorkbuddy,restoreWorkbuddy,workbuddyConfiguration,workbuddyLocations} from '../src/client-install.mjs';
 const [command='help',...argv]=process.argv.slice(2);
-const values=new Set(['workspace','cad-root','language','host','units','format','config','detail','client-config','client','client-home','standards-register']);
-const flags=new Set(['dry-run','skip-build','rebuild','read-only','native','json','model-only','without-standard']);
+const values=new Set(['workspace','cad-root','language','host','units','format','config','detail','client-config','client','client-home','standards-register','port']);
+const flags=new Set(['dry-run','skip-build','rebuild','read-only','native','json','model-only','without-standard','open']);
 const options={},positional=[];
 for(let i=0;i<argv.length;i++){const token=argv[i];if(!token.startsWith('--')){positional.push(token);continue;}const key=token.slice(2);if(values.has(key)){if(!argv[i+1]||argv[i+1].startsWith('--'))throw Error('Missing --'+key+' value');options[key]=argv[++i];}else if(flags.has(key))options[key]=true;else throw Error('Unknown option --'+key);}
 if(options.config)process.env.CADBRIDGE_CONFIG=path.resolve(options.config);
@@ -74,6 +74,9 @@ async function demo(){
 }
 try{
  if(command==='setup')await setup();
+ else if(command==='center'){
+  if(options['read-only'])process.env.CADBRIDGE_READ_ONLY='1';const port=options.port===undefined?0:Number(options.port);if(!Number.isInteger(port)||port<0||port>65535)throw Error('Invalid local port');const {startTaskCenter}=await import('../src/task-center.mjs'),{execute}=await import('../bridge.mjs');const center=await startTaskCenter({execute,runs:path.join(dataHome(),'runs'),port});output({ok:true,url:center.url,message:'Open this local URL in your browser. Keep this process running. Close the local entry from the page; interrupted tasks require journal review.'});if(options.open){if(process.platform!=='win32')throw Error('Automatic browser opening is supported on Windows only; use the printed URL');await child(process.env.CADAGENT_POWERSHELL||'powershell.exe',['-NoProfile','-NonInteractive','-Command',"Start-Process -FilePath '"+center.url+"' -WindowStyle Hidden"]);}
+ }
  else if(command==='restore-workbuddy')output(await restoreWorkbuddy({home:options['client-home']}));
  else if(command==='doctor')await doctor();
  else if(command==='mcp'){if(options['read-only'])process.env.CADBRIDGE_READ_ONLY='1';await import('../mcp-server.mjs');}
@@ -86,6 +89,6 @@ try{
   if(options.format==='csv'){if(!result.ok)throw Error(JSON.stringify(result.error));const rows=[['circuit','wireCount','lengthDrawingUnits','lengthMm'],...result.tangent.circuits.map(c=>[c.id,c.wireCount,c.lengthDrawingUnits,c.lengthMm])];process.stdout.write('\uFEFF'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n')+'\r\n');}else output(result);
   if(!result.ok)process.exitCode=1;
  }else if(command==='call'){if(!positional[0]||!positional[1])throw Error('Usage: cadbridge call <action> <request.json>');const {execute}=await import('../bridge.mjs');const result=await execute(positional[0],JSON.parse((await fs.readFile(positional[1],'utf8')).replace(/^\uFEFF/,'')));output(result);if(!result.ok)process.exitCode=1;}
- else if(command==='help')process.stdout.write('CAD AI Bridge 0.2 preview\n\n  setup [--workspace DIR] [--cad-root DIR] [--client-config FILE] [--rebuild] [--dry-run]\n    WorkBuddy: setup --client workbuddy [--client-home DIR]; or connect-workbuddy.cmd\n    Reuses verified plugin; --skip-build requires verified plugin.\n  doctor [--native TEST.dwg]\n  mcp [--read-only]\n  demo [--host core|tangent]\n  standard STANDARD.dwg REFERENCE-MANIFEST.json\n  school REQUIREMENTS.json [--standards-register REGISTER.json] [--model-only] [--without-standard]\n    School PDF requires Python + reportlab + pypdf.\n  inspect DRAWING.dwg [--units mm] [--format json|csv] [--host core|tangent]\n  takeoff DRAWING.dwg [--format csv]\n  selftest [--native]\n  call ACTION REQUEST.json\n');
+ else if(command==='help')process.stdout.write('CAD AI Bridge 2.0 preview\n\n  setup [--workspace DIR] [--cad-root DIR] [--client-config FILE] [--rebuild] [--dry-run]\n    WorkBuddy: setup --client workbuddy [--client-home DIR]; or connect-workbuddy.cmd\n    Reuses verified plugin; --skip-build requires verified plugin.\n  doctor [--native TEST.dwg]\n  center [--read-only] [--port N] [--open]\n  mcp [--read-only]\n  demo [--host core|tangent]\n  standard STANDARD.dwg REFERENCE-MANIFEST.json\n  school REQUIREMENTS.json [--standards-register REGISTER.json] [--model-only] [--without-standard]\n    School PDF requires Python + reportlab + pypdf.\n  inspect DRAWING.dwg [--units mm] [--format json|csv] [--host core|tangent]\n  takeoff DRAWING.dwg [--format csv]\n  selftest [--native]\n  call ACTION REQUEST.json\n');
  else throw Error('Unknown command '+command);
 }catch(error){process.stderr.write(JSON.stringify({ok:false,error:{code:'CADBRIDGE_ERROR',message:error.message}})+'\n');process.exitCode=1;}

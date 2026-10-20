@@ -20,7 +20,7 @@ namespace CadAgent {
        if(depth>0){
         foreach(var key in new[]{"position","start","end","center"})if(row.ContainsKey(key)){var p=(double[])row[key];row[key]=XY(new Point3d(p[0],p[1],p[2]).TransformBy(matrix));}
         if(row.ContainsKey("vertices"))row["vertices"]=((double[][])row["vertices"]).Select(p=>XY(new Point3d(p[0],p[1],p[2]).TransformBy(matrix))).ToArray();
-        foreach(var key in new[]{"length","radius","measurement","rotationRadians","width","segmentWidths"})if(row.ContainsKey(key)){row["definition_"+key]=row[key];row.Remove(key);}
+        foreach(var key in new[]{"length","radius","measurement","rotationRadians","width","segmentWidths","height","widthFactor","textWidth","basisX","basisY","basisZ","bulges"})if(row.ContainsKey(key)){row["definition_"+key]=row[key];row.Remove(key);}
         try{var bounds=entity.GeometricExtents;bounds.TransformBy(matrix);row["bounds"]=new{min=XY(bounds.MinPoint),max=XY(bounds.MaxPoint)};}catch{}
        }items.Add(row);
       }

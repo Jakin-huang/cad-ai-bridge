@@ -34,12 +34,12 @@ function connect(folder,extra=[],env=process.env){
 }
 async function serverAt(){return parseLocalJSON(await fs.readFile(path.join(home,'mcp.json'),'utf8')).mcpServers['cad-ai-bridge'];}
 async function skillTree(folder){const files={};async function walk(dir,relative=''){for(const e of await fs.readdir(dir,{withFileTypes:true})){assert.equal(e.isSymbolicLink(),false);const name=relative?relative+'/'+e.name:e.name;if(e.isDirectory())await walk(path.join(dir,e.name),name);else files[name]=hash(await fs.readFile(path.join(dir,e.name)));}}await walk(folder);return files;}
-async function smoke(server,write=false,expectedTools=22){
+async function smoke(server,write=false,expectedTools=24){
  const client=new Client({name:'windows-user-package-acceptance',version:'0.2.0'});
  try{
   await client.connect(new StdioClientTransport({command:server.command,args:server.args,env:{...process.env,...server.env},stderr:'pipe'}));
   const discovered=(await client.listTools()).tools.length;
-  if(expectedTools===null)assert.ok([15,18,21,22].includes(discovered));else assert.equal(discovered,expectedTools);
+  if(expectedTools===null)assert.ok([15,18,21,22,24].includes(discovered));else assert.equal(discovered,expectedTools);
   async function call(name,args={}){const reply=await client.callTool({name,arguments:args},{timeout:180000});const result=parseLocalJSON(reply.content[0].text);assert.equal(result.ok,true,JSON.stringify(result.error));return result;}
   const doctor=await call('cad_doctor');
   if(!write)return{doctor};
@@ -99,7 +99,7 @@ try{
  checks.push('Offline upgrade with Node, PowerShell 7 and winget excluded extracts bundled runtimes without UAC');
  checks.push('Side-by-side upgrade inherits prior drawing workspace and preserves unrelated client settings');
  const cli=run(process.env.ComSpec||'cmd.exe',['/d','/s','/c','""'+path.join(newFolder,'cadbridge.cmd')+'" help"'],env);assert.match(cli,/CAD AI Bridge/);checks.push('Packaged CLI works with Node and PowerShell 7 absent from PATH');
- results.upgraded=await smoke(newServer,true);checks.push('Packaged runtimes discover 22 tools, pass doctor, save two lights and reopen their route/numbering with no issues');checks.push('Packaged PowerShell loads native Tangent host and restores its user settings after exit');
+ results.upgraded=await smoke(newServer,true);checks.push('Packaged runtimes discover 24 tools, pass doctor, save two lights and reopen their route/numbering with no issues');checks.push('Packaged PowerShell loads native Tangent host and restores its user settings after exit');
  checks.push('Packaged indexed scan/paging, connected-device edit and actual PNG/A3 fixed-scale CTB PDF exports pass');
  checks.push('Packaged capability discovery and generic takeoff produce two verified CSV files from actual saved CAD entities');
  checks.push('Bundled Node resolves the installed native catalog; real native tray and associated label persist after reopen and actual PNG plotting');

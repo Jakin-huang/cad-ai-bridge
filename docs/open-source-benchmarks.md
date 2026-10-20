@@ -1,5 +1,7 @@
 # CAD AI Bridge 开源对标与产品差距
 
+> 本页保留原始决策基线。v2.0 开发后的对比和未解决差距见 [v2 对标评估](v2-assessment.md)，实现与验收状态见 [v2 台账](v2-implementation.json)。
+
 更新日期：2026-10-19（Asia/Shanghai）。项目基线：v0.2.0-preview.6。实施顺序与验收见[下一步计划](connector-plan.md)。
 
 本页是本轮开发前的对比基线；四阶段的新实现与验收状态以[实施记录](practical-development.md)为准。表内“差距”不能直接当作当前开发候选仍然缺失的功能。

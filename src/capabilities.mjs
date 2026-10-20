@@ -1,9 +1,16 @@
 // Product facts are independent of CAD discovery so a broken host remains diagnosable.
+import {builtInBackends} from './backend-contracts.mjs';
 export function capabilities(){
  return {ok:true,product:'CAD AI Bridge',compatibilityVersion:'0.2.0',scope:'local CAD and AI client bridge',
   validatedEnvironment:{os:'Windows 10 x64',cad:'AutoCAD 2022 zh-CN',optionalExtension:'Tangent Electrical V8',client:'WorkBuddy 5.3.8'},
   execution:{default:'snapshot-copy',writes:'new DWG; original preserved',coordinates:'planar WCS XY',writeUnits:['mm'],currentUserDocument:true,sessionStatus:'experimental',sessionDispatch:'One ROT-visible AutoCAD 2022 instance; PID is checked before entering a fixed native command. No arbitrary code or command input.'},
   workflows:['replace_text','organize','takeoff','edit','export_batch'],
+  projectTasks:{actions:['start','status','list','cancel','resume'],copies:'All inputs frozen before the first operation; per-drawing outputs; no global DWG transaction',recovery:'Only unstarted items continue; saved/unconfirmed writes are not repeated',cancel:'Between drawings; current CAD operation finishes'},
+  engineeringAnalysis:{source:'Complete cad_scan_drawing results; no CAD restart',checks:['duplicate_attribute','required_attributes','forbidden_text','allowed_layers','minimum_length','text_height'],quantities:'Versioned count/physical-length rules with factors, waste, rounding and source SHA/instancePath; unavailable physical lengths remain partial'},
+  taskCenter:{entry:'cadbridge center',scope:'Authenticated loopback-only browser UI; project submission, progress, verification and registered deliverables'},
+  backends:builtInBackends,
+  extensionContract:{version:1,hostSupport:'Only registered executors; manifest validation does not establish actual host support',otherHosts:'Not installed or accepted; no GstarCAD/ZWCAD/FreeCAD runtime support claim'},
+  verification:{schemaVersion:1,levels:['execution','source','saved','reopened','geometry','preservation','render','visualReview','delivery'],states:['passed','partial','failed','unknown','not_applicable']},
   ordinaryEdits:['move','copy','rotate','scale','mirror','array','erase','set_text','set_attributes','set_layer','upsert_layer','add_geometry','insert_block','offset','trim','extend_line','add_dimension','upsert_view','create_layout'],
   limits:{queryEntities:5000,capturedEntities:100000,operationsPerBatch:100,pageRecords:100,queryScope:'Model-space roots by default; explicit layouts and local nested read-only expansion',region:'WCS bounding boxes',nestedDepth:8,nestedTraversalBudget:100000},
   practical:{capture:'cad_scan_drawing builds one frozen local index; cad_read_result filters/projects/pages without CAD',delivery:'cad_workflow delivery.csv and delivery.exports use the saved drawing; response=summary reduces replies',preservation:'Unselected DXF ENTITIES/BLOCKS records, excluding selected instance attributes/SEQEND and documented normalization; not all dictionaries or vendor internals',geometry:'Independent saved anchors, lengths and creation counts for principal planar operations; pending checks reported explicitly',plot:'PDF A4-A0, orientation, fit/fixed scale and installed CTB. Fixed scale requires mm Model and a conservative printable envelope. Actual PDF MediaBox verified; font appearance needs visual review'},

@@ -12,7 +12,7 @@ const mcp={mcpServers:{'cad-ai-bridge':server}};
 const client=new Client({name:'fresh-windows-standard-user',version:'0.2.0'});
 try{
  await client.connect(new StdioClientTransport({...server,env:{...process.env,...server.env},stderr:'pipe'}));
- const names=(await client.listTools()).tools.map(tool=>tool.name);assert.equal(names.length,22);checks.push('Fresh Windows MCP discovers 22 tools without CAD installed');
+ const names=(await client.listTools()).tools.map(tool=>tool.name);assert.equal(names.length,24);checks.push('Fresh Windows MCP discovers 24 tools without CAD installed');
  const doctor=JSON.parse((await client.callTool({name:'cad_doctor',arguments:{}})).content[0].text);assert.equal(doctor.ok,false);assert.ok(doctor.checks.some(check=>!check.ok&&String(check.detail).includes('CAD_NOT_SUPPORTED')));checks.push('Missing CAD returns a structured diagnostic without crashing MCP');
  await fs.mkdir(home,{recursive:true});const locations=workbuddyLocations(home);
  await fs.writeFile(locations.config,JSON.stringify({otherOption:true,mcpServers:{unrelated:{command:'retain'}}}));await fs.writeFile(path.join(home,'.mcp.json'),'client-owned proxy');

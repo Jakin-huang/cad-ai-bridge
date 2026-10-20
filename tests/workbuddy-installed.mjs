@@ -19,7 +19,7 @@ const client=new Client({name:'installed-workbuddy-config-acceptance',version:'0
 async function call(name,args={}){const reply=await client.callTool({name,arguments:args},{timeout:server.timeout});const value=parseLocalJSON(reply.content[0].text);assert.equal(value.ok,true,JSON.stringify(value.error));results[name]=value;return value;}
 try{
  await client.connect(new StdioClientTransport({command:server.command,args:server.args,env:{...process.env,...server.env},stderr:'pipe'}));
- assert.equal((await client.listTools()).tools.length,22);checks.push('Installed MCP configuration starts and discovers 22 tools');
+ assert.equal((await client.listTools()).tools.length,24);checks.push('Installed MCP configuration starts and discovers 24 tools');
  await call('cad_doctor');checks.push('Installed environment diagnostic passes');
  const fixture=await call('cad_create_test_drawing',{adapter:'tangent-v8'});
  const applied=await call('electrical_apply',{drawing:fixture.drawing,documentId:fixture.snapshot.documentId,expectedRevision:fixture.snapshot.revision,expectedSha256:fixture.drawingSha256,requestId:crypto.randomUUID(),units:'mm',adapter:'tangent-v8',operations:[
