@@ -1,11 +1,13 @@
 import {evaluateRoomPhotometry} from './engineering-photometry.mjs';
 import crypto from 'node:crypto';
+import {spaceLabelsDigest} from './space-labels.mjs';
 // Recompute postconditions from persisted model relationships. Never trust the
 // generator's ok flag, its room totals, or an existing signed-off state.
 export function auditEngineeringDesign(m){
  const checks=[],pending=[],p=m.input,add=(id,ok,detail,refs=[])=>checks.push({id,ok,detail,refs});
  const near=(a,b,t=1e-4)=>Math.abs(a-b)<=t;
  const sourceMap=new Map(p.sources.map(s=>[s.id,s]));
+ if(m.architecturalEvidence?.additionalSpaceLabelsSHA256)add('architectural_additional_labels',spaceLabelsDigest(p.rooms)===m.architecturalEvidence.additionalSpaceLabelsSHA256,'Additional source labels remain bound to the original architectural pack; no alias or use can silently disappear');
  const inPoly=(v,ps)=>{let winding=0;for(let i=0;i<ps.length;i++){const a=ps[i],b=ps[(i+1)%ps.length],cross=(b[0]-a[0])*(v[1]-a[1])-(v[0]-a[0])*(b[1]-a[1]);if(a[1]<=v[1]&&b[1]>v[1]&&cross>0)winding++;else if(a[1]>v[1]&&b[1]<=v[1]&&cross<0)winding--;}return winding!==0;};
  const constraint=(r,k)=>p.requirements.find(q=>q.rule===k&&q.roomIds.includes(r.id));
  const total=m.lightingDesignBasis==='finite_diffuse_required';
@@ -13,6 +15,7 @@ export function auditEngineeringDesign(m){
  add('identity_unique',new Set(m.devices.map(d=>d.id)).size===m.devices.length&&new Set(m.circuits.map(c=>c.id)).size===m.circuits.length&&new Set(m.controls.map(c=>c.id)).size===m.controls.length,'Physical device, circuit and control identifiers are unique');
  add('project_no_automatic_approval',m.reviewStatus==='awaiting_human_review'&&m.professionalApproval===false,'Design engine cannot sign professional approval');
  for(const room of p.rooms){
+  if(room.sourceSpaceLabels?.length){add('single_assessed_space_use_'+room.id,room.sourceSpaceLabels.every(l=>l.relationship==='alternate_name'&&l.status==='unverified_interpretation'&&l.sourceIds.every(id=>sourceMap.get(id)?.role==='architecture')),'Only declared alternate names may accompany a single-use ordinary-lighting model; secondary uses require separate applicability assessment',[room.id,...room.sourceSpaceLabels.map(l=>l.id)]);pending.push(...room.sourceSpaceLabels.map(l=>({code:'SOURCE_SPACE_LABEL_REVIEW',roomId:room.id,labelId:l.id,reason:l.name+' / '+l.relationship+': '+l.reason+'; not architectural or professional approval'})));}
   const ds=m.devices.filter(d=>d.roomId===room.id),c=m.roomCalculations.find(c=>c.roomId===room.id),v=room.polygon,base=v[0];let signed=0;for(let i=1;i<v.length-1;i++)signed+=(v[i][0]-base[0])*(v[i+1][1]-base[1])-(v[i][1]-base[1])*(v[i+1][0]-base[0]);const area=Math.abs(signed)/2e6;
   add('room_geometry_'+room.id,area>=1&&ds.length>0&&ds.every(d=>inPoly(d.position,v)&&!room.obstacles.some(o=>inPoly(d.position,o))),'Room has measurable area and all fixtures lie inside its clear polygon',[room.id]);
   const flux=ds.reduce((n,d)=>{const f=p.luminaires.find(f=>f.id===d.fixture);return n+(f?f.lumens*f.utilizationFactor*f.maintenanceFactor:NaN);},0),watts=ds.reduce((n,d)=>n+d.watts,0),expectedW=ds.reduce((n,d)=>n+(p.luminaires.find(f=>f.id===d.fixture)?.watts??NaN),0);
@@ -41,6 +44,7 @@ export function auditEngineeringDesign(m){
   const ctl=m.controls.find(s=>s.circuitId===c.id);add('control_reconcile_'+c.id,!!ctl&&ctl.deviceIds.length===c.deviceIds.length&&ctl.deviceIds.every(id=>c.deviceIds.includes(id))&&ds.every(d=>d?.controlId===ctl.id),'Control schedule and circuit refer to the same physical devices',[c.id]);
  }
  if(m.controlRouting==='schematic_bus')add('control_positions_distinct_inside',m.controls.every((c,i)=>{const room=p.rooms.find(r=>r.id===c.roomId);return !!room&&inPoly(c.position,room.polygon)&&!room.obstacles.some(o=>inPoly(c.position,o))&&m.controls.slice(0,i).every(other=>other.roomId!==c.roomId||Math.hypot(c.position[0]-other.position[0],c.position[1]-other.position[1])>=650);}), 'Separate schematic control positions inside their own room, clear of declared obstacles; installation coordination remains pending');
+ if(p.rooms.some(r=>r.sourceSpaceLabels?.length)){const noteSheets=m.sheets.filter(s=>s.id==='E01'||s.id.startsWith('E01-')),text=m.scene.entities.filter(e=>e.kind==='text'&&e.height===280&&noteSheets.some(s=>e.position[0]>=s.region.min[0]&&e.position[0]<=s.region.max[0]&&e.position[1]>=s.region.min[1]&&e.position[1]<=s.region.max[1])).map(e=>e.text).join('');add('drawing_additional_source_labels',p.rooms.every(r=>(r.sourceSpaceLabels||[]).every(l=>text.includes('附加标签 '+r.id+'/'+l.id+'：'+l.name)))&&text.includes('关系与用途待专业复核'),'CAD design notes retain each physical-space/additional-label identity and literal name with explicit review status');}
  const led=m.placements.filter(p=>['ENG_LED','ENG_LED_ROUND'].includes(p.symbol));add('drawing_physical_trace',led.length===m.devices.length*2&&m.devices.every(d=>{const ps=led.filter(p=>p.attributes.PHYSICAL_ID===d.id);return ps.length===2&&new Set(ps.map(p=>p.id)).size===2&&ps.every(p=>p.symbol===(m.input.luminaires.find(f=>f.id===d.fixture)?.schematicSymbol==='downlight'?'ENG_LED_ROUND':'ENG_LED')&&p.attributes.ROOM===d.roomId&&p.attributes.CIRCUIT===d.circuitId&&p.attributes.CONTROL===d.controlId&&p.attributes.MODEL===d.fixture); }),'Both plan representations preserve physical device room, circuit, control and product identity');
  const architecturePoints=[...p.rooms.flatMap(r=>r.polygon),...p.architecture.flatMap(a=>a.points)],origin=m.drawingOrigin??[Math.min(...architecturePoints.map(v=>v[0])),Math.min(...architecturePoints.map(v=>v[1]))],points=[...architecturePoints,p.electrical.panelPosition,...m.controls.map(c=>c.position),...m.routes.flatMap(r=>r.vertices)];
  const mapPlan=(s,v)=>[s.origin[0]+(s.planOffset?.[0]??1500)+v[0]-origin[0],(s.planOffset?.[1]??2800)+v[1]-origin[1]];

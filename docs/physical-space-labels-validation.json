@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_23d7de8",
+  "engineVersion": "1.9.0",
+  "frozenV2Unchanged": true,
+  "pluginUnchanged": true,
+  "implemented": [
+    "Explicit physical-space and source-name identities; distinct alternate-name/secondary-use relationships",
+    "Exact text and same-boundary checks; no automatic space merging or use approval",
+    "Source-pack labels in project input, source identity digest and independent omission detection",
+    "Unassessed secondary uses block source-seed and direct ordinary-lighting project intake",
+    "CAD notes preserve source labels; physical quantities counted once; native delivery reloads source evidence",
+    "Task-center SHA-bound structured text view, expanded source explanation and actual CSV download"
+  ],
+  "evidence": {
+    "unitTests": {
+      "passed": 249,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualNativeChecks": 20,
+    "nativeDesignScope": "Procedural ordinary office with two source names, one physical region and assumed flux-method product. Native source-to-design trace only; no hospital or photometric quality acceptance.",
+    "nativeAssertions": [
+      "Native source has one physical region, two source-name entries and a composed additional label",
+      "Additional label shares the exact observed source boundary while its semantic relationship remains unverified",
+      "Source-label CSV includes primary and additional names without another physical room",
+      "Source-bound project input preserves the additional name, ordered fragments and pending interpretation",
+      "Complete spatial geometry does not make an unassessed secondary-use project designable",
+      "Secondary-use negative publishes no model or native design output",
+      "One physical space produces one room calculation and circuit with source-label evidence",
+      "CAD design notes contain the literal additional name and physical-space identity",
+      "Changed source capture blocks native creation before publishing a design drawing",
+      "Native CAD saved readback retains all generated sheet text including source-name notes",
+      "Source bytes and professional-review state remain unchanged"
+    ],
+    "nativeDesign": {
+      "physicalSpaces": 1,
+      "sourceNameEntries": 2,
+      "devices": 9,
+      "circuits": 1,
+      "sheets": 5,
+      "modelSHA256": "6b1ce7f49bfbd3f33750391be59fc920961761bd15f5503a5f2ff8a3fa7831cb",
+      "inputSHA256": "dea0174f58c0213a89117f08aaf23e83a3172bf7a4f9dda7307b13d3cf8580fd",
+      "additionalSpaceLabelsSHA256": "550e53aeb508adf2b948e2f606519abc50bd2ebadd24bea3876f68a20d0a13d1",
+      "modelChecks": {
+        "passed": 30,
+        "failed": 0,
+        "pending": 8
+      },
+      "savedReadback": true,
+      "uniqueA3PagesVisuallyInspected": 5,
+      "mergedPdfRenderIdentical": true,
+      "scopeLimit": "Assumed product/flux-method source-trace test, not lighting quality or hospital/customer acceptance"
+    },
+    "hospitalScope": "Unverified proposed physical-space grouping of final-derived hospital architectural labels. No independent space inventory, new hospital design, standard reclassification, electrical reference reading or external model call.",
+    "hospitalAssertions": [
+      "Same isolated hospital architectural root is freshly captured without source mutation",
+      "Proposed physical grouping retains all 43 logical source-name entries instead of deleting duplicate labels",
+      "All twelve numeric-prefix bedroom names remain explicitly source-bound",
+      "Both lift use labels remain unverified secondary uses inside inferred boundaries, not confirmed alternate names",
+      "Refuge-area, capacity and window notes remain pending source conditions after additional labels are assigned",
+      "Residual missing boundaries and independent overlap remain blocking after proposed alias grouping",
+      "Accepting inference cannot promote the proposed whole-floor grouping to a design input",
+      "Request replay retains the original proposed grouping evidence",
+      "Primary and additional source-label CSV and review outputs retain registered byte identities"
+    ],
+    "hospitalProposedGrouping": {
+      "sourceSHA256": "8ff0bd2a4d376d05aa0762df12ba95f35bf383ee3061a22b3aecb319a14ca5fb",
+      "originalSourceNameEntries": 43,
+      "proposedPhysicalSpaces": 41,
+      "retainedLogicalNameEntries": 43,
+      "secondaryUseLabels": 2,
+      "groupingIndependentlyAccepted": false,
+      "coverage": {
+        "expectedRooms": 41,
+        "expectedLabelEntries": 43,
+        "matchedLabelEntries": 43,
+        "additionalLabels": 2,
+        "secondaryUseLabels": 2,
+        "resolvedRooms": 37,
+        "observedBoundaries": 0,
+        "inferredRooms": 37,
+        "unmappedLabels": [],
+        "unmappedBoundaries": [],
+        "completeInventory": false,
+        "geometryComplete": false,
+        "independentProjectAcceptance": false
+      },
+      "missingBoundaries": 4,
+      "residualIndependentOverlaps": 1,
+      "original43EntryThreeOverlapRecordRetained": true,
+      "newHospitalDesign": false
+    },
+    "browser": {
+      "shaBoundStructuredReviewVerified": true,
+      "expandedSourceExplanationAndUnverifiedSecondaryUseVisible": true,
+      "sourceAnnotationsVisible": true,
+      "actualCsvDownloadSHA256": "16b49cf829d34ad2f21807aed40ac8544364eb455b80ae9f1019651d4e95f6e7",
+      "downloadMatchesRegisteredSHA256": true,
+      "standaloneHtmlBrowserVisualReview": "still_not_verified",
+      "sourceHtmlNotExecutedInStructuredView": true
+    },
+    "externalModelCalls": 0
+  },
+  "remaining": [
+    "Hospital grouping interpretations unverified; physical/logical denominators must remain distinct",
+    "Independent architecture, room schedule, entrances/ceilings, original customer brief and functional classifications missing",
+    "Multiple-use applicability/constraint intersection, architecture-change impact, nonrectangular boundaries/openings and whole-floor computation incomplete",
+    "Standalone HTML browser layout/interaction, external users, clean machines, medical specialties and authenticated professional review not accepted"
+  ],
+  "milestones": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "professionalApproval": false
+}

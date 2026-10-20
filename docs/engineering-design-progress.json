@@ -13,7 +13,8 @@
         "Hospital selected architectural root fully captured: 4434 visited, no budget truncation or read errors",
         "43 source-derived candidate spaces: 39 inferred, four unresolved and three interior-overlap ambiguities; full-floor intake blocked",
         "Independent room schedule, entrances and ceiling conditions still missing",
-        "Twelve digit-prefix names restored from explicit source TEXT paths; ten excluded annotation groups retained, four potential project conditions pending interpretation; source still final-derived and whole-floor gate blocked"
+        "Twelve digit-prefix names restored from explicit source TEXT paths; ten excluded annotation groups retained, four potential project conditions pending interpretation; source still final-derived and whole-floor gate blocked",
+        "Separate unverified grouping proposes 41 physical entries while retaining 43 source names and two secondary uses; original 43-entry/three-overlap record retained; four missing boundaries and one independent overlap still block the proposed floor"
       ]
     },
     {
@@ -25,7 +26,8 @@
         "Source identity and architecture preserved through local seed SHA binding",
         "Original customer brief missing; one retrospective case is not general understanding acceptance",
         "Additional source-bound lighting table subset locally enforced; professional applicability and full coverage pending",
-        "Spatially excluded source annotations remain source-linked pending inputs; no automatic standard, room-use or requirement inference"
+        "Spatially excluded source annotations remain source-linked pending inputs; no automatic standard, room-use or requirement inference",
+        "Additional source names/use roles preserved; unassessed secondary uses block ordinary-lighting design"
       ]
     },
     {
@@ -37,7 +39,8 @@
         "Optional finite-source closed diffuse subset now verified on invented conditions; actual project reflections, daylight, obstruction/near-field and full project quality remain unaccepted; bounded source-bound standing-reference UGR is separately verified",
         "Independent synthetic floor source intake and A1 physical output remain verified; hospital full-floor geometry unresolved",
         "Three explicitly classified synthetic conditions with actual standard base constraints: 36 lights/4 circuits/5 sheets; not hospital acceptance",
-        "Source-bound finite rectangular IES diffuse assessment, total-light upper-bound failure, raw-evidence tamper gate and native CAD delivery verified; input-only total-light startup and bounded measured-feedback optimization now verified on development cases, not hospital acceptance"
+        "Source-bound finite rectangular IES diffuse assessment, total-light upper-bound failure, raw-evidence tamper gate and native CAD delivery verified; input-only total-light startup and bounded measured-feedback optimization now verified on development cases, not hospital acceptance",
+        "Source-label digest and CAD-note omission gates verified; multiple-use standard intersection and architecture-change impact incomplete"
       ]
     },
     {
@@ -76,7 +79,8 @@
         "Frozen v2 package does not include this increment",
         "New machine and external users pending",
         "Maintainer browser shows actual diffuse-calculation progress/results and downloads exact CSV bytes; stopped-recorded-owner calculation recovery verified, not general native CAD recovery",
-        "Architecture task-center text/condition summary and downloaded review SHA verified; standalone HTML browser visual interaction remains unverified after file-protocol policy rejection; local controller tests are separate"
+        "Architecture task-center text/condition summary and downloaded review SHA verified; standalone HTML browser visual interaction remains unverified after file-protocol policy rejection; local controller tests are separate",
+        "Task-center SHA-bound structured label/note review and actual CSV download verified; standalone HTML browser acceptance remains incomplete"
       ]
     }
   ],
@@ -148,9 +152,10 @@
   "lightingStandardsValidation": "docs/lighting-standards-validation.json",
   "lightingQualityValidation": "docs/lighting-quality-validation.json",
   "latestSourceIncrement": {
-    "afterCommit": "cdc99de",
-    "scope": "source_fragment_architecture_text_and_pending_conditions",
-    "validation": "architectural-text-validation.json",
+    "afterCommit": "23d7de8",
+    "engineVersion": "1.9.0",
+    "scope": "physical_space_source_names_and_secondary_use_gates",
+    "validation": "physical-space-labels-validation.json",
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
