@@ -7,7 +7,7 @@ import {readonlyEngineeringSchema} from './src/engineering-contracts.mjs';
 const {McpServer}=await dependency('@modelcontextprotocol/server');
 const {serveStdio}=await dependency('@modelcontextprotocol/server/stdio');
 const definitions=[
- ['cad_design_project','engineering','工程设计试验入口：inspect_architecture按建筑根块与房间清单核对空间完整性；prepare_from_seed可用摘要绑定建筑包；prepare接收AI从需求和证据解释的项目约束；design计算并生成普通照明设计；deliver通过真实CAD新建、布置、重开及出图；revise修改需求重算，review记录待审意见。先核对status和modelSHA256；原始设计图仅用于事后对照。当前仅支持明确边界的普通照明设计与利用系数法估算，不提供医院全专业或规范签审。'],
+ ['cad_design_project','engineering','工程设计试验入口：inspect_architecture按建筑根块与房间清单核对空间完整性；prepare_from_seed可用摘要绑定建筑包；prepare接收AI从需求和证据解释的项目约束；design计算并生成普通照明设计；deliver通过真实CAD新建、布置、重开及出图；revise修改需求重算，review记录待审意见。先核对status和modelSHA256；原始设计图仅用于事后对照。当前支持明确边界普通照明的利用系数估算，以及source-bound IES直射点源网格、均匀度和过亮上限选择；无反射光/日光/UGR验收，不提供医院全专业或规范签审。'],
  ['cad_project','project','创建、查看、取消或恢复多图项目任务。start立即返回jobId，再status查看真实进度；源图先冻结，各图另存副本。cancel在当前图保存后停止后续项，resume只继续未开始项，状态不明的写入不自动重做。'],
  ['cad_analyze','analyze','对cad_scan_drawing的完整冻结结果执行工程检查和逐对象计量，不启动CAD。支持重复/必需属性、旧文字、图层、最小长度、文字高度；显式计量规则可设系数损耗及进位，缺少世界长度或单位时不声称完整总量。'],
  ['cad_scan_drawing','scan','一次只读捕获图纸至多100000条实体并建立本地索引。默认返回统计和jobId；随后cad_read_result按filter、fields分页，无需重启CAD。truncated表示捕获不完整，不能声称全图统计；支持显式布局、scope.rootHandles限定根实体和嵌套只读；traversal单列遍历范围、预算、缺失根实体和排除外参。'],

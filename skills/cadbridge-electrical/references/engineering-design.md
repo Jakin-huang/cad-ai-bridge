@@ -1,6 +1,6 @@
 # 工程需求、设计与审核
 
-目标是把项目资料解释为可追溯的设计约束，通过 CAD AI Bridge 新建、编辑、核对并交付待人工审核成果。当前 cad_design_project 仅实现明确边界的普通照明设计试验，不宣称通用工程推理、医院全专业设计、逐点光度或专业签审。
+目标是把项目资料解释为可追溯的设计约束，通过 CAD AI Bridge 新建、编辑、核对并交付待人工审核成果。当前 cad_design_project 仅实现明确边界的普通照明设计试验，支持利用系数法与有限IES直射逐点模式，不宣称通用工程推理、医院全专业设计、反射/UGR验收或专业签审。
 
 ## 解释输入
 
@@ -24,7 +24,7 @@ boundaryLayers 声明的是明确房间边界图层，必须是可验证闭合�
 
 1. prepare：传 requestId 和 project，检查返回 issues/status。每个房间需要 target_lux、max_lpd、max_spacing、max_devices、max_circuit_watts、max_drop、control_mode、mounting_height 八类有来源的约束；同类冲突不静默覆盖。
    已有本地 project-seed.json 且 requirements 为空时，优先用 prepare_from_seed：传 requestId、seedFile、expectedSeedSHA256 和解释出的 requirements。建筑条件、产品和来源保留在本地按摘要加载，不必由模型重新输出整份几何。仅接受配置图纸目录内的 JSON；摘要变化、外部路径或已有约束的种子均拒绝。
-2. design：传 jobId 和 expectedRevision。生成器采用明确几何、候选灯具和利用系数法选择方案；检查器独立重算负荷、回路和控制关系。status=blocked 时读取问题，不继续出图。
+2. design：传 jobId 和 expectedRevision。生成器采用明确几何和候选灯具，按所选利用系数或IES直射模式选择方案；检查器独立重算负荷、回路和控制关系。status=blocked 时读取问题，不继续出图。
 3. deliver：仅使用 design 返回的 modelSHA256、jobId 和新 requestId。通过真实 CAD 新建图纸、布置带属性图块、独立重开核对、按图出 PDF/PNG，输出 CSV 和审核包。遇 delivery_unconfirmed 先读 status/native evidence，禁止换 UUID 绕过。
 4. revise：以 expectedRevision、requirementId、value、reason、sourceId 记录需求变更；随后 design 重新计算。旧模型和交付保留，旧审核失效。设计变更采用模型重算重生成，不伪称现有全 CAD 语义的增量修改。
 5. review：记录 simulation 或 unverified_external_record。模拟意见明确说明是测试；claimed_accepted 也不能变成已认证人工签审。status 可读取 summary/input/model/checks/delivery/review/history。
@@ -32,3 +32,14 @@ boundaryLayers 声明的是明确房间边界图层，必须是可验证闭合�
 ## 交付表达
 
 提供工具返回的实际 DWG、PDF/PNG、计算/回路 CSV 和 HTML 审核包链接，说明设计范围、测得结果、假设及待审条件。利用系数法不是逐点照度、均匀度或 UGR 计算。普通照明配电模型声明不能证明短路、选择性或实际供电可靠性。图纸与清单基于同一设计模型，最终参考比较独立执行，不把照抄或相似度当正确率。
+
+
+## IES 直射逐点模式
+
+这是附加的有限计算模式。传入 photometricDesign={method:ies_direct_point,gridSpacingM,edgeOffsetM,boundaryModel:opaque_vertical_room_walls}，并逐房间补充有来源的 min_uniformity（Emin/Eavg，0—1之间）和 max_avg_lux（lx）。原有 target_lux 此时是维持直射平均目标，不能悄悄改写客户对总照度、均匀度或工作面的要求。未明确允许这种模型时需登记为假设/待审，不能代替正式总照度设计。
+
+每个候选提供 iesFile={file,sha256}；文件必须位于已配置输入目录，sourceId 指向 role=catalog 且摘要相同的来源。支持 LM-63-1991/1995/2002、Type C、TILT=NONE，其他类型或补偿拒绝。按文件原坎德拉、倍率、rotationDegrees 和 maintenanceFactor 计算，不把光强强行归一化到任意流明。功率和相对光度声明灯泡流明必须匹配；晚于设计日期的文件声明发行日期会阻断。原始IES读取不证明Ra/CCT、产品可采购性或医院选型适用。
+
+allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指定图面示意符号。程序不替用户认证这些用途。产品功率、型号映射和源摘要见灯具CSV及说明页；逐点输出见 point-illuminance.csv，Eavg/Emin/Emax/Emin/Eavg见计算CSV和审核HTML。deliver前再次核对IES摘要；私有待审打包保存原始IES供审核，禁止把它放进源码或通用发行包。
+
+当前网格不包含反射光、日光、UGR及复杂遮挡，点源远场适用性须复核；有障碍而没有高度时阻止本模式。有限网格搜索无解或预算耗尽不能说明现实工程不可能，保留理由并扩充经证据绑定的候选或输入条件，不暗中放宽目标、灯具输出或项目日期。

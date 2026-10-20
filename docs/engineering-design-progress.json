@@ -27,12 +27,12 @@
     },
     {
       "id": "E3",
-      "status": "bounded_pilot_verified",
+      "status": "bounded_source_and_direct_photometry_verified_full_hospital_pending",
       "limits": [
-        "Six selected hospital spaces, ordinary lighting only",
-        "Flux-method estimate, assumed catalogue, no point photometry or UGR",
-        "Independent synthetic 12-room floor now verified through source-bound intake and physical A1 1:100 plans; not hospital acceptance",
-        "A3 through A0 sheets selected without shrinking source geometry; beyond A0 1:200 still requires explicit partitioning"
+        "Original hospital main delivery remains a six-space retrospective flux-method study",
+        "New source-bound IES Type C direct-point mode verified on three invented room conditions with real products",
+        "No diffuse reflections, daylight, UGR, detailed obstruction heights, near-field or full lighting-quality acceptance",
+        "Independent synthetic floor source intake and A1 physical output remain verified; hospital full-floor geometry unresolved"
       ]
     },
     {
@@ -105,7 +105,9 @@
     "selectedArchitecturalRootCapture": true,
     "sourceBoundSyntheticFloorPipeline": true,
     "hospitalFullFloorSpatialAcceptance": false,
-    "realProductPhotometry": false
+    "realProductPhotometry": false,
+    "sourceBoundIesDirectPoint": true,
+    "realProductPhotometryStatus": "source_bound_direct_model_verified_full_quality_pending"
   },
   "knownInputGaps": [
     "Original client brief not located",
@@ -128,5 +130,6 @@
     "lightingAndHospitalBooksFound": true,
     "fullTextAndApplicabilityAccepted": false,
     "rawAssetsPublished": false
-  }
+  },
+  "photometryValidation": "docs/photometry-validation.json"
 }

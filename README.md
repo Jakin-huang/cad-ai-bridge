@@ -6,7 +6,7 @@
 
 ## 普通用户开始使用
 
-源码中正在推进面向工程任务的**未发布设计增量**：需求与依据登记、约束驱动普通照明生成、成套 CAD 输出、自检和审核修订。新增 `cad_design_project`，开发树共25个工具；已冻结的 v2.0 用户包仍为24个。已验证医院局部普通照明回溯用例，以及来源绑定的独立合成整层空间接入和 A1 出图；真实医院整层边界仍存在阻断项，尚未达到完整医院项目设计。见[完整实施方案](docs/engineering-design-plan.md)、[开发与验收状态](docs/engineering-design-progress.json)及[使用方法](skills/cadbridge-electrical/references/engineering-design.md)。
+源码中正在推进面向工程任务的**未发布设计增量**：需求与依据登记、约束驱动普通照明生成、成套 CAD 输出、自检和审核修订。新增 `cad_design_project`，开发树共25个工具；已冻结的 v2.0 用户包仍为24个。已验证医院局部普通照明回溯用例，以及来源绑定的独立合成整层空间接入和 A1 出图；新增真实 IES 直射逐点选型已用 Radiance 对照，反射光/眩光和完整照明质量仍待验收；真实医院整层边界仍存在阻断项，尚未达到完整医院项目设计。见[完整实施方案](docs/engineering-design-plan.md)、[开发与验收状态](docs/engineering-design-progress.json)及[使用方法](skills/cadbridge-electrical/references/engineering-design.md)。
 
 1. 获取本项目 Releases 的用户 ZIP，或直接接收分享者提供的完整用户包，解压到可写的固定目录。
 2. 双击 **开始使用.exe**，点选自己的图纸文件夹，点击“接入 WorkBuddy”。根目录附有可离线阅读的 [一页图文说明](使用说明.html)。

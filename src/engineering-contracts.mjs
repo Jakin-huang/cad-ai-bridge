@@ -6,8 +6,8 @@ const id=z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,63}$/);
 const digest=z.string().regex(/^[a-f0-9]{64}$/i);
 const point=z.tuple([z.number().finite().min(-1e8).max(1e8),z.number().finite().min(-1e8).max(1e8)]);
 const source=z.strictObject({id,role:z.enum(['architecture','brief','standard','catalog','review_instruction']),sha256:digest,description:z.string().min(1).max(1000),location:z.string().max(1000).optional(),derivedFromFinalDrawing:z.boolean().default(false)});
-const requirementValue=z.union([z.number().finite(),z.string().min(1).max(128)]).describe('Units: target_lux=lx; max_lpd=W/m2; max_spacing and mounting_height=m; max_devices=count; max_circuit_watts=W; max_drop=percentage points, use 3 for 3 percent, not 0.03. control_mode accepts only local (就地), regional_manual (区域集中并手动), occupancy_manual (感应并可手动).');
-const requirement=z.strictObject({id,rule:z.enum(['target_lux','max_lpd','max_spacing','max_devices','max_circuit_watts','max_drop','control_mode','mounting_height']),value:requirementValue,roomIds:z.array(id).min(1).max(100),sourceIds:z.array(id).min(1).max(20),rationale:z.string().min(1).max(1000),status:z.enum(['documented','interpreted','assumed'])});
+const requirementValue=z.union([z.number().finite(),z.string().min(1).max(128)]).describe('Units: target_lux=lx; max_lpd=W/m2; max_spacing and mounting_height=m; max_devices=count; max_circuit_watts=W; max_drop=percentage points, use 3 for 3 percent, not 0.03. min_uniformity=Emin/Eavg fraction (0,1]; max_avg_lux=lx. control_mode accepts only local (就地), regional_manual (区域集中并手动), occupancy_manual (感应并可手动).');
+const requirement=z.strictObject({id,rule:z.enum(['target_lux','max_lpd','max_spacing','max_devices','max_circuit_watts','max_drop','control_mode','mounting_height','min_uniformity','max_avg_lux']),value:requirementValue,roomIds:z.array(id).min(1).max(100),sourceIds:z.array(id).min(1).max(20),rationale:z.string().min(1).max(1000),status:z.enum(['documented','interpreted','assumed'])});
 const primitive=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('line'),points:z.array(point).length(2)}),
  z.strictObject({kind:z.literal('polyline'),points:z.array(point).min(2).max(500),closed:z.boolean()})
@@ -19,7 +19,8 @@ export const engineeringInputSchema=z.strictObject({
  standards:z.array(z.strictObject({id,code:z.string().min(1).max(128),edition:z.string().min(1).max(128),effectiveFrom:z.string().regex(/^\d{4}-\d{2}-\d{2}$/),effectiveUntil:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),sourceId:id,clauses:z.array(z.strictObject({id,locator:z.string().min(1).max(128),verified:z.boolean(),summary:z.string().min(1).max(1500),check:z.enum(['terminal_protection','low_mount_rcd','corridor_control','professional_review']),roomIds:z.array(id).max(100)})).max(100)})).max(100),
  rooms:z.array(z.strictObject({id,name:z.string().min(1).max(128),use:z.enum(['office','duty','teaching','corridor','pantry','clinical','unknown']),polygon:z.array(point).min(3).max(100),doors:z.array(point).max(20),obstacles:z.array(z.array(point).min(3).max(50)).max(20).default([]),sourceIds:z.array(id).min(1).max(20),geometryStatus:z.enum(['issued','inferred']),heightM:z.number().min(2).max(10),workplaneM:z.number().min(0).max(2)})).min(1).max(100),
  architecture:z.array(primitive).max(8000),
- luminaires:z.array(z.strictObject({id,label:z.string().min(1).max(128),watts:z.number().positive().max(500),lumens:z.number().positive().max(100000),utilizationFactor:z.number().positive().max(1),maintenanceFactor:z.number().positive().max(1),sourceId:id,photometry:z.enum(['assumed','catalog_only','ies_verified']),ra:z.number().min(0).max(100),cctK:z.number().int().min(2000).max(7000)})).min(1).max(20),
+ luminaires:z.array(z.strictObject({id,label:z.string().min(1).max(128),watts:z.number().positive().max(500),lumens:z.number().positive().max(100000),utilizationFactor:z.number().positive().max(1),maintenanceFactor:z.number().positive().max(1),sourceId:id,photometry:z.enum(['assumed','catalog_only','ies_verified']),iesFile:z.strictObject({file:z.string().min(1).max(2000),sha256:digest}).optional(),rotationDegrees:z.number().finite().min(-360).max(360).optional(),schematicSymbol:z.enum(['panel','downlight']).optional(),allowedRoomUses:z.array(z.enum(['office','duty','teaching','corridor','pantry'])).min(1).max(5).optional(),ra:z.number().min(0).max(100),cctK:z.number().int().min(2000).max(7000)})).min(1).max(20),
+ photometricDesign:z.strictObject({method:z.literal('ies_direct_point'),gridSpacingM:z.number().min(.1).max(2),edgeOffsetM:z.number().min(.05).max(1),boundaryModel:z.literal('opaque_vertical_room_walls')}).optional(),
  electrical:z.strictObject({panelId:id,panelPosition:point,voltage:z.number().min(100).max(300),powerFactor:z.number().positive().max(1),wireSectionMm2:z.number().positive().max(25),copperOhmMm2PerM:z.number().positive().max(0.05),assumedIzA:z.number().positive().max(100),breakerA:z.number().positive().max(100),extraLengthM:z.number().nonnegative().max(100),shortCircuitProtection:z.boolean(),overloadProtection:z.boolean(),earthFaultProtection:z.boolean(),rcd:z.boolean(),sourceIds:z.array(id).min(1).max(20)}),
  missingInputs:z.array(z.strictObject({id,description:z.string().min(1).max(1000),severity:z.enum(['blocking','review']),sourceIds:z.array(id).max(20)})).max(100)
 }).superRefine((p,ctx)=>{
@@ -49,7 +50,7 @@ export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineering
 export function inspectEngineeringInput(raw){
  const input=engineeringInputSchema.parse(raw),issues=[];
  const add=(code,severity,message,refs=[])=>issues.push({code,severity,message,refs});
- const rules=['target_lux','max_lpd','max_spacing','max_devices','max_circuit_watts','max_drop','control_mode','mounting_height'];
+ const rules=['target_lux','max_lpd','max_spacing','max_devices','max_circuit_watts','max_drop','control_mode','mounting_height',...(input.photometricDesign?['min_uniformity','max_avg_lux']:[])];
  for(const room of input.rooms){
   if(['clinical','unknown'].includes(room.use))add('ROOM_USE_REQUIRES_SPECIALIST','blocking','Unsupported clinical/unknown room classification: '+room.id,[room.id]);
   if(room.geometryStatus==='inferred')add('ROOM_GEOMETRY_INFERRED','review','Room boundary requires architectural confirmation',[room.id]);
@@ -63,7 +64,12 @@ export function inspectEngineeringInput(raw){
  for(const s of input.standards){const applicable=s.effectiveFrom<=input.designDate&&(!s.effectiveUntil||input.designDate<s.effectiveUntil);for(const c of s.clauses){if(!applicable)add('STANDARD_OUTSIDE_DATE','review',s.id+' is outside the declared design date',[c.id]);else if(!c.verified)add('STANDARD_CLAUSE_UNVERIFIED','review',s.id+' '+c.locator+' text is not verified',[c.id]);}}
  if(!input.standards.length)add('STANDARDS_MISSING','review','No project standards supplied');
  if(input.sources.some(s=>s.derivedFromFinalDrawing))add('RETROSPECTIVE_INPUT','review','Architectural inputs were derived from historical final drawings; not a prospective blind trial');
- if(input.luminaires.some(l=>l.photometry!=='ies_verified'))add('PHOTOMETRY_UNVERIFIED','review','Flux-method estimate is not point illuminance, uniformity or UGR verification');
+ if(input.photometricDesign){
+  if(input.luminaires.some(f=>!f.iesFile))add('IES_FILE_REQUIRED','blocking','Every candidate requires a source-bound IES file in direct-point mode');
+  for(const room of input.rooms){const uniformity=input.requirements.find(r=>r.rule==='min_uniformity'&&r.roomIds.includes(room.id)),upper=input.requirements.find(r=>r.rule==='max_avg_lux'&&r.roomIds.includes(room.id)),target=input.requirements.find(r=>r.rule==='target_lux'&&r.roomIds.includes(room.id));if(uniformity&&!(uniformity.value>0&&uniformity.value<=1))add('UNIFORMITY_INVALID','blocking','Uniformity must be a fraction in (0,1]',[room.id]);if(upper&&target&&upper.value<target.value)add('ILLUMINANCE_RANGE_CONFLICT','blocking','Maximum average illuminance is below target',[room.id]);if(room.obstacles.length)add('PHOTOMETRIC_OBSTACLE_HEIGHT_REQUIRED','blocking','Obstacle heights and photometric surfaces are not supplied',[room.id]);}
+  add('PHOTOMETRIC_SCOPE_LIMITATIONS','review','Direct point-source model excludes reflected light, UGR and daylight; actual luminous-opening size, surfaces and installation need validation');
+ }
+ if(!input.photometricDesign)add('PHOTOMETRY_UNVERIFIED','review','Flux-method estimate is not point illuminance, uniformity or UGR verification');
  for(const m of input.missingInputs)add('MISSING_PROJECT_INPUT',m.severity,m.description,[m.id]);
  return {ok:!issues.some(i=>i.severity==='blocking'),issues,requirements:input.requirements.length,rooms:input.rooms.length,input};
 }

@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_f8ca4b1",
+  "engineVersion": "1.3.0",
+  "frozenV2Unchanged": true,
+  "pluginUnchangedFromArchitecturalIncrement": true,
+  "evidence": {
+    "unitTests": {
+      "passed": 194,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualMcpCadPipeline": {
+      "passed": 7,
+      "spaces": 3,
+      "luminaires": 30,
+      "circuits": 4,
+      "sheets": 5,
+      "scope": "Three independently invented room conditions with public manufacturer IES, maintained direct point-source calculation, no actual customer or hospital full-floor acceptance.",
+      "modelSHA256": "339f83e668d65184b8616124c20c973996cfc7f4eb6c0ac09d8298230f899c62",
+      "boundedChecks": {
+        "passed": 83,
+        "failed": 0,
+        "pending": 6
+      },
+      "rooms": [
+        {
+          "roomId": "OFFICE",
+          "fixture": "PRODUCT_1",
+          "count": 8,
+          "averageLux": 344.72535174855784,
+          "minimumLux": 200.9950998039531,
+          "uniformity": 0.5830586546200949,
+          "points": 165,
+          "lpd": 6.333333
+        },
+        {
+          "roomId": "DUTY",
+          "fixture": "PRODUCT_1",
+          "count": 4,
+          "averageLux": 285.35999134758157,
+          "minimumLux": 188.58665526875996,
+          "uniformity": 0.6608727957208715,
+          "points": 77,
+          "lpd": 6.333333
+        },
+        {
+          "roomId": "CORRIDOR",
+          "fixture": "PRODUCT_2",
+          "count": 18,
+          "averageLux": 103.32696538522028,
+          "minimumLux": 70.66953520118959,
+          "uniformity": 0.6839408758180567,
+          "points": 93,
+          "lpd": 3.09375
+        }
+      ]
+    },
+    "independentReference": {
+      "tool": "RADIANCE 6.0.2 2026-02-02 LBNL (6.0.c1700d56cc)",
+      "source": "Official Berkeley Lab portable Windows release rad6R0P2",
+      "officialZipSHA256": "c4f02efcb4a33f4a43b7ce0ba58100544abc317a1be61f7b0425a64a66eb8a09",
+      "publishedDigestMatched": true,
+      "formatAndVisibilityCases": 8,
+      "formatAndVisibilityPoints": 340,
+      "actualDesignCases": 3,
+      "actualDesignPoints": 335,
+      "allPassed": true,
+      "maximumRelativeDifferenceForExpectedAtLeast1Lux": 8.891421874978044e-05,
+      "tolerance": "0.05 lx + 1% of predicted direct illuminance per point",
+      "scope": "Independent ies2rad, xform, oconv and rtrace; point opening override, direct only, no diffuse reflections. Not real luminaire near-field or UGR acceptance.",
+      "officialRelease": "https://github.com/LBNL-ETA/Radiance/releases/tag/rad6R0P2",
+      "tools": [
+        {
+          "file": "ies2rad.exe",
+          "sha256": "e0b062448b0d1392cebaa62f532a7ad8b20bcf09f0103e4e68367dce6bb857df"
+        },
+        {
+          "file": "xform.exe",
+          "sha256": "1e7cc646139a706ba6aa66ed892dedef4fedfc6b4ec0d0f9540434d22fc67186"
+        },
+        {
+          "file": "oconv.exe",
+          "sha256": "e0bc7240ee2645d6590c33ef5a6a783f4bfe81246dce23bfefdc66966cba60a2"
+        },
+        {
+          "file": "rtrace.exe",
+          "sha256": "edb01ac56b31ad79263c1f42a686413c0d369829f460e83a170340a6f821b5c9"
+        }
+      ]
+    },
+    "manufacturerSources": [
+      {
+        "file": "RC055.ies",
+        "source": "https://www.docs.signify.com/assets/IES/RC055%20photometry.ies",
+        "sha256": "22336fe2a1309cd14cacc3034d7126539aa0f8dfcef7dd2a46854b0d84e1848e",
+        "bytes": 36445
+      },
+      {
+        "file": "RC055-G2.ies",
+        "source": "https://www.docs.signify.com/assets/IES/RC055-G2-Photometry-IES.ies",
+        "sha256": "6fa790168536ce3af46c601cc954dde851369420ce84837522acc93cc634ce7f",
+        "bytes": 36441
+      },
+      {
+        "file": "DN068B-G2-LED6.ies",
+        "source": "https://www.docs.signify.com/assets/IES/DN068B-G2-LED6-PSU-D100.ies",
+        "sha256": "833a1143df299b08d9e4aeaf712e38f1e4ca98f1ccfca98834ceb3471fa1d0be",
+        "bytes": 18520,
+        "productPage": "https://www.signify.com/global/prof/indoor-luminaires/downlights/philips-smartbright-pro-downlight-gen2/911401861687_EU/product",
+        "catalogUGR": 32,
+        "scope": "Restricted to synthetic corridor candidate; no room UGR acceptance"
+      }
+    ],
+    "nativePdf": {
+      "pages": 5,
+      "papers": [
+        "A3"
+      ],
+      "mergedRenderIdentical": true,
+      "visualAcceptance": "inspected_with_schematic_crowding_pending",
+      "visualReview": "E01 final product mapping inspected; E02-E05 pixel-identical to all four previously inspected page renders. Frames/text/product symbols visible; dense schematic control lines and device labels remain crowded; not professional drawing-layout or installation-detail acceptance.",
+      "bundleSHA256": "c2c34592e9bdd0bf319041c00e4a765fa8d682ee70cbbb86afcaa90285248b17",
+      "parserNote": "Duplicate PageMode warnings retained; parse and render succeeded"
+    },
+    "savedSymbolFaultInjection": {
+      "wrongSavedShapeDetected": true,
+      "sourceDwgNotModified": true
+    },
+    "hospitalLocalStudy": {
+      "rooms": 6,
+      "boundedNoFeasibleLayout": 6,
+      "candidate": "Single 2023-issued RC055 panel",
+      "scope": {
+        "kind": "Retrospective hospital product feasibility study; not original customer brief",
+        "change": "Original numerical lux/LPD/spacing retained, but lux reinterpreted as maintained direct-point mean for this explicit assumed test; minimum uniformity .4 and maximum mean 1.5x target added as test assumptions",
+        "catalog": "22336fe2a1309cd14cacc3034d7126539aa0f8dfcef7dd2a46854b0d84e1848e",
+        "date": "2024-09-30",
+        "professionalApproval": false
+      },
+      "originalInputIntegrity": true,
+      "newCadCreated": false,
+      "notOriginalCustomerAcceptance": true
+    },
+    "privacy": "No new external AI call or hospital upload. Manufacturer sources, model tables, project geometry, outputs and full raw logs remain private. Original hospital AI delivery and reference are preserved."
+  },
+  "implemented": [
+    "Strict Type C LM-63-1991/1995/2002 TILT=NONE parser with explicit angle symmetry and candela multiplier",
+    "Local IES source/catalog digest and root binding; power/lamp-lumen reconciliation and file-declared date gate",
+    "Maintained direct point-source workplane grid with rotation and opaque vertical room walls",
+    "Mean, minimum/mean uniformity, upper mean, power density, spacing and declared product-use constrained candidate selection",
+    "Reject unknown obstacle heights and explicit data/search/grid limits",
+    "Per-point CSV, lamp catalog mapping, five CAD sheets with panel/downlight symbols, source files in private review bundle",
+    "Independent ies2rad/xform/oconv/rtrace comparison on real products and analytic symmetry/occlusion cases"
+  ],
+  "notAccepted": [
+    "Diffuse/reflected light, daylight and UGR",
+    "Actual source-size near-field validity, complex obstructions, ceiling and surface data",
+    "LDT, Type A/B, newer LM-63 variants, tilt compensation and unsupported symmetry/factors",
+    "Global optimum or real engineering infeasibility from bounded grid exhaustion",
+    "Hospital original customer brief, independent issued architecture and full-floor geometry",
+    "Real product procurement/suitability, Ra/CCT and per-product electrical characteristics from IES alone; synthetic supply power factor is not a manufacturer-validated circuit design",
+    "Lighting/hospital normative limits and applicability beyond prior bounded clauses",
+    "Dense schematic control/label coordination and installation drawings",
+    "New machine, independent users and authenticated professional review",
+    "M2, M3 or M4 completion"
+  ],
+  "nextPriorities": [
+    "Verify extracted local lighting/hospital standard full text, source and edition applicability",
+    "Add source-bound normative targets and product quality/applicability conditions",
+    "Extend reflected-light/glare and product candidates with independent comparisons",
+    "Resolve real hospital architectural ambiguities and detailed drawing coordination"
+  ],
+  "professionalApproval": false
+}
