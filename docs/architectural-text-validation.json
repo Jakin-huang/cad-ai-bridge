@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-20",
+  "releaseStatus": "unreleased_source_increment_after_cdc99de",
+  "frozenV2Unchanged": true,
+  "pluginUnchanged": true,
+  "implemented": [
+    "Explicit ordered source TEXT fragment paths, exact composed-name match, single/member identity conflict rejection",
+    "Nested source-basis transformation, horizontal direction and bounded adjacency screening; suggestions never applied automatically",
+    "Source label binding separate from geometry resolution; source annotation text and exclusion reasons retained",
+    "Excluded architectural notes propagate into source-bound project pending inputs without new executable constraints or standards",
+    "Local room/annotation review HTML with escaped source text and hashed script; every output included in replay digest checks",
+    "Task-center source-text/condition summary and actual review download identity"
+  ],
+  "evidence": {
+    "unitTests": {
+      "passed": 240,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualNativeSourceChecks": 11,
+    "actualNativeSourceScope": "Procedural two-room source CAD; source-fragment intake and pending note propagation only. No hospital, customer, design-output or professional acceptance.",
+    "actualNativeSourceAssertions": [
+      "Actual nested CAD capture retains source fragments and source-frame text bases",
+      "Actual source composition identifies both repeated room names by all fragment paths",
+      "Spatial exclusion retains every numeric source note and signals possible project conditions",
+      "Source review HTML and all registered output bytes match their digests",
+      "Single-text compatibility exposes excluded prefixes as review data instead of silently discarding them",
+      "A proposed name that does not equal source-fragment text remains blocked",
+      "Source notes enter the prepared project as source-bound pending interpretation",
+      "Source annotations do not fabricate executable requirements, target changes or standards",
+      "Identical request replay reuses source evidence without recapture",
+      "Changed review output blocks replay rather than silently serving a different source report",
+      "Source drawing bytes are unchanged after native capture and all intake variants"
+    ],
+    "hospitalSourceReviewChecks": 7,
+    "hospitalScope": "Hospital final-derived isolated architectural root only. Retrospective input text recovery; no electrical result comparison, lamp/circuit extraction, new design or external model call.",
+    "hospitalAssertions": [
+      "Fresh native capture is complete for the same isolated architectural root and unchanged original bytes",
+      "All twelve selected bedroom names retain their literal numeric source prefixes and complete member identities",
+      "Spatially excluded refuge-area, ward-capacity, window and dual-use lift annotations remain source text pending interpretation",
+      "Source-derived naming does not certify observed boundaries or independent prospective project completeness",
+      "Explicitly accepting inference cannot bypass unresolved whole-floor inventory",
+      "Same request replays registered source evidence without recapture",
+      "Interactive room/annotation review and CSV source records are registered with matching SHA256"
+    ],
+    "hospital": {
+      "sourceSHA256": "8ff0bd2a4d376d05aa0762df12ba95f35bf383ee3061a22b3aecb319a14ca5fb",
+      "visitedArchitecturalObjects": 4434,
+      "nativeCaptureComplete": true,
+      "sourceTextSummary": {
+        "sourceLabels": 76,
+        "declaredAssemblies": 12,
+        "appliedAssemblies": 12,
+        "suggestedAssemblies": 19,
+        "retainedIgnoredText": 10,
+        "potentialProjectConditions": 4,
+        "complete": true
+      },
+      "coverage": {
+        "expectedRooms": 43,
+        "resolvedRooms": 39,
+        "observedBoundaries": 0,
+        "inferredRooms": 39,
+        "unmappedLabels": [],
+        "unmappedBoundaries": [],
+        "completeInventory": false,
+        "geometryComplete": false,
+        "independentProjectAcceptance": false
+      },
+      "blocking": [
+        {
+          "code": "ROOM_BOUNDARY_MISSING",
+          "severity": "blocking",
+          "message": "No bounded rectangular room found; explicit architectural geometry is required",
+          "refs": [
+            "SPACE_2"
+          ]
+        },
+        {
+          "code": "ROOM_BOUNDARY_MISSING",
+          "severity": "blocking",
+          "message": "No bounded rectangular room found; explicit architectural geometry is required",
+          "refs": [
+            "SPACE_7"
+          ]
+        },
+        {
+          "code": "ROOM_BOUNDARY_MISSING",
+          "severity": "blocking",
+          "message": "No bounded rectangular room found; explicit architectural geometry is required",
+          "refs": [
+            "SPACE_28"
+          ]
+        },
+        {
+          "code": "ROOM_BOUNDARY_MISSING",
+          "severity": "blocking",
+          "message": "No bounded rectangular room found; explicit architectural geometry is required",
+          "refs": [
+            "SPACE_38"
+          ]
+        },
+        {
+          "code": "ROOM_INTERIORS_OVERLAP",
+          "severity": "blocking",
+          "message": "Selected room interiors overlap",
+          "refs": [
+            "SPACE_1",
+            "SPACE_3"
+          ]
+        },
+        {
+          "code": "ROOM_INTERIORS_OVERLAP",
+          "severity": "blocking",
+          "message": "Selected room interiors overlap",
+          "refs": [
+            "SPACE_8",
+            "SPACE_9"
+          ]
+        },
+        {
+          "code": "ROOM_INTERIORS_OVERLAP",
+          "severity": "blocking",
+          "message": "Selected room interiors overlap",
+          "refs": [
+            "SPACE_39",
+            "SPACE_40"
+          ]
+        }
+      ],
+      "newDesignGenerated": false,
+      "independentArchitectureEstablished": false,
+      "independentCustomerBriefEstablished": false
+    },
+    "browser": {
+      "taskCenterSummaryVisible": true,
+      "actualReviewDownloadSHA256": "9931b05ccee8c4dfa6bb3492a496e98f31babbe274261b129a6343a4b7cc35f4",
+      "downloadMatchedRegisteredSHA256": true,
+      "standaloneHtmlBrowserVisualReview": "not_verified",
+      "reason": "Browser rejected file-protocol navigation; no alternate browser path used",
+      "localScriptFocusAndResetController": "tested_separately_not_browser_layout_acceptance"
+    },
+    "externalModelCalls": 0,
+    "sourceDrawingsUnchanged": true,
+    "developmentFailuresRetained": [
+      "Initial controller request used unsupported empty attributes; corrected without product API relaxation",
+      "Procedural CAD text spacing overlapped under actual installed font; adjacency correctly rejected it; fixture spacing corrected without threshold relaxation",
+      "DOM test double initially lacked classList.remove; final controller and full suite passed"
+    ]
+  },
+  "limits": [
+    "Only same-container/layer horizontal single-line TEXT with known transformed axes; rotated, mirrored, missing-axis and MTEXT composition not supported",
+    "Adjacency thresholds are software heuristics, not architectural or layout standards",
+    "No automatic room-use/medical classification, applicability, binding requirement extraction or capacity certification",
+    "1000 source-label review budget; exceeding it blocks completeness rather than silently truncating",
+    "Hospital full-floor input still blocked: four unresolved spaces and three interior-overlap ambiguities",
+    "Standalone review HTML browser layout and interaction visual acceptance not completed",
+    "Independent issued architecture, original customer brief, whole-floor computation, specialist design, external users/clean machines and professional review pending"
+  ],
+  "milestones": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "professionalApproval": false
+}
