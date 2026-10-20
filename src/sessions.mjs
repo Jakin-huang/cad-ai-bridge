@@ -28,7 +28,8 @@ export function sessionRequest(descriptor,input,{timeout=60000,dispatch=dispatch
   socket.on('data',bytes=>{text+=decoder.write(bytes);if(Buffer.byteLength(text)>16*1024*1024)return done(Error('SESSION_REPLY_TOO_LARGE: narrow the query'));let end;while((end=text.indexOf('\n'))>=0){let message;try{message=JSON.parse(text.slice(0,end));}catch(error){return done(error);}text=text.slice(end+1);if(message.eventType==='dispatch'){if(dispatched||input.action!=='edit'||message.pid!==descriptor.pid||message.requestId!==input.requestId||message.command!=='CADBRIDGESESSIONEXEC')return done(Error('SESSION_DISPATCH_INVALID: unexpected command acknowledgement'));dispatched=true;dispatch(descriptor,input).catch(error=>done(error));}else return done(null,message);}});
  });
 }
-export async function executeSession(args,{getSettings,root=sessionHome(),request=sessionRequest}={}){
+export async function executeSession(args,{getSettings,root=sessionHome(),request=sessionRequest,plugin=path.join(projectRoot,'plugin','bin','CadAgent.dll')}={}){
+ if(args.action==='status')args={action:'list'};
  let observed;
  try{
   if(args.action==='cancel'){
@@ -37,7 +38,9 @@ export async function executeSession(args,{getSettings,root=sessionHome(),reques
   }
   if(args.action==='connect'){
    if(process.env.CADBRIDGE_READ_ONLY==='1')throw Error('READ_ONLY: attaching a plugin is disabled; use an already connected session');
-   await getSettings();const plugin=path.join(projectRoot,'plugin','bin','CadAgent.dll');
+   await getSettings();
+   const connected=(await listSessions(root)).filter(s=>!args.pid||s.pid===args.pid);
+   if(connected.length===1){const session=connected[0];if(await hashFile(session.pluginPath)!==await hashFile(plugin))throw Error('SESSION_PLUGIN_MISMATCH: restart this AutoCAD instance to load the current bridge plugin');const probe=await request(session,{action:'context'});if(!probe.ok)return probe;const{token,pipe,...info}=session;return {ok:true,session:info,reusedConnection:true,next:'Read current context before selecting objects or editing.'};}
    const attached=await new Promise((resolve,reject)=>execFile(path.join(process.env.SystemRoot||'C:\\Windows','System32','WindowsPowerShell','v1.0','powershell.exe'),['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',fileURLToPath(new URL('./session-connect.ps1',import.meta.url)),'-Plugin',plugin,...(args.pid?['-ExpectedPid',String(args.pid)]:[])],{windowsHide:true,timeout:30000,maxBuffer:65536},(error,stdout,stderr)=>{if(error)return reject(Error('SESSION_ATTACH_FAILED: '+stderr));try{resolve(JSON.parse(stdout.replace(/^\uFEFF/,'')));}catch(error){reject(error);}}));
    const deadline=Date.now()+20000;while(Date.now()<deadline){const session=(await listSessions(root)).find(item=>item.pid===attached.pid);if(session){if(await hashFile(session.pluginPath)!==await hashFile(plugin))throw Error('SESSION_PLUGIN_MISMATCH: restart this AutoCAD instance to load the current bridge plugin');const{token,pipe,...info}=session;return {ok:true,session:info,next:'Read current context before selecting objects or editing.'};}await new Promise(resolve=>setTimeout(resolve,250));}throw Error('SESSION_ATTACH_FAILED: plugin did not publish a session descriptor; inspect CAD startup or an older loaded plugin');
   }

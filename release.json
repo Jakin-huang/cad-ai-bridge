@@ -1,7 +1,7 @@
 {
-  "version": "0.5.0-preview.1",
-  "tag": "v0.5.0-preview.1",
+  "version": "0.6.0-preview.1",
+  "tag": "v0.6.0-preview.1",
   "channel": "preview",
   "compatibilityVersion": "0.2.0",
-  "date": "2026-10-19"
+  "date": "2026-10-20"
 }

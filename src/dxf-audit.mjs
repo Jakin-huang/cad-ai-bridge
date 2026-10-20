@@ -49,10 +49,12 @@ export function compareElectrical(dxf,tangent){
  return{ok:mismatches.length===0,devices:devices.length,wires:wires.length,circuitLabels:Object.keys(circuits).length,lengthDrawingUnits:length,emptyWireMetadata:dxf.roots.filter(e=>wireEvidence(e)&&!wireEvidence(e).hasValue).length,mismatches};
 }
 const numericCode=code=>(code>=10&&code<=59)||(code>=110&&code<=149)||(code>=210&&code<=239)||(code>=1010&&code<=1059);
-export function unchangedRecords(before,after){
+export function unchangedRecords(before,after,{excludedHandles=[],protectExistingBlockMembership=false}={}){
+ const excluded=new Set(excludedHandles.map(h=>h.toUpperCase()));
  const index=new Map(after.records.filter(e=>e.handle).map(e=>[e.section+'|'+e.handle,e])),differences=[],presentationChanges=[],anonymousRenames=[];let compared=0;
  const blockOwners=dxf=>new Map(dxf.records.filter(e=>e.section==='BLOCKS'&&e.type==='BLOCK').map(e=>[tag(e,2),tag(e,330)]));
  const oldBlocks=blockOwners(before),newBlocks=blockOwners(after);
+ if(protectExistingBlockMembership){const oldHandles=new Set(before.records.filter(e=>e.handle).map(e=>e.section+'|'+e.handle)),owners=new Set(oldBlocks.values());for(const e of after.records.filter(e=>e.section==='BLOCKS'&&e.handle&&!oldHandles.has(e.section+'|'+e.handle)&&owners.has(tag(e,330))))differences.push({handle:e.handle,kind:'unexpected-addition-to-existing-block',owner:tag(e,330)});}
  function canonical(entity,blocks){
   const paperScreen=entity.type==='VIEWPORT'&&Number(tag(entity,67,0))===1&&Number(tag(entity,69,0))===1;
   const fields=entity.pairs.filter(([code])=>!(paperScreen&&[10,20,30,40,41,12,22,45].includes(code)));
@@ -65,7 +67,8 @@ export function unchangedRecords(before,after){
  }
  // Tables and OBJECTS carry legitimate document housekeeping. Entity records and
  // block geometry/attributes are the protected content for this comparison.
- for(const original of before.records.filter(e=>e.handle&&['ENTITIES','BLOCKS'].includes(e.section))){const current=index.get(original.section+'|'+original.handle);compared++;if(!current){differences.push({handle:original.handle,kind:'missing'});continue;}
+ const protectedRecords=before.records.filter(e=>e.handle&&['ENTITIES','BLOCKS'].includes(e.section)&&!excluded.has(e.handle.toUpperCase())&&!(['ATTRIB','SEQEND'].includes(e.type)&&excluded.has(String(tag(e,330,'')).toUpperCase())));
+ for(const original of protectedRecords){const current=index.get(original.section+'|'+original.handle);compared++;if(!current){differences.push({handle:original.handle,kind:'missing'});continue;}
   const aPairs=canonical(original,oldBlocks),bPairs=canonical(current,newBlocks);
   if(original.type!==current.type||aPairs.length!==bPairs.length){differences.push({handle:original.handle,kind:'structure'});continue;}
   for(let i=0;i<aPairs.length;i++){const[a,v]=aPairs[i],[b,w]=bPairs[i];if(a!==b||(numericCode(a)?Math.abs(Number(v)-Number(w))>Math.max(1e-7,Math.abs(Number(v))*1e-12):v!==w)){differences.push({handle:original.handle,kind:'value',code:a,before:v,after:w});break;}}

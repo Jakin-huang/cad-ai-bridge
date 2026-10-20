@@ -1,8 +1,8 @@
 {
-  "release": "0.5.0-preview.1",
-  "status": "four-stage-development-validated-on-existing-machine",
-  "checkedAt": "2026-10-19T14:18:07.972Z",
-  "pluginSHA256": "D3024796EC8F636B36D79349AE28DA12E0EEF81AC1B2CC4142EA2B48D3834331",
+  "release": "0.6.0-preview.1",
+  "status": "p0-v06-development-validated-on-existing-machine",
+  "checkedAt": "2026-10-20T02:47:23.068Z",
+  "pluginSHA256": "08A55869E3029A22A25293E03DFE4C2C4A627413AEC8F27214D09F42E7C4F4E3",
   "environment": {
     "os": "Windows 10 x64",
     "cad": "AutoCAD 2022 zh-CN",
@@ -16,7 +16,7 @@
       "delivered": [
         "Capabilities without CAD",
         "Existing offline setup, diagnostics and restoration retained",
-        "21 MCP tools and general-purpose Skill"
+        "22 MCP tools and general-purpose Skill"
       ]
     },
     {
@@ -49,119 +49,128 @@
     }
   ],
   "unitTests": {
-    "passed": 91,
+    "passed": 115,
     "failed": 0,
     "skipped": 0
   },
   "sessionSequence": {
     "requests": 30,
     "passed": true,
-    "handlesBefore": 1949,
-    "handlesAfter": 1937
+    "handlesBefore": 1983,
+    "handlesAfter": 1971
   },
   "evidence": [
     {
+      "report": "practical-v06-report.json",
+      "checkedAt": "2026-10-20T02:12:01.697Z",
+      "checks": 12,
+      "scope": "Actual AutoCAD 2022 synthetic 6204-entity drawing on the existing Windows account. No external users, new machine, manual time baseline, all-font appearance or arbitrary vendor-object preservation claim.",
+      "passed": true
+    },
+    {
       "report": "workflows-report.json",
-      "checkedAt": "2026-10-19T13:36:24.531Z",
+      "checkedAt": "2026-10-20T02:10:06.941Z",
       "checks": 9,
       "scope": "Actual AutoCAD 2022 via official MCP SDK. This is automated host evidence, not external-user or desktop-dialogue acceptance.",
       "passed": true
     },
     {
       "report": "session-report.json",
-      "checkedAt": "2026-10-19T14:09:00.629Z",
+      "checkedAt": "2026-10-20T02:12:41.052Z",
       "checks": 19,
       "scope": "Owned AutoCAD 2022 interactive instance, official MCP SDK, real external COM edits/selection/undo/document switching. No external-user or new-machine claim.",
       "passed": true
     },
     {
       "report": "query-scope-report.json",
-      "checkedAt": "2026-10-19T13:38:08.240Z",
-      "checks": 10,
+      "checkedAt": "2026-10-20T02:13:15.538Z",
+      "checks": 11,
       "scope": "AutoCAD 2022 actual ordinary nested blocks, WCS bounds, xref identification, paper-space reading and meter-unit read-only coverage; no new CAD version or custom-object write support claimed.",
       "passed": true
     },
     {
       "report": "integration-report.json",
-      "checkedAt": "2026-10-19T13:39:01.190Z",
+      "checkedAt": "2026-10-20T02:13:52.705Z",
       "checks": 16,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "editing-report.json",
-      "checkedAt": "2026-10-19T13:41:11.147Z",
+      "checkedAt": "2026-10-20T02:15:23.993Z",
       "checks": 17,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "tangent-integration-report.json",
-      "checkedAt": "2026-10-19T13:43:24.771Z",
+      "checkedAt": "2026-10-20T02:16:42.899Z",
       "checks": 11,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "editing-tangent-report.json",
-      "checkedAt": "2026-10-19T13:55:16.076Z",
+      "checkedAt": "2026-10-20T02:25:03.777Z",
       "checks": 17,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "native-tangent-report.json",
-      "checkedAt": "2026-10-19T14:05:48.684Z",
+      "checkedAt": "2026-10-20T02:32:52.926Z",
       "checks": 16,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "mcp-results-report.json",
-      "checkedAt": "2026-10-19T14:05:57.852Z",
+      "checkedAt": "2026-10-20T02:32:58.622Z",
       "checks": 4,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "school-mcp-report.json",
-      "checkedAt": "2026-10-19T14:06:14.758Z",
+      "checkedAt": "2026-10-20T02:33:11.199Z",
       "checks": 7,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "maintenance-mcp-report.json",
-      "checkedAt": "2026-10-19T14:06:32.972Z",
+      "checkedAt": "2026-10-20T02:33:22.389Z",
       "checks": 8,
       "scope": "Official SDK protocol verification; does not establish WorkBuddy UI compatibility.",
       "passed": true
     },
     {
       "report": "workbuddy-installed-report.json",
-      "checkedAt": "2026-10-19T14:07:22.005Z",
+      "checkedAt": "2026-10-20T02:33:55.816Z",
       "checks": 8,
       "scope": "Official MCP SDK using actual installed WorkBuddy configuration; not a desktop conversation test",
       "passed": true
     },
     {
       "report": "editing-legacy-upgrade-report.json",
-      "checkedAt": "2026-10-19T14:06:39.656Z",
+      "checkedAt": "2026-10-20T02:33:27.395Z",
       "checks": 3,
       "scope": "Current-machine regression",
       "passed": true
     },
     {
       "report": "preview4-editing-upgrade-report.json",
-      "checkedAt": "2026-10-19T14:06:46.374Z",
+      "checkedAt": "2026-10-20T02:33:32.031Z",
       "checks": 3,
       "scope": "Current-machine regression",
       "passed": true
     }
   ],
   "clientNaturalLanguage": {
-    "checkedAt": "2026-10-19T14:15:33.878Z",
-    "scope": "Installed WorkBuddy bundled CLI and existing login; exact candidate Skill copied into isolated documented project scope. No desktop, global discovery or external-user assertion.",
+    "accepted": true,
+    "status": "passed-existing-account-cli",
+    "checkedAt": "2026-10-20T02:47:22.746Z",
+    "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. No desktop, global discovery, new-machine, manual productivity or external-user assertion.",
     "checks": [
       "Candidate Skill loaded for a Chinese general-CAD request",
       "Actual scene creation, generic replacement and takeoff completed",
@@ -170,9 +179,245 @@
       "Original synthetic DWG remains unchanged",
       "Client returned a successful natural-language result"
     ],
-    "elapsedMs": 266785,
-    "recoveredInputValidationErrors": 2,
+    "elapsedMs": 88373,
+    "recoveredInputValidationErrors": 0,
     "performanceScope": "One synthetic first-task client trace; no manual baseline or user productivity claim."
+  },
+  "practicalEnhancement": {
+    "checks": [
+      "One CAD capture retains 6204 entities with a hash-bound index and compact reply",
+      "60 filtered/projected pages cover 6000 unique lines without another CAD capture",
+      "Explicit legend exclusion produces 6004 occurrences and 60000 drawing-unit plan-line length",
+      "One compound task saves replacements, whole-root CSV, padded final PNG and verified A3 landscape PDF",
+      "Unselected DXF entity/block records and persisted text postconditions pass independently",
+      "Changing response verbosity replays the same write UUID and retained outputs",
+      "Composed move/rotation, copy, array and actual dimension pass saved geometric checks",
+      "Block rotation about its own unchanged insertion point is verified by the saved angle",
+      "All five ISO papers in both orientations produce independently verified PDF page sizes",
+      "Oversized fixed-scale engineering plot fails explicitly instead of silently clipping",
+      "Unavailable print style is refused rather than substituted",
+      "Original drawing and all retained compound outputs preserve their recorded hashes"
+    ],
+    "syntheticDrawingEntities": 6204,
+    "indexedPages": 60,
+    "indexedEntities": 6000,
+    "pagingElapsedMs": 2686,
+    "physicalPdf": {
+      "checks": [
+        "Displayed A3 landscape orientation",
+        "6200 physical 1:10 vectors and text",
+        "All ten ISO paper/orientation combinations",
+        "Five physical 1:100 outputs"
+      ],
+      "compound": {
+        "displayedPageMm": [
+          420.1583333333333,
+          297.0388888888889
+        ],
+        "horizontalSegments": 6200,
+        "expectedSegmentMm": 1,
+        "toleranceMm": 0.05,
+        "gridExtentMm": [
+          198.96666666666664,
+          121.96233333333332
+        ],
+        "measuredSegmentMm": {
+          "0.97367": 2294,
+          "1.016": 3906
+        }
+      },
+      "matrix": [
+        {
+          "paper": "A0",
+          "orientation": "portrait",
+          "displayedPageMm": [
+            841.0222222222222,
+            1188.861111111111
+          ]
+        },
+        {
+          "paper": "A0",
+          "orientation": "landscape",
+          "displayedPageMm": [
+            1188.861111111111,
+            841.0222222222222
+          ]
+        },
+        {
+          "paper": "A1",
+          "orientation": "portrait",
+          "displayedPageMm": [
+            594.0777777777778,
+            841.0222222222222
+          ]
+        },
+        {
+          "paper": "A1",
+          "orientation": "landscape",
+          "displayedPageMm": [
+            841.0222222222222,
+            594.0777777777778
+          ]
+        },
+        {
+          "paper": "A2",
+          "orientation": "portrait",
+          "displayedPageMm": [
+            420.1583333333333,
+            594.0777777777778
+          ]
+        },
+        {
+          "paper": "A2",
+          "orientation": "landscape",
+          "displayedPageMm": [
+            594.0777777777778,
+            420.1583333333333
+          ]
+        },
+        {
+          "paper": "A3",
+          "orientation": "portrait",
+          "displayedPageMm": [
+            297.0388888888889,
+            420.1583333333333
+          ]
+        },
+        {
+          "paper": "A3",
+          "orientation": "landscape",
+          "displayedPageMm": [
+            420.1583333333333,
+            297.0388888888889
+          ]
+        },
+        {
+          "paper": "A4",
+          "orientation": "portrait",
+          "displayedPageMm": [
+            209.90277777777777,
+            297.0388888888889
+          ]
+        },
+        {
+          "paper": "A4",
+          "orientation": "landscape",
+          "displayedPageMm": [
+            297.0388888888889,
+            209.90277777777777
+          ]
+        }
+      ],
+      "scope": "Current-machine synthetic PDFs; no all-font, standards or external-user acceptance."
+    },
+    "realEngineering": {
+      "scope": "Three largest existing locally staged engineering drawings, current machine/account. Private source identities and outputs remain local; no external-user or manual-productivity acceptance.",
+      "checks": 10,
+      "plannedLocalTasksAccepted": true,
+      "cases": [
+        {
+          "caseNumber": 1,
+          "complete": true,
+          "total": 34980,
+          "captured": 34980,
+          "readErrors": 0,
+          "units": "Millimeters",
+          "variableWidthCount": 58,
+          "variableWidthDxfSamples": 0
+        },
+        {
+          "caseNumber": 9,
+          "complete": true,
+          "total": 61437,
+          "captured": 61437,
+          "readErrors": 0,
+          "units": "Undefined",
+          "variableWidthCount": 53,
+          "variableWidthDxfSamples": 10
+        },
+        {
+          "caseNumber": 4,
+          "complete": true,
+          "total": 39048,
+          "captured": 39048,
+          "readErrors": 0,
+          "units": "Millimeters",
+          "variableWidthCount": 0,
+          "variableWidthDxfSamples": 0
+        }
+      ],
+      "editingCase": 4,
+      "editing": {
+        "verified": true,
+        "outcome": "saved"
+      },
+      "historicalDxfLimitations": [
+        {
+          "caseNumber": 1,
+          "scope": "Prior DXF export failure; this run establishes capture only, not edit/preservation support for this case."
+        }
+      ]
+    },
+    "clientObservations": [
+      {
+        "checkedAt": "2026-10-20T01:07:25.603Z",
+        "finalPlugin": false,
+        "elapsedMs": 163097,
+        "validationErrors": 0,
+        "bridgeCalls": 3,
+        "functionCalls": 16,
+        "hostLaunches": 5,
+        "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. No desktop, global discovery, new-machine, manual productivity or external-user assertion."
+      },
+      {
+        "checkedAt": "2026-10-20T01:04:00.488Z",
+        "finalPlugin": false,
+        "elapsedMs": 106320,
+        "validationErrors": 0,
+        "bridgeCalls": 3,
+        "functionCalls": 10,
+        "hostLaunches": 7,
+        "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. No desktop, global discovery, new-machine, manual productivity or external-user assertion."
+      },
+      {
+        "checkedAt": "2026-10-20T02:47:22.746Z",
+        "finalPlugin": true,
+        "elapsedMs": 88373,
+        "validationErrors": 0,
+        "bridgeCalls": 3,
+        "functionCalls": 10,
+        "hostLaunches": 5,
+        "scope": "Installed WorkBuddy bundled CLI and existing login; candidate Skill copied into isolated project scope. No desktop, global discovery, new-machine, manual productivity or external-user assertion."
+      }
+    ],
+    "failedClientObservations": [
+      {
+        "outcome": "timeout",
+        "limitMs": 300000,
+        "scope": "One earlier current-machine CLI attempt exceeded its limit; no final client result, not counted as success. Subsequent tests used independent new synthetic drawings."
+      },
+      {
+        "outcome": "CLIENT_SERVICE_RATE_LIMIT",
+        "checkedAt": "2026-10-20T02:39:56.513Z",
+        "configuredFinalPlugin": true,
+        "elapsedMs": 88615,
+        "cadToolCalls": [
+          "mcp__cad-ai-bridge__cad_doctor"
+        ],
+        "scope": "Existing-account WorkBuddy CLI attempt; unfinished client task is not acceptance. See retained raw trace for service diagnostics."
+      }
+    ],
+    "performanceScope": "Historical v0.5 first-task observation was about 267 seconds. Different model/service conditions, concurrent validation and few synthetic trials prevent a controlled productivity or reliability conclusion."
+  },
+  "acceptance": {
+    "developmentComplete": true,
+    "currentMachineBackendAndSdkAutomated": true,
+    "finalClientNaturalLanguage": true,
+    "freshWindows": false,
+    "independentStandardAccount": false,
+    "externalUsers": false,
+    "manualProductivityDemonstrated": false,
+    "stableReleaseGatePassed": false
   },
   "pending": [
     "Fresh Windows installation",

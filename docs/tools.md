@@ -1,6 +1,6 @@
 # 工具与数据契约
 
-v0.5.0-preview.1提供cad_capabilities、cad_workflow和cad_session，保留原18个工具。任务形态、会话保存/取消边界及兼容读取见[四阶段实施记录](practical-development.md)。只读模式使用受限schema保留复合工具的只读分支，不暴露其编辑或插件接入操作。
+v0.6.0-preview.1提供22个工具，在四阶段功能上增加cad_scan_drawing和复合交付、统计排除及工程打印参数。任务形态、会话保存/取消边界及兼容读取见[实施记录](practical-development.md)。只读模式使用受限schema保留复合工具的只读分支，不暴露其编辑或插件接入操作。
 
 MCP 与 `cadbridge call <action> <request.json>` 共用 `src/contracts.mjs` 的严格 schema。图纸路径必须位于 setup 配置的 workspace 或本项目任务输出目录，解析真实路径后检查边界。输出路径由宿主生成，调用者不能指定覆盖源图。
 
@@ -45,6 +45,14 @@ metrics 记录 queueMs、configurationMs、snapshotMs、bootstrapMs、hostMs、o
 `cad_repair_copy` 接受 drawing、expectedSha256、requestId 和可选 host，运行 CAD 自带 AUDIT，再输出新 DWG/DXF；不设置图纸单位、不覆盖原文件。AUDIT 可能删除损坏对象，需查看宿主日志和对照结果。此操作只修复副本，不视为一次可自动重放的制图事务。
 
 ### 分页
+
+大图先调用cad_scan_drawing（CLI action scan），参数沿用query_entities的drawing/host/scope/filter，limit为1—100000、默认100000；detail默认summary，exportDxf可选。一次打开冻结文件，保留完整捕获和本地索引。仍受100000遍历预算、嵌套深度和读取错误约束，query.truncated=true不能解释为完整全图。
+
+其entities分页可附filter（与query_entities一致）、fields（仅顶层字段投影，自动保留handle/instancePath）和expectedResultSha256。索引和结果有摘要校验，顺序以原捕获为准；重复定义句柄保留各实例路径。filter仅适用于带索引的entities，其他记录类型不隐式支持。文件内没有匹配对象时返回total=0，不能把未捕获范围计为零。
+
+cad_workflow支持response=summary/full、只读scope以及exclude.layers/handles/blockNames/regions。编辑仍限Model根层，单次完整捕获预算100000、最多100个操作项。delivery.csv生成编辑后全根层明细和汇总（应用exclude），delivery.exports沿用export_batch的items，在同一任务中交付。summary是传输选择，不参与UUID语义指纹。完整结果、delivery.json、文件摘要、preservation.json及changes.json保留在任务中；几何检查缺口见review.pendingGeometry。delivery.verificationPassed表示该任务已实现的检查和所需输出成功，须连同pendingGeometry判断，不表示全部实体语义已独立验证。CSV的lengthUnavailableCount表示未提供世界长度，不能当作长度为零的工程对象。
+
+cad_export及工作流导出项可给plot:{paper:A4/A3/A2/A1/A0,orientation:portrait/landscape,scale:fit/fixed,denominator:正数,style:已安装CTB文件名}。显式工程参数仅用于PDF。固定比例1:denominator只支持毫米制Model，保守边距10毫米，超范围拒绝。CAD实际参数和PDF最终显示页大小（含继承的旋转）分别验证；字体、图框、线宽视觉和全部内容裁切不由页大小检查自动证明。
 
 摘要给出 `details.jobId`。调用 `cad_read_result`：
 

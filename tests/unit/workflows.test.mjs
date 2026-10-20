@@ -8,22 +8,25 @@ import {schemas} from '../../src/contracts.mjs';
 import {runWorkflow,replacementText,aggregateEntities,drawingDifference} from '../../src/workflows.mjs';
 import {hashFile} from '../../src/drawings.mjs';
 import {capabilities} from '../../src/capabilities.mjs';
+import {getJob} from '../../src/jobs.mjs';
 
 const uuid=()=>crypto.randomUUID();
-async function fixture(t,{truncated=false,exportFailure=false,editFailure=false,readbackFailure=false}={}){
+async function fixture(t,{truncated=false,exportFailure=false,editFailure=false,readbackFailure=false,badSavedText=false,corruptUnselected=false,unreportedNewRoot=false}={}){
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'cad-workflow-'));t.after(()=>fs.rm(root,{recursive:true,force:true}));const runs=path.join(root,'runs');await fs.mkdir(runs);const drawing=path.join(root,'source.dwg');
  const initial={units:'Millimeters',documentId:uuid(),revision:0,entities:[{handle:'A',type:'TEXT',layer:'TEXT',text:'OLD $1 OLD',bounds:{min:[0,0,0],max:[100,100,0]}},{handle:'B',type:'INSERT',layer:'BLOCK',blockName:'DEVICE',attributes:{MODEL:'=BAD'},position:[0,0,0]},{handle:'C',type:'LINE',layer:'LINE',start:[0,0,0],end:[100,0,0],length:100}]};await fs.writeFile(drawing,JSON.stringify(initial));const sourceSha=await hashFile(drawing),calls=[];
  const execute=async(action,args)=>{
   calls.push({action,args});const job=await fs.mkdtemp(path.join(runs,'job-child-')),data=JSON.parse(await fs.readFile(args.drawing,'utf8'));await fs.copyFile(args.drawing,path.join(job,'input.dwg'));const inputSha256=await hashFile(args.drawing),snapshot={units:data.units,documentId:data.documentId,revision:data.revision};
-  if(action==='query_entities'){
+  const dxf=path.join(job,'output.dxf');await fs.writeFile(dxf,['0','SECTION','2','ENTITIES',...data.entities.flatMap(r=>['0',r.type,'5',r.handle,'8',r.layer,...(r.text?['1',r.text]:[])]),'0','ENDSEC','0','EOF',''].join('\n'));
+  if(action==='scan'){
    if(readbackFailure&&data.revision>0)return {ok:false,error:{code:'READBACK_FAILED',message:'injected'},jobRoot:job};
    const rows=data.entities.filter(row=>(!args.filter.handles||args.filter.handles.includes(row.handle))&&(!args.filter.types||args.filter.types.includes(row.type)));
-   return {ok:true,inputSha256,jobRoot:job,snapshot,query:{entities:rows,total:rows.length,returned:rows.length,truncated,errors:[],scope:'mock roots'}};
+   return {ok:true,inputSha256,jobRoot:job,dxf,snapshot,query:{entities:rows,total:rows.length,returned:rows.length,truncated,errors:[],scope:'mock roots'}};
   }
   if(action==='edit'){
    if(editFailure)return {ok:false,error:{code:'LAYER_LOCKED',message:'injected'},jobRoot:job};
    for(const op of args.operations)for(const row of data.entities.filter(e=>op.handles?.includes(e.handle))){if(op.type==='set_text')row.text=op.text;if(op.type==='set_attributes')Object.assign(row.attributes,op.attributes);if(op.type==='set_layer')row.layer=op.layer;}
-   data.revision++;const output=path.join(job,'output.dwg');await fs.writeFile(output,JSON.stringify(data));return {ok:true,jobRoot:job,drawing:output,drawingSha256:await hashFile(output),drawingSaved:true,mutationCommitted:true,changes:[],snapshot:{...snapshot,revision:data.revision}};
+   if(badSavedText)data.entities[0].text='WRONG';if(corruptUnselected)data.entities[2].layer='CORRUPT';if(unreportedNewRoot)data.entities.push({handle:'E',type:'LINE',layer:'LINE',start:[0,0,0],end:[1,0,0],length:1});
+   data.revision++;const output=path.join(job,'output.dwg');await fs.writeFile(output,JSON.stringify(data));return {ok:true,jobRoot:job,drawing:output,dxf,drawingSha256:await hashFile(output),drawingSaved:true,mutationCommitted:true,changes:[],snapshot:{...snapshot,revision:data.revision}};
   }
   if(action==='export'){if(exportFailure)return {ok:false,error:{code:'PLOT_FAILED',message:'injected'},jobRoot:job};const file=path.join(job,'output.'+args.format);await fs.writeFile(file,'test export');return {ok:true,jobRoot:job,exported:{file,format:args.format,bytes:11,sha256:await hashFile(file)}};}
   throw Error('Unexpected '+action);
@@ -56,6 +59,24 @@ test('organize rejects mixed attribute selections; edit operations cannot escape
 });
 test('batch export reports per-item failures and preserves independent successful results',async t=>{
  const f=await fixture(t,{exportFailure:true}),result=await runWorkflow(f.execute,f.runs,f.request({type:'export_batch',items:[{name:'a',format:'pdf'},{name:'b',format:'png'}]}));assert.equal(result.ok,false);assert.equal(result.error.code,'PARTIAL_EXPORT_FAILURE');assert.equal(result.exports.length,2);assert.equal(f.calls.filter(c=>c.action==='export').length,2);assert.equal(await hashFile(f.drawing),f.sourceSha);
+});
+test('a requested final PNG avoids duplicate before/after plots unless explicitly requested',async t=>{
+ const f=await fixture(t),request=f.request({type:'replace_text',search:'OLD $1 OLD',replacement:'NEW'});delete request.preview;request.delivery={csv:true,exports:[{name:'preview',format:'png',layout:'Model'}]};const result=await runWorkflow(f.execute,f.runs,request);assert.equal(result.ok,true,JSON.stringify(result));assert.equal(f.calls.filter(c=>c.action==='export').length,1);assert.equal(result.files.some(f=>f.kind==='before-png'||f.kind==='after-png'),false);assert.equal(result.files.some(f=>f.kind==='png'),true);
+});
+test('saved wrong text retains the drawing and failed geometric/property evidence without retrying',async t=>{
+ const f=await fixture(t,{badSavedText:true}),request=f.request({type:'replace_text',search:'OLD $1 OLD',replacement:'NEW'});request.filter={types:['TEXT']};const result=await runWorkflow(f.execute,f.runs,request);assert.equal(result.error.code,'GEOMETRY_POSTCONDITION_FAILED');assert.equal(result.drawingSaved,true);assert.equal(result.safeToRetry,false);assert.equal(f.calls.filter(c=>c.action==='edit').length,1);assert.equal(JSON.parse(await fs.readFile(result.files.find(f=>f.kind==='geometry-json').file,'utf8')).ok,false);
+});
+test('freshly reopened DXF catches corruption outside the requested selection even if edit-time DXF looks unchanged',async t=>{
+ const f=await fixture(t,{corruptUnselected:true}),request=f.request({type:'replace_text',search:'OLD $1 OLD',replacement:'NEW'});request.filter={types:['TEXT']};const result=await runWorkflow(f.execute,f.runs,request);assert.equal(result.error.code,'PRESERVATION_FAILED');assert.equal(result.drawingSaved,true);assert.equal(result.safeToRetry,false);const audit=JSON.parse(await fs.readFile(result.files.find(f=>f.kind==='preservation-json').file,'utf8'));assert.ok(audit.differences.some(d=>d.handle==='C'));assert.equal(await hashFile(f.drawing),f.sourceSha);
+});
+test('an unreported extra root is a preservation failure rather than an ignored addition',async t=>{
+ const f=await fixture(t,{unreportedNewRoot:true}),request=f.request({type:'replace_text',search:'OLD $1 OLD',replacement:'NEW'});request.filter={types:['TEXT']};const result=await runWorkflow(f.execute,f.runs,request);assert.equal(result.error.code,'PRESERVATION_FAILED');const audit=JSON.parse(await fs.readFile(result.files.find(f=>f.kind==='preservation-json').file,'utf8'));assert.ok(audit.differences.some(d=>d.kind==='unreported-new-model-root'));
+});
+test('missing before-write preservation evidence refuses mutation',async t=>{
+ const f=await fixture(t),execute=async(action,args)=>{const value=await f.execute(action,args);return action==='scan'?{...value,dxf:undefined}:value;};const result=await runWorkflow(execute,f.runs,f.request({type:'replace_text',search:'OLD $1 OLD',replacement:'NEW'}));assert.equal(result.error.code,'PRESERVATION_UNAVAILABLE');assert.equal(result.mutationCommitted,false);assert.ok(!f.calls.some(c=>c.action==='edit'));
+});
+test('final journal failure returns retained saved output instead of losing its outcome',async t=>{
+ const f=await fixture(t),request=f.request({type:'replace_text',search:'OLD $1 OLD',replacement:'NEW'});request.filter={types:['TEXT']};const execute=async(action,args)=>{const value=await f.execute(action,args);if(action==='edit')await fs.mkdir(path.join(f.runs,'job-workflow-'+request.requestId,'result.json'));return value;};const result=await runWorkflow(execute,f.runs,request);assert.equal(result.error.code,'WORKFLOW_JOURNAL_FAILED');assert.equal(result.drawingSaved,true);assert.equal(result.outcome,'saved');assert.equal(result.mutationCommitted,true);assert.equal(result.safeToRetry,false);assert.equal(result.evidenceComplete,false);assert.equal(await hashFile(result.drawing),result.drawingSha256);assert.equal(f.calls.filter(c=>c.action==='edit').length,1);const recovered=await getJob(f.runs,{jobId:path.basename(result.jobRoot)});assert.equal(recovered.error.code,'RESULT_RECORD_INVALID');assert.equal(recovered.safeToRetry,false);assert.ok(recovered.task.files.some(f=>f.kind==='dwg'&&f.file===result.drawing));
 });
 test('workflow schema rejects native operations, injected paths and ambiguous output names',()=>{
  const base={drawing:'drawing.dwg',requestId:uuid()};assert.equal(schemas.workflow.safeParse({...base,plan:{type:'export_batch',items:[{name:'../escape',format:'pdf'}]}}).success,false);assert.equal(schemas.workflow.safeParse({...base,plan:{type:'export_batch',items:[{name:'a',format:'pdf'},{name:'A',format:'pdf'}]}}).success,false);assert.equal(schemas.workflow.safeParse({...base,plan:{type:'organize'}}).success,false);assert.equal(schemas.workflow.safeParse({...base,plan:{type:'edit',operations:[{type:'create_native_tray',fromPoint:[0,0,0],toPoint:[3000,0,0],width:400,height:150}]}}).success,false);

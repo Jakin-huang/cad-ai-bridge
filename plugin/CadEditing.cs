@@ -21,8 +21,9 @@ namespace CadAgent {
    var br=e as BlockReference;if(br!=null){row["blockName"]=br.Name;row["position"]=XY(br.Position);row["rotationRadians"]=br.Rotation;row["attributes"]=Attributes(br,tr);row["dynamic"]=br.IsDynamicBlock;var definition=(BlockTableRecord)tr.GetObject(br.BlockTableRecord,OpenMode.ForRead);row["xref"]=definition.IsFromExternalReference;}
    var text=TextOf(e);if(text!=null){row["text"]=text;row["position"]=XY(e is DBText?((DBText)e).Position:((MText)e).Location);}
    var curve=e as Curve;if(curve!=null){try{row["start"]=XY(curve.StartPoint);row["end"]=XY(curve.EndPoint);row["length"]=curve.GetDistanceAtParameter(curve.EndParam)-curve.GetDistanceAtParameter(curve.StartParam);}catch{}}
-   var poly=e as Polyline;if(poly!=null){row["vertices"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>XY(poly.GetPoint3dAt(i))).ToArray();row["closed"]=poly.Closed;row["width"]=poly.ConstantWidth;}
+   var poly=e as Polyline;if(poly!=null){row["vertices"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>XY(poly.GetPoint3dAt(i))).ToArray();row["closed"]=poly.Closed;try{row["width"]=poly.ConstantWidth;}catch(Autodesk.AutoCAD.Runtime.Exception){row["segmentWidths"]=Enumerable.Range(0,poly.NumberOfVertices).Select(i=>new[]{poly.GetStartWidthAt(i),poly.GetEndWidthAt(i)}).ToArray();row["variableWidth"]=true;}}
    var circle=e as Circle;if(circle!=null){row["center"]=XY(circle.Center);row["radius"]=circle.Radius;}
+   var arc=e as Arc;if(arc!=null){row["center"]=XY(arc.Center);row["radius"]=arc.Radius;}
    var dim=e as Dimension;if(dim!=null){row["measurement"]=dim.Measurement;row["dimensionText"]=dim.DimensionText;}
    return row;
   }

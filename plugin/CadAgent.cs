@@ -23,6 +23,8 @@ namespace CadAgent
         public EntityFilter filter;
         public QueryScope scope;
         public int limit;
+        public bool exportDxf;
+        public PlotContract plot;
         public string format,layout;
         public QueryRegion region;
     }
@@ -435,7 +437,7 @@ namespace CadAgent
                 object query=request.action=="query_entities"||nativeBatch?QueryEntities(db,nativeBatch?new Request{limit=1000}:request):null;
                 object exported=null;
                 if(request.action=="export"){mark("plot");exported=ExportDrawing(doc,request,Path.GetDirectoryName(response));}
-                if(request.action=="audit_drawing"){audit=DrawingAudit.Read(db);try{db.DxfOut(dxf,16,DwgVersion.AC1032);auditDxfExported=true;}catch(System.Exception exportError){auditDxfError=exportError.Message;}}
+                if(request.action=="audit_drawing"||request.exportDxf){if(request.action=="audit_drawing")audit=DrawingAudit.Read(db);try{db.DxfOut(dxf,16,DwgVersion.AC1032);auditDxfExported=true;}catch(System.Exception exportError){auditDxfError=exportError.Message;}}
                 var serializer=(request.action=="audit_drawing"||request.action=="query_entities")?new JavaScriptSerializer{MaxJsonLength=134217728,RecursionLimit=50}:Json;
                 mark("response");
                 File.WriteAllText(response,serializer.Serialize(new{ok=true,replayed=replay,mutationCommitted=mutationCommitted,drawingSaved=drawingSaved,timings=timings,snapshot=snapshot,tangent=tangent,audit=audit,query=query,changes=changes,exported=exported,auditDxfExported=auditDxfExported,auditDxfError=auditDxfError}),new UTF8Encoding(false));

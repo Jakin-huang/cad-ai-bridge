@@ -16,6 +16,8 @@ import {resolveNativeModels} from './native-catalog.mjs';
 import {capabilities} from './capabilities.mjs';
 import {runWorkflow} from './workflows.mjs';
 import {executeSession,sessionHome} from './sessions.mjs';
+import {buildQueryIndex} from './query-index.mjs';
+import {verifyPlotBytes} from './plot-checks.mjs';
 const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply','edit']);
 export async function launchHost(exe,args){
  return new Promise((resolve,reject)=>{
@@ -52,7 +54,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    const backend=action==='native_status'||parsed.operations?.some(op=>nativeOperations.has(op.type))?'tangent':parsed.host||'core';
    if(backend==='tangent'&&(!settings.tangentRoot||!settings.tangentProfile))throw Error('TANGENT_NOT_CONFIGURED: run cadbridge setup and select Tangent V8.');
    await fs.mkdir(runs,{recursive:true});job=await fs.mkdtemp(path.join(runs,'job-'));
-   const {drawing,expectedSha256,host:requestedHost,detail,...payload}=parsed,request={...payload,action};
+   const {drawing,expectedSha256,host:requestedHost,detail,...payload}=parsed,request={...payload,action:action==='scan'?'query_entities':action};
    if(['create_test_drawing','create_drawing'].includes(action)){request.requestId=crypto.randomUUID();request.units='mm';}
    task={jobId:path.basename(job),action,requestId:request.requestId,backend,ownerPid:process.pid,status:'preparing',startedAt:new Date().toISOString()};await mark('snapshot');
    t=performance.now();if(drawing){const sessionOutputs=await fs.realpath(path.join(sessionHome(),'jobs')).catch(()=>undefined);inputSha256=await snapshotDrawing(drawing,[allowedRoot,runs,...(sessionOutputs?[sessionOutputs]:[])],job,expectedSha256);}timings.snapshotMs=Math.round(performance.now()-t);
@@ -84,9 +86,9 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
     const file=path.join(job,'output.dwg');
     try{result.drawingSha256=await hashFile(file);result.drawing=file;result.drawingSaved=true;}catch(error){result.ok=false;result.error={code:'SAVED_OUTPUT_UNAVAILABLE',message:error.message};}
    }
-   if((action==='audit_drawing'&&response.auditDxfExported)||(result.drawing&&response.ok)){try{if((await fs.stat(path.join(job,'output.dxf'))).isFile())result.dxf=path.join(job,'output.dxf');}catch{}}
+   if(response.auditDxfExported||(result.drawing&&response.ok)){try{if((await fs.stat(path.join(job,'output.dxf'))).isFile())result.dxf=path.join(job,'output.dxf');}catch{}}
    timings.outputsMs=Math.round(performance.now()-t);
-   if(action==='export'&&result.ok){const file=path.join(job,'output.'+parsed.format);const bytes=await fs.readFile(file);if(parsed.format==='pdf'&&!bytes.subarray(0,5).equals(Buffer.from('%PDF-')))throw Error('PLOT_FORMAT_INVALID');if(parsed.format==='png'&&!bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])))throw Error('PLOT_FORMAT_INVALID');result.exported={...result.exported,file,bytes:bytes.length,sha256:await hashFile(file)};}
+   if(action==='export'&&result.ok){const file=path.join(job,'output.'+parsed.format);const bytes=await fs.readFile(file);const verification=verifyPlotBytes(bytes,parsed.format,parsed.plot);if(parsed.plot){const actual=result.exported.actualPlot;if(!actual||parsed.plot.scale==='fixed'&&(actual.useStandardScale||Math.abs(actual.scaleNumerator/actual.scaleDenominator-1/parsed.plot.denominator)>1e-9)||parsed.plot.style&&actual.style.toLowerCase()!==parsed.plot.style.toLowerCase())throw Error('PLOT_SETTINGS_MISMATCH');}result.exported={...result.exported,file,bytes:bytes.length,sha256:await hashFile(file),verification};}
    if(action==='takeoff'&&result.snapshot){const s=result.snapshot,groups={};for(const d of s.devices){const key=`${d.blockName}|${d.attributes.MODEL||''}`;groups[key]=(groups[key]||0)+1;}result.takeoff={deviceCount:s.deviceCount,routeCount:s.routeCount,routeLengthMm:s.routeLengthMm,groups,coverage:s.coverage};}
    result.outcome=result.drawingSaved?'saved':response.mutationCommitted?'modified_not_saved':writes.has(action)?response.ok?'modified':'not_applied':'read_only';result.safeToRetry=false;
    if(result.error)result.error={...result.error,stage:response.failureStage||stage,next:'调用 cad_get_job 查看已有结果；写入失败或保存状态不明时不要自动重放。'};
@@ -96,11 +98,12 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    timings.totalMs=Math.round(performance.now()-started);result.metrics={...timings,discoveryCacheHit:settings?.discoveryCacheHit??false,hostLaunches:(hostStarted?1:0)+bootstrapLaunches,hostPhases:response?.timings};
    if(job){
     task.status=result.ok?'completed':'failed';task.outcome=result.outcome;task.updatedAt=new Date().toISOString();result.details??={jobId:path.basename(job),tool:'cad_get_job'};
-    try{await atomicJson(path.join(job,'result.json'),result);await atomicJson(path.join(job,'task.json'),task);}catch(error){result.ok=false;result.evidenceError=error.message;}
+    try{if(action==='scan'&&result.query){const indexFile=path.join(job,'query-index.json');await atomicJson(indexFile,buildQueryIndex(result.query.entities));result.queryIndex={schemaVersion:1,sha256:await hashFile(indexFile)};}await atomicJson(path.join(job,'result.json'),result);await atomicJson(path.join(job,'task.json'),task);}catch(error){result.ok=false;result.evidenceError=error.message;}
    }
    if(action==='audit_drawing'&&result.audit&&parsed.detail!=='full'){
     const {inserts,definitions,texts,...rest}=result.audit;return{...result,audit:{...rest,insertCount:inserts.length,definitionCount:definitions.length,textCount:texts.length},details:{jobId:path.basename(job),tool:'cad_read_result',kinds:['inserts','definitions','texts']}};
    }
+   if(action==='scan'&&result.query&&parsed.detail!=='full'){const {entities,...query}=result.query;return {...result,query:{...query,retainedEntityCount:entities.length},details:{jobId:path.basename(job),tool:'cad_read_result',kinds:['entities']}};}
    return ['tangent_inspect','tangent_takeoff'].includes(action)&&parsed.detail!=='full'?summarize(result):result;
   }
  }

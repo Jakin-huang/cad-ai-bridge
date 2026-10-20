@@ -20,6 +20,7 @@ $reference=$document.ModelSpace.AttachExternalReference($xref,('QA_XREF_'+$suffi
 $paperLayout=$null;foreach($layout in $document.Layouts){if(-not $layout.ModelType){$paperLayout=$layout;break}}
 if(-not $paperLayout){throw 'Synthetic drawing has no paper layout'}
 $paperLine=$paperLayout.Block.AddLine([double[]]@(10,10,0),[double[]]@(30,10,0))
+$variable=$document.ModelSpace.AddLightWeightPolyline([double[]]@(300,0,400,0,400,100));$variable.SetWidth(0,0,50);$variable.SetWidth(1,50,100)
 $drawing=Join-Path $OutputDirectory ('nested-'+$suffix+'.dwg');$document.SaveAs($drawing)
 $document.SetVariable('INSUNITS',6);$meters=Join-Path $OutputDirectory ('meters-'+$suffix+'.dwg');$document.SaveAs($meters)
-[ordered]@{ok=$true;drawing=$drawing;meters=$meters;xref=$xref;firstHandle=$first.Handle;secondHandle=$second.Handle;nestedHandle=$nested.Handle;lineHandle=$childLine.Handle;xrefHandle=$reference.Handle;paperLayout=$paperLayout.Name;paperHandle=$paperLine.Handle;parentName=$parent.Name;childName=$child.Name} | ConvertTo-Json -Compress
+[ordered]@{ok=$true;drawing=$drawing;meters=$meters;xref=$xref;firstHandle=$first.Handle;secondHandle=$second.Handle;nestedHandle=$nested.Handle;lineHandle=$childLine.Handle;variableHandle=$variable.Handle;xrefHandle=$reference.Handle;paperLayout=$paperLayout.Name;paperHandle=$paperLine.Handle;parentName=$parent.Name;childName=$child.Name} | ConvertTo-Json -Compress

@@ -1,10 +1,10 @@
 {
   "status": "user-preview-validated-on-existing-windows",
-  "checkedAt": "2026-10-19T14:32:00.914Z",
+  "checkedAt": "2026-10-20T02:45:49.068Z",
   "version": "0.2.0",
   "distribution": "Windows user preview",
   "environment": "Windows 10 x64; non-elevated process; isolated client, minimal PATH and offline bootstrap",
-  "unitChecks": 91,
+  "unitChecks": 115,
   "checks": {
     "package": [
       "Windows process is not elevated",
@@ -13,9 +13,9 @@
       "Offline upgrade with Node, PowerShell 7 and winget excluded extracts bundled runtimes without UAC",
       "Side-by-side upgrade inherits prior drawing workspace and preserves unrelated client settings",
       "Packaged CLI works with Node and PowerShell 7 absent from PATH",
-      "Packaged runtimes discover 21 tools, pass doctor, save two lights and reopen their route/numbering with no issues",
+      "Packaged runtimes discover 22 tools, pass doctor, save two lights and reopen their route/numbering with no issues",
       "Packaged PowerShell loads native Tangent host and restores its user settings after exit",
-      "New query, connected-device edit and actual CAD PNG export work from the extracted user package",
+      "Packaged indexed scan/paging, connected-device edit and actual PNG/A3 fixed-scale CTB PDF exports pass",
       "Packaged capability discovery and generic takeoff produce two verified CSV files from actual saved CAD entities",
       "Bundled Node resolves the installed native catalog; real native tray and associated label persist after reopen and actual PNG plotting",
       "Repeat offline setup succeeds with exactly the same connector parameters",
@@ -77,7 +77,7 @@
     "Fresh Windows evidence from an independent physical or external test environment",
     "Independent standard Windows account evidence"
   ],
-  "releaseVersion": "0.5.0-preview.1",
+  "releaseVersion": "0.6.0-preview.1",
   "compatibilityVersion": "0.2.0",
   "unitScope": {
     "suite": "Source test suite",

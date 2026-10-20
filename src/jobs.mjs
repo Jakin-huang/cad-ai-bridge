@@ -14,7 +14,8 @@ export async function jobJson(job,name){
 }
 async function optional(job,name){try{return await jobJson(job,name);}catch(error){if(error.code==='ENOENT')return undefined;throw error;}}
 async function one(runs,jobId){
- const job=await jobDirectory(runs,jobId),task=await optional(job,'task.json'),result=await optional(job,'result.json');
+ const job=await jobDirectory(runs,jobId),task=await optional(job,'task.json');let result;
+ try{result=await optional(job,'result.json');}catch(error){return{ok:false,jobId,status:'unconfirmed',task,error:{code:'RESULT_RECORD_INVALID',message:error.message},safeToRetry:false,retry:'Final record is unreadable. Inspect retained task files and hashes; do not repeat a write automatically.'};}
  if(result)return{ok:true,jobId,status:result.ok?'completed':'failed',task,result:boundForTransport(result,480*1024),retry:'Use the recorded result; do not replay a write automatically.'};
  const response=await optional(job,'response.json'),host=await optional(job,'host.json');
  return{ok:true,jobId,status:'unconfirmed',task,host,response:response?boundForTransport({...response,jobRoot:job},480*1024):undefined,retry:'No final result is recorded. Inspect retained evidence and outputs before retrying; this query never launches CAD.'};

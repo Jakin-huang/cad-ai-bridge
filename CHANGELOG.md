@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0-preview.1 — 2026-10-20
+
+Add one-capture, hash-bound large-drawing indexing with filtered/projected result pages (100000-record/traversal budgets), explicit takeoff exclusions and missing-world-length counts. Combine saved-drawing CSV/PDF/PNG delivery into one workflow and offer compact replies. Verify protected unselected DXF entity/block records and principal persisted planar geometry; retain saved drawings when verification or delivery fails and report unsupported geometric checks. Add A4–A0 PDF paper/orientation, fit/fixed scale and installed CTB contracts with host-setting and MediaBox checks. Fix explicit layer 0 declaration and session status discovery, check writable task directories, and guide the Skill toward fewer tool calls. Preserve old tools, file protections and internal/plugin compatibility version 0.2.0; expose 22 tools. Current-machine synthetic acceptance remains separate from fresh-machine, external-user, desktop and manual productivity acceptance. See docs/practical-development.md.
+
+Fix valid variable-width polyline capture and retain actual segment widths instead of incomplete counts. Resolve canonical paper orientation and inherited PDF rotation, with ten actual ISO paper/orientation outputs and independent physical-scale checks. Persisted geometry checks include variable widths, final text/layers and block rotation about an unchanged insertion point; unsupported semantics remain explicit.
+
 ## 0.5.0-preview.1 — 2026-10-19
 
 Add five generic CAD workflows with frozen inputs, CSV, before/after plots, persisted readback and verified replay. Add experimental AutoCAD 2022 current-document sessions with document/revision guards, fixed-command dispatch, transactions, independent copies, undo, cancellation and durable recovery. Add read-only nested block/layout queries, instance paths, transformed geometry, xref flags and actual units. Preserve the original 18 tools and saved v0.2 UUID compatibility; expose 21 tools with constrained read-only schemas. External release version advances while internal/plugin compatibility stays 0.2.0. Preserve the accepted Windows launcher during documentation-only freezing, with source/binary/compiler-recipe digest checks and cache invalidation. See docs/releases/v0.5.0-preview.1.md.
