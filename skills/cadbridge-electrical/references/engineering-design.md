@@ -1,5 +1,13 @@
 # 工程需求、设计与审核
 
+已有结构化已知条件时，优先使用 `cad_engineering_intake`：`inspect_baseline` 只读取得输入根内 JSON 的原始摘要；`freeze` 关联当前文档集和项目/任务，固定几何、物理、产品、尺寸与原缺项。若调用上下文已给出 baseline/frozenSHA256，直接复用，不再次冻结或新建任务。`capabilities kind=...` 读取小型解释契约。
+
+用 `draft` 提交原句支持的逻辑解释：`frozen.expectedSHA256` 复制冻结摘要，附本版明确续用条件的 reason/evidence；照明 roomUses 逐房间解释用途，requirements 按 roomIds/rule/values 数组提交全部规则，保留全部矛盾值，数字按契约单位换算。空间包提交 program/relations，源壳与尺寸参数由服务器保持。每份非对照原文用 documentDispositions 标明 used/context/unresolved，used 必须实际引用；引用只填 documentId/连续 quote。不要重写 sources、几何、产品、供电或旧缺项，也不要退役仅局部指标被替代的主文。未解决的值用空 values/status=unresolved；遗漏会形成阻断草稿，不能沿用旧要求。新增待审项用 additionalPending，不能删除或升级原有假设。
+
+`read` 用同一 baseline/draft 分页读齐 requirements，并核对 summary、conditions 和 sources；ready 仅为已实现的结构检查，不是语义或专业验收。需要纠正时用 previousDraft 建新稿，旧稿保留，不另建正式任务。blocked 时报告矛盾/缺项并停止设计；不靠空物理输入、虚构任务身份、填充字段或诊断宿主来探测参数。
+
+核对通过后 `commit` 传原 baseline/draft、实际 expectedInputSHA256、reviewed=true 和新 requestId；它只采纳一份输入并返回 task，不出图。重复采纳返回同一正式任务，结果不明先 status 核对收据，不能另建任务绕过。随后用正式任务身份查询单个 design 操作契约并调用原有设计/质量/交付流程。该入口当前是无历史基线的有界准备流程；既有来源修订、分类变更及范围编辑继续原协议，不能把未支持情况伪装成可用。医院仍仅是隔离对照样例。
+
 新任务书先用cad_design_project的inspect_brief读取输入根目录内txt/md，briefFile可为相对输入根的路径；原文text及textSHA256用于新brief来源，rawSHA256标识原文件字节；仅去可选UTF8 BOM、保留换行，不擅自改写。该调用只读，不认证来源权威。
 
 目标是把项目资料解释为可追溯的设计约束，通过 CAD AI Bridge 新建、编辑、核对并交付待人工审核成果。当前 cad_design_project 仅实现明确边界的普通照明设计试验，支持利用系数法与有限IES直射逐点模式，不宣称通用工程推理、多专业完整工程设计、反射/UGR验收或专业签审。

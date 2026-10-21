@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseline": "v2.0.0-preview.1",
+  "status": "bounded_source_assisted_intake_verified_not_general_acceptance",
+  "product": "CAD AI Bridge",
+  "hospitalPolicy": "Isolated evaluator only; task kinds and acceptance thresholds remain explicit and independent of project label",
+  "implemented": [
+    "Immutable raw baseline and exact condition summaries",
+    "Small source-quoted intent contracts for ordinary-lighting and office-space-planning",
+    "Explicit omissions/conflicts/pending grades; no automatic precedence or semantic authority certification",
+    "Immutable draft revisions and paginated values/citations",
+    "At most one formal task adoption per baseline with existing original-document review/binding",
+    "Saved unconfirmed adoption phases prevent duplicate-task escape",
+    "Task center separates adopted input from design/output/human-review completion"
+  ],
+  "actualClient": {
+    "client": "Installed WorkBuddy CLI 2.115.0, configured auto",
+    "cliSHA256": "eacd161ce6b05037bc0910ed44f1d5a5a16a88954785151cced179a6d50887d8",
+    "actualRoutedModelProvider": "not established",
+    "cases": [
+      {
+        "case": "replacement",
+        "wholeClientTrialPassed": true,
+        "finalEngineeringStatePassed": true,
+        "checks": 120,
+        "protocolErrors": 0,
+        "calls": 32,
+        "elapsedMs": 271059,
+        "drafts": 1,
+        "formalTasks": 1,
+        "firstDraftOnly": true,
+        "rawTraceSHA256": "99c5d2ec7a79f14bbf178e17040ba945ce958262ad5afe4d193fa89c7aa5bf22",
+        "auditSHA256": "206610966168d59b4fc1aed32586e1665e4a02e8b4e8ae9a300a7df86d9409e1",
+        "controllerSemanticRepair": false,
+        "privateOracleExcluded": true,
+        "byteIdenticalPreviousNaturalInputs": true,
+        "design": {
+          "inputSHA256": "e5f84b2ca33784cfb4129f995b181d0cd48d678f94a0d69fe7ab244ab96319e1",
+          "modelSHA256": "0bb172fd7db1fe6d5be262d53072e19b7c1a9f1e0c149fc0a034d293ade7c4b9",
+          "lamps": 29,
+          "circuits": 2,
+          "pending": 13
+        },
+        "newNativeCadExecuted": false
+      },
+      {
+        "case": "conflict",
+        "wholeClientTrialPassed": true,
+        "finalEngineeringStatePassed": true,
+        "checks": 125,
+        "protocolErrors": 0,
+        "calls": 22,
+        "elapsedMs": 229919,
+        "drafts": 1,
+        "formalTasks": 0,
+        "firstDraftOnly": true,
+        "rawTraceSHA256": "4734ae887074edc959303faab7672a6c1af1ded442f111b2484c78ed328da673",
+        "auditSHA256": "af1dcc89754fda27a28716a2c728c996859568a842d621b074d5c0eaede06f55",
+        "controllerSemanticRepair": false,
+        "privateOracleExcluded": true,
+        "byteIdenticalPreviousNaturalInputs": true,
+        "newNativeCadExecuted": false
+      }
+    ],
+    "wholeTrialsPassed": 2,
+    "maxTurns": 48,
+    "syntheticNonPrivate": true,
+    "independentCustomer": false,
+    "sourceAssisted": true,
+    "semanticsOracleNotProvidedToClient": true,
+    "previousThreeFailedTrialsUnchanged": true
+  },
+  "verifierCorrections": [
+    {
+      "case": "conflict",
+      "initialReport": "independent-audit.json",
+      "retained": true,
+      "reason": "Predicate demanded a particular conflict status code although the submitted unresolved row retained both 450/650 values and the professional REQUIREMENT_CONFLICT blocker. Final verifier checks actual values, evidence, blocked state and zero tasks.",
+      "finalReport": "independent-audit-final.json",
+      "aiInputOrResultRewritten": false
+    }
+  ],
+  "developmentChecks": {
+    "initialRoutingErrors": "An initial developer unit run exposed an undefined catch variable on the action path and an undefined read draft variable; corrected before actual client runs. Original tool outputs retained; not a passing first development run.",
+    "unitNewCases": 9,
+    "latestFullRegression": {
+      "passed": 433,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 138980.9039,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "24b0066794a36c68b1a9bf996425e4908eb173e64b746b68ae92f2ef78b3fbc4",
+      "previousRun": {
+        "passed": 431,
+        "failed": 0,
+        "skipped": 0,
+        "durationMs": 147082.1031,
+        "logSHA256": "ff90008db60f60f931d21cfcacc3652b2d91f0c4b2f70b03b74da401e7431d5b"
+      }
+    },
+    "actualProtocol": {
+      "ok": true,
+      "calls": 34,
+      "designPacks": 2,
+      "authenticatedHttp": true,
+      "draftDownloads": true,
+      "adoptionNotProjectCompletion": true,
+      "reportSHA256": "4d69fb55edcac6bcb047ce73e6b897f407765170924c62c2c3324fa1bdba9f5a"
+    },
+    "legacyTasks": {
+      "ok": true,
+      "tasks": 6,
+      "calls": 7,
+      "protectedFiles": 149,
+      "pdfDownloads": 5,
+      "reportSHA256": "6a4ef6c75eaa400cf67902eeb41663134aecf5bae2e525c017c6c46f9a335de9",
+      "newNativeCadExecuted": false
+    },
+    "staticGate": {
+      "ok": true,
+      "publicFiles": 484,
+      "checks": 3,
+      "staticOnly": true,
+      "logSHA256": "9bfaaeec29de4e72bbfb43a19e4a97d4c764c446a895503fdb5a97f24b755020"
+    }
+  },
+  "limits": [
+    "Only known two-room synthetic natural documents with unchanged declared baseline; no statistical or held-out generalization acceptance",
+    "No actual AI office-space-planning interpretation trial in this increment; its known-fixture MCP/mechanical design path passed",
+    "Unclassified/fresh baseline entry only; existing source/revision histories use original workflows",
+    "One adoption per baseline; failed phase evidence retained but universal automatic recovery not implemented",
+    "Byte/identity evaluator quarantine does not detect arbitrary transformed answer leakage",
+    "No new native CAD/PDF delivery for this newly adopted input",
+    "No standard applicability, issued architecture, IES/reflection/UGR, installation/protection coordination or professional sign-off acceptance",
+    "Within-room preflight previously observed 21.373s remains unresolved",
+    "Independent real projects, external users, clean machines and authenticated professional review remain separate outstanding gates",
+    "Historic full release gate remains incomplete; frozen package/DLL unchanged"
+  ],
+  "nextPriorities": [
+    "P0 Preserve both professional packs, analysis, old outputs and example isolation",
+    "P0 Bound and yield within-room preflight work; preserve thresholds and deterministic results",
+    "P0 Extend new intake through actual quality/native delivery/review and independent document/task cases",
+    "P1 Expand source/standard applicability, richer layouts, space identity changes and installation detail",
+    "P2 Independent real projects, external users, new machines and authenticated professional acceptance"
+  ],
+  "evidenceRoots": [
+    "artifacts/intake-draft-validation-20261022",
+    "artifacts/intake-client-20261022-replacement",
+    "artifacts/intake-client-20261022-conflict"
+  ],
+  "M2": "incomplete",
+  "M3": "incomplete",
+  "M4": "incomplete",
+  "professionalApproval": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "evidenceArchive": "artifacts/intake-draft-validation-20261022/冻结条件意图草稿-完整试验证据.zip",
+  "frozenRelease": {
+    "tag": "v2.0.0-preview.1",
+    "commit": "19c1eba9a76187bb2b806fba9b9776745b7abbcc",
+    "packageSHA256": "20e12d2d2d9081390bbb21ee1915d535c75487e85e431fd633ece164cd27a2d2",
+    "dllSHA256": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34",
+    "unchanged": true
+  }
+}

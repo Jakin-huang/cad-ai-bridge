@@ -168,12 +168,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve cross-project/task and existing native-delivery quality; hospital remains isolated evaluator only",
-    "P0 Build immutable source-bound intake drafts: preserve known geometry/physical/product/supply values; accept quoted AI interpretations and local requirement overrides; commit one formal task after review instead of retyping full JSON",
-    "P0 Actual natural multi-document client reliability, complete requirements/pending conditions, assumption grades and bounded completion; current three whole trials all fail despite two verified final states",
-    "P0 Bound and yield within-room preflight work; observed status latency21.373s still unaccepted",
-    "P1 Broader source/standard applicability, layouts, split/merge/multiple uses and installation/wiring/protection detail",
-    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+    "P0 Preserve both professional packs, analysis, old outputs and example isolation",
+    "P0 Bound and yield within-room preflight work; preserve thresholds and deterministic results",
+    "P0 Extend new intake through actual quality/native delivery/review and independent document/task cases",
+    "P1 Expand source/standard applicability, richer layouts, space identity changes and installation detail",
+    "P2 Independent real projects, external users, new machines and authenticated professional acceptance"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -876,5 +875,37 @@
     },
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "previousPrioritiesBeforeImmutableIntake": [
+    "P0 Preserve cross-project/task and existing native-delivery quality; hospital remains isolated evaluator only",
+    "P0 Build immutable source-bound intake drafts: preserve known geometry/physical/product/supply values; accept quoted AI interpretations and local requirement overrides; commit one formal task after review instead of retyping full JSON",
+    "P0 Actual natural multi-document client reliability, complete requirements/pending conditions, assumption grades and bounded completion; current three whole trials all fail despite two verified final states",
+    "P0 Bound and yield within-room preflight work; observed status latency21.373s still unaccepted",
+    "P1 Broader source/standard applicability, layouts, split/merge/multiple uses and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+  ],
+  "immutableIntakeIncrement": {
+    "validation": "docs/intake-draft-validation.json",
+    "twoDesignPacks": true,
+    "actualAiSourceAssistedWholeTrialsPassed": 2,
+    "actualAiFirstDrafts": 2,
+    "noControllerSemanticRepair": true,
+    "professionalApproval": false,
+    "goalComplete": false,
+    "fullRegression": {
+      "passed": 433,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 138980.9039,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "24b0066794a36c68b1a9bf996425e4908eb173e64b746b68ae92f2ef78b3fbc4",
+      "previousRun": {
+        "passed": 431,
+        "failed": 0,
+        "skipped": 0,
+        "durationMs": 147082.1031,
+        "logSHA256": "ff90008db60f60f931d21cfcacc3652b2d91f0c4b2f70b03b74da401e7431d5b"
+      }
+    }
   }
 }
