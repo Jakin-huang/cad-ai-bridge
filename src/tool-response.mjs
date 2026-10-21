@@ -6,6 +6,7 @@ export async function toolResponse(action,args,raw,{readFile=fs.readFile}={}){
  const original=raw;
  try{
   if(['workflow','engineering','engineering_task'].includes(action)){const markdown=raw.delivery?.markdown??deliveryMarkdown(raw.files||raw.delivery?.files||[]);if(markdown)raw={...raw,delivery:{...raw.delivery,markdown}};}
+  if(action==='engineering_task'&&raw.execution?.dependencyFiles){const markdown=deliveryMarkdown(raw.execution.dependencyFiles);if(markdown)raw={...raw,dependencyDelivery:{requestId:raw.execution.requestId,markdown}};}
   if(action==='engineering_task'&&raw.execution?.result?.quantityRows){const {quantityRows,issues,...rest}=raw.execution.result;raw={...raw,execution:{...raw.execution,result:{...rest,issues:issues?.slice(0,20),issuesTruncated:issues?.length>20,quantityRowCount:quantityRows.length,details:{jobId:rest.jobRoot?.split(/[\\/]/).at(-1),tool:'cad_read_result',kinds:['quantityRows','issues','quantityResults','checkResults']}}}};}
   if(action==='analyze'){const {quantityRows,issues,...rest}=raw;raw={...rest,issues:issues?.slice(0,20),issuesTruncated:issues?.length>20,quantityRowCount:quantityRows?.length};}
   if(action==='workflow'&&args.response==='summary'){
@@ -14,6 +15,7 @@ export async function toolResponse(action,args,raw,{readFile=fs.readFile}={}){
   }
   const result=boundForTransport(raw),content=[{type:'text',text:JSON.stringify(result)}];
   if(['workflow','engineering','engineering_task'].includes(action)){const markdown=result.delivery?.markdown??deliveryMarkdown(result.files||result.delivery?.files||[]);if(markdown)content.push({type:'text',text:'交付文件：最终答复请直接使用以下实际文件链接，不改写成代码路径。\n'+markdown});}
+  if(action==='engineering_task'&&result.dependencyDelivery?.markdown)content.push({type:'text',text:'本次执行收据对应的依赖/影响清单（与当前设计交付分开）：\n'+result.dependencyDelivery.markdown});
   if(action==='export'&&args.format==='png'&&result.ok&&result.exported.bytes<=4*1024*1024)content.push({type:'image',mimeType:'image/png',data:(await readFile(result.exported.file)).toString('base64')});
   if(action==='workflow')for(const file of(result.files||[]).filter(f=>['before-png','after-png','png'].includes(f.kind)&&f.bytes<=4*1024*1024).slice(-2))content.push({type:'image',mimeType:'image/png',data:(await readFile(file.file)).toString('base64')});
   return {content,isError:!result.ok};

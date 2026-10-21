@@ -96,5 +96,10 @@
     "allFileHashesVerified": true,
     "zipSHA256": "b6ec7b43d97a3960b13d959ab3077abd3a39d9668d6a294a1bbcf6a4682e6d65",
     "rawAssetsPublished": false
+  },
+  "followUp": {
+    "issue": "A source Skill documentation link was added after the prior full run and escaped the standalone install root; later full regression detected eleven install failures",
+    "fix": "Self-contained Skill guidance restored without weakening installer",
+    "validation": "docs/task-dependencies-validation.json"
   }
 }

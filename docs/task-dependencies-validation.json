@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-10-21",
+  "afterCommit": "d967245",
+  "scope": "Declared dependency accounting and known synthetic requirement revision, not general engineering understanding",
+  "implementation": {
+    "domainNeutralDAG": true,
+    "typedInputReferenceRoles": true,
+    "explicitOutputAvailability": true,
+    "scalarConsistency": true,
+    "sourceAndStandardClaimsRemainDistinct": true,
+    "existingAdapterMappings": [
+      "ordinary-lighting",
+      "drawing-analysis"
+    ],
+    "historicSnapshotAndImpactVerification": true,
+    "impactCsvAndSeparateMcpLinks": true,
+    "staleModelInputGuard": true,
+    "nodeBudget": 5000,
+    "edgeBudget": 20000,
+    "automaticSemanticDependencyInference": false,
+    "selectiveNativeEditing": false,
+    "pageBudgetBytes": 262144,
+    "oversizedItemExplicitlyRejected": true
+  },
+  "validation": {
+    "unit": {
+      "passed": 327,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "01ae24835781a84a88bf966e3b40f422c9497fcc046d5237cba78064e939f0d8"
+    },
+    "realMcpCadChecks": 13,
+    "finalSourceMcpReplayChecks": 10,
+    "pdf": {
+      "nativePages": 10,
+      "visualInspection": true,
+      "physicalSize": "A3",
+      "parserWarning": "Native duplicate PageMode keys; parsed and rendered, originals retained"
+    },
+    "sourceInstallRegression": {
+      "initialInstallFailures": 11,
+      "fixed": true,
+      "installerBoundaryRelaxed": false,
+      "fullFinalSuiteIncludesInstallAndRollback": true
+    },
+    "reportHarness": {
+      "initialCsvAssertionAssumedUnquotedFields": true,
+      "fixedToQuotedCsv": true,
+      "continuedUsingRecordedTask": true,
+      "nativeRerun": false
+    }
+  },
+  "observed": {
+    "baseline": {
+      "targetLux": 300,
+      "control": "local",
+      "lights": 9,
+      "watts": 216,
+      "sheets": 5,
+      "method": "flux_estimate_only"
+    },
+    "revision": {
+      "targetLux": 400,
+      "control": "regional_manual",
+      "lights": 12,
+      "watts": 288,
+      "sheets": 5,
+      "method": "flux_estimate_only"
+    },
+    "invalidatedPriorOutputs": {
+      "design": 1,
+      "check": 1,
+      "artifactFiles": 17,
+      "simulatedReview": 1
+    },
+    "oldBytesUnchanged": true,
+    "analysisKnownCaptureBoundaryM": 24
+  },
+  "acceptance": {
+    "declaredGraphAndKnownRevision": true,
+    "sourceBoundProfessionalApplicability": false,
+    "independentRealProject": false,
+    "newHospitalDesign": false,
+    "AIClientInterpretation": false,
+    "fullFloorPhotometry": false,
+    "secondComplexDesignFamily": false,
+    "externalUser": false,
+    "newMachine": false,
+    "professionalReview": false
+  },
+  "release": {
+    "frozenV2Unchanged": true,
+    "repackaged": false,
+    "frozenTagCommit": "19c1eba9a76187bb2b806fba9b9776745b7abbcc"
+  },
+  "evidence": [
+    "tests/unit/task-dependencies.test.mjs",
+    "tests/task-dependencies-integration.mjs",
+    "tests/task-dependencies-replay.mjs",
+    "docs/task-dependencies.md"
+  ],
+  "static": {
+    "status": "passed",
+    "checks": 3,
+    "logSHA256": "506120b935aeb5bf7c4a50c316c4e515149f245c0bd2b20eaff9e3b2333ca070"
+  },
+  "reviewBundle": {
+    "manifestEntries": 331,
+    "zipFiles": 332,
+    "actualNativeJobs": 8,
+    "evidenceJobDirectories": 15,
+    "allFileHashesVerified": true,
+    "crcVerified": true,
+    "zipSHA256": "5cb256eb835030d89e634ea50e8aafadcf5438b50689f551d187c36b9f8dd13e",
+    "rawAssetsPublished": false
+  }
+}

@@ -153,10 +153,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 generic requirements/source/standard dependency and change-invalidation model behind the new task envelope; explicit routing and known A/B/C isolation locally verified, semantic/cross-pack migration not accepted",
-    "P0 first-pack source-bound floor-quality budgets and complete evidence; parallel implementation unit-verified only, defaults serial, actual Radiance/CAD performance and quality pending",
+    "P0 first-pack complete-floor quality/runtime budget native validation, retaining existing precision and complete coverage; dependency accounting and known task isolation now locally verified",
+    "P0 source/requirements semantic coordination and authoritative-condition changes beyond declared dependency accounting; hospital missing inputs remain case-specific blockers",
     "P0 source-bound project/room-schedule/use/authoritative-condition changes shared by supported packs; hospital missing inputs remain case-specific blockers",
-    "M3 independent office-space planning design pack and lighting coordination; checks/takeoff alone do not count as a second complex design task",
+    "M3 office-space planning design pack from source-bound requirements to new/editable drawings and checks, to validate a second substantially different design family; analysis/takeoff and DAG accounting do not count",
     "M4 at least three independent real projects spanning three project types and two distinct design families; external user/new-machine/professional acceptance separate"
   ],
   "plan": "docs/engineering-design-plan.md",
@@ -254,13 +254,37 @@
     "finalSourceReplayAndReadOnlyChecks": 8,
     "AIClientInterpretationInThisIncrement": false,
     "independentHeldoutProjects": 0,
-    "fullGenericTaskAcceptance": false
+    "fullGenericTaskAcceptance": false,
+    "declaredDependencyGraph": true,
+    "boundedScalarConstraintConsistency": true,
+    "dependencyScope": "Declared adapter mappings and conservative whole-model invalidation; not inferred semantics or cross-pack coordination"
   },
   "latestGenericTaskIncrement": {
     "afterCommit": "8a242ac",
     "validation": "docs/engineering-tasks-validation.json",
     "implementation": "task_envelope_explicit_adapters_and_receipts",
     "nativeEvidence": "known_synthetic_A_B_C_isolation_and_A_delivery",
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "taskDependencies": {
+    "validation": "docs/task-dependencies-validation.json",
+    "currentAndHistoricPaging": true,
+    "declaredReferenceIsolation": true,
+    "actualRequirementRevisionAndNativeRegeneration": true,
+    "sourceStandardProfessionalApplicability": false,
+    "selectiveNativeUpdate": false,
+    "secondComplexDesignFamily": false,
+    "independentProjects": 0
+  },
+  "latestDependencyIncrement": {
+    "afterCommit": "d967245",
+    "validation": "docs/task-dependencies-validation.json",
+    "unitTestsPassed": 327,
+    "realMcpCadChecks": 13,
+    "finalSourceReplayChecks": 10,
+    "sourceSkillInstallRegressionFixed": true,
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
