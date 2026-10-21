@@ -154,3 +154,9 @@ cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、
 紧凑draft的原句验证在发布前聚合所有字段，REVISION_PLAN_QUOTE_NOT_IN_BRIEF错误消息以有界JSON列出sourceTextSHA256、invalidCount、invalidEvidence中的字段path/quoteSHA256/quoteLength及truncated。服务端只核对连续原文，不替换或归一化引文，不推断含义；不会产生部分draft或新设计。源要求为assumed时仍不得提交interpreted，契约明确允许保留assumed或省略status，拒绝消息给出room/rule/fromRoomId。
 
 实际客户端已在已知合成案例使用requirements分页进行应用前审阅，并有客户端直接发起原生交付、审核PDF和链接的证据；仍有错误调用、非连续引文、假设升级尝试及测试轮数上限失败。有效最终模型、提交证明、交付阶段与整次可用性分开记录，详见[验证](requirement-review-client-validation.json)。这不表示任意自然语言、结构化多文档权威管理或独立工程验收已通过。
+
+## 分段契约查询
+
+`cad_engineering_task capabilities` 保留无筛选时的完整兼容响应。`section=summary` 读取类型简表；给出精确 `kind` 后，可用 `section=prepare/operations/data/reconciliation` 只取当前需要的部分。查询单操作须 `section=operations` 并传 `operation`；未知专业、未知操作或缺少必要范围会明确拒绝，不创建任务或启动 CAD。分段返回的准备/操作 schema 与完整响应中的对应项相同。
+
+照明 `design` 新增可选 `expectedInputSHA256`，存在时会在计算和模型复用之前校验；原有仅传 `expectedRevision` 的请求保持兼容。空间规划继续执行原有必填输入摘要约束。

@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "baseCommit": "c20a559c656a1f32b168823e74ba169ef7cef23d",
+  "status": "natural_document_final_states_partly_verified_zero_error_usability_unaccepted",
+  "hospitalOnlyIsolatedExample": true,
+  "hospitalDataProcessed": false,
+  "syntheticNonPrivate": true,
+  "scope": "Source-assisted two-zone ordinary-lighting interpretation of natural task/coordination/architecture/assumption/standards-note documents; private oracle excluded",
+  "independentCustomer": false,
+  "genericUnderstandingAccepted": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "newNativeCadExecuted": false,
+  "firstTrial": {
+    "wholeClientTrialPassed": false,
+    "finalEngineeringStatePassed": true,
+    "independentChecks": 141,
+    "protocolErrors": 4,
+    "controllerSemanticRepair": false
+  },
+  "historicalRecheck": {
+    "traces": 5,
+    "changedPreviouslyPassingVerdicts": 0,
+    "previousOriginalsRewritten": false,
+    "reportSHA256": "532cbf48ce48caaa22e7b9147ffde7eecc44dcd6a318bc574efd6acf7accf4b2"
+  },
+  "developmentChanges": [
+    "Scoped task-capability discovery with exact existing schemas",
+    "Optional verified input digest for ordinary-lighting design",
+    "Decode nested raw-response errors and zero-token unavailable-tool events",
+    "Normalize deferred JSON-object-string arguments exactly as the installed CLI does"
+  ],
+  "limits": [
+    "Known synthetic source-assisted development cases, not held-out customers or general design acceptance",
+    "Natural-language standard note contains no verified regulatory clauses",
+    "No native CAD publication or new PDF visual acceptance in this phase",
+    "First original harness report retained; independent audit corrects canonical-digest comparisons and distinguishes reworded still-pending missing inputs",
+    "No arbitrary JSON evaluation, physics threshold relaxation or hospital-specific decision branch"
+  ],
+  "cases": [
+    {
+      "caseId": "explicit-replacement",
+      "artifact": "document-understanding-client-20261022-replacement",
+      "elapsedMs": 299756,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "independentChecks": 141,
+      "protocolErrors": 4,
+      "terminalSubtype": "error_during_execution",
+      "formalTasks": 1,
+      "candidates": [
+        {
+          "status": "designed",
+          "candidateModelAudit": true,
+          "selectedAsAcceptedResult": false
+        }
+      ],
+      "controllerSemanticRepair": false,
+      "clientReportSHA256": "b9fb387d0b156fc8fa1509f067fae54cc9b5f8434190da3c18a0e8807e6f2aa2",
+      "independentAuditFile": "independent-audit-source-final.json",
+      "independentAuditSHA256": "2d6c2745d13224a45de0bfbb46704c293b18c9f5554683bb88d7629a2ce351dd",
+      "rawTraceSHA256": "686592e8dac31593d04fa453cb04cc64a42b4e65d4c5006fcb9010b387f3e874"
+    },
+    {
+      "caseId": "unresolved-conflict",
+      "artifact": "document-understanding-client-20261022-conflict",
+      "elapsedMs": 968611,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "independentChecks": 133,
+      "protocolErrors": 10,
+      "terminalSubtype": "success",
+      "formalTasks": 1,
+      "candidates": [
+        {
+          "status": "blocked",
+          "candidateModelAudit": false,
+          "selectedAsAcceptedResult": false
+        }
+      ],
+      "controllerSemanticRepair": false,
+      "clientReportSHA256": "673114ddf1d9f4d4c6239da2bd425acbd66912a33ec18d74663188ea2d29aff9",
+      "independentAuditFile": "independent-audit-source-final.json",
+      "independentAuditSHA256": "4a26fb744366fc4297bcc6cc23c7f5ddc6fc3d420b5b22231d6bc55f0e77d375",
+      "rawTraceSHA256": "6a79e503eecb223c1cf0acfc5e2bbe90b234ca24b15f1853cc9de48365450ede"
+    },
+    {
+      "caseId": "explicit-replacement",
+      "artifact": "document-understanding-client-20261022-replacement-retry",
+      "elapsedMs": 1536894,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": false,
+      "independentChecks": 2,
+      "protocolErrors": 5,
+      "terminalSubtype": "error_during_execution",
+      "formalTasks": 2,
+      "candidates": [
+        {
+          "status": "designed",
+          "candidateModelAudit": true,
+          "selectedAsAcceptedResult": false
+        },
+        {
+          "status": "blocked",
+          "candidateModelAudit": false,
+          "selectedAsAcceptedResult": false
+        }
+      ],
+      "controllerSemanticRepair": false,
+      "clientReportSHA256": "02eb09d03b0a78b61936d658ec4f08c30589b8adf817040b2a9d0f93e7da0cc8",
+      "independentAuditFile": "independent-audit.json",
+      "independentAuditSHA256": "34896ad6276910e7c4c4ef3cc1b4b9edf337e95bc38e069b6eba4d8058e070ca",
+      "rawTraceSHA256": "be7ca973f9f7ddd3e7ddc0ca6fe32f2b26a8b311fab12dffe083f7422f706f7b"
+    }
+  ],
+  "wholeClientTrialsPassed": 0,
+  "wholeClientTrialsTotal": 3,
+  "fullRegression": {
+    "passed": 424,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 145159.1097,
+    "logSHA256": "b288ee576a5857c4255dd186046dee80472d0532afd8a0bb9412059e323dd447"
+  },
+  "actualScopedCapabilities": {
+    "calls": 9,
+    "checks": 5,
+    "fullResponseBytes": 149272,
+    "summaryBytes": 1054,
+    "lightingPrepareBytes": 36051,
+    "lightingDesignBytes": 949,
+    "reportSHA256": "4a06e5f9f7db331313eb298056dd85670423087c9040f7ef134943e2d415b576"
+  },
+  "legacyRegression": {
+    "tasks": 6,
+    "calls": 7,
+    "protectedFiles": 149,
+    "pdfDownloads": 5,
+    "reportSHA256": "6af4588a7f71e58f36a86ad7f9a93078898b9362c0cb9d0534a1b477c9623cca"
+  },
+  "nextP0": "Immutable source-bound intake drafts and deterministic assembly of known conditions; stop forcing the client to retype full engineering JSON or create another formal task to repair a draft",
+  "retainedFailures": [
+    "Initial restricted Skill-tool loading produced unavailable Bash, a missing-file read and two Bridge schema errors; independent source/engineering state passes, entire trial fails",
+    "Conflict state retains actual contradictions and blocks design, but ten rejected requests make the whole trial fail",
+    "Fresh positive retry creates two formal tasks, invokes an undeclared diagnostic tool and exceeds the configured48-turn limit after1536894ms; internally audited candidate is not selected as an accepted result",
+    "Original first harness used order-sensitive document identity and the wrong digest family for review binding; those verdicts are corrected only in separate independent reports",
+    "First conflict audit rejected unchanged English missing-input text due a too-narrow pending-word check; original audit retained and corrected in new files"
+  ],
+  "uniqueNaturalCases": 2,
+  "actualCliProfile": {
+    "version": "2.115.0",
+    "sha256": "eacd161ce6b05037bc0910ed44f1d5a5a16a88954785151cced179a6d50887d8",
+    "model": "Configured auto; actual routed provider/model not established",
+    "modes": [
+      "Restricted Skill tool first trial",
+      "Direct Read of public Skill in conflict and retry"
+    ],
+    "maxTurns": 48
+  },
+  "staticCheck": {
+    "passed": true,
+    "publicFiles": 475,
+    "checks": 3,
+    "fullHistoricReleaseGatePassed": false
+  },
+  "frozenBaseline": {
+    "tagCommit": "19c1eba9a76187bb2b806fba9b9776745b7abbcc",
+    "zipSHA256": "20e12d2d2d9081390bbb21ee1915d535c75487e85e431fd633ece164cd27a2d2",
+    "pluginSHA256": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34",
+    "previousIncrementEvidenceSHA256": "563440cb00bc0b3d58ec8edd7937e0c50b7ba3c61496443bb1706268ea4d3371",
+    "unchanged": true,
+    "releaseRepackaged": false
+  }
+}

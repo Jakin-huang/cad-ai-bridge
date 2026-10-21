@@ -9,7 +9,7 @@ import {spawn} from 'node:child_process';
 import {dataHome,outsideProject,projectPath} from '../src/local-paths.mjs';
 import {hashFile} from '../src/drawings.mjs';
 import {publicFiles} from '../scripts/public-files.mjs';
-import {parseTrace,normalizeClientEvents,unwrapDeferredCalls,toolResultErrors} from './helpers/client-trace.mjs';
+import {parseTrace,normalizeClientEvents,unwrapDeferredCalls,toolResultErrors,clientTraceErrors} from './helpers/client-trace.mjs';
 import {auditEngineeringDesign} from '../src/engineering-verification.mjs';
 const [cli,experiment,caseId,mode='complete']=process.argv.slice(2);assert.ok(['complete','compact','review'].includes(mode));assert.ok(cli&&experiment&&caseId,'Supply installed CLI, frozen experiment folder and case ID');
 const root=outsideProject(path.resolve(experiment)),read=async p=>JSON.parse(await fs.readFile(p,'utf8')),setup=await read(path.join(root,'setup-journal.json'));assert.equal(setup.ok,true);assert.equal(setup.externalClientInput,'synthetic_non_private');
@@ -44,7 +44,7 @@ const report={schemaVersion:1,ok:false,actualInstalledClient:true,mode,externalC
 const check=(name,condition)=>{report.checks.push({name,passed:!!condition});if(!condition)report.errors.push(name);};
 try{
  const events=unwrapDeferredCalls(normalizeClientEvents(parseTrace(stdout))),calls=events.filter(e=>e.type==='function_call'),argsOf=c=>typeof c.arguments==='string'?JSON.parse(c.arguments):c.arguments,designCalls=calls.filter(c=>c.name?.endsWith('cad_design_project')),taskCalls=calls.filter(c=>c.name?.endsWith('cad_engineering_task')),revisionCalls=calls.filter(c=>c.name?.endsWith('cad_design_revision')),results=events.filter(e=>e.type==='function_call_result');
- report.toolCalls=[...designCalls,...revisionCalls].sort((a,b)=>calls.indexOf(a)-calls.indexOf(b)).map(c=>({tool:c.name,action:argsOf(c).action}));report.protocolErrors=results.flatMap(toolResultErrors);check('client exits successfully',processResult.code===0&&events.findLast(e=>e.type==='result')?.subtype==='success');
+ report.toolCalls=[...designCalls,...revisionCalls].sort((a,b)=>calls.indexOf(a)-calls.indexOf(b)).map(c=>({tool:c.name,action:argsOf(c).action}));report.protocolErrors=clientTraceErrors(parseTrace(stdout));check('client exits successfully',processResult.code===0&&events.findLast(e=>e.type==='result')?.subtype==='success');
  check('client discovers brief identity through actual Bridge reader',designCalls.some(c=>argsOf(c).action==='inspect_brief'));
  check('client reads actual current shared-space function digests and geometry',taskCalls.some(c=>argsOf(c).action==='data'&&argsOf(c).section==='space_bindings'));
  check('client previews and commits an actual complete amendment',mode!=='complete'?revisionCalls.some(c=>argsOf(c).action==='draft')&&revisionCalls.some(c=>argsOf(c).action==='read')&&revisionCalls.filter(c=>argsOf(c).action==='apply').length===1:designCalls.some(c=>argsOf(c).action==='preview_space_scope')&&designCalls.filter(c=>argsOf(c).action==='revise_space_scope').length===1);

@@ -155,6 +155,7 @@ export function createEngineeringManager({runs,execute,lightingProfile,radianceP
     if(architectureChange){next.seedEvidence={...state.seedEvidence,architecturalPack:q.architecturalPack};next.architectureChange={...architectureChange,impact};}else {const current=intake.input.briefRevision;next.sourceChange={changeId:current.changeId,sourceId:current.sourceId,supersededSourceId:current.supersededSourceId,status:intake.ok?'reconciled_pending_design':'pending_inputs',pendingConditionKeys:current.requiredConditionKeys.filter(k=>!intake.input.sourceCarryForwards?.some(c=>c.key===k)),impact:impact??state.sourceChange?.impact};}const journal={schemaVersion:1,status:'prepared',action:q.action,requestId:q.requestId,payloadSHA256,fromRevision:state.revision,priorInputSHA256:state.inputSHA256,nextInput:intake.input,nextState:next};await atomicJson(journalFile,journal);return publishSourceRevision(journalFile,journal);
    }
    if('expectedRevision'in q&&q.expectedRevision!==state.revision)throw Error('ENGINEERING_REVISION_CONFLICT');
+   if(q.action==='design'&&q.expectedInputSHA256&&q.expectedInputSHA256.toLowerCase()!==state.inputSHA256)throw Error('ENGINEERING_INPUT_CHANGED');
    if(q.action==='solve_lighting'){
     if(q.expectedInputSHA256.toLowerCase()!==state.inputSHA256)throw Error('ENGINEERING_INPUT_CHANGED');
     const prior=state.lightingAdoption?.initial?state.lightingAdoption:state.lightingOptimization;

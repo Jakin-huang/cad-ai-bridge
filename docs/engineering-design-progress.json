@@ -168,11 +168,12 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve cross-project/task quality and A→B→A isolation; hospital remains only an isolated example",
-    "P0 Validate actual AI-client multi-document interpretation through the new shared source/version/citation interface; reliable first draft, omissions, units, conflicts, assumption grades and completion budget remain unaccepted",
-    "P0 Bound and yield within-room preflight work; observed status latency21.373s remains a practical gap",
-    "P1 Expand explicit source/standard applicability and priority decisions, richer layouts, split/merge/multiple uses and installation/wiring/protection detail",
-    "P2 Independent real projects, external users, clean machines and authenticated professional review, accepted separately"
+    "P0 Preserve cross-project/task and existing native-delivery quality; hospital remains isolated evaluator only",
+    "P0 Build immutable source-bound intake drafts: preserve known geometry/physical/product/supply values; accept quoted AI interpretations and local requirement overrides; commit one formal task after review instead of retyping full JSON",
+    "P0 Actual natural multi-document client reliability, complete requirements/pending conditions, assumption grades and bounded completion; current three whole trials all fail despite two verified final states",
+    "P0 Bound and yield within-room preflight work; observed status latency21.373s still unaccepted",
+    "P1 Broader source/standard applicability, layouts, split/merge/multiple uses and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -844,5 +845,36 @@
       "reportSHA256": "a3c0a3c03b018e7a27254290f962bd019701942116e0ca24cdcc9c288e14d0f5",
       "newNativeCadExecuted": false
     }
+  },
+  "previousPrioritiesBeforeNaturalDocumentTrials": [
+    "P0 Preserve cross-project/task quality and A→B→A isolation; hospital remains only an isolated example",
+    "P0 Validate actual AI-client multi-document interpretation through the new shared source/version/citation interface; reliable first draft, omissions, units, conflicts, assumption grades and completion budget remain unaccepted",
+    "P0 Bound and yield within-room preflight work; observed status latency21.373s remains a practical gap",
+    "P1 Expand explicit source/standard applicability and priority decisions, richer layouts, split/merge/multiple uses and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review, accepted separately"
+  ],
+  "documentUnderstandingIncrement": {
+    "validation": "docs/document-understanding-validation.json",
+    "actualAiClient": true,
+    "naturalDocumentCases": 3,
+    "zeroErrorWholeTrialsPassed": 0,
+    "sourceAssistedFinalStatesPassed": 2,
+    "controllerSemanticRepair": false,
+    "fullRegression": {
+      "passed": 424,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 145159.1097,
+      "logSHA256": "b288ee576a5857c4255dd186046dee80472d0532afd8a0bb9412059e323dd447"
+    },
+    "legacyRegression": {
+      "tasks": 6,
+      "calls": 7,
+      "protectedFiles": 149,
+      "pdfDownloads": 5,
+      "reportSHA256": "6af4588a7f71e58f36a86ad7f9a93078898b9362c0cb9d0534a1b477c9623cca"
+    },
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

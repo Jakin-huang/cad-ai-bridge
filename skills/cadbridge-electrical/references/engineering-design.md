@@ -171,4 +171,8 @@ apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规
 
 多份需求/协调/依据文件可用 `cad_project_documents` 分别冻结版本；不要先拼接为唯一原始权威文档。仅输入根内 UTF-8 txt/md 可直接登记，PDF/扫描件不能假称已解析。创建文档集后，`cad_engineering_task prepare` 顶层传 `documents:set`，先阻断设计。用 `read` 取原文、`targets` 按原任务身份取齐实际输入字段；逐项解释并引用具体 documentId/textSHA256/连续原句。单字段复制 singleTargetValuesSHA256，不猜 SHA；brief 只是兼容摘要，不能代替逐份依据。全部字段和非对照文档都要显式处置，不明确的冲突/条件提交 unresolved 或 conflict，不猜文档优先级或已确认值。review 的 ready 只说明完整字段与字面引用检查通过；semanticCoverageAccepted/authorityVerified/professionalApproval 仍为 false。
 
+查询契约时先按需要分段：`cad_engineering_task {action:"capabilities",kind:"ordinary-lighting",section:"prepare"}` 只取该专业准备参数；查询单操作使用相同 kind、`section:"operations",operation:"design"`，不要用一个专业的参数代替另一个。`section:"summary"` 返回已安装类型的简表，未传筛选仍兼容完整响应。照明 design 可同时提供当前 expectedRevision 和 expectedInputSHA256；摘要存在时必须相符才计算或复用模型。
+
+文档 role 是资料用途，专业 `input.sources.role` 是另一套契约。照明来源只接受 architecture/brief/standard/catalog/review_instruction，不能直接照抄 requirements/coordination/standard_excerpt 等文档用途。文本摘要和来源身份原样复制，类型名称并不确认权威或标准适用性。`supersedes/supersededBy` 会退役整份来源；协调文件仅替代一个房间的一项指标时，应保留主文其他约束及来源有效性，用实际要求与原句记录局部替代，不能把整份主文标成作废。结构参数错误应按当前契约和原输入修正，不用虚构任务身份、空几何/产品或测试填充字段探测接口；来源与参数错误也不等于 CAD 宿主故障。
+
 `bind` 只把同任务、同输入和当前文档集的审阅关联起来，不修改工程参数。文档或输入换版后重新审阅；已有模型须专业修订后重算，不能只换绑定继续交付。`read_review` 分页复核 summary/targets/decisions/documents，current=false 是历史记录；不要把旧 ready 当作当前通过。设计、质量、交付、审核包前读取新 status.documentEvidence；get_job 保存快照不能证明来源仍为最新。evaluation_only 不读正文、不引用、不按其答案生成设计。未带多文档的已有任务继续原契约；不因为医院样例改变其他任务的效果或专业能力范围。
