@@ -1,3 +1,4 @@
+import {projectEngineeringRoomLabels} from '../../src/engineering-room-label-projection.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -14,7 +15,7 @@ function altered(options,change){const q=JSON.parse(options.qualityReportBytes);
 test('audited drawing presents recomputed total illuminance and binds both immutable records without changing design geometry',async()=>{
  const {model,options}=await fixture(),before=JSON.stringify(model),r=buildEngineeringDeliveryProjection(model,altered(options,q=>q.rooms[0].summary={averageLux:999999,uniformity:1}));
  assert.equal(JSON.stringify(model),before);assert.equal(r.manifest.sourceModelSHA256,engineeringDigest(model));assert.equal(r.manifest.sceneSHA256,engineeringDigest(r.scene));assert.equal(r.manifest.rows[0].averageLux,380);assert.equal(r.manifest.rows[0].uniformity,1);assert.equal(r.manifest.rows[0].referenceUgr,undefined);
- assert.deepEqual(r.scene.entities.filter(e=>e.kind!=='text'),model.scene.entities.filter(e=>e.kind!=='text'));
+ assert.deepEqual(r.scene.entities.filter(e=>e.kind!=='text'&&e.layer!=='E-TEXT'),model.scene.entities.filter(e=>e.kind!=='text'&&e.layer!=='E-TEXT'));
  assert.deepEqual(r.scene.symbols,model.scene.symbols);assert.deepEqual(r.scene.views,model.scene.views);
  const texts=r.scene.entities.filter(e=>e.kind==='text').map(e=>e.text);assert.ok(texts.some(t=>t.includes('380.0/')&&t.includes('未请求')));assert.ok(texts.some(t=>t.includes(r.manifest.qualityReportSHA256)));assert.ok(texts.some(t=>t.includes('E05展示冻结复核结果')));assert.equal(texts.some(t=>t.includes('图中计算表保留直射口径')),false);
 });
@@ -27,3 +28,5 @@ test('missing or ambiguous sheet anchors fail instead of silently dropping accep
   const changed=structuredClone(model);change(changed);const sha=engineeringDigest(changed),opts=altered({...options,modelSHA256:sha},q=>q.modelSHA256=sha);assert.throws(()=>buildEngineeringDeliveryProjection(changed,opts),/SHEET_MISSING|ANNOTATION_MISMATCH/);
  }
 });
+
+test('room identity projection preserves the verified total-quality row and frozen report/model bindings',async()=>{const {model,options}=await fixture(),before=engineeringDigest(model),quality=buildEngineeringDeliveryProjection(model,options),layout=projectEngineeringRoomLabels(model,quality.scene),texts=layout.scene.entities.filter(e=>e.kind==='text').map(e=>e.text);assert.equal(engineeringDigest(model),before);assert.ok(texts.some(t=>t.startsWith('R01 ')&&t.includes('380.0/')&&t.includes('未请求')));assert.ok(texts.some(t=>t.includes(quality.manifest.qualityReportSHA256)));assert.deepEqual(layout.scene.entities.filter(e=>e.kind!=='text'&&e.layer!=='E-TEXT'),model.scene.entities.filter(e=>e.kind!=='text'&&e.layer!=='E-TEXT'));});

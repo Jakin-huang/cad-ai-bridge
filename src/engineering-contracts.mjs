@@ -1,3 +1,4 @@
+import {lightingSpaceProgramSchema,lightingSpaceChangesSchema,adoptSpacesFields,lightingSpaceProgramIssues} from './lighting-space-program.mjs';
 import {z} from 'zod';
 import {architectureInspectionSchema,architecturalPackRef} from './architectural-contracts.mjs';
 import {inspectSpacePolygon,spaceInteriorsOverlap} from './architectural-spaces.mjs';
@@ -26,7 +27,7 @@ const primitive=z.discriminatedUnion('kind',[
 export const engineeringInputSchema=z.strictObject({
  schemaVersion:z.literal(1),projectId:id,title:z.string().min(1).max(128),designDate:isoDay,
  discipline:z.literal('ordinary-lighting'),scope:z.string().min(20).max(3000),brief:z.string().min(20).max(16000),
- architecturalChanges:architecturalChangesSchema.optional(),functionalIntake:functionalIntakeSchema.optional(),briefRevision:briefRevisionSchema.optional(),sourceCarryForwards:carriedConditionsSchema.optional(),
+ spaceProgram:lightingSpaceProgramSchema.optional(),spaceProgramChanges:lightingSpaceChangesSchema.optional(),architecturalChanges:architecturalChangesSchema.optional(),functionalIntake:functionalIntakeSchema.optional(),briefRevision:briefRevisionSchema.optional(),sourceCarryForwards:carriedConditionsSchema.optional(),
  sources:z.array(source).min(1).max(100),requirements:z.array(requirement).max(1000),
  standards:z.array(z.strictObject({id,code:z.string().min(1).max(128),edition:z.string().min(1).max(128),effectiveFrom:isoDay,effectiveUntil:isoDay.optional(),sourceId:id,clauses:z.array(z.strictObject({id,locator:z.string().min(1).max(128),verified:z.boolean(),summary:z.string().min(1).max(1500),check:z.enum(['terminal_protection','low_mount_rcd','corridor_control','professional_review']),roomIds:z.array(id).max(100)})).max(100)})).max(100),
  rooms:z.array(z.strictObject({id,name:z.string().min(1).max(128),use:z.enum(['office','duty','teaching','corridor','pantry','clinical','unknown']),polygon:z.array(point).min(3).max(100),doors:z.array(point).max(20),obstacles:z.array(z.array(point).min(3).max(50)).max(20).default([]),sourceIds:z.array(id).min(1).max(20),geometryStatus:z.enum(['issued','inferred']),sourceSpaceLabels:z.array(sourceSpaceLabel).min(1).max(20).optional(),heightM:z.number().min(2).max(10),workplaneM:z.number().min(0).max(2),standardSpace:standardSpace.optional(),secondaryUseAssessments:z.array(secondaryUseAssessment).min(1).max(20).optional()})).min(1).max(100),
@@ -66,6 +67,7 @@ export const engineeringSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('recover_lighting'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
  z.strictObject({action:z.literal('prepare'),requestId:z.uuid(),project:engineeringInputSchema}),
  z.strictObject({action:z.literal('prepare_from_seed'),requestId:z.uuid(),seedFile:z.string().min(1).max(2000),expectedSeedSHA256:digest,requirements:z.array(requirement).min(1).max(1000),architecturalPack:architecturalPackRef.optional(),functionalIntake:functionalIntakeSchema.optional()}),
+ z.strictObject({action:z.literal('adopt_spaces'),jobId,requestId:z.uuid(),...adoptSpacesFields}),
  z.strictObject({action:z.literal('replace_brief'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,briefFile:z.string().min(1).max(2000),expectedFileSHA256:digest,sourceId:id,supersededSourceId:id,description:z.string().min(20).max(1000)}),
  z.strictObject({action:z.literal('replace_architecture'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,architecturalPack:architecturalPackRef,supersededSourceId:id,description:z.string().min(20).max(1000)}),
  z.strictObject({action:z.literal('reconcile_brief'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,requirements:z.array(requirement).max(1000),functionalIntake:functionalIntakeSchema.optional(),carryForwards:z.array(carryForwardSchema).max(300).default([])}),
@@ -80,13 +82,14 @@ export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineering
 export function inspectEngineeringInput(raw){
  const input=engineeringInputSchema.parse(raw),issues=[];
  const add=(code,severity,message,refs=[])=>issues.push({code,severity,message,refs});
- issues.push(...sharedUseInputIssues(input),...functionalIntakeIssues(input),...sourceRevisionIssues(input),...architecturalRevisionIssues(input));
+ issues.push(...lightingSpaceProgramIssues(input),...sharedUseInputIssues(input),...functionalIntakeIssues(input),...sourceRevisionIssues(input),...architecturalRevisionIssues(input));
  if(input.functionalIntake)add('FUNCTIONAL_INTERPRETATION_REVIEW','review','Quoted brief evidence preserves the interpretation trail; semantic meaning, actual task and standard applicability still need professional review',input.functionalIntake.map(r=>r.roomId));
  const rules=['target_lux','max_lpd','max_spacing','max_devices','max_circuit_watts','max_drop','control_mode','mounting_height',...(input.photometricDesign?['min_uniformity','max_avg_lux']:[])];
  for(const room of input.rooms){
   if(['clinical','unknown'].includes(room.use))add('ROOM_USE_REQUIRES_SPECIALIST','blocking','Unsupported clinical/unknown room classification: '+room.id,[room.id]);
   if(room.geometryStatus==='inferred')add('ROOM_GEOMETRY_INFERRED','review','Room boundary requires architectural confirmation',[room.id]);
   for(const label of room.sourceSpaceLabels||[]){if(label.relationship==='secondary_use')add('SECONDARY_SPACE_USE_APPLICABILITY_PENDING','review','Secondary source use '+label.name+' requires all declared-use evidence and professional applicability review',[room.id,label.id]);else add('SOURCE_SPACE_ALIAS_REQUIRES_REVIEW','review','Additional source name '+label.name+' remains an unverified interpretation: '+label.reason,[room.id,label.id]);}
+  if(room.use==='corridor'&&input.requirements.some(r=>r.rule==='control_mode'&&r.roomIds.includes(room.id)&&!['regional_manual','occupancy_manual'].includes(r.value)))add('CORRIDOR_CONTROL_REQUIREMENT_UNSUPPORTED','blocking','Current bounded corridor lighting requires regional_manual or occupancy_manual. Supplied control intent is retained and must be reconciled before design.',[room.id]);
   for(const rule of rules){const found=input.requirements.filter(r=>r.rule===rule&&r.roomIds.includes(room.id));
    if(!found.length)add('REQUIREMENT_MISSING','blocking',room.id+' is missing '+rule,[room.id]);
    else if(new Set(found.map(v=>JSON.stringify(v.value))).size>1)add('REQUIREMENT_CONFLICT','blocking',room.id+' has conflicting '+rule,found.map(r=>r.id));

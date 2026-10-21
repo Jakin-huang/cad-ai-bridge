@@ -1,6 +1,6 @@
 # 通用任务身份、能力匹配与执行收据
 
-2026-10-21新增源码入口`cad_engineering_task`（CLI动作`engineering_task`），支持`capabilities`、`prepare`、`status`、`invoke`、`dependencies`和有边界的`reconcile`。冻结v2.0发行包尚未包含该入口。
+2026-10-21新增源码入口`cad_engineering_task`（CLI动作`engineering_task`），支持`capabilities`、`prepare`、`status`、`invoke`、`dependencies`、只读`data`和有边界的`reconcile`。冻结v2.0发行包尚未包含该入口。
 
 ## 解决的问题与边界
 
@@ -34,7 +34,7 @@
 
 ## 仍需处理
 
-已接入声明的需求/来源/标准/成果依赖及有界标量一致性，按真实操作保存前后图和可读影响清单，见[依赖与影响范围](task-dependencies.md)。任意语义与跨包影响、自动能力解释、第二设计包、选择性原生更新和任务中心专用工作台仍待开发。当前外层对状态不明的操作采取停止并保留证据；新增的reconcile仅衔接适配器声明的未发布计算中断；任意中断/原生CAD恢复和自动认证审核仍未提供。真实客户、跨任务设计质量和人工返工预算继续按[迁移验收矩阵](task-portability.md)执行。
+已接入声明的需求/来源/标准/成果依赖及有界标量一致性，按真实操作保存前后图和可读影响清单，见[依赖与影响范围](task-dependencies.md)。任意语义与跨包影响、自动能力解释、选择性原生更新和任务中心专用工作台仍待开发。当前外层对状态不明的操作采取停止并保留证据；新增的reconcile仅衔接适配器声明的未发布计算中断；任意中断/原生CAD恢复和自动认证审核仍未提供。真实客户、跨任务设计质量和人工返工预算继续按[迁移验收矩阵](task-portability.md)执行。
 
 
 ## 计算中断的父子任务协调
@@ -78,6 +78,42 @@ prepare.parameters为{input}。输入明确固定矩形净边界、入口边及�
 
 SP01依据说明、SP02分隔和静态尺寸、SP03家具/净空意图、SP04面积座位表、SP05关系及待审；内容超页后续页。场景版本随模型保存：图面改进不重写历史模型或图。房间物理身份与跨图表示分开，以SPACE_ID/SOURCE_SHA等自定义属性回读，不伪装成灯具或回路。人工CAD自由编辑后须重新核验，当前不将静态标注称为关联尺寸。
 
-窗接触、面积与连通矩形通道仅验证几何项目子集，不认证采光、消防、无障碍、声学、机电或施工合规。标准登记始终pending；没有执行建筑规范规则。shell.status=source_bound因缺少完整源捕获绑定而拒绝，当前只接受声明条件或明确未解决状态。真实图纸捕获、任意边界及跨专业空间/用途变更仍需开发。
+窗接触、面积与连通矩形通道仅验证几何项目子集，不认证采光、消防、无障碍、声学、机电或施工合规。标准登记始终pending；没有执行建筑规范规则。新增shell.capture可绑定完整毫米捕获中的明确矩形、入口/窗线段及保留构件，摘要和逐实体路径不符就拒绝；来源权威性、对象角色与遗漏仍待审。任意边界、清单增删/用途重分类与混合专业权威变更仍需开发。
 
 2026-10-21已用已知开发用例验证10房间/34席改为36席、两版原生出图、照明A→空间B改版→空间C→照明A，以及新只读进程和历史重放。首轮几何通过但图面有缺点，保留后修正再测；不是独立客户、自然语言理解或专业质量验收。详见[脱敏验证](space-planning-validation.json)。
+
+## 来源捕获、共用空间及照明联动增量
+
+以下是上述历史记录之后的源码增量，未重新打包v2.0。当前证据见[联动验证](shared-space-coordination-validation.json)。
+
+空间输入可提供shell.capture：captureJobId、捕获文件captureSHA256、drawingSHA256、boundaryPath、entryPath、windows和keepouts的id/instancePath。必须是完整、未截断、无错误的毫米本地捕获；边界/保留构件为WCS平面轴对齐四角直线闭合矩形，入口和窗为明确线段，偏移/宽度/尺寸逐项在0.001mm内一致，活动建筑来源摘要必须覆盖该DWG。source_bound只说明声明对象与真实文件的几何一致；对象角色、遗漏、现状权威性和适用性仍待审，不自动从任意图纸识别所有工程条件。
+
+空间包的publish_spaces需expectedModelSHA256及不与房间ID冲突的circulationId。只有当前模型已经实际出图、重开捕获核对通过才能发布不可变space-pack版本。共用包保存项目/父子任务/版本/输入/模型摘要、原生文件与捕获摘要、来源角色、空间多边形和入口、用途活动/人数及原句、上下文线图和待审条件。role固定upstream_design，professionalApproval=false；生成方案保持提议身份，不升级为已签发建筑依据。上下文目前只含边界、保留构件和隔墙矩形子集。
+
+发布后的数据可从真实MCP只读分页取得；参数中的身份来自prepare/status，摘要来自发布结果或第一页，以下占位值需要替换：
+
+```json
+{
+  "action": "data",
+  "jobId": "job-task-<UUID>",
+  "expectedProjectId": "<项目UUID>",
+  "expectedTaskSHA256": "<任务摘要>",
+  "section": "spaces",
+  "revision": 1,
+  "expectedDataSHA256": "<发布文件摘要>",
+  "offset": 0,
+  "limit": 25
+}
+```
+
+spaces/context/sources三节分别读取，最多100条且每页数据最多256KiB；沿nextOffset继续，固定revision和dataSHA256以免混页。省略revision读取当前版本；当前尚未发布时明确失败，不退回旧版本。显式历史版本可以读取但current=false；篡改摘要、错项目、未支持节或能力包明确拒绝。capabilities返回dataSections。
+
+照明prepare.project.spaceProgram显式引用pack{jobId,revision,sha256}、expectedProjectId、独立sourceId及rooms绑定。每项含roomId、programSHA256（活动/人数/原句对象的规范JSON摘要）、明确use、quote、reason、status=interpreted。必须覆盖全部选定照明房间，房间ID/名称/边界/入口及architecture上下文与共用包相符；geometryStatus保留inferred。系统不依据房间名自动推断照明用途或标准；未选空间明确在本次照明范围外。
+
+上游修订程序后，即使新方案尚未生成，旧照明status.spaceProgram.current也会变false。新设计、质量计算、优化、采纳和交付被阻断；历史请求仍能读取原收据，但current始终描述当前状态，不能把重放当成新成果。历史模型、图纸和审核字节保留。
+
+显式adopt_spaces通过普通invoke调用，parameters含expectedRevision、expectedInputSHA256、新binding以及carryForward{expectedConditionsSHA256,reason,evidence{sourceId,quote}}。expectedConditionsSHA256由冻结的非几何照明条件规范JSON计算，包含各房间用途/高度/工作面/障碍和要求/标准/灯具/电气/光度/反射/眩光条件；quote须逐字来自摘要正确的活动照明任务书，说明其他条件继续适用。采用新来源ID并保留supersedes及spaceProgramChanges链，重查历史输入、旧/新功能摘要、来源和条件摘要。成功产生新输入修订，旧模型/CAD/质量结果及审核退出当前，全部选定空间保守重算，不做选择性CAD更新。
+
+当前只支持同一上游生产任务、同一项目、同一选定房间ID清单及照明use不变的方案改版。新增/删除房间、用途重分类、建筑权威/任务书修订混用、原来源承担非几何专业条件、二级用途及别名解释需要进一步契约，当前明确拒绝。流明估算设计可能返回ok=true/status=blocked的诊断结果，必须同时检查状态、模型存在及failed=0，不能只看ok。
+
+照明交付另存delivery-layout-scene与delivery-room-labels：平面R编号与E05全名/ID对应；房间、灯具、开关文字在有界范围避让，必要时加图面引线。原模型、计算、物理灯位/开关/路径不改变；放置失败会在启动原生生成前拒绝。delivery.layout绑定最终场景，已有delivery.projection仍只绑定质量注释基础投影。预测文字边界检查不能代替实际PDF逐页检查或任意字体/图纸适用性验收。

@@ -8,7 +8,7 @@
 
 ## 普通用户开始使用
 
-源码中正在推进面向工程任务的**未发布设计增量**：需求与依据登记、约束驱动普通照明生成、成套 CAD 输出、自检和审核修订。新增 `cad_design_project` 和 `cad_engineering_task`，开发树共26个工具；已冻结的 v2.0 用户包仍为24个。已验证医院局部普通照明回溯用例，以及来源绑定的独立合成整层空间接入和 A1 出图；新增真实 IES 直射逐点选型已用 Radiance 对照；可将本机核读的照明标准页及功率表按摘要绑定为类别约束，分类/工作面冲突会阻断设计。可用本机 Radiance 对明确表面条件的封闭房间作有限发光面/漫反射总照度复核，过亮或未收敛会阻断交付；眩光、真实工程条件、规范适用性和完整照明质量仍待验收；真实医院整层边界仍存在阻断项，尚未达到完整医院项目设计。新增独立办公空间方案包，已用10房间合成任务验证面积/邻接/座位约束生成、改版及两版原生图；真实资料接入、需求理解、跨包协调与专业审核仍待验收。见[空间验证](docs/space-planning-validation.json)。见[完整实施方案](docs/engineering-design-plan.md)、[开发与验收状态](docs/engineering-design-progress.json)及[使用方法](skills/cadbridge-electrical/references/engineering-design.md)。
+源码中正在推进面向工程任务的**未发布设计增量**：需求与依据登记、约束驱动普通照明生成、成套 CAD 输出、自检和审核修订。新增 `cad_design_project` 和 `cad_engineering_task`，开发树共26个工具；已冻结的 v2.0 用户包仍为24个。已验证医院局部普通照明回溯用例，以及来源绑定的独立合成整层空间接入和 A1 出图；新增真实 IES 直射逐点选型已用 Radiance 对照；可将本机核读的照明标准页及功率表按摘要绑定为类别约束，分类/工作面冲突会阻断设计。可用本机 Radiance 对明确表面条件的封闭房间作有限发光面/漫反射总照度复核，过亮或未收敛会阻断交付；眩光、真实工程条件、规范适用性和完整照明质量仍待验收；真实医院整层边界仍存在阻断项，尚未达到完整医院项目设计。新增独立办公空间方案包，已用10房间合成任务验证面积/邻接/座位约束生成、改版及两版原生图；新增源DWG壳条件绑定、共享空间只读分页及同清单空间→照明换版回归；独立真实资料、需求理解、任意用途/清单变更和专业审核仍待验收。见[空间验证](docs/space-planning-validation.json)及[联动验证](docs/shared-space-coordination-validation.json)。见[完整实施方案](docs/engineering-design-plan.md)、[开发与验收状态](docs/engineering-design-progress.json)及[使用方法](skills/cadbridge-electrical/references/engineering-design.md)。
 
 1. 获取本项目 Releases 的用户 ZIP，或直接接收分享者提供的完整用户包，解压到可写的固定目录。
 2. 双击 **开始使用.exe**，点选自己的图纸文件夹，点击“接入 WorkBuddy”。根目录附有可离线阅读的 [一页图文说明](使用说明.html)。

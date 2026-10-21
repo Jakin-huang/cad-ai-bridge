@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-21T09:38:00.081Z",
+  "afterCommit": "aa38a19",
+  "status": "bounded-development-validation",
+  "implementationScope": [
+    "Selected source DWG geometry capture, explicit role paths, units and SHA binding",
+    "Immutable upstream_design shared space program from delivered office proposal",
+    "Read-only paginated spaces/context/sources through actual MCP",
+    "Explicit lighting interpretation and same-selected-ID/same-use adoption with frozen nongeometry conditions and quoted carry-forward evidence",
+    "Stale upstream blocks new design/quality/delivery, previous receipts and output bytes remain historical",
+    "Drawing-only annotation projection with short room codes, full schedules, shared text/symbol avoidance and leaders"
+  ],
+  "knownDeveloperCase": true,
+  "customerSemanticAcceptance": false,
+  "professionalApproval": false,
+  "checks": {
+    "unit": {
+      "passed": 361,
+      "failed": 0,
+      "skipped": 0
+    },
+    "nativePipelineDistinct": 15,
+    "readOnlyMcpDataDistinct": 7,
+    "readOnlyMcpDataCalls": 20,
+    "independentFinalSourceAudit": true,
+    "sourceEntities": 15,
+    "sourceEntryMismatchRejected": true,
+    "spaceAuditChecksPerRevision": 209,
+    "lightingAuditChecksPerRevision": 101,
+    "nativeReadbackChecksPerDrawing": 5,
+    "registeredDeliveryHashesVerified": 70,
+    "finalPdfPhysicalPages": 20,
+    "finalPdfPagesAgentVisuallyInspected": 20
+  },
+  "case": {
+    "spaceRooms": 10,
+    "sharedSpaces": 11,
+    "seats": [
+      34,
+      36
+    ],
+    "officeA": {
+      "seats": [
+        4,
+        6
+      ],
+      "areaM2": [
+        36.34,
+        47.88
+      ],
+      "revisedAreaRequirementM2": {
+        "min": 40,
+        "max": 54,
+        "preferred": 48
+      }
+    },
+    "lightingSelected": [
+      "RECEPTION",
+      "MEETING",
+      "TEAM",
+      "OFFICE_A",
+      "CIRCULATION"
+    ],
+    "lightingExcludedSpaces": 6,
+    "lightingMethod": "assumed flux/UF method",
+    "lightingLights": [
+      41,
+      41
+    ],
+    "lightingCircuits": [
+      5,
+      5
+    ],
+    "lightingWatts": [
+      984,
+      984
+    ],
+    "newIesReflectionOrUgrAcceptance": false
+  },
+  "retainedTrials": [
+    {
+      "id": "first",
+      "passed": false,
+      "reason": "Developer input asked for corridor local control; existing audit required regional/occupancy control. Failure retained. Intake now rejects incompatible explicit corridor control early."
+    },
+    {
+      "id": "refined",
+      "passed": false,
+      "reason": "Corrected corridor intent is a new task. Initial outputs passed; adopted R1 blocked by missing architecture source-change proof. Failed receipts preserved; implementation now records and verifies explicit programme change chain."
+    },
+    {
+      "id": "final",
+      "pipelinePassed": true,
+      "visualPassed": false,
+      "pagesInspected": 4,
+      "reason": "Long room label overflow on lighting plan"
+    },
+    {
+      "id": "layout-final",
+      "pipelinePassed": true,
+      "visualPassed": false,
+      "pagesInspected": 8,
+      "reason": "Corridor short room tag near entry switch"
+    },
+    {
+      "id": "annotations",
+      "pipelinePassed": true,
+      "visualPassed": true,
+      "pagesInspected": 20,
+      "reason": "Shared annotation avoidance, final actual native output and independent reread; agent visual only"
+    }
+  ],
+  "limitations": [
+    "Known structured developer inputs; no external AI client semantic acceptance or unseen customer project",
+    "Source capture verifies selected declared roles, not all omitted architecture or source authority",
+    "Office family is bounded rectangular bays around straight corridor, not arbitrary architecture",
+    "Only5 of11 upstream spaces selected for lighting; omitted spaces are outside scope",
+    "Same project/producer/selected-ID/use schedule adoption only; room add/delete/use reclassification, mixed brief/architecture authority and secondary-use changes remain unsupported",
+    "Shared context contains shell/keepouts/partition rectangles subset; not full multidisciplinary BIM",
+    "Lighting numeric conditions unchanged across corrected positive trials; first conflicting corridor brief is explicitly a different intent",
+    "No new full-floor photometry/reflection/UGR acceptance; original whole-floor478.253lx failure against500lx remains failed",
+    "Predicted annotation bounds and inspected20pages do not certify all fonts or future drawings",
+    "All building/fire/accessibility/daylight/acoustic/construction and certified professional review pending",
+    "External users, clean machines, real client use and independent project acceptance pending"
+  ],
+  "release": {
+    "sourceIncrementOnly": true,
+    "repackaged": false,
+    "frozenProductAndDllHashUnchanged": true,
+    "staticChecks": {
+      "passed": 3,
+      "publicFiles": 408
+    },
+    "fullReleaseCheckPassed": false,
+    "fullReleaseLimitation": "Prior full gate remains failed due historical reports/frozen DLL mismatch; old reports/DLL not rewritten"
+  },
+  "stages": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "nextPriorities": [
+    "Explicit room schedule/use/authority change contracts and conservative downstream invalidation",
+    "Broader space layouts and full-scope physical lighting quality without reducing thresholds",
+    "Real client semantic interpretation and unseen projects; separate professional/external-user/new-machine acceptance"
+  ],
+  "knownTaskPortabilityReadback": {
+    "passed": true,
+    "readOnlyMcpCalls": 5,
+    "distinctTasks": 4,
+    "fileHashesVerified": 47,
+    "oldLighting": true,
+    "oldIndependentSpaceBAndC": true,
+    "newCoordinatedLighting": true,
+    "newCadOrDesign": false,
+    "scope": "Known task state/byte compatibility only; no unseen design or semantic acceptance",
+    "supplementalEvidence": "known-task-portability-readback.json",
+    "supplementOutsideMainArchive": true
+  },
+  "privateEvidenceBundle": {
+    "fileName": "空间与照明联动-证据包.zip",
+    "sha256": "17c4798b475569d235da0281eb28e00e8923e3ec78aa265a1c9db0c21274a0d5",
+    "manifestEntries": 2205,
+    "zipEntries": 2206,
+    "ownedRuns": 99,
+    "crcAndAllHashesVerified": true,
+    "productRelease": false,
+    "archiveAttempt": 2,
+    "firstAttempt": "Relative repository parent path resolution failed before ZIP creation; partial folder retained, fixed by resolving arguments to absolute paths"
+  },
+  "postArchiveDocumentationChecks": {
+    "passed": 2,
+    "files": [
+      "README.md",
+      "skills/cadbridge-electrical/references/engineering-design.md"
+    ]
+  },
+  "archiveSnapshotScope": "Implementation source snapshot retained; supplemental readback metadata and documentation clarification were added afterwards in the repository. Archive remains immutable."
+}

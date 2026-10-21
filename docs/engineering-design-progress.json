@@ -205,7 +205,7 @@
     "arbitraryRoomScheduleOrConditionEdits": false,
     "hospitalAcceptance": false
   },
-  "pilotRole": "illustrative_retrospective_case_not_product_scope",
+  "pilotRole": "Hospital is one historical example; current general capability development also uses independent office and analysis tasks",
   "productDirection": {
     "currentComplexDesignScope": "bounded_ordinary_lighting_only",
     "genericCoreImplemented": false,
@@ -367,6 +367,54 @@
       "ownedRuns": 24,
       "crcAndAllHashesVerified": true,
       "sourceRelease": false
+    }
+  },
+  "sharedSpaceCoordinationIncrement": {
+    "afterCommit": "aa38a19",
+    "validation": "docs/shared-space-coordination-validation.json",
+    "sourceCaptureBound": true,
+    "sourceEntities": 15,
+    "sharedSpaceProgram": true,
+    "readOnlyMcpDataPaging": true,
+    "sameScheduleLightingAdoption": true,
+    "roomAddDeleteOrUseReclassification": false,
+    "unitTestsPassed": 361,
+    "actualNativePipelineChecks": 15,
+    "actualMcpDataChecks": 7,
+    "actualMcpDataCalls": 20,
+    "spaceRooms": 10,
+    "sharedSpaces": 11,
+    "selectedLightingSpaces": 5,
+    "finalNativeDrawings": 4,
+    "finalPdfPagesVisuallyInspected": 20,
+    "retainedFunctionalFailures": 2,
+    "retainedVisualGaps": 2,
+    "independentFinalSourceAudit": true,
+    "semanticUnderstandingAccepted": false,
+    "independentCustomerAcceptance": false,
+    "physicalLightingQualityAccepted": false,
+    "professionalApproval": false,
+    "releaseRepackaged": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete",
+    "staticChecksPassed": 3,
+    "knownTaskReadOnlyRegression": {
+      "calls": 5,
+      "tasks": 4,
+      "hashesVerified": 47,
+      "scope": "known persisted states only"
+    },
+    "privateEvidenceBundle": {
+      "fileName": "空间与照明联动-证据包.zip",
+      "sha256": "17c4798b475569d235da0281eb28e00e8923e3ec78aa265a1c9db0c21274a0d5",
+      "manifestEntries": 2205,
+      "zipEntries": 2206,
+      "ownedRuns": 99,
+      "crcAndAllHashesVerified": true,
+      "productRelease": false,
+      "archiveAttempt": 2,
+      "firstAttempt": "Relative repository parent path resolution failed before ZIP creation; partial folder retained, fixed by resolving arguments to absolute paths"
     }
   }
 }
