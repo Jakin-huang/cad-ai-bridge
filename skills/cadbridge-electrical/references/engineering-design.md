@@ -1,5 +1,9 @@
 # 工程需求、设计与审核
 
+出图前核对图签项目名与当前原文一致，种子结构的说明文字不能直接当成已完成设计的项目名。来源绑定任务可用 `cad_engineering_title inspect` 传原 task 身份，取得 expectedRevision/expectedInputSHA256/expectedTitle/documents；通过 cad_project_documents read 读需求或协调原文，自己解释项目名称，不从文件名、产品/标准标题或对照图猜。`revise` 传新 requestId、同 task、parameters{expectedRevision,expectedInputSHA256,expectedTitle,title,reason,evidence:[{documentId,textSHA256,quote}]}，quote 必须是连续原句并包含完整新 title，title 仅一行。
+
+该操作只修订标题，逐项保持其余输入；沿用原正式任务生成新版本，旧模型、图纸、质量和审核退出当前且保留。未变字段的原审阅决定按实际值摘要保持，标题另给原文证据并重新绑定；完成只是新的 prepared 输入，之后仍需按当前 revision/inputSHA256 设计，再用新 modelSHA256 交付和准备审核包。不要另建任务或直接改旧 PDF。`status` 用返回 job-titlechange 身份和原 task 核对；状态不明停止并读收据，不能换 UUID 重做。照明存在冻结 project_context 来源续用历史时本入口拒绝，继续原来源修订协议；此边界不能改成强行更新历史摘要或放宽其他门槛。
+
 已有结构化已知条件时，优先使用 `cad_engineering_intake`：`inspect_baseline` 只读取得输入根内 JSON 的原始摘要；`freeze` 关联当前文档集和项目/任务，固定几何、物理、产品、尺寸与原缺项。若调用上下文已给出 baseline/frozenSHA256，直接复用，不再次冻结或新建任务。`capabilities kind=...` 读取小型解释契约。
 
 用 `draft` 提交原句支持的逻辑解释：`frozen.expectedSHA256` 复制冻结摘要，附本版明确续用条件的 reason/evidence；照明 roomUses 逐房间解释用途，requirements 按 roomIds/rule/values 数组提交全部规则，保留全部矛盾值，数字按契约单位换算。空间包提交 program/relations，源壳与尺寸参数由服务器保持。每份非对照原文用 documentDispositions 标明 used/context/unresolved，used 必须实际引用；引用只填 documentId/连续 quote。不要重写 sources、几何、产品、供电或旧缺项，也不要退役仅局部指标被替代的主文。未解决的值用空 values/status=unresolved；遗漏会形成阻断草稿，不能沿用旧要求。新增待审项用 additionalPending，不能删除或升级原有假设。

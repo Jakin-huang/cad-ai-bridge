@@ -43,3 +43,13 @@
 每个冻结基线只能采纳一稿；阻断稿不会创建正式任务。同稿完成后的重试返回原任务；不同稿或中断状态禁止再建任务绕过。采纳前保存阶段收据，已执行但回包丢失时保留 `unconfirmed`，需核对原任务，不声称已具备所有失败阶段的自动恢复。任务中心将采纳显示为输入阶段完成，仍需进入原有设计、质量、原生交付、自检和人工审核流程。两个专业包继续各自的布局、计算和输出限制，分析任务及既有交付保持原契约。
 
 本轮独立原文的真实客户端结果和机械集成回归见 [intake-draft-validation.json](intake-draft-validation.json)。合成双房间成功不能代替独立真实项目、外部用户、新机器或专业签审。
+
+## 原任务上的项目图签修订
+
+`cad_engineering_title` 在照明与办公空间规划两种任务中共用同一协议。出图前应核对实际项目名称是否来自当前原文，不能把准备输入的占位标题当成客户名称。先用 `inspect` 传原 `task={jobId,expectedProjectId,expectedTaskSHA256}`，取得 `expectedRevision/expectedInputSHA256/expectedTitle` 及当前文档集；读取需求或协调原文后，`revise` 传新 `requestId`、同一 `task` 和 `parameters={expectedRevision,expectedInputSHA256,expectedTitle,title,reason,evidence}`。每条依据含 `documentId/textSHA256/quote`，连续原句须包含完整新标题。标题仅一行；对照正文、产品名、规范名及文件名不能作为本入口的项目名称依据。字面包含检查不认证语义，仍须由解释者核对。
+
+修订只改变完整输入的 `title`。已核验且值未变的字段决定、引文和假设等级保留，标题目标单独引用当前原文，重新审阅并绑定新输入；原始文件、旧输入/模型及输出不覆盖。旧模型、质量、图纸、审核和空间程序变为历史，须在原任务上重新设计、检查和出图。完成修订回执仅表示输入已准备，任务中心提供原任务入口，不显示为项目交付完成。上游空间程序因此换版后，下游仍执行既有失效检查。
+
+`status` 传 `job-titlechange-UUID` 和原 `task`，只读返回阶段及 `currentTask`。新回执固定计划文件摘要；既有旧回执核对已登记的下载摘要，读取不会改写旧记录。同请求完成后重试返回原修订，状态不明则保留阶段并阻断，不换 UUID 或另建任务绕过。没有共享当前文档审阅的旧任务不能使用此入口；照明如有携带 `project_context` 的来源续用历史，须继续原来源修订流程，不能修改历史声明。
+
+真实客户端在同一合成任务上完成两版原生图及五张审阅 PDF，初版标题内容问题保留；另有两专业包的实际 MCP 来回切换及既有任务回归。它没有证明完整自然语言空间方案、任意布局、标准适用性或专业出图完成。范围和失败记录见 [intake-publication-validation.json](intake-publication-validation.json)。

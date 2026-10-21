@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
-import {normalizeClientEvents,unwrapDeferredCalls,findDeliveryMessage,markdownFileLinks,toolResultErrors,clientExecutionErrors} from '../helpers/client-trace.mjs';
+import {normalizeClientEvents,unwrapDeferredCalls,findDeliveryMessage,markdownFileLinks,toolResultErrors,clientExecutionErrors,clientToolPayload,decodeClientResponseText} from '../helpers/client-trace.mjs';
 const dwg=path.resolve('output.dwg'),csv=path.resolve('summary.csv'),png=path.resolve('preview.png'),text=[dwg,csv,png].map(file=>'[file](<'+file.replaceAll('\\','/')+'>)').join('\n');
 test('deferred tool wrappers retain actual request, call identity and result association',()=>{const raw=[{type:'function_call',name:'DeferExecuteTool',callId:'x',arguments:JSON.stringify({toolName:'mcp__cad-ai-bridge__cad_design_project',params:{action:'prepare'}})},{type:'function_call_result',callId:'x',output:{text:'actual result'}}],events=unwrapDeferredCalls(raw);assert.equal(events[0].name,'mcp__cad-ai-bridge__cad_design_project');assert.equal(JSON.parse(events[0].arguments).action,'prepare');assert.equal(events[0].callId,events[1].callId);assert.equal(raw[0].name,'DeferExecuteTool');});
 test('deferred JSON-object strings retain nested arrays exactly like the installed CLI normalization',()=>{
@@ -14,6 +14,14 @@ test('nested MCP Bridge rejection is a tool error even when outer transport succ
  assert.deepEqual(toolResultErrors(wrap({ok:true,status:'blocked',intake:{ok:false,issues:['Unknown use']}})),[]);
  assert.equal(toolResultErrors({type:'function_call_result',status:'success',output:{text:'Input validation error: unsupported field'}})[0].kind,'input_protocol_error');
  assert.equal(toolResultErrors({type:'function_call_result',status:'failed'})[0].kind,'transport_or_tool_error');
+});
+
+test('CLI-joined JSON and exact bridge delivery text preserve payloads and cannot hide failure',()=>{
+ const suffix='\n交付文件：最终答复请直接使用以下实际文件链接，不改写成代码路径。\n[file](<output.pdf>)',wrap=body=>({type:'function_call_result',callId:'joined',status:'success',output:{text:JSON.stringify([{type:'text',text:JSON.stringify(body)+suffix}])}}),body={ok:true,jobId:'job-task-example',current:{status:'delivered',pending:{ok:false}},caption:'Escaped quote " and braces } {',nested:[{value:'\\path'}]};assert.deepEqual(clientToolPayload(wrap(body)),body);assert.deepEqual(toolResultErrors(wrap(body)),[]);const failed={ok:false,error:{code:'PRESENTATION_FAILED'},files:[{file:'retained.pdf'}]};assert.deepEqual(clientToolPayload(wrap(failed)),failed);assert.deepEqual(toolResultErrors(wrap(failed)),[{callId:'joined',kind:'bridge_error',error:failed.error}]);
+});
+
+test('joined-response decoding requires the complete leading object and known suffix, never arbitrary JSON in source prose',()=>{
+ const body={ok:false,error:{code:'QUOTED_SOURCE_ONLY'}},json=JSON.stringify(body);for(const text of ['Source says '+json+'\n交付文件：example',json+'\nUnrelated source commentary',json.slice(0,-1)+'\n交付文件：最终答复请直接使用以下实际文件链接，不改写成代码路径。\n[file](output.pdf)'])assert.equal(decodeClientResponseText(text),undefined);const event={type:'function_call_result',status:'success',output:{text:JSON.stringify({ok:true,text:json+'\n交付文件：最终答复请直接使用以下实际文件链接，不改写成代码路径。\n[file](output.pdf)'})}};assert.deepEqual(toolResultErrors(event),[]);assert.equal(clientToolPayload(event).ok,true);
 });
 
 test('client permission refusal inside a successful text envelope remains a usability error, while source content is not scanned',()=>{

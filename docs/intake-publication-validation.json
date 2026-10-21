@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "d437abbcedd797863f8d0f5afdee8862fc4fa85e",
+  "product": "CAD AI Bridge",
+  "status": "bounded_staged_intake_publication_title_correction_verified_not_general_acceptance",
+  "hospitalPolicy": "Isolated retrospective evaluator only; explicit task kind selects adapter; sources, thresholds and task isolation preserved",
+  "hospitalDataProcessed": false,
+  "syntheticNonPrivate": true,
+  "scope": "Same two-room natural-source intake continued through R0 publication, source-title correction and R1 publication, in separate actual-client sessions",
+  "priorIntakeValidation": "docs/intake-draft-validation.json",
+  "implemented": [
+    "Shared source-bound title-only revisions for ordinary-lighting and office-space-planning on the original task",
+    "Exact unchanged non-title input, target decisions/citations, source grades and pending conditions preserved",
+    "Old input/model/native delivery/PDF/quality/review/shared spaces retained as history and current results invalidated",
+    "New original-text title quote, complete-input review rebinding and redesign required",
+    "Immutable plan/history SHA checks, replay returns original task and unconfirmed phases prohibit duplicate escape",
+    "Read-only status leaves original receipts unchanged; task center distinguishes prepared input from project completion",
+    "Shared client-response decoder handles complete leading JSON followed by known separate presentation blocks without scanning arbitrary content"
+  ],
+  "actualClient": {
+    "client": "Installed WorkBuddy CLI 2.115.0, configured auto",
+    "cliSHA256": "eacd161ce6b05037bc0910ed44f1d5a5a16a88954785151cced179a6d50887d8",
+    "actualRoutedModelProvider": "not established",
+    "initialPublication": {
+      "actualInstalledAiClient": true,
+      "calls": 11,
+      "elapsedMs": 117543,
+      "protocolErrors": 0,
+      "rawTraceSHA256": "0491a16e9bfc4fc06a5c7c19ba4eb2d412d78447940b514ad76062d21a94df60",
+      "reportSHA256": "4e6c9ae124ffb1041da75ffae42f9aa04fe986082fd05af00622c81fc43f57e2",
+      "inputSHA256": "e5f84b2ca33784cfb4129f995b181d0cd48d678f94a0d69fe7ab244ab96319e1",
+      "modelSHA256": "0bb172fd7db1fe6d5be262d53072e19b7c1a9f1e0c149fc0a034d293ade7c4b9",
+      "nativeSteps": [
+        {
+          "action": "create_drawing",
+          "jobId": "job-O41PLf",
+          "ok": true
+        },
+        {
+          "action": "apply",
+          "jobId": "job-ucbpsS",
+          "ok": true
+        },
+        {
+          "action": "scan",
+          "jobId": "job-hyCT23",
+          "ok": true
+        },
+        {
+          "action": "export_many",
+          "jobId": "job-HhGVSB",
+          "ok": true
+        }
+      ],
+      "design": {
+        "lamps": 29,
+        "circuits": 2,
+        "sheets": 5,
+        "pending": 13
+      }
+    },
+    "titleCorrectionPublication": {
+      "actualInstalledAiClient": true,
+      "calls": 18,
+      "elapsedMs": 144868,
+      "protocolErrors": 0,
+      "rawTraceSHA256": "4513ef6c0cd1ab6390a793d44dcdfb0e6365b6e1307c566c693bf7bcf0ef5b60",
+      "reportSHA256": "c0d2a360e203af54d54dad9adcf5f94eaabef6d3e72a11c2038b28f84be8b358",
+      "inputSHA256": "04562e3efe8298d1d38ec1c6dcf73e899046061758ce2c16ba2db854e2a59afe",
+      "modelSHA256": "a8d6d04b2e5549fc8a94cb89792a1369ed57553a0e704b252711c53292cbc6b6",
+      "nativeSteps": [
+        {
+          "action": "create_drawing",
+          "jobId": "job-j2L0zw",
+          "ok": true
+        },
+        {
+          "action": "apply",
+          "jobId": "job-pQCKmY",
+          "ok": true
+        },
+        {
+          "action": "scan",
+          "jobId": "job-U3yP4X",
+          "ok": true
+        },
+        {
+          "action": "export_many",
+          "jobId": "job-4e196M",
+          "ok": true
+        }
+      ],
+      "design": {
+        "lamps": 29,
+        "circuits": 2,
+        "sheets": 5,
+        "pending": 13,
+        "title": "合成办公项目"
+      }
+    },
+    "sameFormalTask": true,
+    "newFormalTasks": 0,
+    "controllerSemanticRepair": false,
+    "controllerSuppliedReplacementTitle": false,
+    "sourceTitle": "合成办公项目",
+    "uninterruptedSingleSessionAccepted": false,
+    "threeSessionsIncludingEarlierIntake": true,
+    "independentCustomerAcceptance": false
+  },
+  "renderAndContent": {
+    "initial": {
+      "strictPdfPages": 5,
+      "rawAndReviewPixelIdenticalPages": 5,
+      "allFiveViewed": true,
+      "titleContentAccepted": false,
+      "visualReportSHA256": "c1f777d3276f7f4fd7a8dd63b67ea4fe6a891b95940152fcf735e523b9a1aaba"
+    },
+    "revision1": {
+      "strictPdfPages": 5,
+      "rawAndReviewPixelIdenticalPages": 5,
+      "allFiveViewed": true,
+      "titleCorrectionAccepted": true,
+      "visualReportSHA256": "7e0885e53fc7a64ddffae91614b39dd184c41b02881a584954861bc53f1f5c81"
+    },
+    "dpi": 120,
+    "rawCadPdfDuplicatePageModeWarningsRetained": true,
+    "originalRawPdfsUnchanged": true,
+    "fullDrawingCompletionAccepted": false
+  },
+  "preservation": {
+    "onlyTitleChanged": true,
+    "allOtherInputFieldsExact": true,
+    "devicesCircuitsAndRoomCalculationsExact": true,
+    "originalPending": 13,
+    "remainingPending": 13,
+    "protectedPriorFiles": 42,
+    "rawBaselineSHA256": "65f968329808c9e055e7b2118bca32fd111ed03ca4c154d0f707c301ee27e539",
+    "mainTextSHA256": "9e5bec62ab3030a3938d8fe5fd2c0439a3f5c1e48f542b503cd261b6f4dd6017",
+    "sameTaskHistoriesVerify": true
+  },
+  "regression": {
+    "full": {
+      "passed": 452,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 155417.7705,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "8a025a86b118993702bb89db6d97f045a4ac26cfa53365e900f1d9c6a95e1077"
+    },
+    "actualTwoPackMcp": {
+      "ok": true,
+      "calls": 21,
+      "checks": 3,
+      "reportSHA256": "d60504513d8cbfea9eeb32d361d98938ddf39b8bee86dcba207484a03df6b0c2"
+    },
+    "currentClientReceiptReplay": {
+      "ok": true,
+      "calls": 3,
+      "downloads": 6,
+      "protectedFiles": 42,
+      "reportSHA256": "2988c43ab180b957d82adc76543dbf93dc61b32e48916610dc4c2f83495a527d"
+    },
+    "legacy": {
+      "ok": true,
+      "tasks": 6,
+      "calls": 7,
+      "protectedFiles": 149,
+      "pdfDownloads": 5,
+      "reportSHA256": "aad1879dad61ce958f2c6752eb2ff6e84b5e908252687c0223c4aba5d9c62bfe"
+    },
+    "historicalTraceRecheck": {
+      "traces": 12,
+      "changedPreviouslyPassingVerdicts": 0,
+      "originalFilesRewritten": false,
+      "reportSHA256": "ddf9e910729b55cc4b8740a5a99649049d8336cce0c6044eba546199bbe99d60"
+    },
+    "staticGate": {
+      "ok": true,
+      "staticOnly": true,
+      "publicFiles": 503,
+      "checks": 3,
+      "logSHA256": "5f9b98386b9d84d80947007aa4212f1622327eeb76dfec76663a0d82f98752ef"
+    }
+  },
+  "retainedFailures": [
+    {
+      "type": "R0 visual content",
+      "reason": "All five sheets used the seed placeholder rather than original project title",
+      "remedy": "New source-bound R1; old DWG/PDF bytes and rejection retained"
+    },
+    {
+      "type": "R0 independent auditor false negatives",
+      "reason": "Installed CLI joins JSON and separate delivery presentation text into one response block",
+      "remedy": "Shared bounded leading-JSON decoder; initial failed report retained, corrected audit saved separately"
+    },
+    {
+      "type": "First mechanical title-protocol fixture",
+      "reason": "Space-input defaults were absent from test JSON citations; source review correctly rejected the mismatch",
+      "remedy": "Normalize the explicit mechanical fixture before serializing its known JSON; failed report retained; no real client result repaired"
+    },
+    {
+      "type": "Earlier development title unit assertions",
+      "reason": "Space metadata legitimately contains new revision/source SHA; nested invoke errors are exposed under execution.result.error",
+      "remedy": "Compare complete physical fields and explicitly verify changed metadata; assert actual error envelope"
+    }
+  ],
+  "limits": [
+    "Known synthetic two-room schematic, source-assisted and separate sessions; not an independent real project or clean end-to-end trial",
+    "Real natural-language office-space-planning client has not yet passed the same complete workflow; mechanical dual-pack integration is separate",
+    "Title literal containment is not semantic authority; no filename/project label heuristics select a task kind",
+    "Current title entry requires a current shared document review; carried lighting project_context histories must use original source revision workflow",
+    "No approved standards/IES/environment/installation/ceiling/wiring/protection conditions added; thirteen pending items remain",
+    "Sparse drawing and schematic paths are not complete installation/construction design",
+    "Plan checksum is a local consistency guard, not an adversarial digital signature or authenticated professional review",
+    "Independent customers, external users, clean machines, broader layout/space changes and professional acceptance remain outstanding",
+    "Frozen v2 release and DLL unchanged; historical full release gate remains incomplete",
+    "Actual R1 client used the separately saved pre-plan-guard source; current checksum-guard implementation subsequently passed unit, two-pack MCP and read-only original-receipt replay. No new CAD rerun claimed for that guard."
+  ],
+  "nextPriorities": [
+    "P0 Preserve explicit task kinds, two design packs, analysis, historical outputs and isolated hospital evaluator",
+    "P0 Actual office-space-planning natural-document client through draft, source review, design/check/native output and return to lighting/analysis without condition leakage",
+    "P0 Validate broader independent original briefs and current-condition source/standard applicability while retaining strict quality gates",
+    "P1 Richer source-bound architecture/layouts, split/merge/multiple uses, project quality and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+  ],
+  "evidenceRoot": "artifacts/intake-publication-validation-20261022",
+  "evidenceArchive": "artifacts/intake-publication-validation-20261022/新采纳输入与原生交付-完整试验证据.zip",
+  "M2": "incomplete",
+  "M3": "incomplete",
+  "M4": "incomplete",
+  "goalComplete": false,
+  "professionalApproval": false,
+  "releaseRepackaged": false
+}

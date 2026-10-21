@@ -1,3 +1,4 @@
+import {engineeringTitleSchema} from './engineering-title-contracts.mjs';
 import {z} from 'zod';
 import {engineeringSchema} from './engineering-contracts.mjs';
 import {engineeringRevisionSchema} from './engineering-revision-contracts.mjs';
@@ -153,4 +154,5 @@ schemas.engineering_revision=engineeringRevisionSchema;
 schemas.engineering_task=engineeringTaskSchema;
 schemas.project_documents=projectDocumentsSchema;
 schemas.engineering_intake=engineeringIntakeSchema;
+schemas.engineering_title=engineeringTitleSchema;
 export const publicProjectSchema=z.discriminatedUnion('action',schemas.project.options.map(option=>option.shape.action.value==='start'?option.extend({items:z.array(projectItem.extend({plan:publicWorkflowSchema.shape.plan})).min(1).max(100)}):option));

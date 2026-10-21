@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {jobDirectory,jobJson,registeredFiles} from './jobs.mjs';
 import {isWithin} from './drawings.mjs';
 import {boundForTransport} from './results.mjs';
-const actions=new Set(['capabilities','doctor','get_job','read_result','project','analyze','scan','workflow','engineering','engineering_task','project_documents','engineering_intake']);
+const actions=new Set(['capabilities','doctor','get_job','read_result','project','analyze','scan','workflow','engineering','engineering_task','project_documents','engineering_intake','engineering_title']);
 export function taskCenterDocument(raw){const html=raw.replace(/\r\n?/g,'\n'),script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1]??'';return {html,scriptHash:crypto.createHash('sha256').update(script).digest('base64')};}
 export async function listJobs(runs,{offset=0,limit=30,snapshot}={}){
  const entries=(await fs.readdir(runs,{withFileTypes:true}).catch(e=>{if(e.code==='ENOENT')return [];throw e;})).filter(entry=>entry.isDirectory()&&/^job-[A-Za-z0-9_-]+$/.test(entry.name)),ranked=[],jobs=[];

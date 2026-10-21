@@ -168,10 +168,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve explicit task kinds, both design packs, analysis and existing outputs; hospital stays isolated",
-    "P0 Carry newly adopted source-bound inputs through actual quality/native delivery/review without upgrading missing standards or assumptions",
-    "P0 Broaden actual natural-document and office-space-planning client cases beyond the known two-room lighting trial",
-    "P1 Source/standard applicability, richer layouts, split/merge/multiple-use identity and installation detail",
+    "P0 Preserve explicit task kinds, two design packs, analysis, historical outputs and isolated hospital evaluator",
+    "P0 Actual office-space-planning natural-document client through draft, source review, design/check/native output and return to lighting/analysis without condition leakage",
+    "P0 Validate broader independent original briefs and current-condition source/standard applicability while retaining strict quality gates",
+    "P1 Richer source-bound architecture/layouts, split/merge/multiple uses, project quality and installation/wiring/protection detail",
     "P2 Independent real projects, external users, clean machines and authenticated professional review"
   ],
   "plan": "docs/engineering-design-plan.md",
@@ -936,5 +936,31 @@
       "command": "node --test tests/unit/*.test.mjs",
       "logSHA256": "9c4f79b3d074cb5cb709e781a76f854e6f3fadd7b6cc08a42a0e72be29a2645e"
     }
+  },
+  "previousPrioritiesBeforeIntakePublication": [
+    "P0 Preserve explicit task kinds, both design packs, analysis and existing outputs; hospital stays isolated",
+    "P0 Carry newly adopted source-bound inputs through actual quality/native delivery/review without upgrading missing standards or assumptions",
+    "P0 Broaden actual natural-document and office-space-planning client cases beyond the known two-room lighting trial",
+    "P1 Source/standard applicability, richer layouts, split/merge/multiple-use identity and installation detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+  ],
+  "intakePublicationIncrement": {
+    "validation": "docs/intake-publication-validation.json",
+    "stagedSameTaskNativePublication": true,
+    "sourceTitleCorrection": true,
+    "twoDesignPacks": true,
+    "actualNaturalOfficePlanningClientAccepted": false,
+    "remainingPending": 13,
+    "fullRegression": {
+      "passed": 452,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 155417.7705,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "8a025a86b118993702bb89db6d97f045a4ac26cfa53365e900f1d9c6a95e1077"
+    },
+    "goalComplete": false,
+    "professionalApproval": false,
+    "releaseRepackaged": false
   }
 }

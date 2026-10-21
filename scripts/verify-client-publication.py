@@ -7,10 +7,13 @@ import sys
 import pypdf
 from PIL import Image, ImageChops
 
-folder, runs, poppler = map(lambda p: pathlib.Path(p).resolve(), sys.argv[1:])
+assert len(sys.argv) in [4, 5]
+folder, runs, poppler = map(lambda p: pathlib.Path(p).resolve(), sys.argv[1:4])
+publication_name = sys.argv[4] if len(sys.argv) == 5 else 'client-publication.json'
+assert pathlib.Path(publication_name).name == publication_name and publication_name.endswith('.json')
 read = lambda p: json.loads(p.read_text(encoding='utf-8-sig'))
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
-publication = read(folder / 'client-publication.json')
+publication = read(folder / publication_name)
 assert publication['ok'] and publication['actualInstalledAiClient']
 state = read(runs / publication['jobId'] / 'engineering.json')
 model = read(runs / publication['jobId'] / ('model-' + str(state['revision']) + '.json'))
