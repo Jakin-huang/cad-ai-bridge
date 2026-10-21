@@ -1,4 +1,5 @@
 import {lightingInterruptionReconciliation} from './lighting-interruption-proof.mjs';
+import {createSpacePlanningAdapter} from './space-planning-adapter.mjs';
 import {z} from 'zod';
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -31,5 +32,5 @@ export function createEngineeringTaskAdapters({schemas,execute,runs}){
   validateOperation(operation,parameters){if(operation!=='analyze')throw Error('TASK_OPERATION_UNSUPPORTED');return this.operationSchemas.analyze.parse(parameters);},
   invoke(binding,operation,parameters,requestId,manifest){return execute('analyze',manifest.parameters);}
  };
- return [lighting,analysis];
+ return [lighting,analysis,createSpacePlanningAdapter({runs,execute})];
 }

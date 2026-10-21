@@ -1,0 +1,23 @@
+import path from 'node:path';
+import {createSpacePlanningManager} from './space-planning-projects.mjs';
+import {planningPrepareSchema,planningOperationSchemas} from './space-planning-contracts.mjs';
+export function createSpacePlanningAdapter(context){
+ const manager=createSpacePlanningManager(context);
+ return {id:'office-space-planning',version:1,complexDesign:true,limitations:'Bounded rectangular interior shell, fixed source entry/windows/keepouts, two-sided straight corridor and rectangular bays. Source-declared area, adjacency, furniture and aisle checks; no building/fire/accessibility/daylight/acoustic/MEP approval. Not independent customer acceptance.',prepareSchema:planningPrepareSchema,operationSchemas:planningOperationSchemas,constraintSensitiveOperations:['design','deliver'],
+ validatePrepare:p=>planningPrepareSchema.parse(p),prepare:manager.prepare,inspect:manager.inspect,
+ validateOperation(op,p){if(!planningOperationSchemas[op])throw Error('TASK_OPERATION_UNSUPPORTED');return planningOperationSchemas[op].parse(p);},invoke:manager.invoke,
+ async dependencyNodes({binding}){
+  const {s,input,model}=await manager.load(binding),nodes=[],add=(id,kind,label,value,dependsOn=[],authority='declared',available)=>{nodes.push({id,kind,label:label.slice(0,200),value:JSON.parse(JSON.stringify(value)),dependsOn,authority,...(kind==='source'?{sourceRole:'input'}:{}),...(['design','check','artifact','review'].includes(kind)?{available:!!available}:{})});};
+  for(const source of input.sources)add('source:'+source.id,'source',source.description,source,[],source.supersededBy?'retired':'declared');
+  add('condition:shell','condition','Source shell, entry, facade windows and retained keepouts',input.shell,input.shell.sourceIds.map(id=>'source:'+id),input.shell.status==='unresolved'?'unverified':'declared');
+  add('condition:parameters','condition','Declared planning and clearance dimensions',input.parameters,input.parameters.sourceIds.map(id=>'source:'+id),input.parameters.status==='unresolved'?'unverified':input.parameters.status);
+  for(const r of [...input.program,...input.relations])add('requirement:'+r.id,'requirement',r.name??r.id,r,r.sourceIds.map(id=>'source:'+id),r.status==='unresolved'?'unverified':r.status);
+  for(const r of input.standards)add('standard:'+r.id,'standard',r.code+' '+r.edition,r,['source:'+r.sourceId],'unverified');
+  for(const r of input.missingInputs)add('condition:missing:'+r.id,'condition',r.description,r,r.sourceIds.map(id=>'source:'+id),'unverified');
+  add('design:model','design','Current space-planning model',{revision:s.revision,inputSHA256:s.inputSHA256,modelSHA256:s.modelSHA256},nodes.map(n=>n.id),'declared',!!model);
+  add('check:model','check','Independent geometry, program and furniture checks',s.audit??null,['design:model'],'unverified',!!s.audit);
+  for(const f of s.delivery?.files??[])add('artifact:'+path.basename(f.file),'artifact',path.basename(f.file),{kind:f.kind,sha256:f.sha256},['design:model','check:model'],'source_bound',true);
+  add('review:current','review','Current human-review record',{records:s.review,professionalApproval:false},nodes.filter(n=>['design','check','artifact'].includes(n.kind)).map(n=>n.id),'unverified',!!s.review?.length);return nodes;
+ }
+ };
+}

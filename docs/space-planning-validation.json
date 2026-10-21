@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-21",
+  "sourceBaseCommit": "427a54a",
+  "releaseBaseline": "v2.0.0-preview.1",
+  "status": "bounded_second_design_pack_verified_on_known_developer_case",
+  "professionalApproval": false,
+  "implemented": {
+    "adapter": "office-space-planning",
+    "independentOfLightingModel": true,
+    "programDrivenGeneration": true,
+    "sourceQuotesAndFrozenInputHashes": true,
+    "independentGeometryFurnitureAndAisleAudit": true,
+    "programRevisionAndReviewInvalidation": true,
+    "editableNativeDrawingAndReviewOutputs": true,
+    "declaredDependencyImpact": true
+  },
+  "case": {
+    "kind": "known_synthetic_developer_program",
+    "independentCustomer": false,
+    "hospitalDataUsed": false,
+    "referenceFinalPlanUsed": false,
+    "rooms": 10,
+    "initialSeats": 34,
+    "revisedSeats": 36,
+    "revisionChange": "OFFICE_A workstations4 to6; all other numeric demands and shell geometry unchanged",
+    "initialInputSHA256": "3eb6fa312a92dd143545b48411d7bca75653683dcade09dbfecae69a3d5f095c",
+    "revisedInputSHA256": "8783eaf3ab4ea03068c6cbd32e4a592693da5f8c678b33176c111cccb0205686",
+    "finalModelSHA256": "30bc8055d5d73f216e6bd6db1b5e90ca342b7471983530585e3f5b2d4bc60c24",
+    "unassignedAreaM2": 42.2,
+    "selection": "First feasible per corridor variant, scored among three found alternatives; no global optimum or infeasibility claim",
+    "budget": {
+      "maxNodes": 50000,
+      "maxMilliseconds": 10000,
+      "maxPlans": 3
+    },
+    "searchNodes": [
+      51,
+      49
+    ],
+    "selectedPlanIndependentChecksPerRevision": 209
+  },
+  "actualValidation": {
+    "mcpCallsPerTrial": 14,
+    "distinctChecksPerTrial": 11,
+    "retainedFirstTrial": true,
+    "finalTrial": true,
+    "finalNativeDrawings": 2,
+    "totalNativeDrawingsAcrossBothTrials": 4,
+    "finalSheetsPerRevision": 5,
+    "finalPdfPagesReopenedRenderedAndVisuallyInspected": 10,
+    "paper": "SP02/SP03 A2 landscape1:100; notes/schedule/review A3",
+    "attributedRepresentationsPerDrawing": 20,
+    "independentSavedRootChecksPerFinalDrawing": 5,
+    "oldOutputsByteIdentical": true,
+    "oldRenderVersionReadableOnFinalSource": true,
+    "lightingASpaceBRevisionSpaceCBackToLightingA": true,
+    "wrongProjectRefused": true,
+    "readOnlyNewProcess": true,
+    "historicDeliveryReplayNotCurrentRevision": true,
+    "sourceModelAuditAcrossFourVersions": true,
+    "unitTestsPassed": 353,
+    "staticChecksPassed": 3,
+    "capabilitiesResponseBytes": 69844,
+    "capabilitiesTruncated": false,
+    "fullReleaseGate": "not rerun; previous historical-report/DLL mismatch remains unresolved",
+    "releaseRepackaged": false
+  },
+  "retainedFailures": [
+    {
+      "stage": "initial bounded search",
+      "outcome": "No feasible candidate within50000-state budget; memoization, ordering and facade alignment search corrected without relaxing project values"
+    },
+    {
+      "stage": "first actual native PDF visual review",
+      "outcome": "Geometry passed; black-white window visibility, labels close to door swings, missing room/corridor dimensions and word breaks required renderer correction. First files retained; final retry used identical input digests"
+    }
+  ],
+  "limits": [
+    "Declared shell/program with UTF-8 brief identity and literal quotes; quote presence does not certify meaning or client interpretation",
+    "No native architecture source capture binding; source_bound shell claims are refused",
+    "Only rectangular clear shell, fixed entry/windows/rectangular keepouts, two-sided straight corridor and rectangular bay family",
+    "No executable architectural standard rules; registered standards remain applicability pending",
+    "No fire/accessibility/daylight/acoustic/construction/MEP sign-off",
+    "No arbitrary native-edit-to-semantic-model synchronization or selective CAD update acceptance",
+    "No shared source/room-program/use-change contract or space-to-lighting coordinated redesign acceptance",
+    "No clean-machine/external-user/independent customer or actual client semantic acceptance",
+    "Prior whole-floor lighting quality failure remains unaccepted; new space evidence does not offset it"
+  ],
+  "nextPriorities": [
+    "P0 shared source/room-program/use-change contract and native source-bound shell intake",
+    "M3 space revision impacts, invalidates and recomputes lighting using explicit adopted source versions; retain history and original quality targets",
+    "M2 expand bounded layout/product/condition coverage and rerun full-scope physical lighting acceptance",
+    "M4 independent projects, actual client semantic workflow, external users/new machine and professional review"
+  ],
+  "stages": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "privateEvidenceBundle": {
+    "fileName": "第二设计包-证据包.zip",
+    "sha256": "4c67079caa2fca756d52c2bf72efd733673ad5c3af21baf777728ee837d5da42",
+    "manifestEntries": 469,
+    "zipEntries": 470,
+    "ownedRuns": 24,
+    "crcAndAllHashesVerified": true,
+    "sourceRelease": false
+  }
+}

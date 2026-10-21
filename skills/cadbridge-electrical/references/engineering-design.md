@@ -2,7 +2,7 @@
 
 目标是把项目资料解释为可追溯的设计约束，通过 CAD AI Bridge 新建、编辑、核对并交付待人工审核成果。当前 cad_design_project 仅实现明确边界的普通照明设计试验，支持利用系数法与有限IES直射逐点模式，不宣称通用工程推理、多专业完整工程设计、反射/UGR验收或专业签审。
 
-源码增量提供cad_engineering_task通用任务入口（冻结v2包尚无）。先capabilities核对已安装适配器，明确task.kind后绑定项目UUID和任务摘要；后续invoke不得覆盖子任务身份。ordinary-lighting仍只调用原有照明能力，drawing-analysis只做来源绑定检查/计量；不能将未支持的任务套入照明，也不能把外层任务路由称为通用复杂工程设计。完整参数以当前连接器capabilities返回的契约为准；可安装Skill保持自包含。
+源码增量提供cad_engineering_task通用任务入口（冻结v2包尚无）。先capabilities核对已安装适配器，明确task.kind后绑定项目UUID和任务摘要；后续invoke不得覆盖子任务身份。ordinary-lighting仍只调用原有照明能力；新增office-space-planning独立处理声明的矩形办公净边界、入口/窗/保留构件与房间面积/邻接/座位程序，完成有界方案、改版、自检、原生图与待审输出，只覆盖两侧直走廊矩形房间族；drawing-analysis只做来源绑定检查/计量。空间包先capabilities取得完整契约，prepare.parameters={input}；design参数含expectedRevision/expectedInputSHA256和可选budget；revise_program提供同版本摘要、新brief/program/relations/parameters及reason；deliver/review需expectedModelSHA256。空间包未提供真实建筑捕获绑定、消防/无障碍/采光/声学签审或跨专业自动协调；不能将未支持的任务套入照明，也不能把外层任务路由称为通用复杂工程设计。完整参数以当前连接器capabilities返回的契约为准；可安装Skill保持自包含。
 
 ## 解释输入
 

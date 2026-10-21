@@ -153,10 +153,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "M3 implement the office-space planning design pack with source-bound program, area/adjacency/existing-shell constraints, generation/editing, independent geometry checks, editable native drawings and review outputs; extract only shared source/program/room-schedule/use change contracts needed by this pack and lighting",
-    "P0 cross-pack identity, source/version isolation, unsupported task refusal and lighting-to-space-planning-to-lighting regression; ordinary-lighting quality thresholds and prior accepted evidence remain fixed",
-    "M2 richer bounded layout/product/condition coverage and final-source complete-scope serial/parallel acceptance; the9x6m first-floor trial still fails500lx and no whole-floor quality success is claimed",
-    "M4 independent real projects covering three project types and two complex design families; external users/new machine/professional review remain separate gates"
+    "P0 shared source/room-program/use-change contract for lighting and space planning; native source-bound shell intake, no case-name routing or reference leakage",
+    "M3 space-planning revision to lighting impact/invalidation and conservative recomputation with explicit adopted source versions, retained historic CAD/reviews and unchanged lighting thresholds",
+    "M2 broader bounded layouts/products/conditions and full-scope final-source physical quality; original9x6m500lx floor failure remains unaccepted",
+    "M4 independent real projects, actual client interpretation, new machine/external users and professional review; known developer cases cannot satisfy these gates"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -333,6 +333,38 @@
       "sha256": "c8408e8d8fd035a55e16de5c40b6cb9bc1e4814a76d21812ae56b81b2551c340",
       "manifestEntries": 691,
       "zipEntries": 692,
+      "crcAndAllHashesVerified": true,
+      "sourceRelease": false
+    }
+  },
+  "spacePlanningIncrement": {
+    "afterCommit": "427a54a",
+    "validation": "docs/space-planning-validation.json",
+    "secondComplexDesignPackImplemented": true,
+    "scope": "bounded rectangular office family and known developer state isolation",
+    "unitTestsPassed": 353,
+    "actualMcpChecksPerFinalTrial": 11,
+    "rooms": 10,
+    "seatsBefore": 34,
+    "seatsAfter": 36,
+    "finalNativeDrawings": 2,
+    "finalPdfPagesVisuallyInspected": 10,
+    "firstVisualGapRetained": true,
+    "sourceArchitectureCaptureBound": false,
+    "semanticUnderstandingAccepted": false,
+    "crossPackCoordinationAccepted": false,
+    "independentCustomerAcceptance": false,
+    "professionalApproval": false,
+    "releaseRepackaged": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete",
+    "privateEvidenceBundle": {
+      "fileName": "第二设计包-证据包.zip",
+      "sha256": "4c67079caa2fca756d52c2bf72efd733673ad5c3af21baf777728ee837d5da42",
+      "manifestEntries": 469,
+      "zipEntries": 470,
+      "ownedRuns": 24,
       "crcAndAllHashesVerified": true,
       "sourceRelease": false
     }
