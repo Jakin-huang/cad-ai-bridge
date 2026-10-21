@@ -114,6 +114,22 @@ spaces/context/sources三节分别读取，最多100条且每页数据最多256K
 
 显式adopt_spaces通过普通invoke调用，parameters含expectedRevision、expectedInputSHA256、新binding以及carryForward{expectedConditionsSHA256,reason,evidence{sourceId,quote}}。expectedConditionsSHA256由冻结的非几何照明条件规范JSON计算，包含各房间用途/高度/工作面/障碍和要求/标准/灯具/电气/光度/反射/眩光条件；quote须逐字来自摘要正确的活动照明任务书，说明其他条件继续适用。采用新来源ID并保留supersedes及spaceProgramChanges链，重查历史输入、旧/新功能摘要、来源和条件摘要。成功产生新输入修订，旧模型/CAD/质量结果及审核退出当前，全部选定空间保守重算，不做选择性CAD更新。
 
-当前只支持同一上游生产任务、同一项目、同一选定房间ID清单及照明use不变的方案改版。新增/删除房间、用途重分类、建筑权威/任务书修订混用、原来源承担非几何专业条件、二级用途及别名解释需要进一步契约，当前明确拒绝。流明估算设计可能返回ok=true/status=blocked的诊断结果，必须同时检查状态、模型存在及failed=0，不能只看ok。
+adopt_spaces仍只支持同一上游生产任务、同一项目、同一选定房间ID清单及照明use不变的方案改版；不能绕过它的限制。新增/删除房间和明确用途/条件变化使用下述完整修订。流明估算设计可能返回ok=true/status=blocked的诊断结果，必须同时检查状态、模型存在及failed=0，不能只看ok。
 
 照明交付另存delivery-layout-scene与delivery-room-labels：平面R编号与E05全名/ID对应；房间、灯具、开关文字在有界范围避让，必要时加图面引线。原模型、计算、物理灯位/开关/路径不改变；放置失败会在启动原生生成前拒绝。delivery.layout绑定最终场景，已有delivery.projection仍只绑定质量注释基础投影。预测文字边界检查不能代替实际PDF逐页检查或任意字体/图纸适用性验收。
+
+## 完整清单、用途及条件修订
+
+preview_space_scope和revise_space_scope支持已绑定共用空间的照明任务完整改版。使用当前项目/上游生产者的已发布版本：可以保留同一上游版本调整照明选取范围，也可以前进到新版；不倒退、不自动切换项目/生产任务，不按名字猜测拆房/并房关系。几何、名称、入口、programme摘要及引文必须符合所绑定原生交付的共享包；proposal始终是待审生成方案。
+
+先用cad_design_project的status.section=input读取完整当前专业输入，复制并明确填写新project。project使用完整engineeringInputSchema：新活动任务书正文、独立brief来源ID/摘要，以及新建筑来源ID/共享包摘要；旧brief和旧建筑来源互相记录supersededBy/supersedes。其他旧来源的身份、摘要、角色和描述均保留，不删除或改写。旧历史字段可省略，服务端从原输入保留；若提供，必须与旧值一致，不能导入其他任务的记录。新原句不认证资料的实际工程权威。
+
+房间、要求、标准、产品、电气、工作面/障碍、反射/眩光及缺项均显式填写完整新范围；删除房间的条件不得留作当前引用。可以新增声明的标准/产品来源，已有标准/产品来源保持原身份，新专业适用性仍由既有证据检查及人工审核决定。当前只接受一个摘要正确的活动旧任务书及其唯一新承接来源。已有assumed状态/分类不能借此次修订自动提升为确认事实；新光度/标准配置仍须经过原解析器和质量门槛。
+
+通过普通invoke操作preview_space_scope，parameters为expectedRevision、expectedInputSHA256和project。它不改子任务输入、模型、质量、CAD或审核；通用父任务仍保存该invoke的审计收据。返回proposalSHA256、new brief sourceId及decisions预览，每项含key、added/removed/revised/retained、previousSHA256/nextSHA256（不存在为null）、前后值。新值已包含契约缺省项，因此从预览复制摘要，避免客户端自行规范化不一致。该预览没有自动作出处置或批准。
+
+正式invoke操作revise_space_scope，parameters在上述字段之外提供reason及decisions。每项只保留key/disposition/previousSHA256/nextSHA256，添加reason和evidence{sourceId,quote}；quote逐字存在于新任务书，sourceId为新活动任务书来源。所有project_context、room、requirement、luminaire、standard、source、缺项、电气和已使用的功能/光度/反射/眩光/标准配置均需一项处置，含沿用项；缺项、重复、漏删、错误摘要和原句被拒绝。最多2500项，仍受专业输入各字段上限限制。引用和摘要一致仅证明记录完整，不能认证解释含义。
+
+成功另存原始修订日志、完整input新版本、来源链与spaceProgramChanges(mode=scope_revision)。原模型、质量、CAD、审核退出当前；新范围完整重算，原文件及原审核保留在历史。未满足的阻断条件可形成blocked输入版本，不能把操作成功视作设计通过。未知原生/质量操作期间不得修订。重复请求仅重放原收据；同UUID改参数拒绝。后续读取独立核对历史输入、原始日志、逐条件摘要/原句和共享包，不能只修改当前输入及state摘要掩盖变更。
+
+cad_design_project的status.section=space_program_changes返回当前绑定、修订链及条件值/摘要。当前完整改版仍不自动解释自然语言、匹配任意空间拆并身份、判断专业标准适用性、进行选择性原生编辑或签发设计。已知开发任务的删房/加房、用途与要求变化、两版原生图和失败边界见[本轮验证](space-scope-revision-validation.json)。

@@ -1,13 +1,15 @@
-"""Archive five owned development trials; never a product release."""
+"""Archive owned design trials; never a product release."""
 import hashlib, json, pathlib, re, shutil, sys, zipfile
-repo, runs, *folders = [pathlib.Path(p).resolve() for p in sys.argv[1:]]
-assert len(folders) == 5
+scope_revision = sys.argv[1:2] == ['--scope-revision']
+repo, runs, *folders = [pathlib.Path(p).resolve() for p in sys.argv[2:] if p] if scope_revision else [pathlib.Path(p).resolve() for p in sys.argv[1:]]
+assert (len(folders) >= 1 if scope_revision else len(folders) == 5)
+archive_name = '空间用途与清单修订-证据包' if scope_revision else '空间与照明联动-证据包'
 final = folders[-1]
-out = final/'空间与照明联动-证据包'
+out = final/archive_name
 attempt=1
 while out.exists():
     attempt+=1
-    out=final/f'空间与照明联动-证据包-attempt-{attempt}'
+    out=final/f'{archive_name}-attempt-{attempt}'
 out.mkdir()
 records, jobs, scenes, drawing_shas, windows = [], set(), set(), set(), []
 def canonical(value): return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':'))
@@ -81,13 +83,13 @@ for name in sorted(jobs):
 for directory in ['src','tests','scripts','skills/cadbridge-electrical/references']:
     for file in (repo/directory).rglob('*'):
         if file.is_file() and file.suffix in ['.mjs','.py','.md']: copy(file,pathlib.Path('source-snapshot')/file.relative_to(repo))
-for relative in ['README.md','mcp-server.mjs','package.json','package-lock.json','docs/engineering-tasks.md','docs/task-portability.md','docs/engineering-design-plan.md','docs/engineering-design-progress.json','docs/shared-space-coordination-validation.json']:
+for relative in ['README.md','mcp-server.mjs','package.json','package-lock.json','docs/engineering-tasks.md','docs/task-portability.md','docs/engineering-design-plan.md','docs/engineering-design-progress.json',('docs/space-scope-revision-validation.json' if scope_revision else 'docs/shared-space-coordination-validation.json')]:
     copy(repo/relative,pathlib.Path('source-snapshot')/relative)
-for name in ['shared-space-final-regression.log','shared-space-static.log']:
+for name in (['space-scope-regression.log','space-scope-final-regression.log','space-scope-capability-regression.log','space-scope-static.log','space-scope-static-final.log','space-scope-native.log','space-scope-native-final.log','space-scope-explicit-use-regression.log','space-scope-final-pdf.log','space-scope-focused.log','space-scope-focused-fixed.log'] if scope_revision else ['shared-space-final-regression.log','shared-space-static.log']):
     copy(repo.parent/name,pathlib.Path('checks')/name)
-manifest={'schemaVersion':1,'baseCommit':'aa38a19','productRelease':False,'professionalApproval':False,'knownDeveloperCases':True,'archiveAttempt':attempt,'ownedRuns':sorted(jobs),'files':sorted(records,key=lambda r:r['file'])}
+manifest={'schemaVersion':1,'baseCommit':'8dc96b7' if scope_revision else 'aa38a19','productRelease':False,'professionalApproval':False,'knownDeveloperCases':True,'archiveAttempt':attempt,'ownedRuns':sorted(jobs),'files':sorted(records,key=lambda r:r['file'])}
 (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-target=final/'空间与照明联动-证据包.zip'
+target=final/(archive_name+'.zip')
 with zipfile.ZipFile(target,'x',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
     for file in sorted(out.rglob('*')):
         if file.is_file(): z.write(file,file.relative_to(out).as_posix())

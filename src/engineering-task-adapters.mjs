@@ -14,7 +14,7 @@ function clean(parameters){if(reserved.some(k=>Object.hasOwn(parameters,k)))thro
 export function createEngineeringTaskAdapters({schemas,execute,runs}){
  const option=action=>schemas.engineering.options.find(s=>s.shape.action.value===action);
  const prepare=z.discriminatedUnion('action',['prepare','prepare_from_seed'].map(a=>option(a).omit({requestId:true})));
- const operations=['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver','revise','replace_brief','reconcile_brief','replace_architecture','adopt_spaces','review','recover_lighting','recover_initial_lighting'];
+ const operations=['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver','revise','replace_brief','reconcile_brief','replace_architecture','adopt_spaces','preview_space_scope','revise_space_scope','review','recover_lighting','recover_initial_lighting'];
  const lighting={...lightingInterruptionReconciliation({runs,execute}),dependencyNodes:context=>lightingDependencyNodes({runs,...context}),constraintSensitiveOperations:['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver'],id:'ordinary-lighting',version:1,complexDesign:true,limitations:'Bounded ordinary lighting only; existing evidence/quality gates unchanged. No full electrical-system or other discipline design.',prepareSchema:prepare,
   operationSchemas:Object.fromEntries(operations.map(a=>[a,option(a).omit({action:true,jobId:true,...('requestId'in option(a).shape?{requestId:true}:{})})])),
   validatePrepare(parameters){clean(parameters);return prepare.parse(parameters);},

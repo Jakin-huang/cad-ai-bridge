@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-21T10:25:12.302Z",
+  "afterCommit": "8dc96b7",
+  "status": "bounded-explicit-amendment-development-validation",
+  "sourceIncrementOnly": true,
+  "knownDeveloperCase": true,
+  "semanticUnderstandingAccepted": false,
+  "independentCustomerAcceptance": false,
+  "professionalApproval": false,
+  "implemented": [
+    "Complete room schedule/use/condition amendment against same current immutable producer and project",
+    "Non-mutating child preview computes exact condition dispositions and digests; generic invoke still records an audit receipt",
+    "New UTF-8 brief and architecture source chains, explicit literal quotes/reasons for every condition/source",
+    "Added/removed/revised/retained conditions include rooms, requirements, standards, products, electrical, optional photometry/reflection/glare, missing inputs and source registry",
+    "No assumed-status promotion or rewrite/removal of old source history",
+    "Atomic new input revision retires current model/quality/CAD/review, all selected rooms recomputed",
+    "Historical input and original amendment journal independently rechecked; old receipts never overwrite current state"
+  ],
+  "checks": {
+    "unitFull": {
+      "passed": 365,
+      "failed": 0,
+      "skipped": 0
+    },
+    "finalUnitWithMultiAmendment": "passed",
+    "actualMcpNativePipelineDistinct": 20,
+    "readOnlyDataDistinct": 7,
+    "readOnlyDataCalls": 20,
+    "finalSourceAudit": true,
+    "sourceEntities": 15,
+    "spaceAuditPerRevision": 209,
+    "lightingAuditPerRevision": 101,
+    "nativeReadbackChecksPerDrawing": 5,
+    "deliveryFileHashesVerified": 70,
+    "pdfPhysicalPages": 20,
+    "capabilityMetadataRegression": {
+      "passed": 31,
+      "failed": 0
+    },
+    "staticChecks": {
+      "passed": 3,
+      "publicFiles": 417
+    },
+    "pdfReview": {
+      "firstTrialPagesDirectlyInspected": 20,
+      "finalPagesCovered": 20,
+      "finalPagesDirectlyInspected": 2,
+      "finalIdenticalPreviouslyInspectedRenders": 18,
+      "coverage": "Full rendered PNG byte digests equal18 reviewed pages; two changed source-identity pages directly inspected again"
+    },
+    "finalFrozenNumericalConditionsUnchanged": true,
+    "developerExplanationFixRegression": {
+      "passed": 4,
+      "failed": 0
+    }
+  },
+  "amendment": {
+    "conditions": 62,
+    "dispositions": {
+      "added": 11,
+      "removed": 9,
+      "revised": 41,
+      "retained": 1
+    },
+    "added": [
+      "STUDIO"
+    ],
+    "removed": [
+      "TEAM"
+    ],
+    "usesChanged": [
+      {
+        "roomId": "OFFICE_A",
+        "from": "office",
+        "to": "teaching"
+      }
+    ],
+    "allSelectedRecomputed": 5
+  },
+  "case": {
+    "spaceRooms": [
+      10,
+      10
+    ],
+    "sharedSpaces": [
+      11,
+      11
+    ],
+    "spacesAdded": [
+      "STUDIO"
+    ],
+    "spacesRemoved": [
+      "TEAM"
+    ],
+    "explicitUseChanges": [
+      {
+        "id": "OFFICE_A",
+        "from": "office",
+        "to": "teaching"
+      }
+    ],
+    "targetLuxChanges": [
+      {
+        "id": "OFFICE_A",
+        "from": 300,
+        "to": 500
+      },
+      {
+        "id": "STUDIO",
+        "from": null,
+        "to": 500
+      }
+    ],
+    "selectedLightingSpaces": 5,
+    "omittedSpacesOutsideLightingScope": 6,
+    "lightingMethod": "Assumed lumen-flux/UF estimate",
+    "luminaires": [
+      41,
+      52
+    ],
+    "watts": [
+      984,
+      1248
+    ],
+    "circuits": [
+      5,
+      5
+    ],
+    "physicalIesReflectionUgrAccepted": false,
+    "standardsSupplied": 0,
+    "numericValuesAreDeveloperAssumptions": true
+  },
+  "knownTaskReadback": {
+    "passed": true,
+    "calls": 6,
+    "distinctTasks": 5,
+    "hashChecks": 67,
+    "newDesignOrCad": false,
+    "scope": "Known current/historical state compatibility only"
+  },
+  "retainedFailures": [
+    {
+      "stage": "focused-unit-first",
+      "passed": 6,
+      "failed": 1,
+      "reason": "Test helper brief used pre-schema JSON key order; preview produced equivalent normalized object with different literal key order. Fixed developer literal serialization, production quote requirement retained."
+    },
+    {
+      "stage": "harness-preflight",
+      "reason": "Duplicate local variable name found by syntax check and fixed before any actual task execution"
+    },
+    {
+      "stage": "actual-negative-cases",
+      "reason": "Missing source entry binding, incomplete condition ledger, rewritten historical authority and same-request changed payload explicitly rejected; original receipts retained"
+    },
+    {
+      "stage": "first-native-interpretation-review",
+      "pipelinePassed": true,
+      "visualPassed": true,
+      "semanticAccepted": false,
+      "reason": "Developer input changed structured use to teaching while an explanatory reason retained an office phrase. Original input/model/native/receipts retained; new trial corrects the explicit per-room explanation under identical predeclared numerical conditions."
+    }
+  ],
+  "limits": [
+    "Structured developer input and programmed test client, not AI semantic or independent customer validation",
+    "Only5 of11 spaces are selected for lighting; omitted spaces are outside scope",
+    "Exact room IDs and same producer/project required; no automatic room split/merge or semantic identity matching",
+    "Source authority, function meaning, standards applicability and actual project/site conditions remain unverified",
+    "A complete input/reason/quote ledger is required; malformed ledger rejected, professionally unknown or conflicting conditions remain blocked/pending under existing intake",
+    "No new full-scope IES/reflection/UGR acceptance; original whole-floor478.253lx versus500lx failure remains failed",
+    "Native plans remain bounded straight-corridor rectangular space family and schematic lighting routes, not construction documents",
+    "Twenty inspected pages certify this developer output readability only, not arbitrary layouts/fonts",
+    "External AI client, unseen projects, external users, clean machines and certified professional review remain pending"
+  ],
+  "release": {
+    "frozenProductAndDllHashUnchanged": true,
+    "previousCoordinationArchiveHashUnchanged": true,
+    "repackaged": false,
+    "staticChecks": {
+      "passed": 3,
+      "publicFiles": 417
+    },
+    "fullReleaseCheckPassed": false,
+    "historicalFullGate": "Historical acceptance reports/frozen DLL mismatch remains unchanged"
+  },
+  "stages": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "nextPriorities": [
+    "Actual AI client task interpretation and complete scope revision without prefilled correct professional parameters",
+    "Broader layouts and complete physical lighting quality at original thresholds",
+    "Independent real projects, external users/clean machines and professional acceptance"
+  ],
+  "currentTrial": "explicit-use-final-passed",
+  "retainedTrials": [
+    {
+      "id": "first-native",
+      "pipelinePassed": true,
+      "visualPassed": true,
+      "developerExplanationGap": true,
+      "semanticAcceptance": false,
+      "filesUnchanged": true
+    },
+    {
+      "id": "explicit-use-final",
+      "pipelinePassed": true,
+      "visualPassed": true,
+      "developerExplanationManuallyChecked": true,
+      "semanticAcceptance": false,
+      "professionalApproval": false
+    }
+  ],
+  "privateEvidenceBundle": {
+    "fileName": "空间用途与清单修订-证据包.zip",
+    "sha256": "23039a6b72cb7ba7c78a057baf041e124170e7df09bb757c9f74081f2ce12cce",
+    "manifestEntries": 1270,
+    "zipEntries": 1271,
+    "ownedRuns": 46,
+    "crcAndAllHashesVerified": true,
+    "productRelease": false,
+    "retainedTrials": 2
+  },
+  "archiveSnapshotBeforeBundleMetadata": true
+}

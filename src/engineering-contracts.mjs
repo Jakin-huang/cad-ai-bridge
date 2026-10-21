@@ -1,5 +1,6 @@
 import {lightingSpaceProgramSchema,lightingSpaceChangesSchema,adoptSpacesFields,lightingSpaceProgramIssues} from './lighting-space-program.mjs';
 import {z} from 'zod';
+import {spaceScopeDecisionsSchema} from './space-scope-decisions.mjs';
 import {architectureInspectionSchema,architecturalPackRef} from './architectural-contracts.mjs';
 import {inspectSpacePolygon,spaceInteriorsOverlap} from './architectural-spaces.mjs';
 import {functionalIntakeSchema,functionalIntakeIssues} from './engineering-functional-intake.mjs';
@@ -68,10 +69,12 @@ export const engineeringSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('prepare'),requestId:z.uuid(),project:engineeringInputSchema}),
  z.strictObject({action:z.literal('prepare_from_seed'),requestId:z.uuid(),seedFile:z.string().min(1).max(2000),expectedSeedSHA256:digest,requirements:z.array(requirement).min(1).max(1000),architecturalPack:architecturalPackRef.optional(),functionalIntake:functionalIntakeSchema.optional()}),
  z.strictObject({action:z.literal('adopt_spaces'),jobId,requestId:z.uuid(),...adoptSpacesFields}),
+ z.strictObject({action:z.literal('preview_space_scope'),jobId,expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,project:engineeringInputSchema}),
+ z.strictObject({action:z.literal('revise_space_scope'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,project:engineeringInputSchema,decisions:spaceScopeDecisionsSchema,reason:z.string().min(20).max(1000)}),
  z.strictObject({action:z.literal('replace_brief'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,briefFile:z.string().min(1).max(2000),expectedFileSHA256:digest,sourceId:id,supersededSourceId:id,description:z.string().min(20).max(1000)}),
  z.strictObject({action:z.literal('replace_architecture'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,architecturalPack:architecturalPackRef,supersededSourceId:id,description:z.string().min(20).max(1000)}),
  z.strictObject({action:z.literal('reconcile_brief'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,requirements:z.array(requirement).max(1000),functionalIntake:functionalIntakeSchema.optional(),carryForwards:z.array(carryForwardSchema).max(300).default([])}),
- z.strictObject({action:z.literal('status'),jobId,section:z.enum(['summary','input','model','checks','delivery','review','history','lighting_quality','lighting_optimization','space_uses','functional_intake','source_changes','architecture_changes']).default('summary').describe('Exactly one section string. Use status with only action, jobId and section. No requestId, spaces, sections, include or filters; blocked is terminal input feedback, not an asynchronous wait.')}),
+ z.strictObject({action:z.literal('status'),jobId,section:z.enum(['summary','input','model','checks','delivery','review','history','lighting_quality','lighting_optimization','space_uses','functional_intake','source_changes','architecture_changes','space_program_changes']).default('summary').describe('Exactly one section string. Use status with only action, jobId and section. No requestId, spaces, sections, include or filters; blocked is terminal input feedback, not an asynchronous wait.')}),
  z.strictObject({action:z.literal('design'),jobId,expectedRevision:z.number().int().nonnegative()}),
  z.strictObject({action:z.literal('deliver'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
  z.strictObject({action:z.literal('revise'),jobId,expectedRevision:z.number().int().nonnegative(),changes:z.array(z.strictObject({requirementId:id,value:requirementValue,reason:z.string().min(1).max(1000),sourceId:id})).min(1).max(100)}),

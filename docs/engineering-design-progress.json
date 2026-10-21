@@ -416,5 +416,53 @@
       "archiveAttempt": 2,
       "firstAttempt": "Relative repository parent path resolution failed before ZIP creation; partial folder retained, fixed by resolving arguments to absolute paths"
     }
+  },
+  "spaceScopeRevisionIncrement": {
+    "afterCommit": "8dc96b7",
+    "validation": "docs/space-scope-revision-validation.json",
+    "explicitRoomAddDeleteAndUseChange": true,
+    "conditionAndSourceDecisions": 62,
+    "allSelectedScopeRecomputed": 5,
+    "readOnlyPreviewChildStateUnchanged": true,
+    "oldHistoryAndOriginalJournalBound": true,
+    "actualNativeChecks": 20,
+    "readOnlyDataChecks": 7,
+    "knownTaskReadOnlyRegression": {
+      "calls": 6,
+      "tasks": 5,
+      "hashChecks": 67,
+      "scope": "known persisted state only"
+    },
+    "nativeDrawings": 4,
+    "unitTestsPassed": 365,
+    "finalUnitWithMultiAmendment": "passed",
+    "professionalApproval": false,
+    "semanticAcceptance": false,
+    "independentCustomerAcceptance": false,
+    "physicalLightingQualityAccepted": false,
+    "releaseRepackaged": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete",
+    "firstNativeInterpretationGapRetained": true,
+    "pdfReview": {
+      "firstTrialPagesDirectlyInspected": 20,
+      "finalPagesCovered": 20,
+      "finalPagesDirectlyInspected": 2,
+      "finalIdenticalPreviouslyInspectedRenders": 18,
+      "coverage": "Full rendered PNG byte digests equal18 reviewed pages; two changed source-identity pages directly inspected again"
+    },
+    "finalFrozenNumericalConditionsUnchanged": true,
+    "finalTrial": "explicit-use-final",
+    "privateEvidenceBundle": {
+      "fileName": "空间用途与清单修订-证据包.zip",
+      "sha256": "23039a6b72cb7ba7c78a057baf041e124170e7df09bb757c9f74081f2ce12cce",
+      "manifestEntries": 1270,
+      "zipEntries": 1271,
+      "ownedRuns": 46,
+      "crcAndAllHashesVerified": true,
+      "productRelease": false,
+      "retainedTrials": 2
+    }
   }
 }
