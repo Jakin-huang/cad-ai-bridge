@@ -142,3 +142,9 @@ cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、
 本机真实客户端最终完成一次5空间修订及新原生图；冲突与未知用例按要求阻断。未知用例首次引文不符被拒后自修正，零错误可用性未通过，原始结果之外有独立深层工具错误审计。数据为已知合成输入，不能证明任意医院或其他真实工程理解，也不抵扣整层光度失败、独立项目和专业验收。见[验证与边界](scope-client-validation.md)。
 
 后续数值审阅增量：draft/summary返回requirementsReview计数；read的requirements节列出每个房间/规则的实际values、effective状态、来源原句，以及explicit_override/carried_forward/unresolved。offset/limit与240KiB预算共同限定每页，必须沿实际nextOffset取齐；单项过大明确拒绝，不跳过。每个read节都返回base中的原/当前revision及inputSHA和staleBase；历史提案可读，重新应用仍受原版本门槛约束。读取本身不发布输入、模型或原生图；计数和引文不证明客户任务书已全部解释。真实MCP读取及当前限制见[验证](proposal-readback-validation.json)，真实AI客户端使用新视图尚未验收。
+
+## 共用审核 PDF
+
+两个设计包原生交付后均可 invoke review_pdfs。parameters 仅传 expectedModelSHA256 和 expectedSourceSHA256，分别复制 status.current.modelSHA256 与 pdfReviewSourceSHA256；外层另用唯一 requestId 及原任务身份。另存 PDF 和 manifest，不重做 CAD。当前 files 优先审核 PDF，pdf_source 是原始 CAD 导出，delivery.files 保持原生交付记录；均按已登记摘要下载。任务中心支持两包状态读取和审核 PDF 准备。
+
+相同源复用当前包；输入/模型/修订变化后旧包仅历史。篡改、签名/加密输入、非单张或纸张不符、现有异物均拒绝。产品 manifest 的 independentStrictReaderAccepted/visualAccepted/professionalApproval 不由生成器自动提升；本机已知 11 张实际导出的独立格式、渲染、重放和下载证据见[验证](pdf-review-workflow-validation.json)。其他阅读器矩阵与通用中断恢复仍待验收。

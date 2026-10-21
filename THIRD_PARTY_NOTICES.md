@@ -4,6 +4,7 @@ CAD AI Bridge source is MIT licensed. The following runtime libraries retain the
 
 - `@modelcontextprotocol/server` 2.3.1 and `@modelcontextprotocol/client` 2.3.1: Apache-2.0. [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk).
 - `zod` 4.4.3: MIT. [Zod](https://github.com/colinhacks/zod).
+- `pdf-lib` 1.17.1: MIT. [Upstream license](https://github.com/Hopding/pdf-lib/blob/master/LICENSE.md). Used for separate CAD review PDF serialization; originals are retained. Its locked dependencies `@pdf-lib/standard-fonts` 1.0.0, `@pdf-lib/upng` 1.0.1, `pako` 1.0.11 and `tslib` 1.14.1 retain their package license files. The frozen v2.0 preview does not include this source increment.
 
 The lockfile identifies transitive versions and their license fields. Redistributed dependency directories must retain their LICENSE and NOTICE files. Release packaging records the exact included files and checksums.
 

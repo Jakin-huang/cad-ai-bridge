@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "afterCommit": "d856c9f6de9019b0ce685cedd825cecad89ac918",
+  "scope": "Shared non-native review PDF preparation for two existing known synthetic design packs; hospital remains an isolated example, not a product branch",
+  "status": "implemented_and_known_local_protocol_format_download_verified",
+  "product": {
+    "operation": "review_pdfs",
+    "packs": [
+      "ordinary-lighting",
+      "office-space-planning"
+    ],
+    "expectedIdentity": [
+      "expectedModelSHA256",
+      "expectedSourceSHA256=status.pdfReviewSourceSHA256"
+    ],
+    "rawDeliveryPreserved": true,
+    "canonicalFilesPreferred": true,
+    "rawPdfKind": "pdf_source",
+    "sourceBoundManifest": true,
+    "sameSourceReuse": true,
+    "exactRequestFilePublicationReentrant": true,
+    "genericLostReplyRecoveryAccepted": false,
+    "currentPacketInvalidatedByInputModelRevisionChange": true,
+    "runtimeChecks": [
+      "payload object graph and encoded stream hashes",
+      "page geometry and declared physical paper size",
+      "output reparse and manifest/output/source hashes",
+      "no encrypted or signed input normalization"
+    ],
+    "independentStrictVisualRuntimeFlagsRemainFalse": true
+  },
+  "localAcceptance": {
+    "actualMcpProtocol": true,
+    "actualAiClientUsed": false,
+    "existingDeliveries": 2,
+    "reviewPdfs": 11,
+    "originalRawStrictFailures": 11,
+    "publishedStrictReaderPasses": 11,
+    "popplerPixelEqualityDpi": 120,
+    "pixelIdenticalSheets": 11,
+    "currentCanonicalRendersVisuallyInspected": 11,
+    "authenticatedDownloadsVerified": 11,
+    "protectedInputModelRawDeliveryArchiveFilesUnchanged": 49,
+    "freshProcessReplay": true,
+    "mockCrossPackSwitch": "lighting → space PDF preparation → lighting; explicit shared-space binding remains current; native effect counter unchanged",
+    "browserReadback": "Existing delivered lighting and space tasks display review PDFs first, raw CAD PDF labels and pending-human-review notice; final A→B→A readback checked separately",
+    "sourceModelsRecomputed": false,
+    "newNativeCadExecuted": false,
+    "hospitalDataProcessed": false,
+    "externalModelCalled": false
+  },
+  "failuresRetained": [
+    "First primitive test had a syntax error in its assertion callback before normalization; corrected and rerun",
+    "Sandbox process-spawn EPERM; explicit local test escalation then used",
+    "First cross-pack fixture lacked A2 paper; mock space export failed",
+    "Second cross-pack fixture lacked lighting managed-device snapshot; mock lighting delivery failed",
+    "Fixture corrections preserve original test values and do not count as native CAD acceptance"
+  ],
+  "fullRegression": {
+    "passed": 401,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 143289.8147,
+    "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+    "logSHA256": "3ab6f5069d45fbf218c7f39420fd320a87307a08557c3ea6b1b8ea2566c2add8"
+  },
+  "evidence": {
+    "case-manifest.json": "1d3f3f2999c67a9602693e928dcda488b9cf7e297e492b7baf91f1bb80824ad3",
+    "normalization-ready.json": "a1e81e5015293b3ad57eebfc1443321956074f9952e6f50c97ddc4ca4ff4bcb4",
+    "independent-pdf-check.json": "e879623550fe5072045056b050681d0ab383d89d4a9ad9bb355a7bb9fed14a68",
+    "workflow-manifest.json": "7c89d9e443071886268ae9a3703c6f4df6cd3e0924ecbbfa0fa4dcd63f8d9958",
+    "workflow-ready.json": "59d0b044f7d4c30746ee32acd2328adf48790b423c8042d14a6e39a04fb44e9c",
+    "published-independent-check.json": "05f91cb4dab30b36dc1e20ddb32ba001623874d6e56d5ab0182e886c1abf4641",
+    "packs-attempt-1.log": "3a5c925281f23a4a6b0f69fa4def445caa6c9e5c5523e70b6d5e566ccbad5edf",
+    "packs-attempt-2.log": "d2d3859d59050e5cab5a019960970aac2d116bcfca9c2cfd316063f3a0b826a5",
+    "packs-attempt-3.log": "678d51f90665db80eda5871608f41f7c1d82570e30d5ff3d548ae4feec0d82a4",
+    "packs-final.log": "ed1f1b34c2b4731e750709ee74c5f51e3055949d49948f38a8aa11c33a4832e4"
+  },
+  "remainingGates": [
+    "Independent previously unseen real customer briefs and project drawings",
+    "Actual AI-client use of effective requirement readback and reliable multi-document interpretation",
+    "Within-room preflight status latency (previously observed21.373s)",
+    "General split/merge/multiple-use identity and broader layout families",
+    "Source/standard applicability and installation/wiring/protection coordination",
+    "Broader external PDF readers and arbitrary input producer matrix",
+    "External users, clean machines, authenticated professional review"
+  ],
+  "professionalApproval": false,
+  "independentCustomerAcceptance": false,
+  "releaseRepackaged": false,
+  "frozenReleaseGatePassed": false,
+  "milestones": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  }
+}

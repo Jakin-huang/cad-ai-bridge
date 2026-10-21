@@ -20,8 +20,9 @@
     "package:preview": "node scripts/package-release.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/server": "2.3.1",
     "@modelcontextprotocol/client": "2.3.1",
+    "@modelcontextprotocol/server": "2.3.1",
+    "pdf-lib": "1.17.1",
     "zod": "4.4.3"
   },
   "engines": {

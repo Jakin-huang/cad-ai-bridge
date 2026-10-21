@@ -1,3 +1,4 @@
+import {currentPdfReview} from './pdf-review-package.mjs';
 import {planningDataSections,readPlanningData} from './space-planning-data.mjs';
 import path from 'node:path';
 import {createSpacePlanningManager} from './space-planning-projects.mjs';
@@ -18,6 +19,7 @@ export function createSpacePlanningAdapter(context){
   add('design:model','design','Current space-planning model',{revision:s.revision,inputSHA256:s.inputSHA256,modelSHA256:s.modelSHA256},nodes.map(n=>n.id),'declared',!!model);
   add('check:model','check','Independent geometry, program and furniture checks',s.audit??null,['design:model'],'unverified',!!s.audit);
   for(const f of s.delivery?.files??[])add('artifact:'+path.basename(f.file),'artifact',path.basename(f.file),{kind:f.kind,sha256:f.sha256},['design:model','check:model'],'source_bound',true);
+  for(const f of currentPdfReview(s)?.files??[])add('artifact:pdf-review:'+path.basename(f.file),'artifact','Review '+path.basename(f.file),{kind:f.kind,sha256:f.sha256,sourceSHA256:s.pdfReview.sourceSHA256},['design:model','check:model',...nodes.filter(n=>n.kind==='artifact').map(n=>n.id)],'source_bound',true);
   add('review:current','review','Current human-review record',{records:s.review,professionalApproval:false},nodes.filter(n=>['design','check','artifact'].includes(n.kind)).map(n=>n.id),'unverified',!!s.review?.length);return nodes;
  }
  };

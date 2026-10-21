@@ -133,6 +133,12 @@ source_changes.contract会返回当前reconcile_brief精简字段契约、要求
 
 ## 直接调用与通用任务包装的请求标识
 
+### 原生交付后的审核 PDF（未发布源码）
+
+ordinary-lighting 和 office-space-planning 共用 `review_pdfs`，须先完成原生 `deliver`。先 `status` 读取当前 `modelSHA256` 和 `pdfReviewSourceSHA256`；通用任务以 `invoke.operation="review_pdfs"` 调用，parameters 精确为 `{expectedModelSHA256:当前摘要,expectedSourceSHA256:pdfReviewSourceSHA256}`，外层另带新 requestId 和任务身份。直接照明调用则传 action/jobId/requestId 及上述两个摘要。不要自行计算、猜测或沿用旧摘要。
+
+该步骤仅另存格式规范化 PDF 和逐张来源清单，不重新启动 CAD、不改变设计、原 DWG 或原始 PDF。当前返回的 `files` 优先列审核 PDF，`kind="pdf_source"` 保留原始 CAD 导出；`delivery.files` 仍为原生交付记录。相同来源复用现有包，篡改文件被拒绝；模型、输入或修订变化后旧包退出当前。查看 manifest 中原始/新文件摘要及 `reviewStatus`。包内载荷/纸张检查成功不等于所有外部阅读器、视觉或工程专业验收；相应标记保持 false，专业状态始终待人工审核。通用任务丢失回复时仍须遵守原收据状态，不能据文件级可重入就宣称通用中断恢复。
+
 直接cad_design_project调用：preview_space_scope只传action/jobId/expectedRevision/expectedInputSHA256/project，不传requestId；revise_space_scope必须另传新的requestId、reason和decisions。直接design只传action/jobId/expectedRevision；直接status只传action/jobId/section。不要发送空项目试探契约，先从旧输入和新任务书构造完整proposal。
 
 cad_engineering_task的invoke是另一层包装：外层始终带自己的requestId及任务身份，parameters里不带action/jobId/requestId。不能把外层字段移进直接调用，或把直接调用的字段原样塞进parameters。

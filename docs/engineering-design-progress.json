@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "baseline": "v2.0.0-preview.1",
   "target": "complex-engineering-design-to-human-review",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "pilot": "hospital-ordinary-lighting-retrospective-reconstruction",
   "stages": [
     {
@@ -156,7 +156,7 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
+    "P0 Preserve cross-project/task quality and A→B→A isolation on every increment; hospital remains one isolated example, independent unseen projects still required",
     "P0 Actual AI-client requirement-to-proposal coverage using the newly inspectable values; retain wrong first drafts and independently test wording, omissions, units and conflicting documents",
     "P0 Bound and yield within-room preflight work; observed status latency21.373s remains a practical gap",
     "P1 Broader source-bound layouts, source/standard applicability, split/merge/multiple-use coordination and installation/wiring/protection detail",
@@ -209,7 +209,7 @@
     "arbitraryRoomScheduleOrConditionEdits": false,
     "hospitalAcceptance": false
   },
-  "pilotRole": "Hospital is one historical example; current general capability development also uses independent office and analysis tasks",
+  "pilotRole": "Isolated hospital retrospective example and evaluator-only final reference; not the product scope or automatic routing key",
   "productDirection": {
     "currentComplexDesignScope": "bounded_ordinary_lighting_and_office_space_planning",
     "genericCoreImplemented": false,
@@ -737,11 +737,36 @@
     "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "currentFullRegression": {
-    "passed": 389,
+    "passed": 401,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 127952.3224,
+    "durationMs": 143289.8147,
     "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
-    "logSHA256": "85e8ed3bbd9db7195c7e4b1c80aedecfe8f7f079bb71e91482455e89ef22f762"
+    "logSHA256": "3ab6f5069d45fbf218c7f39420fd320a87307a08557c3ea6b1b8ea2566c2add8"
+  },
+  "previousPrioritiesBeforePdfReviewClosure": [
+    "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
+    "P0 Actual AI-client requirement-to-proposal coverage using the newly inspectable values; retain wrong first drafts and independently test wording, omissions, units and conflicting documents",
+    "P0 Bound and yield within-room preflight work; observed status latency21.373s remains a practical gap",
+    "P1 Broader source-bound layouts, source/standard applicability, split/merge/multiple-use coordination and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review, accepted separately"
+  ],
+  "pdfReviewIncrement": {
+    "validation": "docs/pdf-review-workflow-validation.json",
+    "twoDesignPacks": true,
+    "knownPublishedPdfsStrictAndPixelVerified": 11,
+    "actualMcpProtocol": true,
+    "actualAiClient": false,
+    "professionalApproval": false,
+    "independentCustomerAcceptance": false,
+    "releaseRepackaged": false,
+    "fullRegression": {
+      "passed": 401,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 143289.8147,
+      "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+      "logSHA256": "3ab6f5069d45fbf218c7f39420fd320a87307a08557c3ea6b1b8ea2566c2add8"
+    }
   }
 }

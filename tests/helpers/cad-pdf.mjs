@@ -1,0 +1,7 @@
+// Valid small classic-xref static sheet, including the native duplicate-key case.
+export function cadPdfFixture({paper='A3',duplicatePageMode=true,text='Synthetic CAD sheet',signature=false}={}){
+ const size={A0:[1189,841],A1:[841,594],A2:[594,420],A3:[420,297],A4:[297,210]}[paper],points=size.map(v=>v*72/25.4),content='BT /F1 12 Tf 25 30 Td ('+text.replaceAll('\\','\\\\').replaceAll('(','\\(').replaceAll(')','\\)')+') Tj ET\n';
+ const objects=[`<< /Type /Catalog /Pages 2 0 R ${duplicatePageMode?'/PageMode /UseNone ':''}/PageMode /UseOC ${signature?'/Perms << /DocMDP 6 0 R >>':''} >>`,'<< /Type /Pages /Kids [3 0 R] /Count 1 >>',`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${points.join(' ')}] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>`,'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',`<< /Length ${Buffer.byteLength(content)} >>\nstream\n${content}endstream`];
+ if(signature)objects.push('<< /Type /Sig /Filter /Adobe.PPKLite /ByteRange [0 1 2 3] /Contents <0000> >>');
+ let body='%PDF-1.7\n',offsets=[0];for(const [index,object]of objects.entries()){offsets.push(Buffer.byteLength(body));body+=(index+1)+' 0 obj\n'+object+'\nendobj\n';}const start=Buffer.byteLength(body);body+='xref\n0 '+(objects.length+1)+'\n0000000000 65535 f \n'+offsets.slice(1).map(n=>String(n).padStart(10,'0')+' 00000 n \n').join('')+'trailer\n<< /Size '+(objects.length+1)+' /Root 1 0 R >>\nstartxref\n'+start+'\n%%EOF\n';return Buffer.from(body);
+}

@@ -1,3 +1,4 @@
+import {currentPdfReview} from './pdf-review-package.mjs';
 import {verifyLightingSpaceProgram} from './lighting-space-program.mjs';
 // Discipline adapters map their actual persisted state to a shared DAG.
 import path from 'node:path';
@@ -22,6 +23,7 @@ export async function lightingDependencyNodes({runs,binding}){
  nodes.push(node('check:model','check','Independent model subset',{available:!!state.checks,passed:state.checks?.ok,checks:state.checks?.checks.map(c=>({id:c.id,ok:c.ok})),pending:state.checks?.pending},['design:model'],'unverified'));nodes.at(-1).available=!!state.checks;
  if(state.lightingQuality)nodes.push(node('check:lighting-quality','check','Bounded lighting quality',{modelSHA256:state.lightingQuality.modelSHA256,reportSHA256:state.lightingQuality.reportSHA256,passed:state.lightingQuality.passed,status:state.lightingQuality.status},['design:model'],'source_bound'));
  for(const f of state.delivery?.files??state.lightingQuality?.files??[])nodes.push(node('artifact:'+f.kind+':'+path.basename(f.file),'artifact',path.basename(f.file),{kind:f.kind,sha256:f.sha256},['design:model','check:model',...(state.lightingQuality?['check:lighting-quality']:[])],'source_bound'));
+ for(const f of currentPdfReview(state)?.files??[])nodes.push(node('artifact:pdf-review:'+path.basename(f.file),'artifact','Review '+path.basename(f.file),{kind:f.kind,sha256:f.sha256,sourceSHA256:state.pdfReview.sourceSHA256},['design:model','check:model',...nodes.filter(n=>n.kind==='artifact').map(n=>n.id)],'source_bound'));
  nodes.push(node('review:current','review','Current review record',{records:state.review,status:'awaiting_human_review',professionalApproval:false},nodes.filter(n=>['design','check','artifact'].includes(n.kind)).map(n=>n.id),'unverified'));nodes.at(-1).available=!!state.review?.length;return nodes;
 }
 export function analysisDependencyNodes({binding,manifest,current}){

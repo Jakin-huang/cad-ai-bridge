@@ -78,6 +78,7 @@ export const engineeringSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('status'),jobId,section:z.enum(['summary','input','model','checks','delivery','review','history','lighting_quality','lighting_optimization','space_uses','functional_intake','source_changes','architecture_changes','space_program_changes']).default('summary').describe('Exactly one section string. Use status with only action, jobId and section. No requestId, spaces, sections, include or filters; blocked is terminal input feedback, not an asynchronous wait.')}),
  z.strictObject({action:z.literal('design'),jobId,expectedRevision:z.number().int().nonnegative()}),
  z.strictObject({action:z.literal('deliver'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
+ z.strictObject({action:z.literal('review_pdfs'),jobId,requestId:z.uuid(),expectedModelSHA256:digest,expectedSourceSHA256:digest}),
  z.strictObject({action:z.literal('revise'),jobId,expectedRevision:z.number().int().nonnegative(),changes:z.array(z.strictObject({requirementId:id,value:requirementValue,reason:z.string().min(1).max(1000),sourceId:id})).min(1).max(100)}),
  z.strictObject({action:z.literal('review'),jobId,expectedModelSHA256:digest,origin:z.enum(['simulation','unverified_external_record']),reviewer:z.string().min(1).max(128),comments:z.array(z.strictObject({id,target:z.string().min(1).max(128),decision:z.enum(['comment','revise','claimed_accepted']),text:z.string().min(1).max(2000)})).min(1).max(100)})
 ]);
