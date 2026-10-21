@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "afterCommit": "1af5527",
+  "status": "known_replay_response_and_exact_numeric_equivalence_passed_general_acceptance_outstanding",
+  "product": "CAD AI Bridge",
+  "hospitalPolicy": "Isolated evaluator only, no task selection or thresholds depend on a hospital name",
+  "scope": "One known synthetic twelve-office-space frozen model, ranking replay and real authenticated task-center HTTP requests from a separate process. Not a new full physical solve or independent customer project.",
+  "implementation": [
+    "One pure ranking worker per bridge process, serialized scheduling, waiting/active deadlines",
+    "Progress is acknowledged only after host persistence; errors/cancellation do not publish a model",
+    "Shared generator work for source geometry, identities, per-candidate conditions and direct points; synchronous order and arithmetic preserved",
+    "Asynchronous model/baseline drift rejected",
+    "UGR distribution symmetry/upward-emission checks reused only within one build call; every lamp geometry/opening/observer source term remains checked; no cross-call stale cache",
+    "Localized within-room progress counts in task center"
+  ],
+  "fixedExitGates": {
+    "maximumStatusMs": 1000,
+    "p95StatusMs": 250,
+    "maximumElapsedRatio": 1.2
+  },
+  "finalKnownReplay": {
+    "passed": true,
+    "checks": 17,
+    "rankingSHA256": "accff9356cdfc95e3fd79cddeb8db94e56ec82eb88f68828c228a97ad87a2191",
+    "modelSHA256": "89d2a3032428eadf750e63c49b364ad216e95a4d9cc3b55e7aba3b5637b382b1",
+    "inputSHA256": "f9df0f7d2095034e04609a12f3bf622cd36c6b50693ff9a18b3b5e72b93653d9",
+    "elapsedRatio": 0.13223258639791288,
+    "status": {
+      "samples": 376,
+      "successful": 376,
+      "failed": 0,
+      "maximumMs": 98.5189,
+      "p95Ms": 23.224200000000565,
+      "allFrozenIdentitiesVerified": true,
+      "transportErrors": []
+    },
+    "progress": {
+      "events": 74,
+      "inRoomEvents": 62,
+      "roomStarts": 12
+    },
+    "totalElapsedMs": 18809,
+    "requestPattern": "Closed-loop independent probe: await response then wait25ms; not a guaranteed fixed40QPS load",
+    "auditSHA256": "a208a0bde8a5aa722ca2feb042eff1d09b865ae480ab260629cd0af26f648ae7"
+  },
+  "diagnostics": [
+    {
+      "id": "preflight-response-20261022-before",
+      "reportSHA256": "e5102988a66895ba4eeec78f45e7c122f5f521ef5aaac5e1a66c1acedc03e663",
+      "computationRecordedPassed": false,
+      "rankingElapsedMs": 140243,
+      "totalElapsedMs": 140656,
+      "error": {
+        "retained": true,
+        "summary": "Initial status probe failed before canonical ranking was saved"
+      },
+      "knownResponseGatePassed": false
+    },
+    {
+      "id": "preflight-response-20261022-before-complete",
+      "reportSHA256": "04275724e5c1cda3fbe1acf1c0d4d2da534ae0882f4d274e27a5166dea6d6487",
+      "computationRecordedPassed": true,
+      "rankingSHA256": "accff9356cdfc95e3fd79cddeb8db94e56ec82eb88f68828c228a97ad87a2191",
+      "rankingElapsedMs": 139905,
+      "totalElapsedMs": 140260,
+      "status": {
+        "samples": 3,
+        "successful": 2,
+        "failed": 1,
+        "maximumMs": 122368.79990000001,
+        "p95Ms": 122368.79990000001,
+        "allFrozenIdentitiesVerified": false,
+        "transportErrors": [
+          {
+            "name": "TypeError",
+            "message": "fetch failed",
+            "cause": {
+              "code": "ECONNRESET",
+              "message": "read ECONNRESET"
+            }
+          }
+        ]
+      },
+      "progress": {
+        "events": 12,
+        "inRoomEvents": 0,
+        "roomStarts": 12
+      },
+      "knownResponseGatePassed": false
+    },
+    {
+      "id": "preflight-response-20261022-after",
+      "reportSHA256": "78a20b5642af31cd0ac30a910eb1961e54a81b8e8796fe71d15ab0a9713c325c",
+      "computationRecordedPassed": true,
+      "rankingSHA256": "accff9356cdfc95e3fd79cddeb8db94e56ec82eb88f68828c228a97ad87a2191",
+      "rankingElapsedMs": 142147,
+      "totalElapsedMs": 142454,
+      "status": {
+        "samples": 38,
+        "successful": 38,
+        "failed": 0,
+        "maximumMs": 5035.025500000003,
+        "p95Ms": 4843.419199999998,
+        "allFrozenIdentitiesVerified": true,
+        "transportErrors": []
+      },
+      "progress": {
+        "events": 498,
+        "inRoomEvents": 486,
+        "roomStarts": 12
+      },
+      "knownResponseGatePassed": false
+    },
+    {
+      "id": "preflight-response-20261022-worker",
+      "reportSHA256": "c2222febfbf16720a345ef6982052f13230602e5856dc6d17d8091faaa6ba450",
+      "computationRecordedPassed": true,
+      "rankingSHA256": "accff9356cdfc95e3fd79cddeb8db94e56ec82eb88f68828c228a97ad87a2191",
+      "rankingElapsedMs": 173817,
+      "totalElapsedMs": 174139,
+      "status": {
+        "samples": 3612,
+        "successful": 3612,
+        "failed": 0,
+        "maximumMs": 91.90979999999999,
+        "p95Ms": 22.551500000001397,
+        "allFrozenIdentitiesVerified": true,
+        "transportErrors": []
+      },
+      "progress": {
+        "events": 588,
+        "inRoomEvents": 576,
+        "roomStarts": 12
+      },
+      "knownResponseGatePassed": true
+    },
+    {
+      "id": "preflight-response-20261022-worker-local-cache",
+      "reportSHA256": "a9c93210d1a9642598ec5b97f1778fa20e388568d263e9af57ace5c78c647f04",
+      "computationRecordedPassed": true,
+      "rankingSHA256": "accff9356cdfc95e3fd79cddeb8db94e56ec82eb88f68828c228a97ad87a2191",
+      "rankingElapsedMs": 18535,
+      "totalElapsedMs": 18869,
+      "status": {
+        "samples": 379,
+        "successful": 379,
+        "failed": 0,
+        "maximumMs": 100.28880000000001,
+        "p95Ms": 23.269999999999982,
+        "allFrozenIdentitiesVerified": true,
+        "transportErrors": []
+      },
+      "progress": {
+        "events": 74,
+        "inRoomEvents": 62,
+        "roomStarts": 12
+      },
+      "knownResponseGatePassed": true
+    },
+    {
+      "id": "preflight-response-20261022-final",
+      "reportSHA256": "ecef3c62109385c960da2d32ca01d16e2699fca6f56e9e75cec1e9d8b5e565c4",
+      "computationRecordedPassed": true,
+      "rankingSHA256": "accff9356cdfc95e3fd79cddeb8db94e56ec82eb88f68828c228a97ad87a2191",
+      "rankingElapsedMs": 18500,
+      "totalElapsedMs": 18809,
+      "status": {
+        "samples": 376,
+        "successful": 376,
+        "failed": 0,
+        "maximumMs": 98.5189,
+        "p95Ms": 23.224200000000565,
+        "allFrozenIdentitiesVerified": true,
+        "transportErrors": []
+      },
+      "progress": {
+        "events": 74,
+        "inRoomEvents": 62,
+        "roomStarts": 12
+      },
+      "knownResponseGatePassed": true
+    }
+  ],
+  "failedOverheadAudit": {
+    "retained": true,
+    "elapsedRatio": 1.2423930524284337,
+    "ok": false,
+    "reportSHA256": "6352c5c92b6375afcfb6702d2d26da2675d002d9cf3d02d8d55d854ab95cc949",
+    "explanation": "Initial worker response/numerical checks passed but exceeded the predeclared20% runtime-overhead gate; subsequent per-call source check reuse changed neither evidence nor thresholds."
+  },
+  "harnessLimit": {
+    "initialFailure": "First old-code probe reported fetch failed and stopped before saving canonical plans. Original failed report retained. Its initial harness source was not separately snapshotted; that run is not promoted as a numerical pass.",
+    "improvement": "Subsequent identical harness records detailed transport failures without losing completed ranking data; all completed variants reproduce the same hash."
+  },
+  "completeUgrReferenceReplay": {
+    "ok": true,
+    "rooms": 12,
+    "lamps": 141,
+    "allSceneGeometrySymmetryAndObserverTermsLiteralJSONEqual": true,
+    "reportSHA256": "00577df1cc8513ef87e463bbd813155c9bfb3154e1463a7ced68c5307377d8e7",
+    "newPhysicalAssessment": false
+  },
+  "regression": {
+    "full": {
+      "passed": 442,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 141907.0729,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "9c4f79b3d074cb5cb709e781a76f854e6f3fadd7b6cc08a42a0e72be29a2645e"
+    },
+    "actualTwoPackMcp": {
+      "ok": true,
+      "calls": 34,
+      "reportSHA256": "3acb828eab417a3b9ac58981b71b9bfae222f6c2db049ce380a29511ecc6e25c"
+    },
+    "existingTaskSwitch": {
+      "ok": true,
+      "tasks": 6,
+      "calls": 7,
+      "protectedFiles": 149,
+      "pdfDownloads": 5,
+      "reportSHA256": "f69ad808faa6e968ad9331866e64f11694bc57bfbb7029d905c4075e1e276ec2"
+    },
+    "staticGate": {
+      "ok": true,
+      "publicFiles": 492,
+      "checks": 3,
+      "staticOnly": true,
+      "logSHA256": "135ee1bcfd630b93cfd54560277ac5fbbbf0b0de348241ff4615c22656a3254e"
+    }
+  },
+  "limits": [
+    "Only this unchanged known model and host passed the stated response gates, not every project size/CPU/memory load or machine",
+    "HTTP uses the real task-center/engineering status path while ranking is replayed separately; active design lease progress/no-publication state is additionally covered by a synthetic controller test, not a new real full solve",
+    "Original twelve-room physical-quality outputs and native files remain unchanged; no new Radiance or CAD run was performed",
+    "Actual AI-client interpretation and the newly adopted intake-to-native-delivery flow were not rerun in this performance increment",
+    "Worker/source verification does not establish standards applicability, optical/installation authority, source approval or professional review",
+    "External users, independent real projects, new machines and professional approval remain outstanding",
+    "Historical full release gate remains incomplete; frozen v2 package/DLL unchanged"
+  ],
+  "nextPriorities": [
+    "P0 Preserve explicit task kinds, both design packs, analysis and existing outputs; hospital stays isolated",
+    "P0 Carry newly adopted source-bound inputs through actual quality/native delivery/review without upgrading missing standards or assumptions",
+    "P0 Broaden actual natural-document and office-space-planning client cases beyond the known two-room lighting trial",
+    "P1 Source/standard applicability, richer layouts, split/merge/multiple-use identity and installation detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+  ],
+  "evidenceRoot": "artifacts/preflight-response-validation-20261022-final",
+  "evidenceArchive": "artifacts/preflight-response-validation-20261022-final/预检响应与数值守恒-完整试验证据.zip",
+  "M2": "incomplete",
+  "M3": "incomplete",
+  "M4": "incomplete",
+  "goalComplete": false,
+  "professionalApproval": false,
+  "releaseRepackaged": false
+}

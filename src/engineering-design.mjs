@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import {inspectEngineeringInput} from './engineering-contracts.mjs';
 import {sceneSchema} from './contracts.mjs';
-import {evaluateRoomPhotometry,roomPhotometricGrid} from './engineering-photometry.mjs';
+import {evaluateRoomPhotometryWork,roomPhotometricGrid} from './engineering-photometry.mjs';
 import {selectEngineeringPlanSheet} from './engineering-sheets.mjs';
 import {declaredRoomUses,auditSharedUseBasis} from './lighting-use-assessment.mjs';
 import {sampleLightingGeometry} from './lighting-geometry-pool.mjs';
@@ -31,7 +31,9 @@ export function controlDiagramSegments(model,control){
  return [[control.position,[control.position[0],y]],[[Math.min(...xs),y],[Math.max(...xs),y]],...devices.map(d=>[[d.position[0],y],d.position])];
 }
 
-function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{selection,collect=false,preflight}={}){
+// Both drivers consume exactly this sequence. Checkpoints change scheduling,
+// never candidate order, geometry, sampling, numerical sums or thresholds.
+function* layoutRoomWork(p,room,photometricEvidence=[],lightingStandardEvidence,{selection,collect=false,preflight}={}){
  const areaM2=polygonArea(room.polygon)/1e6,b=bounds(room.polygon),width=b.max[0]-b.min[0],height=b.max[1]-b.min[1];
  if(areaM2<1||width<500||height<500)throw Error('ROOM_GEOMETRY_INVALID: '+room.id);
  const normative=lightingStandardEvidence?.rooms.find(r=>r.roomId===room.id),targetLux=Math.max(value(p,room,'target_lux'),normative?.minimumLux??0),maxLpd=Math.min(value(p,room,'max_lpd'),normative?.maximumLpd??Infinity),maxSpacingM=value(p,room,'max_spacing'),minimumUniformity=p.photometricDesign?Math.max(value(p,room,'min_uniformity'),normative?.minimumUniformity??0):undefined;
@@ -43,6 +45,7 @@ function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{sele
   const minX=Math.max(1,Math.ceil(width/1000/maxSpacingM)),minY=Math.max(1,Math.ceil(height/1000/maxSpacingM));
   const powerCount=Math.min(500,Math.floor(maxLpd*areaM2/fixture.watts)),maxX=Math.min(40,direct?Math.max(minX+8,Math.ceil(powerCount/minY)):minX+20),maxY=Math.min(40,direct?Math.max(minY+8,Math.ceil(powerCount/minX)):minY+20);
   for(let nx=minX;nx<=maxX;nx++)for(let ny=minY;ny<=maxY;ny++){
+   yield {workPhase:'source_geometry',fixture:fixture.id,grid:[nx,ny]};
    if(!direct&&nx*ny<need||nx*ny>500)continue;
    let positions=[];for(let x=0;x<nx;x++)for(let y=0;y<ny;y++){const pos=[b.min[0]+width*(x+.5)/nx,b.min[1]+height*(y+.5)/ny];if(insidePolygon(pos,room.polygon)&&!room.obstacles.some(o=>insidePolygon(pos,o)))positions.push(pos.map(round));}
    const desired=Math.max(need,minX*minY);
@@ -55,6 +58,7 @@ function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{sele
    // selection and every historical source-grid choice remain unchanged.
    if(direct&&(collect||selection))layouts.push(...perimeterInfillLayouts({positions,nx,ny,bounds:b,maxCount:powerCount,validPoint:pos=>insidePolygon(pos,room.polygon)&&!room.obstacles.some(o=>insidePolygon(pos,o))}));
    for(const layout of layouts){const ps=layout.positions;
+    yield {workPhase:'source_layout',fixture:fixture.id,grid:[nx,ny]};
     if([0,1].some(axis=>{const xs=[...new Set(ps.map(p=>p[axis]))].sort((a,b)=>a-b);return !xs.length||xs[0]-b.min[axis]>maxSpacingM*500+1e-4||b.max[axis]-xs.at(-1)>maxSpacingM*500+1e-4||xs.slice(1).some((x,i)=>x-xs[i]>maxSpacingM*1000+1e-4);}))continue;
     const count=ps.length,estimatedLux=count*fixture.lumens*fixture.utilizationFactor*fixture.maintenanceFactor/areaM2,lpd=count*fixture.watts/areaM2;
     if(!count||!direct&&(count<need||estimatedLux<targetLux-1e-8)||lpd>maxLpd+1e-8)continue;
@@ -66,23 +70,33 @@ function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{sele
  candidates.sort((a,b)=>a.score-b.score||a.fixture.localeCompare(b.fixture)||a.grid[0]-b.grid[0]);
  if(selection||collect){
   if(!direct||!p.lightingEnvironment)throw Error('TOTAL_LIGHT_SELECTION_REQUIRES_ENVIRONMENT');
-  for(const c of candidates)c.choiceSHA256=engineeringDigest({fixture:c.fixture,positions:c.positions});
+  for(const [index,c]of candidates.entries()){yield {workPhase:'candidate_identity',examinedCandidates:index,candidateCount:candidates.length};c.choiceSHA256=engineeringDigest({fixture:c.fixture,positions:c.positions});}
   if(selection){const chosen=candidates.find(c=>c.choiceSHA256===selection);if(!chosen)throw Error('LIGHTING_CHOICE_NOT_IN_SOURCE_SEARCH: '+room.id);candidates.splice(0,candidates.length,chosen);}
   else{
-   if(preflight){const eligible=candidates.filter(c=>preflight(room,c));candidates.splice(0,candidates.length,...eligible);}
+   if(preflight){const eligible=[];for(const [index,c]of candidates.entries()){yield {workPhase:'condition_preflight',examinedCandidates:index,candidateCount:candidates.length};if(preflight(room,c))eligible.push(c);}candidates.splice(0,candidates.length,...eligible);}
    // Round-robin catalog coverage prevents one product's many removal variants
    // from consuming the entire photometric budget before another is examined.
    const groups=p.luminaires.map(f=>{const sampled=sampleLightingGeometry(candidates.filter(c=>c.fixture===f.id),16);return sampled.choices.map(c=>({...c,geometryPoolCoverage:sampled.coverage}));}),pool=[];
    for(let i=0;i<16;i++)for(const group of groups)if(group[i])pool.push(group[i]);candidates.splice(0,candidates.length,...pool.slice(0,200));
   }
  }
- if(direct){const grid=roomPhotometricGrid(room,p.photometricDesign),feasible=[];let evaluations=0;for(const candidate of candidates){if((evaluations+=grid.length*candidate.count)>5000000){if(feasible.length)break;throw Error('PHOTOMETRIC_SEARCH_BUDGET: '+room.id);}const fixture=p.luminaires.find(f=>f.id===candidate.fixture),photometry=evaluateRoomPhotometry(room,candidate.positions,fixture,value(p,room,'mounting_height'),p.photometricDesign,photometricEvidence.find(e=>e.fixtureId===fixture.id),grid);if(selection||collect||photometry.averageLux+1e-8>=targetLux&&photometry.averageLux<=value(p,room,'max_avg_lux')+1e-8&&photometry.uniformity+1e-8>=minimumUniformity)feasible.push({...candidate,photometry});if(!selection&&!collect&&feasible.length>=4)break;}candidates.splice(0,candidates.length,...feasible);}
+ if(direct){const grid=roomPhotometricGrid(room,p.photometricDesign),feasible=[];let evaluations=0;for(const [index,candidate]of candidates.entries()){yield {workPhase:'direct_diagnostics',examinedCandidates:index,candidateCount:candidates.length};if((evaluations+=grid.length*candidate.count)>5000000){if(feasible.length)break;throw Error('PHOTOMETRIC_SEARCH_BUDGET: '+room.id);}const fixture=p.luminaires.find(f=>f.id===candidate.fixture),photometry=yield* evaluateRoomPhotometryWork(room,candidate.positions,fixture,value(p,room,'mounting_height'),p.photometricDesign,photometricEvidence.find(e=>e.fixtureId===fixture.id),grid);if(selection||collect||photometry.averageLux+1e-8>=targetLux&&photometry.averageLux<=value(p,room,'max_avg_lux')+1e-8&&photometry.uniformity+1e-8>=minimumUniformity)feasible.push({...candidate,photometry});if(!selection&&!collect&&feasible.length>=4)break;}candidates.splice(0,candidates.length,...feasible);}
  if(!candidates.length){if(collect)return [];throw Error('NO_FEASIBLE_LIGHTING_LAYOUT: '+room.id+'; bounded direct search did not find a layout; this does not prove total-light infeasibility');}
  const finish=c=>({...c,roomId:room.id,effectiveTargets:normative?{targetLux,maxLpd,minimumUniformity,profileSHA256:lightingStandardEvidence.profileSHA256,classId:normative.id,tableIds:normative.tableIds}:undefined,method:direct?'ies_direct_point':'lumen_flux_estimate',formula:direct?'E(point)=sum(I(C,gamma)*cos(gamma)/distance^2*MF); LPD=N*W/A':'E=N*Phi*UF*MF/A; LPD=N*W/A',requirementIds:p.requirements.filter(r=>r.roomIds.includes(room.id)).map(r=>r.id),alternatives:collect||selection?[]:candidates.slice(1,4).map(({fixture,count,lpd,estimatedLux,photometry,layoutSearch})=>({fixture,count,lpd,estimatedLux,layoutSearch,directAverageLux:photometry?.averageLux,directUniformity:photometry?.uniformity}))});
  return collect?candidates.map(finish):finish(candidates[0]);
 }
 
+function layoutRoom(...args){const work=layoutRoomWork(...args);let step;do{step=work.next();}while(!step.done);return step.value;}
 export function engineeringLightingChoices(model,{preflight}={}){return model.input.rooms.map(room=>({roomId:room.id,choices:layoutRoom(model.input,room,model.photometricEvidence,model.lightingStandardEvidence,{collect:true,preflight})}));}
+
+export async function engineeringLightingChoicesAsync(model,{preflight,deadlineMs,onProgress,sliceMs=12,progressIntervalMs=250}={}){
+ if(!Number.isFinite(sliceMs)||sliceMs<1||sliceMs>50||!Number.isFinite(progressIntervalMs)||progressIntervalMs<0)throw Error('LIGHTING_PREFLIGHT_SCHEDULING_INVALID');
+ const expired=()=>{if(deadlineMs!==undefined&&Date.now()>=deadlineMs)throw Error('LIGHTING_OPTIMIZATION_TIME_BUDGET');},rooms=[];
+ for(const room of model.input.rooms){const work=layoutRoomWork(model.input,room,model.photometricEvidence,model.lightingStandardEvidence,{collect:true,preflight});let sliceStart=performance.now(),lastProgress=sliceStart,steps=0;
+  while(true){expired();const step=work.next();steps++;expired();if(step.done){rooms.push({roomId:room.id,choices:step.value});break;}const now=performance.now();if(now-sliceStart>=sliceMs){await new Promise(resolve=>setImmediate(resolve));expired();if(onProgress&&now-lastProgress>=progressIntervalMs){await onProgress({roomId:room.id,...step.value,workSteps:steps});lastProgress=performance.now();expired();}sliceStart=performance.now();}}
+ }
+ return rooms;
+}
 
 export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[],architecturalEvidence,photometricEvidence=[],lightingStandardEvidence,layoutSelections}={}){
  const intake=inspectEngineeringInput(raw);if(!intake.ok)return {ok:false,stage:'requirements',issues:intake.issues};

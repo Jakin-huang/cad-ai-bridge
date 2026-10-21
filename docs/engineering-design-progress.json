@@ -168,11 +168,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve both professional packs, analysis, old outputs and example isolation",
-    "P0 Bound and yield within-room preflight work; preserve thresholds and deterministic results",
-    "P0 Extend new intake through actual quality/native delivery/review and independent document/task cases",
-    "P1 Expand source/standard applicability, richer layouts, space identity changes and installation detail",
-    "P2 Independent real projects, external users, new machines and authenticated professional acceptance"
+    "P0 Preserve explicit task kinds, both design packs, analysis and existing outputs; hospital stays isolated",
+    "P0 Carry newly adopted source-bound inputs through actual quality/native delivery/review without upgrading missing standards or assumptions",
+    "P0 Broaden actual natural-document and office-space-planning client cases beyond the known two-room lighting trial",
+    "P1 Source/standard applicability, richer layouts, split/merge/multiple-use identity and installation detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -906,6 +906,35 @@
         "durationMs": 147082.1031,
         "logSHA256": "ff90008db60f60f931d21cfcacc3652b2d91f0c4b2f70b03b74da401e7431d5b"
       }
+    }
+  },
+  "previousPrioritiesBeforePreflightResponse": [
+    "P0 Preserve both professional packs, analysis, old outputs and example isolation",
+    "P0 Bound and yield within-room preflight work; preserve thresholds and deterministic results",
+    "P0 Extend new intake through actual quality/native delivery/review and independent document/task cases",
+    "P1 Expand source/standard applicability, richer layouts, space identity changes and installation detail",
+    "P2 Independent real projects, external users, new machines and authenticated professional acceptance"
+  ],
+  "preflightResponseIncrement": {
+    "validation": "docs/preflight-response-validation.json",
+    "knownReplayAccepted": true,
+    "generalResponsivenessAccepted": false,
+    "sourceRankingSHA256": "accff9356cdfc95e3fd79cddeb8db94e56ec82eb88f68828c228a97ad87a2191",
+    "maximumKnownStatusMs": 98.5189,
+    "completeUgrReferenceEquality": {
+      "rooms": 12,
+      "lamps": 141
+    },
+    "newPhysicalAssessment": false,
+    "newNativeCadExecuted": false,
+    "goalComplete": false,
+    "fullRegression": {
+      "passed": 442,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 141907.0729,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "9c4f79b3d074cb5cb709e781a76f854e6f3fadd7b6cc08a42a0e72be29a2645e"
     }
   }
 }

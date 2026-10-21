@@ -1,9 +1,10 @@
+import {rankLightingInThread} from './lighting-ranking-thread.mjs';
 import {planLightingAssessment} from './lighting-assessment-plan.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {atomicJson} from './files.mjs';
 import {hashFile} from './drawings.mjs';
-import {engineeringDigest,engineeringLightingChoices,makeEngineeringDesign} from './engineering-design.mjs';
+import {engineeringDigest,engineeringLightingChoices,engineeringLightingChoicesAsync,makeEngineeringDesign} from './engineering-design.mjs';
 import {auditEngineeringDesign} from './engineering-verification.mjs';
 import {assessLightingQuality,auditLightingQuality,lightingRoomScene,verifyLightingQualityArtifacts} from './lighting-quality.mjs';
 import {resolveUgrMethod} from './ugr-evidence.mjs';
@@ -44,10 +45,14 @@ function rankChoicePool(model,baseline,rooms,preflightRecords,ugrMethod){const c
 export function rankLightingPlans(model,baseline,{ugrMethod,preflight=lightingCandidatePreflight(model,{ugrMethod})}={}){
  if(baseline&&baseline.modelSHA256!==engineeringDigest(model))throw Error('LIGHTING_BASELINE_MODEL_MISMATCH');const {preflightRecords,filter}=rankingPreflight(model,preflight),rooms=engineeringLightingChoices(model,{preflight:filter});return rankChoicePool(model,baseline,rooms,preflightRecords,ugrMethod);
 }
-export async function rankLightingPlansAsync(model,baseline,{ugrMethod,preflight=lightingCandidatePreflight(model,{ugrMethod}),onPreflightRoom,deadlineMs}={}){
- if(baseline&&baseline.modelSHA256!==engineeringDigest(model))throw Error('LIGHTING_BASELINE_MODEL_MISMATCH');const {preflightRecords,filter}=rankingPreflight(model,preflight),rooms=[];
- for(const [index,room]of model.input.rooms.entries()){if(deadlineMs!==undefined&&Date.now()>=deadlineMs)throw Error('LIGHTING_OPTIMIZATION_TIME_BUDGET');await onPreflightRoom?.({roomId:room.id,roomNumber:index+1,roomCount:model.input.rooms.length,profile:'preflight',phase:'geometry_preflight',preflightCompletedRooms:index,completedRooms:0,startedAt:new Date().toISOString()});rooms.push(engineeringLightingChoices({...model,input:{...model.input,rooms:[room]}},{preflight:filter})[0]);await new Promise(resolve=>setImmediate(resolve));}
- if(deadlineMs!==undefined&&Date.now()>=deadlineMs)throw Error('LIGHTING_OPTIMIZATION_TIME_BUDGET');return rankChoicePool(model,baseline,rooms,preflightRecords,ugrMethod);
+export async function rankLightingPlansAsync(model,baseline,options={}){
+ const {ugrMethod,preflight=lightingCandidatePreflight(model,{ugrMethod}),onPreflightRoom,onPreflightProgress,deadlineMs,useWorker=false,priorFailedChoices}=options;
+ const frozenModelSHA256=engineeringDigest(model),frozenBaselineSHA256=engineeringDigest(baseline??null);if(baseline&&baseline.modelSHA256!==frozenModelSHA256)throw Error('LIGHTING_BASELINE_MODEL_MISMATCH');
+ const frozen=()=>{if(engineeringDigest(model)!==frozenModelSHA256)throw Error('LIGHTING_PREFLIGHT_MODEL_CHANGED');if(engineeringDigest(baseline??null)!==frozenBaselineSHA256)throw Error('LIGHTING_PREFLIGHT_BASELINE_CHANGED');};
+ if(useWorker){if(Object.hasOwn(options,'preflight'))throw Error('LIGHTING_RANKING_CUSTOM_PREFLIGHT_WORKER_UNSUPPORTED');const result=await rankLightingInThread({model,baseline,ugrMethod,priorFailedChoices,deadlineMs},p=>p.workPhase?onPreflightProgress?.(p):onPreflightRoom?.(p));frozen();return result;}
+ const {preflightRecords,filter}=rankingPreflight(model,preflight),rooms=[];
+ for(const [index,room]of model.input.rooms.entries()){if(deadlineMs!==undefined&&Date.now()>=deadlineMs)throw Error('LIGHTING_OPTIMIZATION_TIME_BUDGET');const progress={roomId:room.id,roomNumber:index+1,roomCount:model.input.rooms.length,profile:'preflight',phase:'geometry_preflight',preflightCompletedRooms:index,completedRooms:0};await onPreflightRoom?.({...progress,startedAt:new Date().toISOString()});rooms.push((await engineeringLightingChoicesAsync({...model,input:{...model.input,rooms:[room]}},{preflight:filter,deadlineMs,onProgress:onPreflightProgress?p=>onPreflightProgress({...progress,...p}):undefined}))[0]);await new Promise(resolve=>setImmediate(resolve));}
+ if(deadlineMs!==undefined&&Date.now()>=deadlineMs)throw Error('LIGHTING_OPTIMIZATION_TIME_BUDGET');frozen();return rankChoicePool(model,baseline,rooms,preflightRecords,ugrMethod);
 }
 
 export async function verifyLightingOptimization(folder,report){
@@ -60,8 +65,8 @@ export async function optimizeLighting(model,baseline,{folder,inputRoot,runtimeF
  // Recompute summaries even when the baseline failed its actual target gates.
  if(!initial)baseline.audit=auditLightingQuality(model,baseline,{ugrMethod:method});
  if(initial&&baseline)throw Error('INITIAL_LIGHTING_HAS_NO_BASELINE');
- const rejectedRoomLayouts=[],failedChoices=new Map(),conditionPreflight=lightingCandidatePreflight(model,{ugrMethod:method}),preflight=(room,choice)=>failedChoices.get(room.id)?.has(choice.choiceSHA256)?[{code:'LIGHTING_PRIOR_FAILED_ROOM_LAYOUT',reason:'Same frozen room, source product, conditions and layout already failed an audited local quality gate in this study'}]:conditionPreflight(room,choice),eligible=plan=>plan.selections.every(s=>!failedChoices.get(s.roomId)?.has(s.choiceSHA256));
- const ranked=await rankLightingPlansAsync(model,baseline,{ugrMethod:method,preflight,deadlineMs:deadline,onPreflightRoom:onProgress}),records=[],seen=new Set(),generated=new Set(ranked.plans.map(p=>p.id)),feedbackRounds=[],queue=[...ranked.plans],targetRevision=initial?model.revision:model.revision+1;let selected,fullAssessments=0,budgetStopped=false;
+ const rejectedRoomLayouts=[],failedChoices=new Map(),eligible=plan=>plan.selections.every(s=>!failedChoices.get(s.roomId)?.has(s.choiceSHA256));
+ const ranked=await rankLightingPlansAsync(model,baseline,{ugrMethod:method,useWorker:true,priorFailedChoices:[...failedChoices].map(([id,choices])=>[id,[...choices]]),deadlineMs:deadline,onPreflightRoom:onProgress,onPreflightProgress:onProgress}),records=[],seen=new Set(),generated=new Set(ranked.plans.map(p=>p.id)),feedbackRounds=[],queue=[...ranked.plans],targetRevision=initial?model.revision:model.revision+1;let selected,fullAssessments=0,budgetStopped=false;
  await fs.mkdir(folder);
  if(initial){await atomicJson(path.join(folder,'source-input.json'),model.input);await atomicJson(path.join(folder,'source-evidence.json'),{standardEvidence:model.standardEvidence,architecturalEvidence:model.architecturalEvidence,photometricEvidence:model.photometricEvidence,lightingStandardEvidence:model.lightingStandardEvidence});}
  else await atomicJson(path.join(folder,'baseline.json'),baselineSnapshot);
@@ -93,7 +98,7 @@ export async function optimizeLighting(model,baseline,{folder,inputRoot,runtimeF
    const checks=quality.audit.checks,globalValid=['fixed_settings','frozen_model','all_rooms',...(quality.assessmentPlan?['complete_partition_plan']:[]),...(candidate.input.glareAssessment?['ugr_verified_method','ugr_fixed_settings','ugr_frozen_method_and_conditions','ugr_all_rooms']:[])].every(id=>checks.find(c=>c.id===id)?.ok);
    if(globalValid)for(const selection of plan.selections){const id=selection.roomId,ids=new Set(['point_convergence','mean_convergence','nonnegative_reflected','total_mean_and_uniformity','ugr_observer_coverage','ugr_reference_surfaces'].map(prefix=>prefix+'_'+id));for(const o of quality.ugr?.rooms.find(r=>r.roomId===id)?.observers??[])for(const prefix of ['ugr_observer_frame','ugr_source_coverage','ugr_formula_terms','ugr_rating_stability','ugr_background_and_limit'])ids.add(prefix+'_'+id+'_'+o.observer.id);const local=checks.filter(c=>!c.ok&&ids.has(c.id));if(!local.length||!checks.find(c=>c.id==='complete_grid_'+id)?.ok)continue;if(!failedChoices.has(id))failedChoices.set(id,new Set());failedChoices.get(id).add(selection.choiceSHA256);rejectedRoomLayouts.push({...selection,inputSHA256:engineeringDigest(model.input),fromModelSHA256:modelSHA256,qualityFile:record.qualityFile,qualitySHA256:record.qualitySHA256,failedChecks:local.map(c=>c.id),scope:'This frozen independent-room study only; no global infeasibility or cross-project cache'});}
    if(fullAssessments>=maxCandidates||Date.now()>=deadline){budgetStopped=true;break;}
-   const next=await rankLightingPlansAsync(candidate,quality,{ugrMethod:method,preflight,deadlineMs:deadline,onPreflightRoom:onProgress});for(const p of next.plans)generated.add(p.id);feedbackRounds.push({fromPlanId:plan.id,fromModelSHA256:modelSHA256,qualityFile:record.qualityFile,coverage:next.coverage,scope:'New ordering from actual attempted candidate; audited failed local layouts excluded within unchanged independent-room input, not a pre-existing accepted baseline'});queue.splice(0,queue.length,...next.plans.filter(p=>!seen.has(p.id)&&eligible(p)),...queue.filter(p=>!seen.has(p.id)&&eligible(p)&&!next.plans.some(n=>n.id===p.id)));
+   const next=await rankLightingPlansAsync(candidate,quality,{ugrMethod:method,useWorker:true,priorFailedChoices:[...failedChoices].map(([id,choices])=>[id,[...choices]]),deadlineMs:deadline,onPreflightRoom:onProgress,onPreflightProgress:onProgress});for(const p of next.plans)generated.add(p.id);feedbackRounds.push({fromPlanId:plan.id,fromModelSHA256:modelSHA256,qualityFile:record.qualityFile,coverage:next.coverage,scope:'New ordering from actual attempted candidate; audited failed local layouts excluded within unchanged independent-room input, not a pre-existing accepted baseline'});queue.splice(0,queue.length,...next.plans.filter(p=>!seen.has(p.id)&&eligible(p)),...queue.filter(p=>!seen.has(p.id)&&eligible(p)&&!next.plans.some(n=>n.id===p.id)));
   }catch(error){if(['LIGHTING_OPTIMIZATION_TIME_BUDGET','LIGHTING_ASSESSMENT_TIME_BUDGET'].includes(error.message)){if(!record.qualityFile)record.status='incomplete_time_budget';else record.feedbackIncompleteTimeBudget=true;budgetStopped=true;break;}throw error;}
  }
  if(queue.length&&records.length>=64)budgetStopped=true;
