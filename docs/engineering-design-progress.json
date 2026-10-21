@@ -28,7 +28,8 @@
         "Additional source-bound lighting table subset locally enforced; professional applicability and full coverage pending",
         "Spatially excluded source annotations remain source-linked pending inputs; no automatic standard, room-use or requirement inference",
         "Additional source names/use roles preserved; unassessed secondary uses block ordinary-lighting design",
-        "Actual installed client quotes one frozen synthetic brief to fill only unconfirmed functional slots; three final cases correctly prepare/block without protocol errors after retained failures; known geometry and inherited prior metadata, not clean blind/customer or general semantic acceptance"
+        "Actual installed client quotes one frozen synthetic brief to fill only unconfirmed functional slots; three final cases correctly prepare/block without protocol errors after retained failures; known geometry and inherited prior metadata, not clean blind/customer or general semantic acceptance",
+        "Brief source replacement invalidates old requirements and functional interpretations; actual synthetic client retry reconciles stricter targets with zero protocol errors after one retained first-trial error; arbitrary multi-document coordination and new authoritative condition values remain unsupported"
       ]
     },
     {
@@ -54,7 +55,8 @@
         "Original brief: 19 luminaires, six circuits, five sheets",
         "R2 simulated brief change: 18 luminaires, separate delivery",
         "Saved CAD readback, PDF physical size and visual review passed",
-        "Synthetic functional client case R1:12 luminaires/1 circuit/5A3; explicit occupancy/manual intent and pending sensor/wiring details; R0 visual gap and original bytes retained; not installation design acceptance"
+        "Synthetic functional client case R1:12 luminaires/1 circuit/5A3; explicit occupancy/manual intent and pending sensor/wiring details; R0 visual gap and original bytes retained; not installation design acceptance",
+        "Synthetic source revision R5:12 luminaires/276W/1 circuit/5A3; regional/manual intent and new/old task identities explicit; native save/reopen and original file preservation passed; direct-only E05 table needs accepted total-quality summary integration"
       ]
     },
     {
@@ -71,7 +73,8 @@
       "limits": [
         "Simulation tested, professional review not authenticated",
         "Revision invalidates old review",
-        "No professional or construction approval"
+        "No professional or construction approval",
+        "Source revision archives explicitly simulated review and clears current review; old request rejected, current reconcile replay preserves delivered R5, not native interruption recovery"
       ]
     },
     {
@@ -86,7 +89,8 @@
         "Architecture task-center text/condition summary and downloaded review SHA verified; standalone HTML browser visual interaction remains unverified after file-protocol policy rejection; local controller tests are separate",
         "Task-center SHA-bound structured label/note review and actual CSV download verified; standalone HTML browser acceptance remains incomplete",
         "Structured common-use view shows individual source classes and effective project500–700lx target; actual selected-revision CSV download SHA verified",
-        "SHA-bound functional-intake view shows literal source/reasons and unresolved blocking; final quality report actual download matches current R1 model SHA; frozen v2 and global installed skill not repackaged"
+        "SHA-bound functional-intake view shows literal source/reasons and unresolved blocking; final quality report actual download matches current R1 model SHA; frozen v2 and global installed skill not repackaged",
+        "Task-center current/history source chain, literal unchanged-condition quotes and exact R5 quality-report download verified; this remains a known single synthetic room"
       ]
     }
   ],
@@ -138,10 +142,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 multi-source/project-brief version changes: invalidate affected functional interpretations, numeric requirements, models, CAD and review while retaining historical sources and unresolved conditions",
+    "P0 authoritative architectural/engineering condition value changes and dependency invalidation; single-brief unchanged-value carry is now locally verified, arbitrary multi-source coordination remains incomplete",
     "P0 hospital geometry/functional missing-input workflow and independent original architecture/customer sources",
     "P0 whole-floor budgets, independent unseen variants, observer/real-product evidence and correct electrical ratings",
-    "P1 installation routing, coordinated control/device design, incremental native edits and authenticated professional review; new-machine/external-user validation separate"
+    "P1 accepted total-quality summary on CAD, installation routing, coordinated control/device design, incremental native edits and authenticated professional review; new-machine/external-user validation separate"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -158,10 +162,10 @@
   "lightingStandardsValidation": "docs/lighting-standards-validation.json",
   "lightingQualityValidation": "docs/lighting-quality-validation.json",
   "latestSourceIncrement": {
-    "afterCommit": "4f8b054",
-    "engineVersion": "1.11.0",
-    "scope": "quoted_functional_intake_actual_client_and_readable_control_intent",
-    "validation": "functional-intake-validation.json",
+    "afterCommit": "9b5a557",
+    "engineVersion": "1.12.0",
+    "scope": "active_brief_supersession_dependency_invalidation_and_unchanged_conditions",
+    "validation": "source-revisions-validation.json",
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
@@ -173,5 +177,14 @@
     "oneBriefLiteralSourceBinding": true,
     "generalSemanticAcceptance": false,
     "hospitalProjectAcceptance": false
+  },
+  "sourceRevisions": {
+    "validation": "docs/source-revisions-validation.json",
+    "singleActiveBrief": true,
+    "unchangedConditionCarry": true,
+    "actualClientRetryProtocolErrors": 0,
+    "firstTrialErrorsRetained": 1,
+    "realAuthoritativeConditionEdits": false,
+    "hospitalAcceptance": false
   }
 }

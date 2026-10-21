@@ -2,6 +2,7 @@ import {z} from 'zod';
 import {architectureInspectionSchema,architecturalPackRef} from './architectural-contracts.mjs';
 import {inspectSpacePolygon,spaceInteriorsOverlap} from './architectural-spaces.mjs';
 import {functionalIntakeSchema,functionalIntakeIssues} from './engineering-functional-intake.mjs';
+import {briefRevisionSchema,carriedConditionsSchema,carryForwardSchema,sourceRevisionIssues} from './engineering-source-revisions.mjs';
 import {sharedUseInputIssues} from './lighting-use-assessment.mjs';
 
 const id=z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,63}$/);
@@ -13,9 +14,10 @@ const reflectionRoom=z.strictObject({roomId:id,enclosure:z.literal('closed_opaqu
 const glareRoom=z.strictObject({roomId:id,posture:z.enum(['seated','standing']),maximumUgr:z.number().positive().max(40),workplaneReflectance:z.number().min(0).max(.9),wallReflectance:z.number().min(0).max(.9),installationReflectance:z.number().min(0).max(.9),sourceIds:z.array(id).min(1).max(20),status:z.enum(['documented','interpreted','assumed']),description:z.string().min(20).max(1000)});
 const isoDay=z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(v=>Number.isFinite(Date.parse(v+'T00:00:00Z'))&&new Date(v+'T00:00:00Z').toISOString().slice(0,10)===v,'Invalid calendar date');
 const point=z.tuple([z.number().finite().min(-1e8).max(1e8),z.number().finite().min(-1e8).max(1e8)]);
-const source=z.strictObject({id,role:z.enum(['architecture','brief','standard','catalog','review_instruction']),sha256:digest,description:z.string().min(1).max(1000),location:z.string().max(1000).optional(),derivedFromFinalDrawing:z.boolean().default(false)});
+const source=z.strictObject({id,role:z.enum(['architecture','brief','standard','catalog','review_instruction']),sha256:digest,description:z.string().min(1).max(1000),location:z.string().max(1000).optional(),derivedFromFinalDrawing:z.boolean().default(false),supersedes:id.optional(),supersededBy:id.optional()});
 const requirementValue=z.union([z.number().finite(),z.string().min(1).max(128)]).describe('Units: target_lux=lx; max_lpd=W/m2; max_spacing and mounting_height=m; max_devices=count; max_circuit_watts=W; max_drop=percentage points, use 3 for 3 percent, not 0.03. min_uniformity=Emin/Eavg fraction (0,1]; max_avg_lux=lx. control_mode accepts only local (就地), regional_manual (区域集中并手动), occupancy_manual (感应并可手动).');
 const requirement=z.strictObject({id,rule:z.enum(['target_lux','max_lpd','max_spacing','max_devices','max_circuit_watts','max_drop','control_mode','mounting_height','min_uniformity','max_avg_lux']),value:requirementValue,roomIds:z.array(id).min(1).max(100),sourceIds:z.array(id).min(1).max(20),rationale:z.string().min(1).max(1000),status:z.enum(['documented','interpreted','assumed'])});
+export const requirementContract={fields:Object.keys(requirement.shape),ruleValues:requirement.shape.rule.options,statusValues:requirement.shape.status.options,roomIds:'Array of room IDs; not roomId',sourceIds:'Array of source IDs; use the current brief source',rationale:'Non-empty explanation of the task evidence',valueUnits:requirementValue.description};
 const primitive=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('line'),points:z.array(point).length(2)}),
  z.strictObject({kind:z.literal('polyline'),points:z.array(point).min(2).max(500),closed:z.boolean()})
@@ -23,8 +25,8 @@ const primitive=z.discriminatedUnion('kind',[
 export const engineeringInputSchema=z.strictObject({
  schemaVersion:z.literal(1),projectId:id,title:z.string().min(1).max(128),designDate:isoDay,
  discipline:z.literal('ordinary-lighting'),scope:z.string().min(20).max(3000),brief:z.string().min(20).max(16000),
- functionalIntake:functionalIntakeSchema.optional(),
- sources:z.array(source).min(1).max(100),requirements:z.array(requirement).min(1).max(1000),
+ functionalIntake:functionalIntakeSchema.optional(),briefRevision:briefRevisionSchema.optional(),sourceCarryForwards:carriedConditionsSchema.optional(),
+ sources:z.array(source).min(1).max(100),requirements:z.array(requirement).max(1000),
  standards:z.array(z.strictObject({id,code:z.string().min(1).max(128),edition:z.string().min(1).max(128),effectiveFrom:isoDay,effectiveUntil:isoDay.optional(),sourceId:id,clauses:z.array(z.strictObject({id,locator:z.string().min(1).max(128),verified:z.boolean(),summary:z.string().min(1).max(1500),check:z.enum(['terminal_protection','low_mount_rcd','corridor_control','professional_review']),roomIds:z.array(id).max(100)})).max(100)})).max(100),
  rooms:z.array(z.strictObject({id,name:z.string().min(1).max(128),use:z.enum(['office','duty','teaching','corridor','pantry','clinical','unknown']),polygon:z.array(point).min(3).max(100),doors:z.array(point).max(20),obstacles:z.array(z.array(point).min(3).max(50)).max(20).default([]),sourceIds:z.array(id).min(1).max(20),geometryStatus:z.enum(['issued','inferred']),sourceSpaceLabels:z.array(sourceSpaceLabel).min(1).max(20).optional(),heightM:z.number().min(2).max(10),workplaneM:z.number().min(0).max(2),standardSpace:standardSpace.optional(),secondaryUseAssessments:z.array(secondaryUseAssessment).min(1).max(20).optional()})).min(1).max(100),
  architecture:z.array(primitive).max(8000),
@@ -63,7 +65,9 @@ export const engineeringSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('recover_lighting'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
  z.strictObject({action:z.literal('prepare'),requestId:z.uuid(),project:engineeringInputSchema}),
  z.strictObject({action:z.literal('prepare_from_seed'),requestId:z.uuid(),seedFile:z.string().min(1).max(2000),expectedSeedSHA256:digest,requirements:z.array(requirement).min(1).max(1000),architecturalPack:architecturalPackRef.optional(),functionalIntake:functionalIntakeSchema.optional()}),
- z.strictObject({action:z.literal('status'),jobId,section:z.enum(['summary','input','model','checks','delivery','review','history','lighting_quality','lighting_optimization','space_uses','functional_intake']).default('summary').describe('Exactly one section string. Use status with only action, jobId and section. No requestId, spaces, sections, include or filters; blocked is terminal input feedback, not an asynchronous wait.')}),
+ z.strictObject({action:z.literal('replace_brief'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,briefFile:z.string().min(1).max(2000),expectedFileSHA256:digest,sourceId:id,supersededSourceId:id,description:z.string().min(20).max(1000)}),
+ z.strictObject({action:z.literal('reconcile_brief'),jobId,requestId:z.uuid(),expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest,requirements:z.array(requirement).max(1000),functionalIntake:functionalIntakeSchema.optional(),carryForwards:z.array(carryForwardSchema).max(300).default([])}),
+ z.strictObject({action:z.literal('status'),jobId,section:z.enum(['summary','input','model','checks','delivery','review','history','lighting_quality','lighting_optimization','space_uses','functional_intake','source_changes']).default('summary').describe('Exactly one section string. Use status with only action, jobId and section. No requestId, spaces, sections, include or filters; blocked is terminal input feedback, not an asynchronous wait.')}),
  z.strictObject({action:z.literal('design'),jobId,expectedRevision:z.number().int().nonnegative()}),
  z.strictObject({action:z.literal('deliver'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
  z.strictObject({action:z.literal('revise'),jobId,expectedRevision:z.number().int().nonnegative(),changes:z.array(z.strictObject({requirementId:id,value:requirementValue,reason:z.string().min(1).max(1000),sourceId:id})).min(1).max(100)}),
@@ -74,7 +78,7 @@ export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineering
 export function inspectEngineeringInput(raw){
  const input=engineeringInputSchema.parse(raw),issues=[];
  const add=(code,severity,message,refs=[])=>issues.push({code,severity,message,refs});
- issues.push(...sharedUseInputIssues(input),...functionalIntakeIssues(input));
+ issues.push(...sharedUseInputIssues(input),...functionalIntakeIssues(input),...sourceRevisionIssues(input));
  if(input.functionalIntake)add('FUNCTIONAL_INTERPRETATION_REVIEW','review','Quoted brief evidence preserves the interpretation trail; semantic meaning, actual task and standard applicability still need professional review',input.functionalIntake.map(r=>r.roomId));
  const rules=['target_lux','max_lpd','max_spacing','max_devices','max_circuit_watts','max_drop','control_mode','mounting_height',...(input.photometricDesign?['min_uniformity','max_avg_lux']:[])];
  for(const room of input.rooms){

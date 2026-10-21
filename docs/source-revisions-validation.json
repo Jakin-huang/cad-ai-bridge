@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-21",
+  "baseCommit": "9b5a557",
+  "engineVersion": "1.12.0",
+  "status": "bounded_synthetic_current_machine_verified_unreleased",
+  "scope": "single_active_brief_supersession_and_unchanged_condition_reconciliation",
+  "unit": {
+    "passed": 284,
+    "failed": 0,
+    "skipped": 0,
+    "newSourceRevisionTests": 13
+  },
+  "installedClient": {
+    "client": "WorkBuddy current configured service",
+    "privateHospitalDataTransmittedThisIncrement": false,
+    "case": "known synthetic 8x6m office and meeting shared use",
+    "firstTrial": {
+      "protocolValidationErrors": 1,
+      "strictZeroErrorAcceptance": false,
+      "rawFailureRetained": true
+    },
+    "retry": {
+      "protocolValidationErrors": 0,
+      "elapsedMs": 177609,
+      "processExitCode": 0,
+      "timeout": false,
+      "calls": [
+        "lighting_basis",
+        "reconcile_brief",
+        "status",
+        "status"
+      ]
+    },
+    "sameEngineeringTargetsAcrossTrials": true,
+    "sameInputBytesAcrossTrials": false,
+    "difference": "BRIEF_V3 replaces BRIEF_V2 in source identity; unchanged 600-700 lx / 0.65 / 6 W/m2 and regional_manual task",
+    "unauthorizedReadDeniedAttempts": 0,
+    "generalSemanticAcceptance": false,
+    "latencyPerformanceAcceptance": false
+  },
+  "pipeline": {
+    "checksPassed": 10,
+    "oldRequirementAndUseInvalidation": true,
+    "priorReviewInvalidated": true,
+    "priorReviewOrigin": "simulation",
+    "oldModelDeliveryRejected": true,
+    "unreconciledSourceDesignRejected": true,
+    "unchangedPhysicalConditionDigests": true,
+    "oldNativeFileHashesUnchanged": true,
+    "oldSourceRequestReplayRejected": true,
+    "currentReconcileReplayPreservesDeliveredState": true,
+    "rawAndCanonicalSnapshotHashesSeparate": true,
+    "nativeSaveAndReopen": true,
+    "revision": 5,
+    "inputSHA256": "1925511855df4fa58c4feff2a6953d8945289f6ef079ca171d788178a98426c5",
+    "modelSHA256": "25d329f49bc8ef263565fe2436dadcb07914a0219691b9bf105bd222d568f676",
+    "spaces": 1,
+    "devices": 12,
+    "watts": 276,
+    "circuits": 1,
+    "sheets": 5,
+    "paper": "A3",
+    "controlMode": "regional_manual",
+    "modelChecks": {
+      "passed": 44,
+      "failed": 0,
+      "pending": 16
+    },
+    "targets": {
+      "averageLuxMinimum": 600,
+      "averageLuxMaximum": 700,
+      "minimumUniformity": 0.65,
+      "maximumLpd": 6
+    },
+    "quality": {
+      "averageLux": 621.5014163212121,
+      "minimumLux": 408.278594,
+      "maximumLux": 740.423118,
+      "uniformity": 0.6569230307095365,
+      "lpd": 5.75,
+      "maximumStandingReferenceUgr": 16.912185540631747,
+      "reportSHA256": "5954d713ecbcb948e905845a45b29a6c232555a0d1ae13d9e91c35d086ae69b6"
+    }
+  },
+  "independentArithmetic": {
+    "observerCount": 4,
+    "samplesPerSource": 25600,
+    "maximumDirectEyeDifferenceLux": 0.04807409721553313,
+    "maximumRelativeDifference": 0.00018075317520714222,
+    "scope": "formula, coordinates and finite-opening direct vertical eye illuminance only; not diffuse background or real product luminance"
+  },
+  "presentation": {
+    "allFiveNativePagesInspected": true,
+    "mergedRenderIdentical": true,
+    "nativePackageZipSHA256": "d597e6b7761e47a4b0eafe5093cc7907d95246cc965fb0b8354e0aa4479bd514",
+    "taskCenterSourceChainAndLiteralQuote": true,
+    "actualDownloadedQualityReportMatchesCurrentSHA": true,
+    "knownGap": "E05 contains direct-only diagnostic illuminance with a scope note; accepted total-light summary remains in a separate report"
+  },
+  "limits": [
+    "Not an independent or held-out project, customer task, hospital design or general natural-language acceptance",
+    "Real geometry/electrical value changes, arbitrary multi-document coordination and standard-edition revision are not implemented by carry-forward",
+    "Partial derived-file publication fault injection is not real native CAD interruption recovery",
+    "Closed diffuse model and standing reference UGR only; no daylight, openings, obstructions or multiple workplanes",
+    "IES 23W versus product leaflet 24W unresolved; no product or measured saving approval",
+    "Control and wiring installation detail, authenticated professional review, clean machine and external users pending",
+    "Hospital independent original architecture/client brief and complete floor geometry remain missing",
+    "Frozen v2.0 package and DLL unchanged; this source increment is unreleased"
+  ],
+  "acceptance": {
+    "developmentIncrement": true,
+    "currentMachineBoundedPipeline": true,
+    "hospitalFullFloor": false,
+    "independentCustomerProject": false,
+    "externalUsers": false,
+    "newMachine": false,
+    "professionalApproval": false,
+    "M2": false,
+    "M3": false,
+    "M4": false
+  },
+  "privateEvidenceArchive": {
+    "files": 295,
+    "manifestEntries": 294,
+    "allArchivedFileSHA256Verified": true,
+    "zipCRC": true,
+    "zipSHA256": "26e7ccb32485bb5852091b42b451e4febea9a74a63e18e52d00e71cab620062d",
+    "scope": "Master archive includes current R5, retained failed and successful trials, frozen source/input history, independent checks and historical R1 archive; bundled documentation is the pre-archive snapshot"
+  }
+}

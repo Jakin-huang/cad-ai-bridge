@@ -4,7 +4,7 @@
 
 ## 解释输入
 
-从用户提供的任务书、建筑条件、标准、产品资料和校审要求识别项目类型、范围、设计日期、房间功能、几何、目标照度、LPD、间距、回路容量、压降、安装高度与控制方式。project.sources 的每个来源必须记录 id、role、sha256 和说明。用 requirement.sourceIds 追踪依据；明确区分 documented、interpreted、assumed。对照成图不得作为生成来源。建筑条件若从历史成图剥离，derivedFromFinalDrawing=true；不能称独立盲测。
+从用户提供的任务书、建筑条件、标准、产品资料和校审要求识别项目类型、范围、设计日期、房间功能、几何、目标照度、LPD、间距、回路容量、压降、安装高度与控制方式。project.sources 的每个来源必须记录 id、role、sha256 和说明。每条requirements精确字段是id、rule、value、roomIds（数组）、sourceIds（数组）、rationale（非空解释）、status（documented/interpreted/assumed）；不是kind、roomId或description。rule只使用工具枚举的target_lux/max_lpd/max_spacing/max_devices/max_circuit_watts/max_drop/control_mode/mounting_height/min_uniformity/max_avg_lux。用 requirement.sourceIds 追踪依据；明确区分 documented、interpreted、assumed。对照成图不得作为生成来源。建筑条件若从历史成图剥离，derivedFromFinalDrawing=true；不能称独立盲测。
 
 客户原始资料不足时，保留 missingInputs；阻断项阻止设计，允许产生草案的假设必须明示。不要虚构标准条款核验、IES、建筑底图、医疗用途分级或设备产品。公告只能证明版本/实施时间，不能证明条款内容已读。
 
@@ -97,3 +97,20 @@ allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指�
 section只支持一个字符串，不是数组；功能理解没有spaceId等过滤参数。输入缺项时，blocked是明确结果，不是等待后台处理，报告问题后停止轮询。若工具拒绝参数，先核对本例，不轮流猜字段。只有已经启动、确在运行的物理计算才需要等待进度。
 
 functionalIntake的secondaryUses和unresolved可省略或传空数组表示没有该类条目；整条房间记录必须至少有一项主用途、兼用解释或未决功能，不接受全空记录。不得用空数组抹去未评估的真实兼用功能，缺少它的评估仍然阻断。
+
+
+## 任务书换版与重新确认
+
+`replace_brief` 接收jobId、requestId、expectedRevision、expectedInputSHA256、briefFile（授权目录内UTF-8的.txt/.md）、expectedFileSHA256、sourceId（新且唯一）、supersededSourceId（当前任务书ID）及description。它先冻结原文件和文本快照，再保留旧来源SHA并建立替代关系；旧依赖约束/用途、模型、交付与审核立即退出当前版本，文件仍保留。不能在CAD保存不明或计算仍运行时换版。
+
+换版后只读调用精确形式：
+```json
+{"action":"status","jobId":"job-design-返回的UUID","section":"source_changes"}
+```
+这里返回conditions，每项key/valueSHA256就是被冻结条件的身份。要继续设计，用`reconcile_brief`传jobId、requestId、expectedRevision和expectedInputSHA256，另传requirements（本次新增约束）、functionalIntake（新任务书原句对应的用途或未解项）及carryForwards。carryForwards每项精确为 `{key,expectedValueSHA256,reason,evidence:[{sourceId,quote}]}`：key和值摘要沿用查询结果，来源必须为当前任务书ID，quote逐字引用本版本明确要求保留对应条件的原句。它只确认值不变，不修改几何/工作面/表面/供电/产品等值，不把原假设升级为事实。
+
+必须重新解释任务书依赖的全部目标与控制要求，不能因标准下限较低或旧图已经存在而沿用。只确认部分条件仍保持blocked；未知用途继续unresolved。原标准若错误引用旧任务书，不能用新任务书重新认证标准，需要正确的独立标准来源。旧缺项和说明保留待审，不能删除来过关。新任务确实修改几何或供电等条件时，当前carry方法不能替代权威条件修订，保持阻断。
+
+reconcile_brief可分步补齐未知槽位，不能覆盖已绑定的新解释或独立来源要求；再次换版仍重新失效。成功返回prepared才用新revision/inputSHA继续solve_lighting；旧modelSHA及旧审核不能复活。重试同requestId只重放同一事务快照，后续版本已推进时拒绝旧重放，不重复生成。当前支持任务书版本，不宣称完整多文档或建筑/标准换版已实现。
+
+source_changes.contract会返回当前reconcile_brief精简字段契约、要求项的rule/status枚举和单位，先按该契约构造，不凭经验猜kind/roomId等别名。
