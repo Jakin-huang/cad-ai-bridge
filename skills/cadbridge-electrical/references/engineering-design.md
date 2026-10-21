@@ -125,3 +125,6 @@ source_changes.contract会返回当前reconcile_brief精简字段契约、要求
 精确字段为action="replace_architecture"、jobId、requestId、expectedRevision、expectedInputSHA256、architecturalPack={jobId,sha256}、supersededSourceId、description；新来源ID来自新包并须唯一。只支持相同房间ID/名称/附名用途清单；边界、入口、建筑线与附名源对象更新，其他冻结条件不改。若原建筑来源还承担要求、供电、产品、标准或功能分类，不能直接迁移这些引用，操作拒绝并等待正确专业依据。房间增删/功能变化、净高及电气等改值均不在此动作范围。
 
 成功后旧模型/复核/交付/审核失效，使用新revision/inputSHA重新design或solve_lighting并生成全范围图纸，不能复用旧modelSHA。status精确用{action:"status",jobId,section:"architecture_changes"}，核对面积/入口前后差异与源对象；任务书沿用的历史原句不代表新建筑几何仍未变化。控制器重放不代表CAD中断恢复，真实专业审核始终待审。
+
+
+通用任务的reconcile只协调已停止且未发布结果的solve_lighting/assess_lighting/optimize_lighting。先status保存pendingOperations中的requestId和recordSHA256；另用新的requestId调用reconcile，提供原任务身份、operationRequestId、expectedOperationSHA256=recordSHA256、原operationParameters与recoveryParameters={}。适配器会核对并执行既有安全子任务恢复；已恢复时可指定recoveryParameters.recoveryRequestId。结果另存协调凭证，旧收据不改；旧调用仍返回interrupted，新计算必须用新UUID。deliver/原生状态不明、进程仍活着、身份或证据不符均阻断；只读模式不允许协调。该能力不是通用CAD崩溃恢复、工程验收或专业签审。

@@ -1,3 +1,4 @@
+import {lightingInterruptionReconciliation} from './lighting-interruption-proof.mjs';
 import {z} from 'zod';
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -13,7 +14,7 @@ export function createEngineeringTaskAdapters({schemas,execute,runs}){
  const option=action=>schemas.engineering.options.find(s=>s.shape.action.value===action);
  const prepare=z.discriminatedUnion('action',['prepare','prepare_from_seed'].map(a=>option(a).omit({requestId:true})));
  const operations=['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver','revise','replace_brief','reconcile_brief','replace_architecture','review','recover_lighting','recover_initial_lighting'];
- const lighting={dependencyNodes:context=>lightingDependencyNodes({runs,...context}),constraintSensitiveOperations:['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver'],id:'ordinary-lighting',version:1,complexDesign:true,limitations:'Bounded ordinary lighting only; existing evidence/quality gates unchanged. No full electrical-system or other discipline design.',prepareSchema:prepare,
+ const lighting={...lightingInterruptionReconciliation({runs,execute}),dependencyNodes:context=>lightingDependencyNodes({runs,...context}),constraintSensitiveOperations:['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver'],id:'ordinary-lighting',version:1,complexDesign:true,limitations:'Bounded ordinary lighting only; existing evidence/quality gates unchanged. No full electrical-system or other discipline design.',prepareSchema:prepare,
   operationSchemas:Object.fromEntries(operations.map(a=>[a,option(a).omit({action:true,jobId:true,...('requestId'in option(a).shape?{requestId:true}:{})})])),
   validatePrepare(parameters){clean(parameters);return prepare.parse(parameters);},
   async prepare(parameters,requestId){const r=await execute('engineering',{...parameters,requestId});if(!r.ok)throw Error('TASK_ADAPTER_PREPARE_FAILED: '+JSON.stringify(r.error));return {childJobId:r.jobId,initialInputSHA256:r.inputSHA256};},

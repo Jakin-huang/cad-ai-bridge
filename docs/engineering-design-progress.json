@@ -153,11 +153,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 generic stopped-owner/lost-response reconciliation: preserve old receipts and artifacts, bind child recovery and proof of no publication, never replay ambiguous native CAD",
-    "P0 shared source-bound program/room-schedule/use/authoritative-condition changes and adapter contracts; case-specific hospital missing inputs stay isolated",
-    "M3 office-space planning design pack and lighting-to-space-planning-to-lighting regression, with design/editable CAD/checks/review; analysis/takeoff and DAGs do not count",
-    "Bounded first-pack search coverage and realistic product/condition quality:12-room trial failed478lx in one room, richer layouts/product choices and final-source serial/full-scope retest remain pending; no threshold relaxation",
-    "M4 independent real projects across three project types and two complex design families, external users/new machine/professional acceptance separately"
+    "M3 implement the office-space planning design pack with source-bound program, area/adjacency/existing-shell constraints, generation/editing, independent geometry checks, editable native drawings and review outputs; extract only shared source/program/room-schedule/use change contracts needed by this pack and lighting",
+    "P0 cross-pack identity, source/version isolation, unsupported task refusal and lighting-to-space-planning-to-lighting regression; ordinary-lighting quality thresholds and prior accepted evidence remain fixed",
+    "M2 richer bounded layout/product/condition coverage and final-source complete-scope serial/parallel acceptance; the9x6m first-floor trial still fails500lx and no whole-floor quality success is claimed",
+    "M4 independent real projects covering three project types and two complex design families; external users/new machine/professional review remain separate gates"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -310,6 +309,32 @@
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete",
-    "privateEvidenceBundleSHA256": "c4ba28c53f9586639340b76b457444ba78940af0427be25837f20e387e8593f2"
+    "privateEvidenceBundleSHA256": "c4ba28c53f9586639340b76b457444ba78940af0427be25837f20e387e8593f2",
+    "supersededBy": "taskReconciliationIncrement"
+  },
+  "taskReconciliationIncrement": {
+    "afterCommit": "4ee6976",
+    "validation": "docs/task-reconciliation-validation.json",
+    "unitTestsPassed": 342,
+    "realMcpDistinctChecks": 11,
+    "originalFloorParentReconciled": true,
+    "allThreeUnpublishedCalculationKindsVerified": true,
+    "originalReceiptsUnchanged": true,
+    "independentFinalSourceAudit": true,
+    "newCadJobs": 0,
+    "arbitraryNativeRecovery": false,
+    "secondComplexDesignFamily": false,
+    "releaseRepackaged": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete",
+    "privateEvidenceBundle": {
+      "fileName": "父子任务恢复-证据包.zip",
+      "sha256": "c8408e8d8fd035a55e16de5c40b6cb9bc1e4814a76d21812ae56b81b2551c340",
+      "manifestEntries": 691,
+      "zipEntries": 692,
+      "crcAndAllHashesVerified": true,
+      "sourceRelease": false
+    }
   }
 }

@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-21",
+  "afterCommit": "4ee6976",
+  "status": "bounded_calculation_reconciliation_verified_current_machine_unreleased",
+  "scope": "Generic adapter-driven interruption reconciliation, first implementation for unpublished ordinary-lighting calculations. Hospital is not a product branch; no hospital data or external model calls.",
+  "implemented": {
+    "action": "reconcile",
+    "supportedOperations": [
+      "solve_lighting",
+      "assess_lighting",
+      "optimize_lighting"
+    ],
+    "originalReceiptUnchanged": true,
+    "newRequestRequiredForNewCalculation": true,
+    "adapterSpecificRecoveryProof": true,
+    "historicProofAndCurrentStateSeparated": true,
+    "partialEvidencePreserved": true,
+    "aliveOrUnverifiableOwnerBlocked": true,
+    "ambiguousNativeBlocked": true,
+    "existingResultOrPublicationBlocked": true,
+    "proofTamperingBlocked": true,
+    "sameReconciliationCrashContinuation": true,
+    "readOnlyRejected": true
+  },
+  "verification": {
+    "existingTaskTestsPassed": 10,
+    "newControllerTestsPassed": 7,
+    "fullUnitTestsPassed": 342,
+    "staticChecksPassed": 3,
+    "realMcpDistinctChecks": 11,
+    "recordedChecksIncludingRechecks": 13,
+    "realMcpCalls": 31,
+    "realMcpAccepted": true,
+    "realInterruptedKinds": 3,
+    "freshSingleRoomPhysicalCalculations": 2,
+    "newCadJobs": 0,
+    "finalSourceIndependentAudit": true,
+    "readonlyMcpVerified": true
+  },
+  "remaining": {
+    "arbitraryNativeRecovery": false,
+    "allChildProcessTerminationCertification": false,
+    "secondComplexDesignPack": false,
+    "independentProjects": 0,
+    "externalUsers": false,
+    "newMachine": false,
+    "professionalReview": false,
+    "M2": false,
+    "M3": false,
+    "M4": false
+  },
+  "actualRecovery": {
+    "priorFloorParentReconciled": true,
+    "priorChildRecoveryReused": true,
+    "originalReceiptBytesUnchanged": true,
+    "partialArtifactsRetained": true,
+    "legacyNewRequestPublishedDirectDiagnosticModel": true,
+    "legacyNewModelFullQualityAccepted": false,
+    "legacyNewModelNativeDeliveryBlocked": true,
+    "oldFailedFloorEvidenceZipUnchanged": true,
+    "oldWholeFloorAccepted": false,
+    "currentSingleRoomModelUnchangedThroughAssessmentAndOptimization": true,
+    "interruptedAssessmentBlocksDeliveryWithoutNewQuality": true,
+    "interruptedOptimizationKeepsValidBaseline": true,
+    "allThreeProofsReplayInNewProcessWithCurrentState": true,
+    "physics": [
+      {
+        "kind": "freshSolve",
+        "roomCount": 1,
+        "meanLux": 621.5336493393938,
+        "uniformity": 0.6580032238555082,
+        "maximumReferenceUgr": 16.882316496590704
+      },
+      {
+        "kind": "freshAssessment",
+        "roomCount": 1,
+        "meanLux": 621.5336493393938,
+        "uniformity": 0.6580032238555082,
+        "maximumReferenceUgr": 16.882316496590704
+      }
+    ],
+    "actualAiClientInterpretation": false
+  },
+  "testHistory": {
+    "assertionFailuresRetained": 2,
+    "assertionCorrections": "A subsequent new direct-diagnostic request may publish a model; replay of a historical closure returns the newer current state. Neither changes the old interruption outcome.",
+    "controlledStopWarningRetained": true,
+    "stoppedParentConfirmedAbsent": true,
+    "reportedChildPidReusedByUnrelatedLaterProcess": true,
+    "reusedPidNotTerminated": true,
+    "allChildProcessesCertifiedStopped": false,
+    "stoppedAssessmentResumedByReconciliationOnly": true,
+    "completedSolveNotRestartedDuringCheckpointResume": true
+  },
+  "privateEvidenceBundle": {
+    "fileName": "父子任务恢复-证据包.zip",
+    "sha256": "c8408e8d8fd035a55e16de5c40b6cb9bc1e4814a76d21812ae56b81b2551c340",
+    "manifestEntries": 691,
+    "zipEntries": 692,
+    "crcAndAllHashesVerified": true,
+    "sourceRelease": false
+  }
+}

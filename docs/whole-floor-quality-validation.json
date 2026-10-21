@@ -237,7 +237,7 @@
     "laterOptimizerChange": "After this process loaded its modules, only a post-failure budget short-circuit was added. Successful candidate and delivery branch are unchanged; final full unit335 passed."
   },
   "remainingPracticalGaps": [
-    "Generic parent lost-response reconciliation is still missing even after safe child recovery; no generic receipt was rewritten as completed",
+    "Subsequent bounded calculation reconciliation closes the parent/child gap for the three declared lighting calculation actions; ambiguous native/publication recovery remains unsupported. Original failed trial and ZIP are unchanged; see task-reconciliation-validation.json.",
     "Current centered-grid family with supported UGR-table positions has at most10 lamps in this9x6m source room; measured10-lamp candidate misses500lx. No proof of global infeasibility; richer source-bound geometry/product choices remain unvalidated",
     "No completed accepted12-room/final-source serial-parallel comparison or100-room resource/quality acceptance",
     "Worst observed status response about16.6s during per-room preflight; only global memory sampled",
@@ -253,5 +253,15 @@
     "bytes": 34006077,
     "crcAndAllHashesVerified": true,
     "sourceRelease": false
+  },
+  "subsequentTaskReconciliation": {
+    "validation": "docs/task-reconciliation-validation.json",
+    "originalInterruptedTrialAccepted": false,
+    "originalOperationReceiptUnchanged": true,
+    "parentReconciled": true,
+    "subsequentNewRequestPublishedDirectDiagnosticModel": true,
+    "subsequentModelFullQualityAccepted": false,
+    "subsequentModelNativeDeliveryBlocked": true,
+    "oldEvidenceZipUnchanged": true
   }
 }

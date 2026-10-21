@@ -1,6 +1,6 @@
 # 通用任务身份、能力匹配与执行收据
 
-2026-10-21新增源码入口`cad_engineering_task`（CLI动作`engineering_task`），支持`capabilities`、`prepare`、`status`、`invoke`和`dependencies`。冻结v2.0发行包尚未包含该入口。
+2026-10-21新增源码入口`cad_engineering_task`（CLI动作`engineering_task`），支持`capabilities`、`prepare`、`status`、`invoke`、`dependencies`和有边界的`reconcile`。冻结v2.0发行包尚未包含该入口。
 
 ## 解决的问题与边界
 
@@ -34,4 +34,28 @@
 
 ## 仍需处理
 
-已接入声明的需求/来源/标准/成果依赖及有界标量一致性，按真实操作保存前后图和可读影响清单，见[依赖与影响范围](task-dependencies.md)。任意语义与跨包影响、自动能力解释、第二设计包、选择性原生更新和任务中心专用工作台仍待开发。当前外层对状态不明的操作采取停止并保留证据；尚未提供任意中断自动恢复或自动认证审核。真实客户、跨任务设计质量和人工返工预算继续按[迁移验收矩阵](task-portability.md)执行。
+已接入声明的需求/来源/标准/成果依赖及有界标量一致性，按真实操作保存前后图和可读影响清单，见[依赖与影响范围](task-dependencies.md)。任意语义与跨包影响、自动能力解释、第二设计包、选择性原生更新和任务中心专用工作台仍待开发。当前外层对状态不明的操作采取停止并保留证据；新增的reconcile仅衔接适配器声明的未发布计算中断；任意中断/原生CAD恢复和自动认证审核仍未提供。真实客户、跨任务设计质量和人工返工预算继续按[迁移验收矩阵](task-portability.md)执行。
+
+
+## 计算中断的父子任务协调
+
+`reconcile`保留原来的operation文件与started/unconfirmed状态，另存协调凭证，把该操作解释为`interrupted_before_publication`。它不补造原请求成功回复，不重放求解，不启动CAD。普通照明适配器声明支持solve_lighting、assess_lighting和optimize_lighting；drawing-analysis、deliver及其他操作不自动获得此能力。以后专业包必须提供自己的恢复动作和可独立重查的证据。
+
+先status，保存pendingOperations中的原requestId和recordSHA256；使用新的UUID提交以下字段（加原jobId、expectedProjectId、expectedTaskSHA256）：
+
+```json
+{
+  "action": "reconcile",
+  "requestId": "新的协调UUID",
+  "operationRequestId": "原操作UUID",
+  "expectedOperationSHA256": "status返回的recordSHA256",
+  "operationParameters": {},
+  "recoveryParameters": {}
+}
+```
+
+operationParameters必须原样提供原操作参数，由同一个适配器规范化后与原payload摘要比较，不能改预算、修订、模型或输入。recoveryParameters={}时使用本次协调UUID调用已有安全恢复；子任务已经独立恢复过时，传recoveryParameters.recoveryRequestId。项目身份、任务/子任务绑定、原收据字节、已停止的原PID、归档租约、相邻的开始/恢复历史及输入/模型必须一致。权限不足、活进程、PID可能复用而无法确认、缺失/修改证据、有原操作结果文件或疑似首次模型发布均阻断。
+
+成功后pendingOperations不再包含该操作，interruptedOperations保留原状态、协调UUID和凭证链接；原执行不进入completed计数。再次调用旧invoke返回TASK_OPERATION_INTERRUPTED，后续计算必须明确使用新UUID。相同reconcile可重放原凭证并返回新的current；后续模型/修订不被伪装成旧操作的成果。协调提交前中断可用同一协调UUID续接，停止的协调锁先归档；已经提交但未清理锁也可续接。不能借此清理其他请求或活进程的锁。
+
+每次读取会重新核对凭证/结果摘要、原操作字节、历史前缀、输入/模型和归档租约。历史凭证允许后续合法状态发展；篡改、出现矛盾结果或并发衔接不明时继续阻断。只读模式拒绝协调。该接口不认证所有子进程均已停止，也不支持任意进程崩溃位置、已发布结果接管或状态不明的原生保存。当前实现和真实验证状态见[协调验证](task-reconciliation-validation.json)。
