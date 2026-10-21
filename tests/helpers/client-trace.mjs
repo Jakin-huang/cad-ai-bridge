@@ -12,6 +12,24 @@ export function normalizeClientEvents(raw){
  });return events;
 }
 export function unwrapDeferredCalls(events){return events.map(e=>{if(e.type!=='function_call'||e.name!=='DeferExecuteTool')return e;const args=typeof e.arguments==='string'?JSON.parse(e.arguments):e.arguments;return {...e,name:args.toolName,arguments:JSON.stringify(args.params),wrapper:e.name};});}
+export function toolResultErrors(event){
+ if(event.type!=='function_call_result')return [];
+ if(event.status==='failed')return [{callId:event.callId,kind:'transport_or_tool_error'}];
+ function unpack(v,depth=0){
+  if(depth>12||v==null)return [];
+  if(typeof v==='string'){try{return unpack(JSON.parse(v),depth+1);}catch{return /Input validation error/.test(v)?[{kind:'input_protocol_error'}]:[];}}
+  if(Array.isArray(v))return v.flatMap(x=>unpack(x,depth+1));
+  if(typeof v!=='object')return [];
+  // Inspect the response envelope, never an embedded blocked intake/quality
+  // report or source document that legitimately contains its own ok=false.
+  if(Object.hasOwn(v,'ok'))return v.ok===false?[{kind:'bridge_error',error:v.error??null}]:[];
+  if(v.isError===true)return [{kind:'mcp_error'}];
+  if(v.content!==undefined)return unpack(v.content,depth+1);
+  if(v.text!==undefined)return unpack(v.text,depth+1);
+  return [];
+ }
+ return unpack(event.output).map(e=>({callId:event.callId,...e}));
+}
 export function markdownFileLinks(text){
  // Code-formatted paths and links inside code examples are not clickable delivery.
  const visible=String(text??'').replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/g,'').replace(/`[^`\r\n]*`/g,'');

@@ -1,8 +1,10 @@
 # 工程需求、设计与审核
 
+新任务书先用cad_design_project的inspect_brief读取输入根目录内txt/md，briefFile可为相对输入根的路径；原文text及textSHA256用于新brief来源，rawSHA256标识原文件字节；仅去可选UTF8 BOM、保留换行，不擅自改写。该调用只读，不认证来源权威。
+
 目标是把项目资料解释为可追溯的设计约束，通过 CAD AI Bridge 新建、编辑、核对并交付待人工审核成果。当前 cad_design_project 仅实现明确边界的普通照明设计试验，支持利用系数法与有限IES直射逐点模式，不宣称通用工程推理、多专业完整工程设计、反射/UGR验收或专业签审。
 
-源码增量提供cad_engineering_task通用任务入口（冻结v2包尚无）。先capabilities核对已安装适配器，明确task.kind后绑定项目UUID和任务摘要；后续invoke不得覆盖子任务身份。ordinary-lighting仍只调用原有照明能力；新增office-space-planning独立处理声明的矩形办公净边界、入口/窗/保留构件与房间面积/邻接/座位程序，完成有界方案、改版、自检、原生图与待审输出，只覆盖两侧直走廊矩形房间族；drawing-analysis只做来源绑定检查/计量。空间包先capabilities取得完整契约，prepare.parameters={input}；design参数含expectedRevision/expectedInputSHA256和可选budget；revise_program提供同版本摘要、新brief/program/relations/parameters及reason；deliver/review需expectedModelSHA256。空间包可用shell.capture绑定完整毫米捕获中的WCS轴向矩形、入口/窗线段及保留矩形，实体语义与资料权威仍待审；交付后publish_spaces生成upstream_design共享包。data只读分页section=spaces/context/sources，显式revision/expectedDataSHA256续页，current=false为历史。照明prepare.parameters.project.spaceProgram（直接cad_design_project为prepare.project.spaceProgram）显式选空间、程序摘要/原句并解释use；上游换版会阻断旧照明继续设计/质量/交付，adopt_spaces需同项目同生产者当前包及冻结照明条件摘要、任务书原句续用证据，旧模型/图纸/审核失效。增删空间、用途及条件变化用preview_space_scope先提交expectedRevision/expectedInputSHA256及完整project；它只计算变更且通用invoke保留审计收据，不自动解释用途。project需同项目/同上游当前包、新任务书和建筑来源ID及互相承接的退役来源链。revise_space_scope另传reason和覆盖所有条件的decisions，逐项从预览复制key/disposition/previousSHA256/nextSHA256，加reason/evidence{sourceId,quote}；原句须来自新任务书，不会补造。新输入使全部选定模型/质量/CAD/审核退出当前，历史保留；缺项/错摘要/改写旧来源被拒绝，未知条件保持blocked。不能自动升级假设、推断空间拆并身份或签发消防/无障碍/采光/声学合格；不能将未支持的任务套入照明，也不能把外层任务路由称为通用复杂工程设计。完整参数以当前连接器capabilities返回的契约为准；可安装Skill保持自包含。
+源码增量提供cad_engineering_task通用任务入口（冻结v2包尚无）。先capabilities核对已安装适配器，明确task.kind后绑定项目UUID和任务摘要；后续invoke不得覆盖子任务身份。ordinary-lighting仍只调用原有照明能力；新增office-space-planning独立处理声明的矩形办公净边界、入口/窗/保留构件与房间面积/邻接/座位程序，完成有界方案、改版、自检、原生图与待审输出，只覆盖两侧直走廊矩形房间族；drawing-analysis只做来源绑定检查/计量。空间包先capabilities取得完整契约，prepare.parameters={input}；design参数含expectedRevision/expectedInputSHA256和可选budget；revise_program提供同版本摘要、新brief/program/relations/parameters及reason；deliver/review需expectedModelSHA256。空间包可用shell.capture绑定完整毫米捕获中的WCS轴向矩形、入口/窗线段及保留矩形，实体语义与资料权威仍待审；交付后publish_spaces生成upstream_design共享包。data只读分页section=spaces/context/sources/space_bindings，space_bindings的functionSHA256直接用于programSHA256，不自行计算哈希、不从名称推断用途；显式revision/expectedDataSHA256续页，current=false为历史。照明prepare.parameters.project.spaceProgram（直接cad_design_project为prepare.project.spaceProgram）显式选空间、程序摘要/原句并解释use；上游换版会阻断旧照明继续设计/质量/交付，adopt_spaces需同项目同生产者当前包及冻结照明条件摘要、任务书原句续用证据，旧模型/图纸/审核失效。增删空间、用途及条件变化用preview_space_scope先提交expectedRevision/expectedInputSHA256及完整project；它只计算变更且通用invoke保留审计收据，不自动解释用途。project需同项目/同上游当前包、新任务书和建筑来源ID及互相承接的退役来源链。revise_space_scope另传reason和覆盖所有条件的decisions，逐项从预览复制key/disposition/previousSHA256/nextSHA256，加reason/evidence{sourceId,quote}；原句须来自新任务书，不会补造。新输入使全部选定模型/质量/CAD/审核退出当前，历史保留；缺项/错摘要/改写旧来源被拒绝，未知条件保持blocked。不能自动升级假设、推断空间拆并身份或签发消防/无障碍/采光/声学合格；不能将未支持的任务套入照明，也不能把外层任务路由称为通用复杂工程设计。完整参数以当前连接器capabilities返回的契约为准；可安装Skill保持自包含。
 
 ## 解释输入
 
@@ -128,3 +130,21 @@ source_changes.contract会返回当前reconcile_brief精简字段契约、要求
 
 
 通用任务的reconcile只协调已停止且未发布结果的solve_lighting/assess_lighting/optimize_lighting。先status保存pendingOperations中的requestId和recordSHA256；另用新的requestId调用reconcile，提供原任务身份、operationRequestId、expectedOperationSHA256=recordSHA256、原operationParameters与recoveryParameters={}。适配器会核对并执行既有安全子任务恢复；已恢复时可指定recoveryParameters.recoveryRequestId。结果另存协调凭证，旧收据不改；旧调用仍返回interrupted，新计算必须用新UUID。deliver/原生状态不明、进程仍活着、身份或证据不符均阻断；只读模式不允许协调。该能力不是通用CAD崩溃恢复、工程验收或专业签审。
+
+## 直接调用与通用任务包装的请求标识
+
+直接cad_design_project调用：preview_space_scope只传action/jobId/expectedRevision/expectedInputSHA256/project，不传requestId；revise_space_scope必须另传新的requestId、reason和decisions。直接design只传action/jobId/expectedRevision；直接status只传action/jobId/section。不要发送空项目试探契约，先从旧输入和新任务书构造完整proposal。
+
+cad_engineering_task的invoke是另一层包装：外层始终带自己的requestId及任务身份，parameters里不带action/jobId/requestId。不能把外层字段移进直接调用，或把直接调用的字段原样塞进parameters。
+
+
+### 紧凑的共享空间照明修订提案（未发布源码）
+
+优先按需发现 cad_design_revision，以 draft → read → apply 登记明确的新任务书修订。旧的完整 preview_space_scope/revise_space_scope 接口继续支持。新入口只简化技术装配，工程解释由客户端提交；不替用户选择用途、标准类别、照度或未知条件。
+
+1. inspect_brief 获取输入根内 briefFile 的 textSHA256（draft.expectedBriefSHA256）。读取旧输入和当前 space_bindings，按原文决定完整选择空间、用途以及 fromRoomId（明确沿用哪个旧房间的物理/要求条件）。
+2. draft 传 jobId、唯一 requestId、expectedRevision、expectedInputSHA256、briefFile、expectedBriefSHA256、spacePack。sourceEvidence 和 carryForward 都是 {quote,reason}，quote 必须是新任务书的完整连续原句，reason 至少20字/字符。
+3. rooms 每项 {roomId,use,fromRoomId,quote,reason}。仅对明确修改的规则附 requirements:[{rule,values:[...],status:'assumed'或'interpreted',quote,reason}]；相互矛盾值全留在 values，不自行取舍。无明确值时用 unresolvedRules:[{rule,quote,reason}]，use=unknown 保留未知。其他规则/物理/供电/产品参数只能在 carryForward 明确授权原值沿用时保留。新增房间也要明确 fromRoomId，不能猜模板。removedRooms:[{roomId,quote,reason}] 必须列全旧清单内被移除的空间。
+4. 原有 standards 中的每个条款须用 standardScopes:[{standardId,clauseId,roomIds,quote,reason}] 显式决定范围；无标准则不填。resolvedMissingInputs 仅用 {id,quote,reason} 处理有明确新证据的原缺项，其他缺项保留。conditions 仅在明确改变 heightM/workplaneM/obstacles 时提交；classification 仅有明确分类原文时提交。多功能/附名空间和其他权威依据变动继续使用完整接口。
+5. draft 返回不可变 draft:{jobId,draftId,sha256} 和 prepared/blocked、范围、阻断与待审摘要。read 传原 draft 和 section=summary/conditions/proposal，后两者支持 offset/limit。核查条件处置和项目提案后 apply 传 {action:'apply',requestId:新的UUID,draft:原引用}。它核对原版本与证据，产生新输入，旧模型/质量/图纸/审核失效；重复同请求返回原结果与当前状态。
+6. prepared 后用 cad_design_project design，仅传 action/jobId/expectedRevision；status 读取新 input/model/checks。blocked 是保留冲突/未知后的有效输入状态，停止设计和轮询，如实说明待解决项。不要把“提案已登记”当成已设计或工程验收。

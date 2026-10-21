@@ -59,6 +59,7 @@ const jobId=z.string().regex(/^job-design-[a-f0-9-]{36}$/i);
 export const engineeringSchema=z.discriminatedUnion('action',[
  architectureInspectionSchema,
  z.strictObject({action:z.literal('lighting_basis')}),
+ z.strictObject({action:z.literal('inspect_brief'),briefFile:z.string().min(1).max(2000)}),
  z.strictObject({action:z.literal('ugr_basis')}),
  z.strictObject({action:z.literal('assess_lighting'),jobId,requestId:z.uuid(),expectedModelSHA256:digest,maxMinutes:z.number().int().min(2).max(60).optional(),maxConcurrentRooms:z.number().int().min(1).max(4).optional()}),
  z.strictObject({action:z.literal('optimize_lighting'),jobId,requestId:z.uuid(),expectedModelSHA256:digest,maxCandidates:z.number().int().min(1).max(6).default(4),maxMinutes:z.number().int().min(2).max(60).default(20),maxConcurrentRooms:z.number().int().min(1).max(4).optional()}),

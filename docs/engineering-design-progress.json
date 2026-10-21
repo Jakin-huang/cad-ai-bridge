@@ -153,10 +153,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 shared source/room-program/use-change contract for lighting and space planning; native source-bound shell intake, no case-name routing or reference leakage",
-    "M3 space-planning revision to lighting impact/invalidation and conservative recomputation with explicit adopted source versions, retained historic CAD/reviews and unchanged lighting thresholds",
-    "M2 broader bounded layouts/products/conditions and full-scope final-source physical quality; original9x6m500lx floor failure remains unaccepted",
-    "M4 independent real projects, actual client interpretation, new machine/external users and professional review; known developer cases cannot satisfy these gates"
+    "P0 Requirement-to-proposal coverage, reliable literal evidence handling and inspectable review; retain first-draft mistakes and test independent wording, omissions, conflicting documents and cross-task preservation",
+    "P0 Resolve original full-floor layout/optical failure at original thresholds; full physical evidence and budget checks, not partial-result substitution",
+    "P1 Broader source-bound spatial layout families and explicit split/merge/multiple-use identity coordination across lighting/space/analysis",
+    "P1 Multi-document source/standard applicability and changed-condition handling using independent real briefs and evaluator-only final drawings",
+    "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -173,10 +174,10 @@
   "lightingStandardsValidation": "docs/lighting-standards-validation.json",
   "lightingQualityValidation": "docs/lighting-quality-validation.json",
   "latestSourceIncrement": {
-    "afterCommit": "7a0eb01",
+    "afterCommit": "1a27ed6",
     "engineVersion": "1.13.0",
-    "scope": "source_bound_architecture_boundary_entry_changes_and_entire_scope_regeneration",
-    "validation": "architecture-revisions-validation.json",
+    "scope": "bounded_actual_client_compact_source_quoted_scope_revision",
+    "validation": "scope-client-validation.json",
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
@@ -207,10 +208,10 @@
   },
   "pilotRole": "Hospital is one historical example; current general capability development also uses independent office and analysis tasks",
   "productDirection": {
-    "currentComplexDesignScope": "bounded_ordinary_lighting_only",
+    "currentComplexDesignScope": "bounded_ordinary_lighting_and_office_space_planning",
     "genericCoreImplemented": false,
     "capabilityRoutingImplemented": true,
-    "secondComplexDesignPackImplemented": false,
+    "secondComplexDesignPackImplemented": true,
     "clarifiedByUser": "2026-10-21",
     "targetArchitecture": [
       "generic_task_core",
@@ -218,7 +219,8 @@
       "isolated_case_data"
     ],
     "genericTaskEnvelopeImplemented": true,
-    "capabilityRoutingMethod": "explicit_exact_registered_kind_not_natural_language"
+    "capabilityRoutingMethod": "explicit_exact_registered_kind_not_natural_language",
+    "genericCoreStatus": "Partial shared task envelope, dependency/source history, adapter routing and invalidation; general engineering semantics and arbitrary multidisciplinary coordination incomplete"
   },
   "taskPortability": {
     "plan": "docs/task-portability.md",
@@ -464,5 +466,43 @@
       "productRelease": false,
       "retainedTrials": 2
     }
+  },
+  "previousLatestSourceIncrement": {
+    "afterCommit": "7a0eb01",
+    "engineVersion": "1.13.0",
+    "scope": "source_bound_architecture_boundary_entry_changes_and_entire_scope_regeneration",
+    "validation": "architecture-revisions-validation.json",
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "actualClientScopeRevisionIncrement": {
+    "validation": "docs/scope-client-validation.json",
+    "sourceOnlyIncrement": true,
+    "actualInstalledClient": true,
+    "knownSyntheticFinalStatesPassed": 3,
+    "zeroToolErrorCases": 2,
+    "clientInterpretationChecks": 244,
+    "independentTraceChecks": 33,
+    "firstLegacyFailureRetained": true,
+    "unknownQuoteRejectionRetained": true,
+    "controllerSemanticRepair": false,
+    "newClientNativeDesigns": 1,
+    "nativePdfPages": 5,
+    "unitTestsPassed": 372,
+    "knownTaskSwitch": {
+      "tasks": 5,
+      "calls": 6,
+      "hashChecks": 67
+    },
+    "hospitalDataProcessedOrSent": false,
+    "independentCustomerAcceptance": false,
+    "generalSemanticAcceptance": false,
+    "physicalLightingQualityAccepted": false,
+    "professionalApproval": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete",
+    "releaseRepackaged": false
   }
 }

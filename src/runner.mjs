@@ -21,6 +21,7 @@ import {verifyPlotBytes,selectBatchExport} from './plot-checks.mjs';
 import {runAnalysis} from './engineering-analysis.mjs';
 import {createProjectManager} from './project-tasks.mjs';
 import {createEngineeringManager} from './engineering-projects.mjs';
+import {createEngineeringRevisionManager} from './engineering-revision-plans.mjs';
 import {createEngineeringTaskAdapters} from './engineering-task-adapters.mjs';
 import {createEngineeringTaskManager} from './engineering-task-manager.mjs';
 import {builtInBackends,requireBackendCapability} from './backend-contracts.mjs';
@@ -37,6 +38,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
  let queue=Promise.resolve(),bootstrap;
  const projects=createProjectManager({execute,getSettings,runs});
  const engineering=createEngineeringManager({execute,runs,getInputRoot:async()=>(await getSettings()).workspace});
+ const engineeringRevisions=createEngineeringRevisionManager({runs,engineering,getInputRoot:async()=>(await getSettings()).workspace});
  const engineeringTasks=createEngineeringTaskManager({runs,adapters:createEngineeringTaskAdapters({schemas,execute,runs})});
  async function execute(action,args={}){
   let parsed;try{if(!schemas[action])throw Error('INVALID_ACTION: unsupported action');parsed=schemas[action].parse(args);}catch(error){return failure(error);}
@@ -54,6 +56,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    if(action==='analyze')return await runAnalysis(runs,parsed);
    if(action==='project')return await projects.run(parsed);
    if(action==='engineering')return await engineering.run(parsed);
+   if(action==='engineering_revision')return await engineeringRevisions.run(parsed);
    if(action==='engineering_task')return await engineeringTasks.run(parsed);
   }catch(error){const r=failure(error,{stage:'result'});return action==='engineering_task'?{...r,jobId:parsed.jobId??(parsed.action==='prepare'?'job-task-'+parsed.requestId.toLowerCase():undefined),safeToRetry:false,...(/UNCONFIRMED|lost reply/i.test(error.message)?{outcome:'unconfirmed'}:{})}:r;}
   const enqueued=performance.now(),work=queue.then(()=>run(action,parsed,enqueued));queue=work.catch(()=>{});return work;

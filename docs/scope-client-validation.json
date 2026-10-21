@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-21T11:55:56.689Z",
+  "afterCommit": "1a27ed6",
+  "status": "bounded-synthetic-final-state-pass-usability-partial",
+  "sourceIncrementOnly": true,
+  "actualInstalledClient": true,
+  "externalClientInput": "synthetic_non_private",
+  "hospitalDataProcessedOrSentThisIncrement": false,
+  "knownDeveloperCases": true,
+  "heldOutProject": false,
+  "generalSemanticAcceptance": false,
+  "independentCustomerAcceptance": false,
+  "professionalApproval": false,
+  "physicalLightingQualityAccepted": false,
+  "releaseRepackaged": false,
+  "client": {
+    "desktop": "WorkBuddy 5.3.8",
+    "bundledCLI": "2.115.0",
+    "model": "Configured default auto; actual routed provider/model not established",
+    "codingDelegate": false,
+    "nativeCadDisabled": true,
+    "inputs": "Frozen old input, amended natural-language brief and technical identities; oracle frozen before calls and outside client read allowlist; only local public Skill and explicitly allowed Bridge tools"
+  },
+  "implemented": [
+    "Input-root-bounded UTF-8 brief reader with raw/text SHA and unchanged line endings",
+    "Shared space_bindings view exposes function SHA without rewriting immutable pack bytes",
+    "Separate compact draft/read/apply tool; client explicitly supplies scope/use/from-room/rule/evidence decisions; server mechanically assembles current shared geometry/source chains and complete condition digests",
+    "Inspect immutable draft then apply through original complete source-revision/version/assumption/history gate; old model/quality/delivery/review invalidated",
+    "Unknown rules/use remain blocked and conflicting values retained; optional optical conditions never silently dropped",
+    "Correct current room count after scope-only amendments",
+    "Trace audit recognizes nested Bridge rejection even when outer MCP transport reports success; normal blocked intake remains distinct"
+  ],
+  "cases": [
+    {
+      "id": "positive",
+      "finalStatePassed": true,
+      "zeroErrorUsabilityPassed": true,
+      "checks": 90,
+      "independentTraceChecks": 11,
+      "draftAttempts": 2,
+      "status": "designed",
+      "elapsedMs": 216517,
+      "protocolInputErrors": 0,
+      "allToolErrors": 0,
+      "errorMessages": [],
+      "conditions": 62
+    },
+    {
+      "id": "conflict",
+      "finalStatePassed": true,
+      "zeroErrorUsabilityPassed": true,
+      "checks": 72,
+      "independentTraceChecks": 11,
+      "draftAttempts": 2,
+      "status": "blocked",
+      "elapsedMs": 185935,
+      "protocolInputErrors": 0,
+      "allToolErrors": 0,
+      "errorMessages": [],
+      "conditions": 63
+    },
+    {
+      "id": "unresolved",
+      "finalStatePassed": true,
+      "zeroErrorUsabilityPassed": false,
+      "checks": 82,
+      "independentTraceChecks": 11,
+      "draftAttempts": 2,
+      "status": "blocked",
+      "elapsedMs": 313517,
+      "protocolInputErrors": 0,
+      "allToolErrors": 1,
+      "errorMessages": [
+        "REVISION_PLAN_QUOTE_NOT_IN_BRIEF"
+      ],
+      "conditions": 72
+    }
+  ],
+  "retainedFirstFailure": {
+    "passed": false,
+    "elapsedMs": 1466825,
+    "protocolOnlyErrors": 7,
+    "allToolErrors": 10,
+    "revision": 0,
+    "status": "delivered",
+    "newRevisionOrNewDesign": false,
+    "controlledStop": true
+  },
+  "proposalReview": {
+    "positiveFirstDraftOmittedChangedTargets": true,
+    "clientSelfCorrectedBeforeApply": true,
+    "controllerSemanticRepair": false,
+    "unknownFirstDraftQuoteRejected": true,
+    "unknownClientCorrectedQuoteWithoutControllerRepair": true,
+    "zeroErrorCases": 2,
+    "totalCases": 3,
+    "allOriginalResultsPreserved": true,
+    "notes": "Original result checker counted schema/transport errors but missed nested Bridge ok=false. Separate immutable deep audits supersede its zero-error verdict. Unknown final state passes; its clean usability verdict fails. Successful final state does not establish first-draft semantic accuracy."
+  },
+  "checks": {
+    "clientResultTotal": 244,
+    "independentTraceTotal": 33,
+    "unitFull": {
+      "passed": 372,
+      "failed": 0,
+      "skipped": 0
+    },
+    "opticalConditionPreservationUnit": true,
+    "sourceStatic": "Final --static log recorded separately; full historical release gate remains failed",
+    "actualSharedData": {
+      "checks": 8,
+      "calls": 24
+    },
+    "native": {
+      "newClientDesigns": 1,
+      "newClientDWG": 1,
+      "pdfPages": 5,
+      "allFiveDirectlyInspected": true,
+      "modelChecks": 101,
+      "nativeChecks": 5,
+      "filesVerified": 36,
+      "lights": 52,
+      "circuits": 5,
+      "watts": 1248,
+      "pending": 52
+    },
+    "knownTaskSwitch": {
+      "calls": 6,
+      "tasks": 5,
+      "hashChecks": 67,
+      "scope": "Read-only persisted state/byte checks, not unseen design quality or semantic acceptance"
+    }
+  },
+  "frozen": {
+    "dll": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34",
+    "zip": "20e12d2d2d9081390bbb21ee1915d535c75487e85e431fd633ece164cd27a2d2"
+  },
+  "limits": [
+    "One repetition per developer-selected synthetic brief with procedural prompt and inherited prior metadata; not independent blind customer validation",
+    "Positive scope5 of11 upstream spaces; unknown scope6 includes unresolved ARCHIVE",
+    "Targets450/550lx and all product/supply numbers are assumptions; no new normative/IES/reflection/UGR acceptance",
+    "Bounded straight-corridor rectangular office layout; arbitrary split/merge/identity/authority and multi-use changes not generally supported",
+    "Literal evidence/source SHA integrity does not certify semantic correctness, current standards applicability or project authority",
+    "Original full-floor478.253lx versus500lx failure and historical report/DLL release mismatch remain unresolved",
+    "External users, clean machines, independent real projects and professional review remain unverified"
+  ],
+  "nextPriorities": [
+    {
+      "priority": "P0",
+      "work": "Requirement-to-proposal coverage, reliable literal evidence handling and inspectable review; retain first-draft mistakes and test independent wording, omissions, conflicting documents and cross-task preservation"
+    },
+    {
+      "priority": "P0",
+      "work": "Resolve original full-floor layout/optical failure at original thresholds; full physical evidence and budget checks, not partial-result substitution"
+    },
+    {
+      "priority": "P1",
+      "work": "Broader source-bound spatial layout families and explicit split/merge/multiple-use identity coordination across lighting/space/analysis"
+    },
+    {
+      "priority": "P1",
+      "work": "Multi-document source/standard applicability and changed-condition handling using independent real briefs and evaluator-only final drawings"
+    },
+    {
+      "priority": "P2",
+      "work": "Independent projects, external users, clean machines and certified human review, each accepted separately"
+    }
+  ],
+  "stages": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "privateEvidenceBundle": {
+    "fileName": "真实客户端范围修订-证据包.zip",
+    "manifest": "Original failed trial, successful final-state trials, rejected/unused proposals, frozen inputs/oracle, native outputs and QA, final public source, explicitly referenced owned runs. Companion archive-verification.json records CRC and every SHA-256 verification.",
+    "productRelease": false
+  }
+}
