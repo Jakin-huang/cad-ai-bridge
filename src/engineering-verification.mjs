@@ -1,3 +1,4 @@
+import {architecturalRevisionIssues} from './engineering-architecture-revisions.mjs';
 import {sourceRevisionIssues} from './engineering-source-revisions.mjs';
 import {functionalIntakeIssues} from './engineering-functional-intake.mjs';
 import {evaluateRoomPhotometry} from './engineering-photometry.mjs';
@@ -10,6 +11,7 @@ export function auditEngineeringDesign(m){
  const checks=[],pending=[],p=m.input,add=(id,ok,detail,refs=[])=>checks.push({id,ok,detail,refs});
  const near=(a,b,t=1e-4)=>Math.abs(a-b)<=t;
  const sourceMap=new Map(p.sources.map(s=>[s.id,s]));
+ if(p.architecturalChanges?.length){const c=p.architecturalChanges.at(-1);add('architecture_revision_dependencies',!sourceRevisionIssues(p).some(i=>i.severity==='blocking')&&architecturalRevisionIssues(p).length===0,'Source-bound room transitions and active architecture supersession match the current input');add('drawing_architecture_revision',m.scene.entities.filter(e=>e.kind==='text').map(e=>e.text).join('').includes('当前建筑 '+c.sourceId+'；替代 '+c.supersededSourceId+'；边界及声明入口锚点按来源重建，旧图及旧审核仅历史。'),'CAD notes identify current/retired architecture and the scope of source anchors');}
  if(p.briefRevision)add('source_revision_dependencies',!sourceRevisionIssues(p).some(i=>i.severity==='blocking'),'No superseded computational source, unresolved carry-forward or altered frozen condition may pass design');
  if(p.functionalIntake){add('functional_intake_source_and_application',functionalIntakeIssues(p).length===0,'Recheck literal source SHA/quotes and applied primary/secondary classifications; unresolved functions never pass design');pending.push({code:'FUNCTIONAL_INTERPRETATION_REVIEW',reason:'Literal evidence is not semantic or professional classification approval'});}
  if(p.rooms.some(r=>r.secondaryUseAssessments?.length))add('shared_use_request_conditions',sharedUseInputIssues(p).length===0,'Every secondary use has an explicit supported source-linked same-condition assessment; no use is silently omitted');

@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-10-21",
+  "baseCommit": "7a0eb01",
+  "engineVersion": "1.13.0",
+  "status": "bounded_synthetic_architectural_change_current_machine_verified_unreleased",
+  "unit": {
+    "passed": 292,
+    "failed": 0,
+    "skipped": 0,
+    "newTests": 8
+  },
+  "developmentCase": true,
+  "heldOutProject": false,
+  "actualAiClientInterpretation": false,
+  "privateHospitalDataTransmittedThisIncrement": false,
+  "scope": "Same room/name/use-label schedule: observed boundaries and explicit source entry anchors; other task/electrical/product/height/workplane conditions frozen; whole scope regenerated",
+  "pipeline": {
+    "checksPassed": 11,
+    "assertions": [
+      "New native architectural source resolves all 12 boundaries and 12 explicit entry anchors",
+      "A missing actual source entry blocks architectural completeness",
+      "Incomplete architectural evidence cannot replace the existing engineering revision",
+      "Actual architectural update invalidates model, quality, delivery and simulated review",
+      "Source geometry changes do not alter project targets, products, electrical conditions or room heights",
+      "Old native model cannot be delivered as the new architecture",
+      "Fresh model recalculates the complete declared floor against new source geometry and passes independent drawing checks",
+      "New physical room areas are 54 and 36 square meters while other room areas remain 48",
+      "Source request replay retains the new designed model and does not restart native work",
+      "Revised complete floor saves/reopens natively and exports every declared sheet",
+      "Old and new source/delivery evidence stays unchanged and professional review remains pending"
+    ],
+    "modelSHA256": "b479a6296453b4feb4c27790784a2a951f3ebe80da671a935467fd54337c9341",
+    "inputSHA256": "4a9205d3970af78f7faaba09c06e1add58bb0da702e77f809f0aedc00a0acb22",
+    "sourceSHA256": "3462c974441842f87a456ecc584fe102d09554674acba5e2e7f94ed28edfdbf6",
+    "revision": 1,
+    "spaces": 12,
+    "oldDevices": 108,
+    "devices": 107,
+    "watts": 2568,
+    "circuits": 12,
+    "sheets": 5,
+    "sheetPapers": [
+      {
+        "id": "E01",
+        "paper": "A3",
+        "denominator": 100
+      },
+      {
+        "id": "E02",
+        "paper": "A1",
+        "denominator": 100
+      },
+      {
+        "id": "E03",
+        "paper": "A1",
+        "denominator": 100
+      },
+      {
+        "id": "E04",
+        "paper": "A3",
+        "denominator": 100
+      },
+      {
+        "id": "E05",
+        "paper": "A3",
+        "denominator": 100
+      }
+    ],
+    "modelChecks": {
+      "passed": 228,
+      "failed": 0,
+      "pending": 17
+    },
+    "changedBoundaryRooms": [
+      "ROOM_1",
+      "ROOM_2"
+    ],
+    "changedEntryRooms": [
+      "ROOM_1",
+      "ROOM_2"
+    ],
+    "oldAreasM2": [
+      48,
+      48
+    ],
+    "newAreasM2": [
+      54,
+      36
+    ],
+    "oldEntriesMm": [
+      [
+        1000,
+        0
+      ],
+      [
+        11000,
+        0
+      ]
+    ],
+    "newEntriesMm": [
+      [
+        3000,
+        0
+      ],
+      [
+        12000,
+        0
+      ]
+    ],
+    "oldSourceModelAndDeliveryFilesUnchanged": true,
+    "simulatedPriorReviewInvalidated": true,
+    "qualityScope": "Flux estimate and source-geometry regression only; no IES/total-light/UGR or hospital acceptance"
+  },
+  "unitOnly": {
+    "twoSequentialArchitecturalVersions": true,
+    "currentInputAndDigestTamperRejected": true,
+    "priorBriefCarryEvidenceUnchangedWithExplicitArchitectureValueChain": true,
+    "supportedCombinationHasRealClientOrNativeAcceptance": false
+  },
+  "presentation": {
+    "allFiveNativePagesInspected": true,
+    "mergedRenderIdentical": true,
+    "nativeZipSHA256": "aaeb49b94652fe8a830dc60ecc2f2e7c8f6e9c55a1de6949a839f7317027ecc2",
+    "taskCenterAreaEntrySourceChainVerified": true,
+    "actualDownloadedCalculationCsvSHA256": "b7a63cf5248b76862dae6c6a6a9bb21091ab837d55e3b1ba3a4203797f07289f",
+    "currentSourceRequestReplayPreservesDeliveredRevision": true,
+    "nativeSourceAnchorPlane": "Z=0 for both closed boundary and declared entry anchor"
+  },
+  "limits": [
+    "Known synthetic floor and programmed change; not held-out, customer or hospital acceptance",
+    "Entry roles explicitly declared; source-anchor position is not real door/opening/egress certification",
+    "Same room ID/name/use-label schedule only; no room insertion/removal, electrical/height/workplane or standard-edition change",
+    "No IES, total-light, point uniformity, UGR or actual product acceptance in this floor case",
+    "Full scope regenerated; no selective native editing or preservation of arbitrary manual modifications",
+    "Source publication replay is not native CAD interruption recovery",
+    "Original hospital architecture/client brief, complete floor geometry, professional review, new machine and external users remain pending",
+    "Frozen v2 package/DLL unchanged; unreleased source increment"
+  ],
+  "acceptance": {
+    "currentMachineDeclaredSubset": true,
+    "fullLightingQuality": false,
+    "hospitalFullFloor": false,
+    "independentCustomerProject": false,
+    "externalUsers": false,
+    "newMachine": false,
+    "professionalApproval": false,
+    "M2": false,
+    "M3": false,
+    "M4": false
+  },
+  "developmentAuditNotes": [
+    "Initial unit fixture used a BRIEF-dependent test standard; the existing standard carry guard rejected it. Fixture corrected to independent RULES; no guard or target relaxed.",
+    "First post-delivery proof script assumed isError must be absent; successful MCP returned false. Harness corrected without rerunning native work."
+  ],
+  "privateEvidenceArchive": {
+    "files": 100,
+    "manifestEntries": 99,
+    "allArchivedFileSHA256Verified": true,
+    "zipCRC": true,
+    "zipSHA256": "a086d401e5a9c116b048a23735d2f58f6c148e9d91258506e477d7c130e5cc29",
+    "scope": "New and old source DWGs, source/capture packages including missing-entry negative case, current/historical delivery, input/model/journal, UI/visual and regression evidence; documentation snapshot predates this archive metadata"
+  }
+}

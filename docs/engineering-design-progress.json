@@ -14,7 +14,8 @@
         "43 source-derived candidate spaces: 39 inferred, four unresolved and three interior-overlap ambiguities; full-floor intake blocked",
         "Independent room schedule, entrances and ceiling conditions still missing",
         "Twelve digit-prefix names restored from explicit source TEXT paths; ten excluded annotation groups retained, four potential project conditions pending interpretation; source still final-derived and whole-floor gate blocked",
-        "Separate unverified grouping proposes 41 physical entries while retaining 43 source names and two secondary uses; original 43-entry/three-overlap record retained; four missing boundaries and one independent overlap still block the proposed floor"
+        "Separate unverified grouping proposes 41 physical entries while retaining 43 source names and two secondary uses; original 43-entry/three-overlap record retained; four missing boundaries and one independent overlap still block the proposed floor",
+        "Same-schedule source-bound architecture replacement now captures declared entry anchors and observed boundaries; entry semantics/opening dimensions and arbitrary room schedule/condition changes remain unsupported"
       ]
     },
     {
@@ -56,7 +57,8 @@
         "R2 simulated brief change: 18 luminaires, separate delivery",
         "Saved CAD readback, PDF physical size and visual review passed",
         "Synthetic functional client case R1:12 luminaires/1 circuit/5A3; explicit occupancy/manual intent and pending sensor/wiring details; R0 visual gap and original bytes retained; not installation design acceptance",
-        "Synthetic source revision R5:12 luminaires/276W/1 circuit/5A3; regional/manual intent and new/old task identities explicit; native save/reopen and original file preservation passed; direct-only E05 table needs accepted total-quality summary integration"
+        "Synthetic source revision R5:12 luminaires/276W/1 circuit/5A3; regional/manual intent and new/old task identities explicit; native save/reopen and original file preservation passed; direct-only E05 table needs accepted total-quality summary integration",
+        "Actual 12-room synthetic architecture revision: two changed boundaries/entries, 107 assumed lights/12 circuits/5 sheets (A1 plans); native save/reopen and old file preservation passed, flux estimate only"
       ]
     },
     {
@@ -90,7 +92,8 @@
         "Task-center SHA-bound structured label/note review and actual CSV download verified; standalone HTML browser acceptance remains incomplete",
         "Structured common-use view shows individual source classes and effective project500–700lx target; actual selected-revision CSV download SHA verified",
         "SHA-bound functional-intake view shows literal source/reasons and unresolved blocking; final quality report actual download matches current R1 model SHA; frozen v2 and global installed skill not repackaged",
-        "Task-center current/history source chain, literal unchanged-condition quotes and exact R5 quality-report download verified; this remains a known single synthetic room"
+        "Task-center current/history source chain, literal unchanged-condition quotes and exact R5 quality-report download verified; this remains a known single synthetic room",
+        "Task-center actual before/after areas and entry coordinates, source-chain status and downloaded current calculation CSV SHA verified"
       ]
     }
   ],
@@ -142,10 +145,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 authoritative architectural/engineering condition value changes and dependency invalidation; single-brief unchanged-value carry is now locally verified, arbitrary multi-source coordination remains incomplete",
+    "P0 whole-floor source-bound photometry/total-light budgets and partitions; current 12-room architecture-change output remains flux-only",
     "P0 hospital geometry/functional missing-input workflow and independent original architecture/customer sources",
-    "P0 whole-floor budgets, independent unseen variants, observer/real-product evidence and correct electrical ratings",
-    "P1 accepted total-quality summary on CAD, installation routing, coordinated control/device design, incremental native edits and authenticated professional review; new-machine/external-user validation separate"
+    "P0 declared room-schedule/use and authoritative electrical/ceiling condition changes beyond same-schedule boundary/entry replacement",
+    "P1 accepted total-quality summary on CAD, installation routing/control details, selective native updates and authenticated review; external users/new-machine validation separate"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -162,10 +165,10 @@
   "lightingStandardsValidation": "docs/lighting-standards-validation.json",
   "lightingQualityValidation": "docs/lighting-quality-validation.json",
   "latestSourceIncrement": {
-    "afterCommit": "9b5a557",
-    "engineVersion": "1.12.0",
-    "scope": "active_brief_supersession_dependency_invalidation_and_unchanged_conditions",
-    "validation": "source-revisions-validation.json",
+    "afterCommit": "7a0eb01",
+    "engineVersion": "1.13.0",
+    "scope": "source_bound_architecture_boundary_entry_changes_and_entire_scope_regeneration",
+    "validation": "architecture-revisions-validation.json",
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
@@ -184,7 +187,14 @@
     "unchangedConditionCarry": true,
     "actualClientRetryProtocolErrors": 0,
     "firstTrialErrorsRetained": 1,
-    "realAuthoritativeConditionEdits": false,
+    "realAuthoritativeConditionEdits": "same_schedule_source_bound_architectural_boundaries_and_declared_entry_anchors_only",
+    "hospitalAcceptance": false
+  },
+  "architecturalRevisions": {
+    "validation": "docs/architecture-revisions-validation.json",
+    "sameScheduleSourceGeometry": true,
+    "sourceEntryAnchors": true,
+    "arbitraryRoomScheduleOrConditionEdits": false,
     "hospitalAcceptance": false
   }
 }

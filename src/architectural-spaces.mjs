@@ -56,7 +56,14 @@ export function compileArchitecturalSpaces(query,options){
    add('SOURCE_SPACE_LABEL_RELATIONSHIP_UNVERIFIED','review','Additional source label '+a.name+' declared as '+a.relationship+': '+a.reason+'; spatial containment does not certify naming, use or applicability',[expected.id,a.id]);
    additional.push({id:a.id,name:a.name,relationship:a.relationship,reason:a.reason,status:'unverified_interpretation',spatialStatus,label:binding.record,sourceId:options.sourceId});
   }
-  rooms.push({id:expected.id,name:expected.name,polygon:geometry.polygon,areaM2:geometry.areaM2,geometryStatus,label:primary.record,...(additional.length?{aliases:additional}:{}),boundaryInstancePath:boundaryKey?.split('/'),sourceId:options.sourceId});
+  const entries=[];
+  for(const path of expected.entryInstancePaths||[]){const entryKey=path.map(h=>h.toUpperCase()).join('/'),matches=rows.filter(e=>key(e)===entryKey);const entry=matches[0],position=entry?.position;
+   if(geometryStatus!=='observed_closed_boundary'||geometry.entity.vertices.some(v=>Math.abs(v[2]??0)>.001)||matches.length!==1||!['TEXT','MTEXT','INSERT','POINT'].includes(entry?.type)||!Array.isArray(position)||position.length<2||position.some(n=>!Number.isFinite(n))||Math.abs(position[2]??0)>.001||spaceContainment(position.slice(0,2),geometry.polygon)!=='boundary'){add('ROOM_ENTRY_SOURCE_INVALID','blocking','Declared entry must identify one planar source anchor on its room boundary',[expected.id,entryKey]);continue;}
+   if(entries.some(e=>e.instancePath.join('/')===entryKey||dist(e.position,position)<.001)){add('ROOM_ENTRY_DUPLICATE','blocking','Repeated entry source or coincident entry anchors are ambiguous',[expected.id,entryKey]);continue;}
+   entries.push({instancePath:entryKey.split('/'),position:position.slice(0,2),entityType:entry.type,interpretation:'declared_entry_anchor_not_door_geometry_certification'});
+  }
+  if(entries.length)add('ENTRY_ROLE_REQUIRES_REVIEW','review','Source anchor positions are checked; their entrance semantics, opening width and circulation need architectural review',[expected.id]);
+  rooms.push({id:expected.id,name:expected.name,polygon:geometry.polygon,areaM2:geometry.areaM2,geometryStatus,label:primary.record,...(additional.length?{aliases:additional}:{}),...(expected.entryInstancePaths?{entries}:{}),boundaryInstancePath:boundaryKey?.split('/'),sourceId:options.sourceId});
  }
  for(let i=0;i<rooms.length;i++)for(let j=i+1;j<rooms.length;j++)if(spaceInteriorsOverlap(rooms[i].polygon,rooms[j].polygon))add('ROOM_INTERIORS_OVERLAP','blocking','Selected room interiors overlap',[rooms[i].id,rooms[j].id]);
  const unmappedLabels=labels.filter(l=>!ignored.has(key(l))&&!usedLabels.has(key(l))).map(l=>({instancePath:l.instancePath||[l.handle],text:l.text})),unmappedBoundaries=boundaries.filter(b=>!usedBoundaries.has(b.key)).map(b=>b.key);

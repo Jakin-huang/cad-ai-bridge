@@ -114,3 +114,12 @@ functionalIntake的secondaryUses和unresolved可省略或传空数组表示没�
 reconcile_brief可分步补齐未知槽位，不能覆盖已绑定的新解释或独立来源要求；再次换版仍重新失效。成功返回prepared才用新revision/inputSHA继续solve_lighting；旧modelSHA及旧审核不能复活。重试同requestId只重放同一事务快照，后续版本已推进时拒绝旧重放，不重复生成。当前支持任务书版本，不宣称完整多文档或建筑/标准换版已实现。
 
 source_changes.contract会返回当前reconcile_brief精简字段契约、要求项的rule/status枚举和单位，先按该契约构造，不凭经验猜kind/roomId等别名。
+
+
+## 同清单建筑边界与入口换版
+
+先inspect_architecture建立新版来源包。expectedRooms每项可加entryInstancePaths（完整原图对象路径数组）；TEXT/MTEXT/INSERT/POINT源position必须唯一、平面且在本房间边界，入口角色仍是声明，不能当成门宽或疏散认证。replace_architecture要求全部房间有来源入口及观察闭合边界，不接受推断替代。
+
+精确字段为action="replace_architecture"、jobId、requestId、expectedRevision、expectedInputSHA256、architecturalPack={jobId,sha256}、supersededSourceId、description；新来源ID来自新包并须唯一。只支持相同房间ID/名称/附名用途清单；边界、入口、建筑线与附名源对象更新，其他冻结条件不改。若原建筑来源还承担要求、供电、产品、标准或功能分类，不能直接迁移这些引用，操作拒绝并等待正确专业依据。房间增删/功能变化、净高及电气等改值均不在此动作范围。
+
+成功后旧模型/复核/交付/审核失效，使用新revision/inputSHA重新design或solve_lighting并生成全范围图纸，不能复用旧modelSHA。status精确用{action:"status",jobId,section:"architecture_changes"}，核对面积/入口前后差异与源对象；任务书沿用的历史原句不代表新建筑几何仍未变化。控制器重放不代表CAD中断恢复，真实专业审核始终待审。
