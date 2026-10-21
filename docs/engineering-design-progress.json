@@ -153,11 +153,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 first-pack complete-floor quality/runtime budget native validation, retaining existing precision and complete coverage; dependency accounting and known task isolation now locally verified",
-    "P0 source/requirements semantic coordination and authoritative-condition changes beyond declared dependency accounting; hospital missing inputs remain case-specific blockers",
-    "P0 source-bound project/room-schedule/use/authoritative-condition changes shared by supported packs; hospital missing inputs remain case-specific blockers",
-    "M3 office-space planning design pack from source-bound requirements to new/editable drawings and checks, to validate a second substantially different design family; analysis/takeoff and DAG accounting do not count",
-    "M4 at least three independent real projects spanning three project types and two distinct design families; external user/new-machine/professional acceptance separate"
+    "P0 generic stopped-owner/lost-response reconciliation: preserve old receipts and artifacts, bind child recovery and proof of no publication, never replay ambiguous native CAD",
+    "P0 shared source-bound program/room-schedule/use/authoritative-condition changes and adapter contracts; case-specific hospital missing inputs stay isolated",
+    "M3 office-space planning design pack and lighting-to-space-planning-to-lighting regression, with design/editable CAD/checks/review; analysis/takeoff and DAGs do not count",
+    "Bounded first-pack search coverage and realistic product/condition quality:12-room trial failed478lx in one room, richer layouts/product choices and final-source serial/full-scope retest remain pending; no threshold relaxation",
+    "M4 independent real projects across three project types and two complex design families, external users/new machine/professional acceptance separately"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -240,7 +240,8 @@
     "defaultConcurrentRooms": 1,
     "releaseRepackaged": false,
     "finalUnitTestsPassed": 306,
-    "staticChecksPassed": 3
+    "staticChecksPassed": 3,
+    "supersededBy": "wholeFloorQualityIncrement"
   },
   "genericEngineeringTasks": {
     "validation": "docs/engineering-tasks-validation.json",
@@ -288,5 +289,27 @@
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
+  },
+  "wholeFloorQualityIncrement": {
+    "afterCommit": "49c4b37",
+    "validation": "docs/whole-floor-quality-validation.json",
+    "unitTestsPassed": 335,
+    "completePhysicalCandidates": 1,
+    "wholeFloorQualityAccepted": false,
+    "failedRoomMeanLux": 478.25304809625686,
+    "modelPublished": false,
+    "controlledStop": true,
+    "safeChildRecovery": true,
+    "genericParentReconciliation": false,
+    "actualFailedDecisionReplay": true,
+    "separateSingleOfficeNativeProjection": true,
+    "nativeProjectionChecks": 4,
+    "pdfPagesVisuallyReviewed": 5,
+    "fullReleaseCheckPassed": false,
+    "releaseRepackaged": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete",
+    "privateEvidenceBundleSHA256": "c4ba28c53f9586639340b76b457444ba78940af0427be25837f20e387e8593f2"
   }
 }

@@ -1,6 +1,6 @@
 # 工程需求、设计与审核
 
-目标是把项目资料解释为可追溯的设计约束，通过 CAD AI Bridge 新建、编辑、核对并交付待人工审核成果。当前 cad_design_project 仅实现明确边界的普通照明设计试验，支持利用系数法与有限IES直射逐点模式，不宣称通用工程推理、医院全专业设计、反射/UGR验收或专业签审。
+目标是把项目资料解释为可追溯的设计约束，通过 CAD AI Bridge 新建、编辑、核对并交付待人工审核成果。当前 cad_design_project 仅实现明确边界的普通照明设计试验，支持利用系数法与有限IES直射逐点模式，不宣称通用工程推理、多专业完整工程设计、反射/UGR验收或专业签审。
 
 源码增量提供cad_engineering_task通用任务入口（冻结v2包尚无）。先capabilities核对已安装适配器，明确task.kind后绑定项目UUID和任务摘要；后续invoke不得覆盖子任务身份。ordinary-lighting仍只调用原有照明能力，drawing-analysis只做来源绑定检查/计量；不能将未支持的任务套入照明，也不能把外层任务路由称为通用复杂工程设计。完整参数以当前连接器capabilities返回的契约为准；可安装Skill保持自包含。
 
@@ -40,7 +40,7 @@ boundaryLayers 声明的是明确房间边界图层，必须是可验证闭合�
 
 这是附加的有限计算模式。传入 photometricDesign={method:ies_direct_point,gridSpacingM,edgeOffsetM,boundaryModel:opaque_vertical_room_walls}，并逐房间补充有来源的 min_uniformity（Emin/Eavg，0—1之间）和 max_avg_lux（lx）。原有 target_lux 此时是维持直射平均目标，不能悄悄改写客户对总照度、均匀度或工作面的要求。未明确允许这种模型时需登记为假设/待审，不能代替正式总照度设计。
 
-每个候选提供 iesFile={file,sha256}；文件必须位于已配置输入目录，sourceId 指向 role=catalog 且摘要相同的来源。支持 LM-63-1991/1995/2002、Type C、TILT=NONE，其他类型或补偿拒绝。按文件原坎德拉、倍率、rotationDegrees 和 maintenanceFactor 计算，不把光强强行归一化到任意流明。功率和相对光度声明灯泡流明必须匹配；晚于设计日期的文件声明发行日期会阻断。原始IES读取不证明Ra/CCT、产品可采购性或医院选型适用。
+每个候选提供 iesFile={file,sha256}；文件必须位于已配置输入目录，sourceId 指向 role=catalog 且摘要相同的来源。支持 LM-63-1991/1995/2002、Type C、TILT=NONE，其他类型或补偿拒绝。按文件原坎德拉、倍率、rotationDegrees 和 maintenanceFactor 计算，不把光强强行归一化到任意流明。功率和相对光度声明灯泡流明必须匹配；晚于设计日期的文件声明发行日期会阻断。原始IES读取不证明Ra/CCT、产品可采购性或项目选型适用。
 
 allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指定图面示意符号。程序不替用户认证这些用途。产品功率、型号映射和源摘要见灯具CSV及说明页；逐点输出见 point-illuminance.csv，Eavg/Emin/Emax/Emin/Eavg见计算CSV和审核HTML。deliver前再次核对IES摘要；私有待审打包保存原始IES供审核，禁止把它放进源码或通用发行包。
 
@@ -62,7 +62,7 @@ allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指�
 
 ## 有限光源与漫反射复核
 
-默认design以有来源IES直射网格预检；solve_lighting和optimize_lighting则以完整复核后的维持总照度选择候选，此时target_lux和max_avg_lux约束总平均照度，直射值仅作诊断。需要反射总照度时，在输入中显式登记 `lightingEnvironment={model:"closed_diffuse_rooms",geometry:"ies_rectangular_opening",sourceIds,status,description,rooms:[...]}`，逐空间声明 roomId、enclosure="closed_opaque"、floorReflectance/wallReflectance/ceilingReflectance（0—0.9）、sourceIds、status（documented/interpreted/assumed）和描述，必须恰好覆盖全部房间。反射率不是通用医院事实；没有装修表时只能明确作为假设。
+默认design以有来源IES直射网格预检；solve_lighting和optimize_lighting则以完整复核后的维持总照度选择候选，此时target_lux和max_avg_lux约束总平均照度，直射值仅作诊断。需要反射总照度时，在输入中显式登记 `lightingEnvironment={model:"closed_diffuse_rooms",geometry:"ies_rectangular_opening",sourceIds,status,description,rooms:[...]}`，逐空间声明 roomId、enclosure="closed_opaque"、floorReflectance/wallReflectance/ceilingReflectance（0—0.9）、sourceIds、status（documented/interpreted/assumed）和描述，必须恰好覆盖全部房间。反射率必须来自具体项目资料或明确假设；没有装修表时只能明确作为假设。
 
 维护者先独立核验官方Radiance运行时来源和发行摘要，再用 `node scripts/register-radiance-runtime.mjs TRUSTED-ROOT NEW-PRIVATE-PROFILE.json` 登记四个工具及完整lib支持文件摘要。配置 CADBRIDGE_RADIANCE_RUNTIME 或本机 dataHome/radiance-runtime.json。该脚本不下载、不认证发布者；私有配置和二进制不放进源码/通用发行包。
 

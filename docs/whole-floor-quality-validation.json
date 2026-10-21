@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-21",
+  "afterCommit": "49c4b37",
+  "scope": "Known procedural twelve-office-space complete declared optical scope. Not hospital data, held-out client input, an actual complete building or professional acceptance.",
+  "status": "complete_first_trial_failed_second_trial_controlled_stop_no_floor_acceptance",
+  "input": {
+    "spaces": 12,
+    "areaM2": [
+      54,
+      36,
+      48
+    ],
+    "geometry": "Source-bound synthetic architecture with declared entry TEXT anchors, not actual door openings",
+    "product": "Unmodified public manufacturer rectangular-opening Type C IES,23W, nominal leaflet24W unresolved",
+    "conditions": "Opaque closed rooms, explicit assumed reflectances, standing-reference UGR only",
+    "actualAIClientInterpretation": false,
+    "independentProject": false
+  },
+  "frozenTargets": {
+    "minimumAverageLux": 500,
+    "maximumAverageLux": 700,
+    "minimumUniformity": 0.6,
+    "maximumLpd": 8,
+    "maximumReferenceUgr": 19
+  },
+  "frozenBudgets": {
+    "maxCandidates": 2,
+    "maxMinutes": 60,
+    "maxConcurrentRooms": 2,
+    "qualityPresetsChanged": false,
+    "roomOrPointSampling": false
+  },
+  "implementation": {
+    "sourceFamily": "Existing centered grids and bounded single-removal variants only",
+    "preflightBeforePointSampling": true,
+    "ugrExtrapolation": false,
+    "asyncBetweenRoomPreflights": true,
+    "preflightIncludedInTimeBudget": true,
+    "canonicalModelAndReportUnchangedByDeliveryProjection": true,
+    "acceptedQualityAnnotationProjectionImplemented": true,
+    "genericProgressAndReportWording": true,
+    "auditedFailedRoomLayoutsExcludedWithinStudy": true,
+    "exclusionsNeverCrossStudies": true,
+    "noRerankingAfterLastPhysicalCandidateBudget": true
+  },
+  "verification": {
+    "unitTestsPassed": 335,
+    "staticChecksPassed": 3,
+    "changedSkillInstallTestsPassed": 11,
+    "wholeFloorQualityAccepted": false,
+    "nativeDeliveryAccepted": false,
+    "visualReviewAccepted": false,
+    "serialReferenceAccepted": false,
+    "fullReleaseCheckPassed": false,
+    "fullReleaseCheckFailure": "Historical v2 reports record plugin51cb1b8d while frozen/current DLL is4f97fdc9; no report or DLL rewritten"
+  },
+  "acceptance": {
+    "secondComplexDesignFamily": false,
+    "independentHeldoutProjects": 0,
+    "newMachine": false,
+    "externalUser": false,
+    "professionalReview": false,
+    "M2": false,
+    "M3": false,
+    "M4": false
+  },
+  "release": {
+    "repackaged": false,
+    "frozenZipSHA256": "20e12d2d2d9081390bbb21ee1915d535c75487e85e431fd633ece164cd27a2d2",
+    "frozenDllSHA256": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34"
+  },
+  "actualWholeFloor": {
+    "completePhysicalCandidates": 1,
+    "partialStoppedCandidates": 1,
+    "totals": {
+      "rooms": 12,
+      "luminaires": 139,
+      "points": 1958,
+      "observers": 48
+    },
+    "partitions": 2,
+    "maxConcurrentRooms": 2,
+    "passed": false,
+    "failedChecks": [
+      "total_mean_and_uniformity_ROOM_1"
+    ],
+    "rooms": [
+      {
+        "roomId": "ROOM_1",
+        "averageLux": 478.25304809625686,
+        "uniformity": 0.6359903386099938,
+        "maximumReferenceUgr": 17.74184318293388
+      },
+      {
+        "roomId": "ROOM_2",
+        "averageLux": 589.5049708512397,
+        "uniformity": 0.6670066758423046,
+        "maximumReferenceUgr": 16.550134500861585
+      },
+      {
+        "roomId": "ROOM_3",
+        "averageLux": 621.5336493393938,
+        "uniformity": 0.6580032238555082,
+        "maximumReferenceUgr": 16.882316496590704
+      },
+      {
+        "roomId": "ROOM_4",
+        "averageLux": 611.1367305030308,
+        "uniformity": 0.6470989768107854,
+        "maximumReferenceUgr": 17.115491555108765
+      },
+      {
+        "roomId": "ROOM_5",
+        "averageLux": 621.552656969697,
+        "uniformity": 0.6583332955166653,
+        "maximumReferenceUgr": 16.902403406344874
+      },
+      {
+        "roomId": "ROOM_6",
+        "averageLux": 611.0131977212119,
+        "uniformity": 0.6469594068905278,
+        "maximumReferenceUgr": 17.104981626324054
+      },
+      {
+        "roomId": "ROOM_7",
+        "averageLux": 621.535084593939,
+        "uniformity": 0.6574432789533708,
+        "maximumReferenceUgr": 16.89927123554021
+      },
+      {
+        "roomId": "ROOM_8",
+        "averageLux": 611.111564187879,
+        "uniformity": 0.6474747725087283,
+        "maximumReferenceUgr": 17.104471343136463
+      },
+      {
+        "roomId": "ROOM_9",
+        "averageLux": 621.526068418182,
+        "uniformity": 0.6575184803431892,
+        "maximumReferenceUgr": 16.882316496590704
+      },
+      {
+        "roomId": "ROOM_10",
+        "averageLux": 611.1001081878788,
+        "uniformity": 0.646992470959347,
+        "maximumReferenceUgr": 17.115491555108765
+      },
+      {
+        "roomId": "ROOM_11",
+        "averageLux": 621.5610840727272,
+        "uniformity": 0.658720348637678,
+        "maximumReferenceUgr": 16.926892947752624
+      },
+      {
+        "roomId": "ROOM_12",
+        "averageLux": 611.0132020606057,
+        "uniformity": 0.6469594022958453,
+        "maximumReferenceUgr": 17.104981626324054
+      }
+    ],
+    "modelPublished": false,
+    "nativeCadJobs": 0,
+    "serialReferencePerformed": false,
+    "stoppedReason": "Second whole-plan candidate repeats identical optical inputs/layout for already failed ROOM_1. Explicit owned-process stop preserved all outputs; no automatic saved request replay.",
+    "controlledChildRecovery": "prepared_without_model_or_cad",
+    "genericParentRecovery": "operation_unconfirmed_retained_not_falsely_completed",
+    "preparationFailuresRetained": 2,
+    "sourceRuntimeSettingsChanged": false,
+    "qualityThresholdsChanged": false
+  },
+  "observed": {
+    "scope": "One unsuccessful whole-floor study, not a performance/quality acceptance, owned-process peak-memory claim or new-machine guarantee",
+    "statusSamples": 569,
+    "maxObservedStatusLatencyMs": 16631,
+    "minimumObservedGlobalFreeGiB": 1.8410491943359375,
+    "observationErrors": 0,
+    "firstPhysicalWorkSampleElapsedMs": 117649
+  },
+  "feedbackRepairEvidence": {
+    "controllerUnitVerified": true,
+    "sharedPrefixRoomIdsVerified": true,
+    "separateStudyIsolationVerified": true,
+    "actualFailedEvidenceDecisionReplay": true,
+    "sourceQualitySHA256": "f53a13ee9d2199121e4fb466696c18a54d81e5247af9466c0657e4e83f194289",
+    "secondCandidateChangesActualFailedRoom": true,
+    "newPhysicalAssessmentsInReplay": 0,
+    "newCadJobsInReplay": 0,
+    "finalSourceCompleteFloorPhysicalRetest": false,
+    "firstReplayHarnessFailureRetained": "Copied generated review.html collided with write-once output; corrected to copy only hash-bound raw artifacts, then used a fresh directory"
+  },
+  "separateNativeProjection": {
+    "scope": "Single known synthetic office source-input regression. Not whole-floor, independent client or professional acceptance.",
+    "spaces": 1,
+    "devices": 12,
+    "circuits": 1,
+    "sheets": 5,
+    "actualMcpNativeChecks": 4,
+    "modelChecks": {
+      "passed": 38,
+      "failed": 0,
+      "pending": 12
+    },
+    "summary": [
+      {
+        "roomId": "ROOM_3",
+        "averageLux": 621.5336493393938,
+        "minimumLux": 408.9711450000001,
+        "maximumLux": 741.0521239999999,
+        "uniformity": 0.6580032238555082,
+        "directAverageLux": 525.5732182242427,
+        "indirectAverageLux": 95.9604311151511,
+        "medium": {
+          "averageLux": 619.2726873212124,
+          "minimumLux": 405.99419600000004,
+          "maximumLux": 738.5403960000001,
+          "uniformity": 0.6555984210384104
+        },
+        "maximumPointChange": 4.215450000000033,
+        "targets": {
+          "minimumLux": 500,
+          "maximumAverageLux": 700,
+          "minimumUniformity": 0.6
+        }
+      }
+    ],
+    "maximumReferenceUgr": 16.882316496590704,
+    "physicalPassed": true,
+    "nativeSavedReadbackPassed": true,
+    "newProcessReceiptReplayPassed": true,
+    "originalModelAndInputBytesUnchanged": true,
+    "pdfPaperAndMergedRenderVerified": true,
+    "pdfPagesVisuallyInspected": 5,
+    "visualScope": "Font readability, numeric summary, hash labels, absence of obvious clipping/overlap. Not actual installation routing, product suitability or professional review.",
+    "pdfParserWarnings": "AutoCAD source PDFs contain duplicate /PageMode dictionary keys; current parser/render passed; cross-reader compatibility not established",
+    "loadedSourceSnapshotPreserved": true,
+    "laterOptimizerChange": "After this process loaded its modules, only a post-failure budget short-circuit was added. Successful candidate and delivery branch are unchanged; final full unit335 passed."
+  },
+  "remainingPracticalGaps": [
+    "Generic parent lost-response reconciliation is still missing even after safe child recovery; no generic receipt was rewritten as completed",
+    "Current centered-grid family with supported UGR-table positions has at most10 lamps in this9x6m source room; measured10-lamp candidate misses500lx. No proof of global infeasibility; richer source-bound geometry/product choices remain unvalidated",
+    "No completed accepted12-room/final-source serial-parallel comparison or100-room resource/quality acceptance",
+    "Worst observed status response about16.6s during per-room preflight; only global memory sampled",
+    "Single-product/single-room annotation rendering verified; multi-product per-room table presentation, long-name pagination and broader native regression remain incomplete",
+    "Project product approval, IES23W/nominal24W discrepancy, authoritative actual openings/finishes/power/installation and standard applicability remain pending",
+    "Office-space planning design pack, independent project transfer and cross-pack design/editing are not implemented or accepted"
+  ],
+  "privateEvidenceBundle": {
+    "fileName": "通用质量与失败边界-证据包.zip",
+    "sha256": "c4ba28c53f9586639340b76b457444ba78940af0427be25837f20e387e8593f2",
+    "manifestEntries": 4115,
+    "zipEntries": 4116,
+    "bytes": 34006077,
+    "crcAndAllHashesVerified": true,
+    "sourceRelease": false
+  }
+}

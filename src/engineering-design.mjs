@@ -30,7 +30,7 @@ export function controlDiagramSegments(model,control){
  return [[control.position,[control.position[0],y]],[[Math.min(...xs),y],[Math.max(...xs),y]],...devices.map(d=>[[d.position[0],y],d.position])];
 }
 
-function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{selection,collect=false}={}){
+function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{selection,collect=false,preflight}={}){
  const areaM2=polygonArea(room.polygon)/1e6,b=bounds(room.polygon),width=b.max[0]-b.min[0],height=b.max[1]-b.min[1];
  if(areaM2<1||width<500||height<500)throw Error('ROOM_GEOMETRY_INVALID: '+room.id);
  const normative=lightingStandardEvidence?.rooms.find(r=>r.roomId===room.id),targetLux=Math.max(value(p,room,'target_lux'),normative?.minimumLux??0),maxLpd=Math.min(value(p,room,'max_lpd'),normative?.maximumLpd??Infinity),maxSpacingM=value(p,room,'max_spacing'),minimumUniformity=p.photometricDesign?Math.max(value(p,room,'min_uniformity'),normative?.minimumUniformity??0):undefined;
@@ -65,6 +65,7 @@ function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{sele
   for(const c of candidates)c.choiceSHA256=engineeringDigest({fixture:c.fixture,positions:c.positions});
   if(selection){const chosen=candidates.find(c=>c.choiceSHA256===selection);if(!chosen)throw Error('LIGHTING_CHOICE_NOT_IN_SOURCE_SEARCH: '+room.id);candidates.splice(0,candidates.length,chosen);}
   else{
+   if(preflight){const eligible=candidates.filter(c=>preflight(room,c));candidates.splice(0,candidates.length,...eligible);}
    // Round-robin catalog coverage prevents one product's many removal variants
    // from consuming the entire photometric budget before another is examined.
    const groups=p.luminaires.map(f=>{const sampled=sampleLightingGeometry(candidates.filter(c=>c.fixture===f.id),16);return sampled.choices.map(c=>({...c,geometryPoolCoverage:sampled.coverage}));}),pool=[];
@@ -77,7 +78,7 @@ function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{sele
  return collect?candidates.map(finish):finish(candidates[0]);
 }
 
-export function engineeringLightingChoices(model){return model.input.rooms.map(room=>({roomId:room.id,choices:layoutRoom(model.input,room,model.photometricEvidence,model.lightingStandardEvidence,{collect:true})}));}
+export function engineeringLightingChoices(model,{preflight}={}){return model.input.rooms.map(room=>({roomId:room.id,choices:layoutRoom(model.input,room,model.photometricEvidence,model.lightingStandardEvidence,{collect:true,preflight})}));}
 
 export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[],architecturalEvidence,photometricEvidence=[],lightingStandardEvidence,layoutSelections}={}){
  const intake=inspectEngineeringInput(raw);if(!intake.ok)return {ok:false,stage:'requirements',issues:intake.issues};

@@ -13,7 +13,7 @@ description: "通过 CAD AI Bridge 查询、修改和统计已有 CAD 图纸，�
 
 多张图使用 cad_project：start 后按 jobId 查看 status，取消仅停止后续图，resume 只继续未开始项，reexport 只重导已失败出图，不重做已保存修改。工程检查和带来源计量使用 cad_scan_drawing 后的 cad_analyze，按需读 [项目、计量与验证](references/project-analysis.md)。工具返回的 verification.levels 分别报告保存、重开、几何、保护和出图；partial/unknown 不得称为完整验证或实用性验收通过。
 
-完整工程设计任务读 [工程需求、设计与审核](references/engineering-design.md)。cad_design_project 是实验性普通照明项目入口：先解释客户资料和建筑条件，形成有来源的结构约束，再 prepare/design；通过后才 deliver。需求缺项或冲突不能猜成已确认条件。已有受保护种子时，prepare_from_seed的functionalIntake只能补未确认功能并引用原任务书原句；不能判断的用途提交unresolved并保留阻断，不重写几何/产品来绕过缺项。它不是通用医院全专业设计器，参考最终图不能进入生成输入，专业人工审核始终另列。
+完整工程设计任务读 [工程需求、设计与审核](references/engineering-design.md)。cad_design_project 是实验性普通照明项目入口：先解释客户资料和建筑条件，形成有来源的结构约束，再 prepare/design；通过后才 deliver。需求缺项或冲突不能猜成已确认条件。已有受保护种子时，prepare_from_seed的functionalIntake只能补未确认功能并引用原任务书原句；不能判断的用途提交unresolved并保留阻断，不重写几何/产品来绕过缺项。当前仅支持明确边界的普通照明专业设计，参考最终图不能进入生成输入，专业人工审核始终另列。
 
 “当前打开的图纸/当前视图/选择集”任务读 [会话流程](references/session-workflow.md)。cad_session先list（status为别名），必要时connect，再context；使用返回的文档身份、内存版本和句柄，人工修改或切图后重新读取。普通文件工作流仍可独立使用。
 
