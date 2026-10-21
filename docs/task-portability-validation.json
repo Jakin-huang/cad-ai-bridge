@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-10-21",
+  "afterCommit": "aee613e",
+  "scope": "execution-layer reuse and product-plan correction; not general complex design acceptance",
+  "userClarification": "Hospital is an example; task changes must not degrade practical quality",
+  "implementation": {
+    "genericBoundedScheduler": true,
+    "lightingUsesGenericScheduler": true,
+    "geometryAndAnnotationAnalysisReuse": true,
+    "defaultLightingConcurrency": 1,
+    "existingLightingPhysicsAndThresholdsChanged": false,
+    "genericProjectTaskContract": false,
+    "capabilityRouting": false,
+    "officeSpacePlanningPack": false
+  },
+  "unit": {
+    "status": "passed",
+    "genericTests": 4,
+    "lightingAssessmentPlanTests": 10,
+    "scope": "procedural inputs and stub-child lifecycle, not actual Radiance/CAD/client runs",
+    "tests": 306,
+    "passed": 306,
+    "failed": 0,
+    "skipped": 0,
+    "logSHA256": "d724279c3762f9035a61eb8464d1504646f335457ffd3d8453a7484b3838a3cf",
+    "initialSandboxAttempt": "spawn EPERM; rerun with local child-process permission; not an engineering failure"
+  },
+  "static": {
+    "status": "passed",
+    "checks": 3,
+    "publicFiles": 343,
+    "logSHA256": "f70e92331d0c97e12ffbd127d60469bfc411a360bc6224e9ef9ba173452985ae"
+  },
+  "acceptance": {
+    "independentHeldoutProjects": 0,
+    "crossTaskComplexDesign": false,
+    "persistentTaskAndCacheSwitchIsolation": false,
+    "actualRadianceWholeFloor": false,
+    "newNativeCadRun": false,
+    "externalUser": false,
+    "newMachine": false,
+    "professionalReview": false,
+    "repackagedRelease": false
+  },
+  "pending": [
+    "Generic task and discipline adapter contracts with compatibility",
+    "Capability matching and persistent project/task/source/standard/cache isolation",
+    "Actual floor quality/time/resource validation retaining original settings",
+    "Second substantively different complex design task",
+    "Independent three-project / three-project-type / two-task-family acceptance"
+  ],
+  "evidence": [
+    "tests/unit/bounded-work.test.mjs",
+    "tests/unit/lighting-assessment-plan.test.mjs",
+    "docs/task-portability.md",
+    "docs/engineering-design-progress.json"
+  ]
+}

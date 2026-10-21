@@ -100,19 +100,23 @@
   "milestones": [
     {
       "id": "M1",
-      "status": "bounded_local_pipeline_verified_external_gates_pending"
+      "status": "bounded_local_pipeline_verified_external_gates_pending",
+      "target": "traceable_bounded_pipeline"
     },
     {
       "id": "M2",
-      "status": "architecture_intake_and_floor_output_implemented_local_tests_passed_real_hospital_and_photometry_gates_pending"
+      "status": "incomplete_floor_quality_and_generic_task_core_unaccepted",
+      "target": "complete_first_discipline_and_generic_task_core"
     },
     {
       "id": "M3",
-      "status": "not_complete"
+      "status": "not_complete",
+      "target": "two_substantially_different_complex_design_tasks_and_pack_coordination"
     },
     {
       "id": "M4",
-      "status": "not_complete"
+      "status": "not_complete",
+      "target": "independent_multi_project_multi_task_high_completion_acceptance"
     }
   ],
   "acceptance": {
@@ -135,7 +139,10 @@
     "sourceBoundLightingStandardSubset": true,
     "fullLightingQuality": false,
     "professionalStandardApplicability": false,
-    "finiteDiffuseSubset": true
+    "finiteDiffuseSubset": true,
+    "crossProjectPortability": false,
+    "crossTaskComplexDesign": false,
+    "persistentTaskSwitchIsolation": false
   },
   "knownInputGaps": [
     "Original client brief not located",
@@ -145,10 +152,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 whole-floor source-bound photometry/total-light budgets and partitions; current 12-room architecture-change output remains flux-only",
-    "P0 hospital geometry/functional missing-input workflow and independent original architecture/customer sources",
-    "P0 declared room-schedule/use and authoritative electrical/ceiling condition changes beyond same-schedule boundary/entry replacement",
-    "P1 accepted total-quality summary on CAD, installation routing/control details, selective native updates and authenticated review; external users/new-machine validation separate"
+    "P0 generic project/task contract and discipline adapters; actual capability matching; cross-project/cross-task and A-to-B-to-A isolation regression without weakening prior gates",
+    "P0 first-pack source-bound floor-quality budgets and complete evidence; parallel implementation unit-verified only, defaults serial, actual Radiance/CAD performance and quality pending",
+    "P0 source-bound project/room-schedule/use/authoritative-condition changes shared by supported packs; hospital missing inputs remain case-specific blockers",
+    "M3 independent office-space planning design pack and lighting coordination; checks/takeoff alone do not count as a second complex design task",
+    "M4 at least three independent real projects spanning three project types and two distinct design families; external user/new-machine/professional acceptance separate"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -196,5 +204,37 @@
     "sourceEntryAnchors": true,
     "arbitraryRoomScheduleOrConditionEdits": false,
     "hospitalAcceptance": false
+  },
+  "pilotRole": "illustrative_retrospective_case_not_product_scope",
+  "productDirection": {
+    "currentComplexDesignScope": "bounded_ordinary_lighting_only",
+    "genericCoreImplemented": false,
+    "capabilityRoutingImplemented": false,
+    "secondComplexDesignPackImplemented": false,
+    "clarifiedByUser": "2026-10-21",
+    "targetArchitecture": [
+      "generic_task_core",
+      "replaceable_discipline_packs",
+      "isolated_case_data"
+    ]
+  },
+  "taskPortability": {
+    "plan": "docs/task-portability.md",
+    "validation": "docs/task-portability-validation.json",
+    "genericBoundedSchedulerImplemented": true,
+    "nonLightingAnalysisUnitRegression": true,
+    "complexTaskTransferAccepted": false,
+    "persistentSwitchIsolationAccepted": false,
+    "independentHeldoutProjectsAccepted": 0
+  },
+  "pendingSourceIncrement": {
+    "afterCommit": "aee613e",
+    "scope": "generic_bounded_execution_and_whole_floor_lighting_budget_adaptation",
+    "unitOnly": true,
+    "realRadianceOrCadRun": false,
+    "defaultConcurrentRooms": 1,
+    "releaseRepackaged": false,
+    "finalUnitTestsPassed": 306,
+    "staticChecksPassed": 3
   }
 }

@@ -14,11 +14,13 @@ export async function readRadianceRuntime({file=process.env.CADBRIDGE_RADIANCE_R
 }
 // Fixed executable allowlist, no shell, local-only generated inputs. A timeout
 // kills this child and is a failed assessment, never a reason to retry CAD creation.
-export async function runRadiance(runtime,tool,args,{cwd,input,timeoutMs=120000}={}){
+export async function runRadiance(runtime,tool,args,{cwd,input,timeoutMs=120000,signal,spawnProcess=spawn}={}){
  if(!runtime.tools.some(t=>t.file===tool+'.exe'))throw Error('RADIANCE_TOOL_NOT_ALLOWED');
- return new Promise((resolve,reject)=>{const command=path.join(runtime.root,'bin',tool+'.exe'),child=spawn(command,args.map(String),{cwd,shell:false,windowsHide:true,env:{...process.env,RAYPATH:'.;'+path.join(runtime.root,'lib')}}),stdout=[],stderr=[];let size=0,errorSize=0,failed=false;
-  const fail=e=>{if(failed)return;failed=true;child.kill();clearTimeout(timer);reject(e);},timer=setTimeout(()=>fail(Error('RADIANCE_TIMEOUT: '+tool)),timeoutMs);
+ if(signal?.aborted)throw signal.reason instanceof Error?signal.reason:Error('LIGHTING_ASSESSMENT_CANCELLED');
+ return new Promise((resolve,reject)=>{const command=path.join(runtime.root,'bin',tool+'.exe'),child=spawnProcess(command,args.map(String),{cwd,shell:false,windowsHide:true,env:{...process.env,RAYPATH:'.;'+path.join(runtime.root,'lib')}}),stdout=[],stderr=[];let size=0,errorSize=0,failure;
+  const fail=e=>{if(failure)return;failure=e;clearTimeout(timer);child.kill();},timer=setTimeout(()=>fail(Error('RADIANCE_TIMEOUT: '+tool)),timeoutMs);
   child.on('error',fail);child.stdout.on('data',data=>{size+=data.length;if(size>64*1024*1024)fail(Error('RADIANCE_OUTPUT_LIMIT'));else stdout.push(data);});child.stderr.on('data',data=>{errorSize+=data.length;if(errorSize>1024*1024)fail(Error('RADIANCE_DIAGNOSTIC_LIMIT'));else stderr.push(data);});child.stdin.on('error',e=>{if(e.code!=='EPIPE')fail(e);});
-  child.on('close',code=>{clearTimeout(timer);if(failed)return;const diagnostics=Buffer.concat(stderr).toString('utf8');if(code!==0){reject(Error('RADIANCE_FAILED: '+tool+' '+code+' '+diagnostics.slice(0,2000)));return;}resolve({stdout:Buffer.concat(stdout),stderr:diagnostics,code});});child.stdin.end(input);
+  const abort=()=>fail(signal.reason instanceof Error?signal.reason:Error('LIGHTING_ASSESSMENT_CANCELLED'));signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
+  child.on('close',code=>{clearTimeout(timer);signal?.removeEventListener('abort',abort);if(failure){reject(failure);return;}const diagnostics=Buffer.concat(stderr).toString('utf8');if(code!==0){reject(Error('RADIANCE_FAILED: '+tool+' '+code+' '+diagnostics.slice(0,2000)));return;}resolve({stdout:Buffer.concat(stdout),stderr:diagnostics,code});});child.stdin.end(input);
  });
 }

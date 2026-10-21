@@ -36,12 +36,20 @@ export function auditUgrReport(model,report,{method}={}){
  }
  return {ok:checks.every(c=>c.ok),checks,scope:'Initial-output UGR on explicit Appendix A reference box and active table brackets; 0.25 UGR stability is a software criterion, not a formal error bound or whole-project glare approval',professionalApproval:false};
 }
-export async function assessUgr(model,{folder,runtime,evidence,ugrProfileFile,onProgress}={}){
- const loaded=await resolveUgrMethod(model,ugrProfileFile?{file:ugrProfileFile}:undefined);if(!loaded)return undefined;await fs.mkdir(folder);const method=loaded.profile,rooms=[],commands=[];for(const [i,room] of model.input.rooms.entries()){
+export async function traceUgrRoom(model,room,{folder,runtime,evidence,loaded,index=0,deadlineMs,signal,onProgress}={}){
+ const method=loaded.profile;let commands=[];
   const condition=model.input.glareAssessment.rooms.find(r=>r.roomId===room.id),reference=buildUgrReference(model,room,condition,method,evidence);let values;
-  if(reference.calculations.every(o=>!o.issues.length)){const traced=await traceRadianceScene({runtime,folder:path.join(folder,'room-'+i),scene:reference.scene,lamps:reference.lamps,sensors:reference.observers.map(o=>({positionM:o.positionM,normal:[...o.direction,0]})),profiles:qualityProfiles.filter(p=>p.id!=='coarse'),onProfile:async profile=>onProgress?.({roomId:room.id,roomNumber:i+1,roomCount:model.input.rooms.length,profile:'ugr_'+profile,startedAt:new Date().toISOString()})});values=traced.values;commands.push(...traced.commands);}
-  rooms.push({roomId:room.id,condition,geometry:reference.geometry,symmetry:reference.lamps.map(l=>({fixtureId:l.fixtureId,...l.symmetry})),observers:reference.calculations.map((o,index)=>({...o,eyeLux:values?{direct:values.direct[index],medium:values.medium[index],fine:values.fine[index]}:undefined}))});
- }
+  if(reference.calculations.every(o=>!o.issues.length)){const traced=await traceRadianceScene({runtime,folder,scene:reference.scene,lamps:reference.lamps,sensors:reference.observers.map(o=>({positionM:o.positionM,normal:[...o.direction,0]})),deadlineMs,signal,profiles:qualityProfiles.filter(p=>p.id!=='coarse'),onProfile:async profile=>onProgress?.({roomId:room.id,roomNumber:index+1,roomCount:model.input.rooms.length,profile:'ugr_'+profile,startedAt:new Date().toISOString()})});values=traced.values;commands=traced.commands;}
+  return {room:{roomId:room.id,condition,geometry:reference.geometry,symmetry:reference.lamps.map(l=>({fixtureId:l.fixtureId,...l.symmetry})),observers:reference.calculations.map((o,index)=>({...o,eyeLux:values?{direct:values.direct[index],medium:values.medium[index],fine:values.fine[index]}:undefined}))},commands};
+}
+
+export async function writeUgrAssessment(model,{folder,loaded,rooms,commands,ugrProfileFile}){
+ const method=loaded.profile;
  const report={schemaVersion:1,method:'gb50034_appendix_a_reference_ugr',profileId:method.id,profileSHA256:loaded.sha256,modelSHA256:engineeringDigest(model),conditionsSHA256:engineeringDigest(model.input.glareAssessment),source:{code:method.source.code,edition:method.source.edition,sha256:method.source.sha256,url:method.source.url,witnesses:method.witnesses.map(({pdfPage,pixelSHA256,scope})=>({pdfPage,pixelSHA256,scope}))},positionIndexInterpretation:method.positionIndex.interpretation,initialOutputMaintenanceFactor:1,settings:qualityProfiles.filter(p=>p.id!=='coarse'),rooms,professionalApproval:false};report.audit=auditUgrReport(model,report,{method:loaded});report.passed=report.audit.ok;
  const rows=[['room','observer','posture','direct_eye_lx','medium_total_eye_lx','fine_total_eye_lx','fine_indirect_eye_lx','reference_ugr','limit','issues']];for(const room of rooms)for(const o of room.observers)rows.push([room.roomId,o.observer.id,o.observer.posture,o.eyeLux?.direct,o.eyeLux?.medium,o.eyeLux?.fine,o.result?.fine.indirectEyeLux,o.result?.conservativeUgr,o.result?.maximumUgr,o.issues.map(i=>i.code).join(';')]);await fs.writeFile(path.join(folder,'ugr-observers.csv'),rows.map(r=>r.map(csvCell).join(',')).join('\r\n')+'\r\n',{flag:'wx'});await fs.writeFile(path.join(folder,'commands.json'),JSON.stringify(commands,null,2),{flag:'wx'});await fs.writeFile(path.join(folder,'report.json'),JSON.stringify(report,null,2),{flag:'wx'});const after=await resolveUgrMethod(model,ugrProfileFile?{file:ugrProfileFile}:undefined);if(after.sha256!==loaded.sha256)throw Error('UGR_PROFILE_CHANGED');return {report,method:loaded};
+}
+
+export async function assessUgr(model,{folder,runtime,evidence,ugrProfileFile,onProgress,deadlineMs,signal}={}){
+ const loaded=await resolveUgrMethod(model,ugrProfileFile?{file:ugrProfileFile}:undefined);if(!loaded)return undefined;await fs.mkdir(folder);const rooms=[],commands=[];for(const [index,room]of model.input.rooms.entries()){const r=await traceUgrRoom(model,room,{folder:path.join(folder,'room-'+index),runtime,evidence,loaded,index,onProgress,deadlineMs,signal});rooms.push(r.room);commands.push(...r.commands);}
+ return writeUgrAssessment(model,{folder,loaded,rooms,commands,ugrProfileFile});
 }
