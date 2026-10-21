@@ -10,7 +10,7 @@ import {engineeringTaskSchema,readonlyEngineeringTaskSchema} from './engineering
 import {atomicJson} from './files.mjs';
 import {jobDirectory,jobJson} from './jobs.mjs';
 import {hashFile,isWithin} from './drawings.mjs';
-const digest=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
+import {taskIdentitySHA256 as digest} from './task-identities.mjs';
 const read=async file=>JSON.parse(await fs.readFile(file,'utf8'));
 async function checkedResult(dir,requestId,expected){const file=await fs.realpath(path.join(dir,'result-'+requestId+'.json'));if(!isWithin(dir,file))throw Error('TASK_OPERATION_RESULT_OUTSIDE_TASK');const bytes=await fs.readFile(file);if(crypto.createHash('sha256').update(bytes).digest('hex')!==expected)throw Error('TASK_OPERATION_RESULT_CHANGED');return JSON.parse(bytes.toString('utf8'));}
 export function createEngineeringTaskManager({runs,adapters}){

@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "d1fb4039d3debc6139044223d17f020b3ce43a26",
+  "product": "CAD AI Bridge",
+  "status": "bounded_natural_space_execution_verified_drawing_content_rejected",
+  "hospitalPolicy": "Isolated evaluator only; explicit task kinds and preserved source/assumption/quality thresholds",
+  "hospitalDataProcessed": false,
+  "syntheticNonPrivate": true,
+  "overallPracticalAcceptance": false,
+  "generalUnderstandingAccepted": false,
+  "independentCustomerAcceptance": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "scope": "Known ten-room synthetic natural-language office program, fixed declared shell and planning parameters, local coordination, source-assisted single-client-session execution; not an independent client or arbitrary-layout acceptance",
+  "actualClient": {
+    "client": "Installed WorkBuddy CLI2.115.0, configured auto",
+    "cliSHA256": "eacd161ce6b05037bc0910ed44f1d5a5a16a88954785151cced179a6d50887d8",
+    "actualRoutedModelProvider": "not established",
+    "oneSession": true,
+    "elapsedMs": 460184,
+    "calls": 32,
+    "protocolErrors": 0,
+    "structuredStateAndExecutionChecks": 89,
+    "structuredStateAndExecutionAccepted": true,
+    "firstIndependentAuditSHA256": "982fd32d87d020bbb08c3fb3a6419f375da5b9065d2c442f8df8d3c0a3f460a0",
+    "finalIndependentAuditSHA256": "aafa99bf8f0ca088c834fb0801fa41ac6bd7c6c21aad7dc3d9e8ca8ff2d4e013",
+    "rawTraceSHA256": "78fa994ffd86a11ad4e949c6ec053825e61e7d20d4932186657a96a0d3f246ad",
+    "privateOracleExcluded": true,
+    "controllerSemanticRepair": false,
+    "formalTasksInDeclaredProject": 1,
+    "postTrialControllerOtherTasks": 2,
+    "drafts": 1,
+    "design": {
+      "rooms": 10,
+      "designedSeats": 36,
+      "relations": 3,
+      "sheets": 5,
+      "geometricChecks": 209,
+      "pending": 9,
+      "unassignedM2": 42.2,
+      "title": "合成设计机构办公方案"
+    },
+    "clientReadOutputImages": false,
+    "aiProfessionalReviewPerformed": false
+  },
+  "requirements": {
+    "rooms": 10,
+    "relations": 3,
+    "allCurrentProgramFieldsExact": true,
+    "unitConversionsVerified": [
+      "Reception0.002–0.003ha ->20–30m2",
+      "Frontage1.8m/depth2.4m/window0.8m and route6/100m ->contract mm",
+      "Shared walls3m and door route10m ->contract mm"
+    ],
+    "localReplacement": "OFFICE_A4 ->6workstation seats; all other MAIN program/relations retained",
+    "originalMissingInputs": 3,
+    "additionalClientPendingDescriptions": 3,
+    "automaticProfessionalPending": 3,
+    "totalAuditPending": 9,
+    "originalFrozenConditionsAndGradesUnchanged": true,
+    "parametersGrade": "assumed",
+    "shellGrade": "declared",
+    "standardsVerified": 0,
+    "derivedCompatibilityBriefIsNotOriginalAuthority": true
+  },
+  "native": {
+    "steps": [
+      {
+        "action": "create_drawing",
+        "jobId": "job-aesOaC",
+        "ok": true
+      },
+      {
+        "action": "apply",
+        "jobId": "job-qrTcsH",
+        "ok": true
+      },
+      {
+        "action": "scan",
+        "jobId": "job-ObiwXR",
+        "ok": true
+      },
+      {
+        "action": "export_many",
+        "jobId": "job-TA1xRa",
+        "ok": true
+      }
+    ],
+    "savedDrawingAndIndependentReadback": true,
+    "geometryAndFurnitureChecks": 209,
+    "plansFound": 3,
+    "globalOptimalityProven": false,
+    "sheets": [
+      {
+        "id": "SP01",
+        "paper": "A3",
+        "strictReaderAccepted": true,
+        "rawReviewPixelIdentical": true
+      },
+      {
+        "id": "SP02",
+        "paper": "A2",
+        "strictReaderAccepted": true,
+        "rawReviewPixelIdentical": true
+      },
+      {
+        "id": "SP03",
+        "paper": "A2",
+        "strictReaderAccepted": true,
+        "rawReviewPixelIdentical": true
+      },
+      {
+        "id": "SP04",
+        "paper": "A3",
+        "strictReaderAccepted": true,
+        "rawReviewPixelIdentical": true
+      },
+      {
+        "id": "SP05",
+        "paper": "A3",
+        "strictReaderAccepted": true,
+        "rawReviewPixelIdentical": true
+      }
+    ],
+    "rawCadDuplicatePageModeWarningsRetained": true,
+    "rawAndReviewPdfsUnchanged": true,
+    "pdfReportSHA256": "698e98aff6b6081f12a3b490601a0c81249fa4d78122fdecf08aca0467374274"
+  },
+  "visual": {
+    "allFiveViewed": true,
+    "dpi": 120,
+    "technicalRenderAccepted": true,
+    "programDisplaySubsetAccepted": true,
+    "contentAccepted": false,
+    "fullDrawingCompletionAccepted": false,
+    "reportSHA256": "a2cd3835c639965628d8320fc89b3099b20107e593250488b727510991a66697",
+    "issues": [
+      {
+        "sheet": "SP05",
+        "code": "CLIENT_PENDING_NOTE_CORRUPTION",
+        "target": "missingInputs/3",
+        "id": "DECLARED_SHELL_ONLY",
+        "description": "场地净边界、入口、窗锚段、保留构件及全部规划尺寸均为开发者声明（部分为assumed），未获得lictively现场测绘或iserl权威建筑条件，实体语义与适用性仍待专业审核。",
+        "reason": "Client-added review note contains meaningless word fragments; exact input/drawing preserved, no controller wording repair",
+        "severity": "content_rejection"
+      },
+      {
+        "sheet": "SP01",
+        "code": "SOURCE_LOCATOR_USABILITY",
+        "reason": "Current paper lists seed aliases and derived compatibility-container hashes rather than a human-readable original document/version inventory; original separate documents remain in review ledger",
+        "severity": "usability_improvement"
+      }
+    ]
+  },
+  "implemented": [
+    "Verified read-only internal-child to formal-task association and task-center navigation",
+    "Registered downloads may use the bound formal registry when an internal design child has no result.json",
+    "Manifest and binding use the existing formal JSON sequence SHA, shared with task manager; dependency graph digests remain distinct",
+    "Foreign/changed bindings, changed parent result identity and malformed child records rejected; existing child result registry takes precedence",
+    "Shared independent PDF verifier supports both design packs while separating execution, parsing, rendering, content and professional verdicts",
+    "A delayed internal-child lookup cannot redirect a newer user-selected task; behavior exercised with controlled asynchronous UI response"
+  ],
+  "regression": {
+    "full": {
+      "passed": 456,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 150062.397,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "635c026224b49b425db7262d14e48c158f8998bba7b51983a1c3ab47975d365a"
+    },
+    "previousFullLogs": [
+      {
+        "file": "unit-tests.log",
+        "scope": "452tests before navigation changes",
+        "sha256": "3e0080959d97bb18249e1c983926705435ca46951210ec027e0141318ea647ad"
+      },
+      {
+        "file": "unit-tests-final.log",
+        "scope": "455tests run overlapped subsequent identity-helper correction; not used as stable-source final proof",
+        "sha256": "7914d2a418c889bb58631ce86e3979d106d0ce7d087c23c1fdb2f98b13500854"
+      },
+      {
+        "file": "unit-tests-identity-final.log",
+        "scope": "455stable-source tests before subsequent UI stale-selection guard",
+        "sha256": "905f63cf371065a785af8671d31662908ee93ec7ba64ae595c7333e9def308c1"
+      }
+    ],
+    "actualThreeKindCurrentSource": {
+      "ok": true,
+      "readOnly": true,
+      "calls": 8,
+      "authenticatedDownloads": 12,
+      "protectedFiles": 33,
+      "newTasks": 0,
+      "newNativeCadExecuted": false,
+      "aiPerformedThisSwitch": false,
+      "reportSHA256": "bb78587dea79a44b949b323f4899791117d4beaedd56f6e4f173eb6b4e51ba18"
+    },
+    "legacy": {
+      "ok": true,
+      "tasks": 6,
+      "calls": 7,
+      "protectedFiles": 149,
+      "pdfDownloads": 5,
+      "reportSHA256": "63e9554d73ac0aaacded31d2f6eb9536e560f3018e2abcfefd8de3f6e2686cd7"
+    },
+    "historicalTraceRecheck": {
+      "traces": 13,
+      "changedPreviouslyPassingVerdicts": 0,
+      "originalReportsRewritten": false,
+      "reportSHA256": "c75c908d41bffbe287a717b6ee830118eda60d7b6caa95b0b30d9a6cca1fb57f"
+    },
+    "staticGate": {
+      "ok": true,
+      "staticOnly": true,
+      "publicFiles": 510,
+      "checks": 3,
+      "logSHA256": "e215b1489f2163fdc3c9a8220bbdbbe88ae8dcc6be44445843b1352b0701713c"
+    }
+  },
+  "retainedFailures": [
+    {
+      "type": "Drawing content",
+      "retained": true,
+      "scope": "SP05 newly added pending-note wording contains meaningless word fragments; no controller repair",
+      "remainsUnaccepted": true
+    },
+    {
+      "type": "Post-client download regression",
+      "retained": true,
+      "scope": "First controller used an internal space child without its own result registry; first two task-isolation checks passed but whole regression failed HTTP400",
+      "reportSHA256": "e9b8f07199f9ca21fef0005be5c7ad3cdc0ada52093f821ee182f24f0558aed7"
+    },
+    {
+      "type": "Initial navigation guard",
+      "retained": true,
+      "scope": "First implementation used the dependency canonical digest for a formal manifest; unit fixture mirrored that mismatch. Actual historical-client receipt correctly failed guard; implementation/fixture now use the existing serialized task identity and verify binding SHA too",
+      "reportSHA256": "c303f8d906b878fa02134622ae41edc807a3f18ba45a8d31d116d8247c2de6bd"
+    }
+  ],
+  "limits": [
+    "One public synthetic development program and predeclared shell/parameter family; private oracle excluded from client but not a held-out real customer",
+    "Controller supplied workflow instructions and frozen known conditions; no claim of arbitrary natural-language task classification or autonomous professional applicability",
+    "Actual client snapshot predates task-center association fix; current source was verified by fresh read-only MCP/HTTP and unit regression, not a second complete AI/CAD trial",
+    "Client did not read exported images; independent controller visual review discovered bad text. Protocol/structured-state pass is not full drawing-content acceptance",
+    "Paper source inventory uses seed/derived aliases and hashes; human-readable original-document/version/locator handoff remains incomplete",
+    "Initial scene is two-sided straight corridor/rectangular rooms and fixed dimensions, with no new authoritative architectural capture",
+    "No active verified standards, site/fire/accessibility/daylight/acoustic/MEP/installation authority or authenticated professional signoff",
+    "Real task-center automatic browser navigation has controller/API tests but no separate browser visual interaction acceptance",
+    "External users, clean machines, independent real projects and historical full release gate remain outstanding",
+    "Late-response navigation race is covered by an isolated UI-controller test; full rendered-browser interaction remains unverified"
+  ],
+  "nextPriorities": [
+    "P0 Preserve two design packs, analysis, explicit task identities, old outputs and isolated hospital evaluator",
+    "P0 Actual-client visual review and source-bound correction of adopted pending-note text plus readable original-document/version locators, preserving IDs/severity/values/grades and old versions",
+    "P0 Broader independent briefs and source/standard applicability under original quality gates",
+    "P1 Source-bound architecture and richer layouts, split/merge/multiple uses, complete project quality and installation coordination",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+  ],
+  "evidenceRoot": "artifacts/space-natural-validation-20261022",
+  "evidenceArchive": "artifacts/space-natural-validation-20261022/办公空间自然语言全流程-完整试验证据.zip",
+  "M2": "incomplete",
+  "M3": "incomplete",
+  "M4": "incomplete"
+}

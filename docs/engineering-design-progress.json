@@ -168,10 +168,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve explicit task kinds, two design packs, analysis, historical outputs and isolated hospital evaluator",
-    "P0 Actual office-space-planning natural-document client through draft, source review, design/check/native output and return to lighting/analysis without condition leakage",
-    "P0 Validate broader independent original briefs and current-condition source/standard applicability while retaining strict quality gates",
-    "P1 Richer source-bound architecture/layouts, split/merge/multiple uses, project quality and installation/wiring/protection detail",
+    "P0 Preserve two design packs, analysis, explicit task identities, old outputs and isolated hospital evaluator",
+    "P0 Actual-client visual review and source-bound correction of adopted pending-note text plus readable original-document/version locators, preserving IDs/severity/values/grades and old versions",
+    "P0 Broader independent briefs and source/standard applicability under original quality gates",
+    "P1 Source-bound architecture and richer layouts, split/merge/multiple uses, complete project quality and installation coordination",
     "P2 Independent real projects, external users, clean machines and authenticated professional review"
   ],
   "plan": "docs/engineering-design-plan.md",
@@ -961,6 +961,32 @@
     },
     "goalComplete": false,
     "professionalApproval": false,
+    "releaseRepackaged": false
+  },
+  "previousPrioritiesBeforeNaturalSpace": [
+    "P0 Preserve explicit task kinds, two design packs, analysis, historical outputs and isolated hospital evaluator",
+    "P0 Actual office-space-planning natural-document client through draft, source review, design/check/native output and return to lighting/analysis without condition leakage",
+    "P0 Validate broader independent original briefs and current-condition source/standard applicability while retaining strict quality gates",
+    "P1 Richer source-bound architecture/layouts, split/merge/multiple uses, project quality and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+  ],
+  "naturalSpaceClientIncrement": {
+    "validation": "docs/space-natural-client-validation.json",
+    "boundedSingleSessionStructuredExecutionVerified": true,
+    "drawingContentAccepted": false,
+    "generalUnderstandingAccepted": false,
+    "actualClientOutputImageReview": false,
+    "threeTaskKindsCurrentSourceVerified": true,
+    "fullRegression": {
+      "passed": 456,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 150062.397,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "635c026224b49b425db7262d14e48c158f8998bba7b51983a1c3ab47975d365a"
+    },
+    "professionalApproval": false,
+    "goalComplete": false,
     "releaseRepackaged": false
   }
 }

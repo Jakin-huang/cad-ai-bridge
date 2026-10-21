@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
-import {jobDirectory,jobJson,registeredFiles} from './jobs.mjs';
+import {jobDirectory,jobJson,registeredFiles,registeredJobResult} from './jobs.mjs';
 import {isWithin} from './drawings.mjs';
 import {boundForTransport} from './results.mjs';
 const actions=new Set(['capabilities','doctor','get_job','read_result','project','analyze','scan','workflow','engineering','engineering_task','project_documents','engineering_intake','engineering_title']);
@@ -42,7 +42,7 @@ export async function startTaskCenter({execute,runs,port=0}={}){
     const {orderedJobIds,...result}=await listJobs(runs,{offset,limit,snapshot:requested?snapshots.get(requested).ids:undefined}),snapshotId=requested??crypto.randomBytes(12).toString('hex');if(!requested){while(snapshots.size>=8)snapshots.delete(snapshots.keys().next().value);snapshots.set(snapshotId,{at:Date.now(),ids:orderedJobIds});}return send(200,{...result,snapshotId});
    }
    if(req.method==='GET'&&url.pathname==='/api/file'){
-    const job=await jobDirectory(runs,url.searchParams.get('jobId')??''),result=await jobJson(job,'result.json'),index=Number(url.searchParams.get('index')),expected=url.searchParams.get('sha256'),files=registeredFiles(result);
+    const result=await registeredJobResult(runs,url.searchParams.get('jobId')??''),index=Number(url.searchParams.get('index')),expected=url.searchParams.get('sha256'),files=registeredFiles(result);
     if(expected&&!/^[a-f0-9]{64}$/i.test(expected))return send(400,{ok:false,error:'Invalid deliverable identity'});
     // A completed CAD delivery can reorder the earlier quality-only file list.
     // Resolve the exact displayed bytes rather than an obsolete array position.

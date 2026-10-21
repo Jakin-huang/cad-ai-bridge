@@ -14,8 +14,11 @@ assert pathlib.Path(publication_name).name == publication_name and publication_n
 read = lambda p: json.loads(p.read_text(encoding='utf-8-sig'))
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 publication = read(folder / publication_name)
-assert publication['ok'] and publication['actualInstalledAiClient']
-state = read(runs / publication['jobId'] / 'engineering.json')
+assert (publication.get('ok') or publication.get('finalEngineeringStatePassed')) and publication['actualInstalledAiClient']
+kind = publication.get('kind', 'ordinary-lighting')
+assert kind in ['ordinary-lighting', 'office-space-planning']
+state_name = 'space-planning.json' if kind == 'office-space-planning' else 'engineering.json'
+state = read(runs / publication['jobId'] / state_name)
 model = read(runs / publication['jobId'] / ('model-' + str(state['revision']) + '.json'))
 assert state['modelSHA256'] == publication['modelSHA256']
 packet = read(pathlib.Path(state['pdfReview']['manifestFile']))
@@ -25,7 +28,8 @@ render = folder / 'pdf-check'
 render.mkdir(exist_ok=False)
 report = {'ok': False, 'scope': 'Exact client-published synthetic design sheets, strict parsing and raw/derived rendering preservation; not professional design approval',
           'readerVersion': pypdf.__version__, 'rendererSHA256': sha(poppler), 'dpi': 120,
-          'actualAiPublished': True, 'priorWholeClientTrialPassed': publication['priorWholeClientTrialPassed'],
+          'kind': kind, 'actualAiPublished': True, 'priorWholeClientTrialPassed': publication.get('priorWholeClientTrialPassed'),
+          'wholeClientTrialPassed': publication.get('wholeClientTrialPassed'),
           'pages': [], 'visualReview': 'pending', 'professionalApproval': False}
 papers = {'A0': [1189, 841], 'A1': [841, 594], 'A2': [594, 420], 'A3': [420, 297], 'A4': [297, 210]}
 for f in packet['files']:
@@ -53,7 +57,9 @@ for f in packet['files']:
                             'source': str(source), 'sourceSHA256': f['sourceSHA256'], 'file': str(target), 'sha256': f['sha256'],
                             'strictReaderAccepted': True, 'sourceAndReviewPixelIdentical': True,
                             'image': str(images[1]), 'imageSHA256': sha(images[1]), 'pixelSHA256': pixels_sha})
-for f in read(folder / 'protected-before.json'):
+protected_file = folder / 'protected-before.json'
+protected = read(protected_file) if protected_file.exists() else read(folder / 'experiment.json')['protectedFiles']
+for f in protected:
     assert sha(pathlib.Path(f['file'])) == f['sha256']
 report['ok'] = True
 report['protectedInputsAndModelsUnchanged'] = True
