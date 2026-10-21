@@ -68,7 +68,7 @@ allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指�
 
 维护者先独立核验官方Radiance运行时来源和发行摘要，再用 `node scripts/register-radiance-runtime.mjs TRUSTED-ROOT NEW-PRIVATE-PROFILE.json` 登记四个工具及完整lib支持文件摘要。配置 CADBRIDGE_RADIANCE_RUNTIME 或本机 dataHome/radiance-runtime.json。该脚本不下载、不认证发布者；私有配置和二进制不放进源码/通用发行包。
 
-设计冻结后调用 `assess_lighting`，传 jobId、requestId、expectedModelSHA256。当前只接受IES原始正宽/正长、零厚度矩形发光面，采用均匀发光面近似；尺寸缺失、负编码、障碍高度缺失、发光面相交/越界或需要吊顶开孔时拒绝，不用猜测尺寸或点光源替换。灯具至少低于封闭顶面20mm，本模式没有真实门窗开口、内部遮挡、日光或镜面材质。当前上限10房间、100灯具、1000网格点；超限明确分区，不暗改网格。
+设计冻结后调用 `assess_lighting`，传 jobId、requestId、expectedModelSHA256。当前只接受IES原始正宽/正长、零厚度矩形发光面，采用均匀发光面近似；尺寸缺失、负编码、障碍高度缺失、发光面相交/越界或需要吊顶开孔时拒绝，不用猜测尺寸或点光源替换。灯具至少低于封闭顶面20mm，本模式没有真实门窗开口、内部遮挡、日光或镜面材质。单分区上限10房间、100灯具、1000网格点；完整声明任务上限100房间、1000灯具、10000网格点，按完整房间分区并逐点计算，不拆房间或抽样。maxConcurrentRooms默认1、至多4；更大预算不表示已通过相应规模的质量/性能验收。
 
 复核保存有限光源直射及2/4/5次漫反射的四档结果，包含固定采样、环境插值、低权重射线的有界Russian roulette设置和命令记录。逐点两档变化须不超过1 lx加较大值的2%，平均变化不超过0.5 lx加较大平均值的1%；中/精两档都要满足冻结的最低照度、最高平均值和均匀度。该收敛观测不是严格误差界。不能把直射可行当作总照度合格，复核失败会阻断声明本条件项目的deliver。
 
@@ -146,5 +146,11 @@ cad_engineering_task的invoke是另一层包装：外层始终带自己的reques
 2. draft 传 jobId、唯一 requestId、expectedRevision、expectedInputSHA256、briefFile、expectedBriefSHA256、spacePack。sourceEvidence 和 carryForward 都是 {quote,reason}，quote 必须是新任务书的完整连续原句，reason 至少20字/字符。
 3. rooms 每项 {roomId,use,fromRoomId,quote,reason}。仅对明确修改的规则附 requirements:[{rule,values:[...],status:'assumed'或'interpreted',quote,reason}]；相互矛盾值全留在 values，不自行取舍。无明确值时用 unresolvedRules:[{rule,quote,reason}]，use=unknown 保留未知。其他规则/物理/供电/产品参数只能在 carryForward 明确授权原值沿用时保留。新增房间也要明确 fromRoomId，不能猜模板。removedRooms:[{roomId,quote,reason}] 必须列全旧清单内被移除的空间。
 4. 原有 standards 中的每个条款须用 standardScopes:[{standardId,clauseId,roomIds,quote,reason}] 显式决定范围；无标准则不填。resolvedMissingInputs 仅用 {id,quote,reason} 处理有明确新证据的原缺项，其他缺项保留。conditions 仅在明确改变 heightM/workplaneM/obstacles 时提交；classification 仅有明确分类原文时提交。多功能/附名空间和其他权威依据变动继续使用完整接口。
-5. draft 返回不可变 draft:{jobId,draftId,sha256} 和 prepared/blocked、范围、阻断与待审摘要。read 传原 draft 和 section=summary/conditions/proposal，后两者支持 offset/limit。核查条件处置和项目提案后 apply 传 {action:'apply',requestId:新的UUID,draft:原引用}。它核对原版本与证据，产生新输入，旧模型/质量/图纸/审核失效；重复同请求返回原结果与当前状态。
+5. draft 返回不可变 draft:{jobId,draftId,sha256} 和 prepared/blocked、范围、阻断与待审摘要。read 传原 draft 和 section=summary/requirements/conditions/proposal。requirements 按房间/规则给出实际 values、状态、来源原句及 explicit_override/carried_forward/unresolved，按 offset/limit 和240KiB字节预算分页，沿 nextOffset 读取全部；不能把沿用旧值当成已落实新任务书。所有 read 返回 base.staleBase/currentRevision；过期提案仍可查看历史，以新请求 apply 会被原版本门槛拒绝。summary.requirementsReview 仅统计声明处置，不证明自然语言需求已全部提取。其余两节保留 offset/limit。核对每个要求的实际值及未决项、条件处置和项目提案后 apply 传 {action:'apply',requestId:新的UUID,draft:原引用}。它核对原版本与证据，产生新输入，旧模型/质量/图纸/审核失效；重复同请求返回原结果与当前状态。
 6. prepared 后用 cad_design_project design，仅传 action/jobId/expectedRevision；status 读取新 input/model/checks。blocked 是保留冲突/未知后的有效输入状态，停止设计和轮询，如实说明待解决项。不要把“提案已登记”当成已设计或工程验收。
+
+
+初次总光照搜索的源码布局族增加外围行/列间隙补灯：从原网格及实际边界派生，保留原灯位，新增点仍受边界、障碍、功率、有限发光面及UGR方法适用性检查。它只用于solve_lighting/optimize_lighting的源候选与选择重放；默认design的旧直射/流明法选择不变。无实测基线时按直射诊断目标偏差分组后优先试算较低功率方案，0.05诊断分组仅用于排序，不是照度/均匀度/UGR验收容差；所有候选必须完整物理复核，不能因排序接近目标而采纳。
+
+
+源码总光照搜索的候选覆盖继续保持每产品16个诊断预算：先覆盖可容纳的灯数层，再把剩余诊断分散到灯数范围并优先选择不同布局族/补灯方向，避免低灯数或同类删灯变体占满所有余位。同一初次诊断分组及功率下，均匀度距离参与组合排序；它仍不能替代物理验收。已有完整实测背景时，眩光反馈逐观察方向重用原间接眼照度，仅以新候选实际几何/IES源项估计排序，不将改变布局后的光传输当作已标定，也不按灯具产品身份一概处罚。原背景身份、观察位置或有效数值不符时返回不可预测；没有背景或有效眩光项时不补造通过值。所有入选方案仍须重新通过原UGR和照度门槛。

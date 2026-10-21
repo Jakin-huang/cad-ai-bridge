@@ -9,6 +9,7 @@ import {createEngineeringRevisionManager,compileRevisionPlan} from '../../src/en
 import {revisionPlanSchema} from '../../src/engineering-revision-contracts.mjs';
 import {engineeringInputSchema} from '../../src/engineering-contracts.mjs';
 import {hashFile} from '../../src/drawings.mjs';
+import {createExecutor} from '../../src/runner.mjs';
 const read=async f=>JSON.parse(await fs.readFile(f,'utf8'));
 async function setup(){
  const f=await fixture(),projectId=crypto.randomUUID(),{b,d}=await designed(f,projectId),h=await published(f,b,d),input=sharedLightingInput(h.pack,h.ref,['RECEPTION','MEETING','TEAM','OFFICE_A','CIRCULATION']);
@@ -47,4 +48,20 @@ test('mechanical assembly retains every selected optical quality condition witho
  const compiled=await compileRevisionPlan(engineeringInputSchema.parse(p),revisionPlanSchema.parse(f.q),{runs:f.runs,inputRoot:f.runs});
  assert.deepEqual(compiled.project.photometricDesign,p.photometricDesign);assert.deepEqual(compiled.project.lightingStandards,p.lightingStandards);assert.equal(compiled.intake.ok,false,'Unconfirmed classifications remain blocking');
  for(const key of ['lightingEnvironment','glareAssessment']){assert.deepEqual(compiled.project[key].rooms.map(r=>r.roomId),['OFFICE_A','CIRCULATION']);for(const r of compiled.project[key].rooms){const old=p[key].rooms.find(a=>a.roomId===r.roomId);assert.deepEqual({...r,sourceIds:old.sourceIds},old);assert.equal(r.status,'assumed');}}
+});
+
+test('immutable requirement pages expose inherited/overridden values without changing project, draft or native state',async()=>{
+ const f=await setup(),draft=await f.revision.run(f.q),stateSHA=await hashFile(path.join(f.child,'engineering.json')),modelSHA=await hashFile(path.join(f.child,'model-0.json')),effects=f.effects();assert.equal(draft.requirementsReview.explicitOverrideRows,1);assert.equal(draft.requirementsReview.semanticCoverageAccepted,false);
+ const rows=[];let offset=0;do{const page=await f.revision.run({action:'read',draft:draft.draft,section:'requirements',offset,limit:3});assert.equal(page.base.staleBase,false);assert.ok(Buffer.byteLength(JSON.stringify(page),'utf8')<=256*1024);assert.equal(page.nextOffset,offset+page.items.length);rows.push(...page.items);offset=page.nextOffset;if(!page.hasMore)break;}while(offset<100);
+ assert.equal(rows.length,16);assert.equal(new Set(rows.map(r=>r.roomId+'/'+r.rule)).size,16);const changed=rows.find(r=>r.roomId==='OFFICE_A'&&r.rule==='target_lux'),kept=rows.find(r=>r.roomId==='CIRCULATION'&&r.rule==='target_lux');assert.equal(changed.decision,'explicit_override');assert.deepEqual(changed.values,[450]);assert.equal(kept.decision,'carried_forward');assert.deepEqual(kept.values,[100]);assert.equal(await hashFile(path.join(f.child,'engineering.json')),stateSHA);assert.equal(await hashFile(path.join(f.child,'model-0.json')),modelSHA);assert.equal(await hashFile(path.join(f.child,'scope-plan-'+draft.draft.draftId+'.json')),draft.draft.sha256);assert.equal(f.effects(),effects);
+});
+test('reading an old draft after apply reports the current base while preserving historical values and rejecting a new stale apply',async()=>{
+ const f=await setup(),draft=await f.revision.run(f.q);await f.revision.run({action:'apply',requestId:crypto.randomUUID(),draft:draft.draft});const stateSHA=await hashFile(path.join(f.child,'engineering.json'));
+ for(const section of ['summary','requirements','conditions','proposal']){const page=await f.revision.run({action:'read',draft:draft.draft,section});assert.equal(page.base.staleBase,true);assert.equal(page.base.baseRevision,0);assert.equal(page.base.currentRevision,1);}
+ await assert.rejects(()=>f.revision.run({action:'apply',requestId:crypto.randomUUID(),draft:draft.draft}),/BASE_CHANGED/);assert.equal(await hashFile(path.join(f.child,'engineering.json')),stateSHA);
+});
+test('executor requirement readback in CAD-read-only mode performs no CAD calls or input publication',async()=>{
+ const f=await setup(),draft=await f.revision.run(f.q),stateSHA=await hashFile(path.join(f.child,'engineering.json')),files=await fs.readdir(f.child),old=process.env.CADBRIDGE_READ_ONLY;let calls=0;
+ const execute=createExecutor({runs:f.runs,getSettings:async()=>({workspace:f.runs}),launch:async()=>{calls++;throw Error('No CAD during a draft read');}});
+ try{process.env.CADBRIDGE_READ_ONLY='1';const page=await execute('engineering_revision',{action:'read',draft:draft.draft,section:'requirements',limit:2});assert.equal(page.ok,true,JSON.stringify(page));assert.equal(page.items.length,2);assert.equal(page.base.staleBase,false);assert.equal(calls,0);assert.equal(await hashFile(path.join(f.child,'engineering.json')),stateSHA);assert.deepEqual(await fs.readdir(f.child),files);}finally{if(old===undefined)delete process.env.CADBRIDGE_READ_ONLY;else process.env.CADBRIDGE_READ_ONLY=old;}
 });

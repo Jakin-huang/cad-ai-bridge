@@ -143,7 +143,10 @@
     "crossProjectPortability": false,
     "crossTaskComplexDesign": false,
     "persistentTaskSwitchIsolation": false,
-    "knownPersistentTaskIsolationNative": true
+    "knownPersistentTaskIsolationNative": true,
+    "syntheticTwelveRoomDeclaredOpticalQuality": true,
+    "syntheticTwelveRoomSavedCadAndBookletVisual": true,
+    "originalNativeSinglePdfStrictCompatibility": false
   },
   "knownInputGaps": [
     "Original client brief not located",
@@ -153,11 +156,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Requirement-to-proposal coverage, reliable literal evidence handling and inspectable review; retain first-draft mistakes and test independent wording, omissions, conflicting documents and cross-task preservation",
-    "P0 Resolve original full-floor layout/optical failure at original thresholds; full physical evidence and budget checks, not partial-result substitution",
-    "P1 Broader source-bound spatial layout families and explicit split/merge/multiple-use identity coordination across lighting/space/analysis",
-    "P1 Multi-document source/standard applicability and changed-condition handling using independent real briefs and evaluator-only final drawings",
-    "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
+    "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
+    "P0 Actual AI-client requirement-to-proposal coverage using the newly inspectable values; retain wrong first drafts and independently test wording, omissions, units and conflicting documents",
+    "P0 Bound and yield within-room preflight work; observed status latency21.373s remains a practical gap",
+    "P1 Broader source-bound layouts, source/standard applicability, split/merge/multiple-use coordination and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review, accepted separately"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -231,7 +234,19 @@
     "persistentSwitchIsolationAccepted": false,
     "independentHeldoutProjectsAccepted": 0,
     "genericTaskEntryImplemented": true,
-    "knownPersistentTaskIsolationNativeVerified": true
+    "knownPersistentTaskIsolationNativeVerified": true,
+    "switchQualityAcceptance": {
+      "required": true,
+      "accepted": false,
+      "metrics": [
+        "source-bound requirement coverage",
+        "each discipline's unchanged numerical quality gates",
+        "editable drawing and schedule completeness",
+        "predeclared time and human correction budgets"
+      ],
+      "rule": "Known file/state isolation alone is insufficient. Returning to an unchanged task must preserve its identity and quality; explicitly revised tasks must pass their new requirements. Regressions cannot be offset by another task's improvement.",
+      "currentFloorStudyRole": "Synthetic office lighting capability-pack evidence only; neither hospital nor independent cross-task usability acceptance"
+    }
   },
   "pendingSourceIncrement": {
     "afterCommit": "aee613e",
@@ -504,5 +519,229 @@
     "M3": "incomplete",
     "M4": "incomplete",
     "releaseRepackaged": false
+  },
+  "lightingInfillSearchIncrement": {
+    "afterCommit": "37164be",
+    "status": "first_candidate_failed_second_candidate_partial_controlled_stop_no_acceptance",
+    "scope": "Same frozen procedural twelve-room input; hospital remains a separate example",
+    "implemented": [
+      "Perimeter-gap source grid infill preserving base positions and all geometry/power/preflight gates",
+      "Initial unmeasured direct diagnostic bands then power ordering; exact physical acceptance unchanged",
+      "Frozen source input SHA checked before new study; runtime source digests matched against saved public-source snapshot"
+    ],
+    "unitBeforeRankingChange": {
+      "passed": 375,
+      "failed": 0
+    },
+    "relatedUnitAfterRankingAndToleranceGuard": {
+      "passed": 17,
+      "failed": 0
+    },
+    "finalFullUnit": "pending_after_physical_run",
+    "legacyTwelveRoomModelExactReplay": true,
+    "physicalLimits": {
+      "minimumAverageLux": 500,
+      "maximumAverageLux": 700,
+      "minimumUniformity": 0.6,
+      "maximumLpd": 8,
+      "maximumReferenceUgr": 19,
+      "maxCandidates": 2,
+      "maxMinutes": 60,
+      "maxConcurrentRooms": 2,
+      "gridOrRoomSampling": false
+    },
+    "inputChanged": false,
+    "preliminaryHighPowerRankingRetained": true,
+    "wholeFloorQualityAccepted": false,
+    "nativeDeliveryAccepted": false,
+    "professionalApproval": false,
+    "releaseRepackaged": false,
+    "next": "Verify geometry-aware glare feedback and uniformity tie ordering, then fresh full-scope physical study at unchanged source/thresholds/budgets",
+    "firstCandidate": {
+      "complete": true,
+      "rooms": 12,
+      "luminaires": 141,
+      "points": 1958,
+      "observers": 48,
+      "passed": false,
+      "failedChecks": [
+        "total_mean_and_uniformity_ROOM_1"
+      ],
+      "room1AverageLux": 603.9982287540105,
+      "room1Uniformity": 0.4496288698730671
+    },
+    "secondCandidate": {
+      "status": "controlled_stop_known_reference_ugr_failure",
+      "changedRoomLayouts": [
+        "ROOM_1"
+      ],
+      "unchangedRoomLayouts": 11,
+      "sourceChoiceReconstructed": true,
+      "inputUnchanged": true,
+      "controllerInputOrLayoutRepair": false,
+      "completedRoomOutputs": 8,
+      "wholeReportPublished": false,
+      "room1MaximumReferenceUgr": 19.162266537465214,
+      "limit": 19,
+      "localIlluminanceConditionsMet": true
+    },
+    "recovery": {
+      "currentState": "prepared",
+      "pendingOperations": 0,
+      "originalReceiptUnchanged": true,
+      "originalReplayRejected": "TASK_OPERATION_INTERRUPTED",
+      "sourceInputUnchanged": true,
+      "nativeCadStarted": false
+    }
+  },
+  "proposalReviewPreparation": {
+    "status": "immutable_requirement_readback_mcp_verified_actual_ai_client_pending",
+    "runtimeCoreChangedDuringOpticalStudy": false,
+    "dedicatedUnitTestsPassed": 13,
+    "byteBoundedPagingAndStaleBaseUnitVerified": true,
+    "frozenSavedSyntheticClientDraftsReplayed": 2,
+    "previousEvidenceArchiveUnchanged": true,
+    "observedReadback": "The retained first draft visibly carries300lx for OFFICE_A and STUDIO; the corrected draft explicitly supplies450lx and550lx. The projection shows the actual rule dispositions and values without certifying literal quotes as semantic coverage.",
+    "actualClientUsedNewView": false,
+    "generalSemanticAcceptance": false,
+    "professionalApproval": false,
+    "next": "Repair raw single-PDF compatibility across design packs, then test actual AI-client use of the new value readback and independent semantic cases; source and protocol checks do not certify understanding.",
+    "integratedAfterOpticalAndNativeProcessesCompleted": true,
+    "validation": "docs/proposal-readback-validation.json",
+    "actualMcpReadback": {
+      "checks": 5,
+      "cases": 2,
+      "pages": 28,
+      "calls": 32,
+      "protectedFiles": 53,
+      "freshProcessReplay": true,
+      "changedDraftRejected": true,
+      "allProtectedProjectAndProducerBytesUnchanged": true
+    },
+    "finalFullRegression": {
+      "passed": 389,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 127952.3224,
+      "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+      "logSHA256": "85e8ed3bbd9db7195c7e4b1c80aedecfe8f7f079bb71e91482455e89ef22f762"
+    }
+  },
+  "lightingGlareFeedbackIncrement": {
+    "afterCommit": "37164be",
+    "status": "bounded_quality_serial_native_and_booklet_verified_original_single_pdf_compatibility_incomplete",
+    "sourceOnly": true,
+    "implemented": [
+      "Candidate-geometry glare ordering with previous measured per-observer indirect background; ranking only, no transport bound or acceptance",
+      "No inferred prediction for stale identities, changed observations, nonpositive background or no finite source contribution",
+      "Fixed16-per-product diagnostic pool retains count strata and spreads spare slots across geometry families",
+      "Initial combined-beam ties consider uniformity distance after diagnostic group and power"
+    ],
+    "unitFull": {
+      "passed": 380,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Frozen optical increment before standalone proposal-readback preparation"
+    },
+    "targetedUnit": {
+      "passed": 24,
+      "failed": 0
+    },
+    "actualFirstFailureEvidenceReplay": "New glare feedback proposes another12-lamp geometry with predicted referenceUGR17.55; not new physical acceptance",
+    "knownFailuresPreserved": [
+      "Original10-lamp floor room under500lx",
+      "Complete141-lamp candidate fails ROOM_1 uniformity0.4496",
+      "Second candidate13-lamp ROOM_1 referenceUGR19.1623 exceeds19; partial study controlled stop after8 rooms",
+      "Isolated diagnostic mistakenly repeated old failed initial layout; candidate coverage corrected after checking actual selected geometry"
+    ],
+    "originalReceiptUnchanged": true,
+    "recoveredState": "prepared",
+    "wholeFloorAccepted": false,
+    "nativeDeliveryAccepted": true,
+    "professionalApproval": false,
+    "releaseRepackaged": false,
+    "next": "Repair single-PDF compatibility across design packs, validate real AI-client use of requirement readback, and reduce within-room preflight blocking; retain independent and professional gates.",
+    "riskRoomDiagnostic": {
+      "passed": true,
+      "wholeFloorAccepted": false,
+      "averageLux": 568.3223609465242,
+      "uniformity": 0.6112667754642299,
+      "maximumReferenceUgr": 17.31791590190134,
+      "roomCount": 1
+    },
+    "initialCandidateReplay": {
+      "sourceInputUnchanged": true,
+      "modelSHA256": "7a613486a3aca48e53923bce54d172dae79529ba45cb80fa8012fb5ef6f13411",
+      "actualRoom1GeometryChecked": true,
+      "sourceOnly": true
+    },
+    "currentStudy": {
+      "scope": "Same frozen12-room procedural source, all points and48 reference observations",
+      "maxCandidates": 2,
+      "maxMinutes": 60,
+      "maxConcurrentRooms": 2,
+      "inputSHA256": "f9df0f7d2095034e04609a12f3bf622cd36c6b50693ff9a18b3b5e72b93653d9",
+      "accepted": false,
+      "modelSHA256": "89d2a3032428eadf750e63c49b364ad216e95a4d9cc3b55e7aba3b5637b382b1",
+      "qualitySHA256": "8212c96b359b7a0f2ba90254790b070d24476a86d2e32af82db2b95a2cbe1bbb",
+      "limits": {
+        "maxCandidates": 2,
+        "maxMinutes": 60,
+        "maxConcurrentRooms": 2,
+        "beam": 32,
+        "perProductPointPool": 16,
+        "maxExaminedPlans": 64
+      },
+      "candidates": 2,
+      "elapsedMinutes": 53.61513333333333,
+      "totals": {
+        "rooms": 12,
+        "luminaires": 141,
+        "points": 1958,
+        "observers": 48
+      },
+      "averageRangeLux": [
+        568.3223609465242,
+        621.5610840727272
+      ],
+      "minimumFineUniformity": 0.6112667754642299,
+      "minimumMediumOrFineUniformity": 0.6086276122019063,
+      "maximumReferenceUgr": 17.31791590190134,
+      "sourceChoicesReconstructed": true,
+      "originalInputUnchanged": true,
+      "preexistingMeasuredBaselineImported": false,
+      "qualityAccepted": true,
+      "nativeCadReadbackAccepted": true,
+      "primaryBookletAccepted": true
+    },
+    "validation": "docs/lighting-layout-search-validation.json",
+    "wholeFloorOpticalQualityAccepted": true,
+    "serialReferenceAccepted": true,
+    "bookletVisualAccepted": true,
+    "originalSinglePdfStrictCompatibilityAccepted": false,
+    "acceptanceScope": "Only the declared known synthetic optical model, same-model serial comparison, saved CAD and primary booklet. Original single-PDF compatibility and independent/professional gates remain incomplete.",
+    "finalFullRegression": {
+      "passed": 389,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 127952.3224,
+      "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+      "logSHA256": "85e8ed3bbd9db7195c7e4b1c80aedecfe8f7f079bb71e91482455e89ef22f762"
+    }
+  },
+  "previousPrioritiesBeforeFloorQualityClosure": [
+    "P0 Requirement-to-proposal coverage, reliable literal evidence handling and inspectable review; retain first-draft mistakes and test independent wording, omissions, conflicting documents and cross-task preservation",
+    "P0 Resolve original full-floor layout/optical failure at original thresholds; full physical evidence and budget checks, not partial-result substitution",
+    "P1 Broader source-bound spatial layout families and explicit split/merge/multiple-use identity coordination across lighting/space/analysis",
+    "P1 Multi-document source/standard applicability and changed-condition handling using independent real briefs and evaluator-only final drawings",
+    "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
+  ],
+  "currentFullRegression": {
+    "passed": 389,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 127952.3224,
+    "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+    "logSHA256": "85e8ed3bbd9db7195c7e4b1c80aedecfe8f7f079bb71e91482455e89ef22f762"
   }
 }

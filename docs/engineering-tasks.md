@@ -140,3 +140,5 @@ cad_design_project的status.section=space_program_changes返回当前绑定、�
 cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、用途、旧条件来源、改值/未知规则及新任务书原句，Bridge 从当前共享包装配几何与完整条件/来源处置。它继续调用完整修订门槛，不推断工程语义或降低假设、标准、光学质量和审核要求。inspect_brief 返回精确正文与textSHA256；space_bindings 直接提供functionSHA256，避免客户端手算技术摘要。完整字段与步骤见[独立公开技能](../skills/cadbridge-electrical/references/engineering-design.md)。
 
 本机真实客户端最终完成一次5空间修订及新原生图；冲突与未知用例按要求阻断。未知用例首次引文不符被拒后自修正，零错误可用性未通过，原始结果之外有独立深层工具错误审计。数据为已知合成输入，不能证明任意医院或其他真实工程理解，也不抵扣整层光度失败、独立项目和专业验收。见[验证与边界](scope-client-validation.md)。
+
+后续数值审阅增量：draft/summary返回requirementsReview计数；read的requirements节列出每个房间/规则的实际values、effective状态、来源原句，以及explicit_override/carried_forward/unresolved。offset/limit与240KiB预算共同限定每页，必须沿实际nextOffset取齐；单项过大明确拒绝，不跳过。每个read节都返回base中的原/当前revision及inputSHA和staleBase；历史提案可读，重新应用仍受原版本门槛约束。读取本身不发布输入、模型或原生图；计数和引文不证明客户任务书已全部解释。真实MCP读取及当前限制见[验证](proposal-readback-validation.json)，真实AI客户端使用新视图尚未验收。

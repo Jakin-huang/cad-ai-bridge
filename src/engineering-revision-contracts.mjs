@@ -21,6 +21,6 @@ export const revisionPlanSchema=z.strictObject({
 export const revisionDraftRef=z.strictObject({jobId:job,draftId:z.uuid(),sha256:sha});
 export const engineeringRevisionSchema=z.discriminatedUnion('action',[
  revisionPlanSchema,
- z.strictObject({action:z.literal('read'),draft:revisionDraftRef,section:z.enum(['summary','conditions','proposal']).default('summary'),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)}),
+ z.strictObject({action:z.literal('read'),draft:revisionDraftRef,section:z.enum(['summary','requirements','conditions','proposal']).default('summary'),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)}),
  z.strictObject({action:z.literal('apply'),requestId:z.uuid(),draft:revisionDraftRef})
 ]);

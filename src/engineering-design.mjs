@@ -5,6 +5,7 @@ import {evaluateRoomPhotometry,roomPhotometricGrid} from './engineering-photomet
 import {selectEngineeringPlanSheet} from './engineering-sheets.mjs';
 import {declaredRoomUses,auditSharedUseBasis} from './lighting-use-assessment.mjs';
 import {sampleLightingGeometry} from './lighting-geometry-pool.mjs';
+import {perimeterInfillLayouts} from './lighting-infill-layouts.mjs';
 
 export const engineeringDigest=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export const polygonArea=ps=>Math.abs(ps.reduce((s,p,i)=>{const q=ps[(i+1)%ps.length];return s+p[0]*q[1]-q[0]*p[1];},0))/2;
@@ -50,11 +51,14 @@ function layoutRoom(p,room,photometricEvidence=[],lightingStandardEvidence,{sele
    // Odd counts can be feasible between an underlit full grid and an overpowered
    // next grid. Search bounded single removals, then recheck spacing and every point.
    if(direct&&positions.length>1&&positions.length<=Math.floor(maxLpd*areaM2/fixture.watts)+1){const samples=Math.min(32,positions.length);for(let i=0;i<samples;i++){const remove=Math.floor(i*(positions.length-1)/(samples-1));layouts.push({positions:positions.filter((_,index)=>index!==remove),layoutSearch:'single_removed_grid'});}}
+   // Initial/feedback total-light search only. Existing flux/default-direct
+   // selection and every historical source-grid choice remain unchanged.
+   if(direct&&(collect||selection))layouts.push(...perimeterInfillLayouts({positions,nx,ny,bounds:b,maxCount:powerCount,validPoint:pos=>insidePolygon(pos,room.polygon)&&!room.obstacles.some(o=>insidePolygon(pos,o))}));
    for(const layout of layouts){const ps=layout.positions;
     if([0,1].some(axis=>{const xs=[...new Set(ps.map(p=>p[axis]))].sort((a,b)=>a-b);return !xs.length||xs[0]-b.min[axis]>maxSpacingM*500+1e-4||b.max[axis]-xs.at(-1)>maxSpacingM*500+1e-4||xs.slice(1).some((x,i)=>x-xs[i]>maxSpacingM*1000+1e-4);}))continue;
     const count=ps.length,estimatedLux=count*fixture.lumens*fixture.utilizationFactor*fixture.maintenanceFactor/areaM2,lpd=count*fixture.watts/areaM2;
     if(!count||!direct&&(count<need||estimatedLux<targetLux-1e-8)||lpd>maxLpd+1e-8)continue;
-    candidates.push({fixture:fixture.id,positions:ps,layoutSearch:layout.layoutSearch,count,areaM2:round(areaM2),targetLux,estimatedLux:round(estimatedLux),lpd:round(lpd),maxLpd,grid:[nx,ny],gridSpacingM:[round(width/nx/1000),round(height/ny/1000)],score:count*fixture.watts+(nx*ny-count)*.1+Math.abs(width/nx-height/ny)/100000});
+    candidates.push({fixture:fixture.id,positions:ps,layoutSearch:layout.layoutSearch,...(layout.infill?{infill:layout.infill}:{}),count,areaM2:round(areaM2),targetLux,estimatedLux:round(estimatedLux),lpd:round(lpd),maxLpd,grid:[nx,ny],gridSpacingM:[round(width/nx/1000),round(height/ny/1000)],score:count*fixture.watts+Math.max(0,nx*ny-count)*.1+Math.abs(width/nx-height/ny)/100000+(layout.infill?0.5:0)});
     if(direct&&candidates.length>10000)throw Error('PHOTOMETRIC_CANDIDATE_LIMIT: '+room.id);
    }
   }

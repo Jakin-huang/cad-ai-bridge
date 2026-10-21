@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-21T15:25:11.679Z",
+  "afterCommit": "37164be",
+  "sourceIncrementOnly": true,
+  "status": "immutable_requirement_readback_mcp_verified_actual_ai_client_pending",
+  "scope": "Source-bound readback of explicit ordinary-lighting revision drafts; this is an adapter feature, not a generic-domain requirement interpreter.",
+  "implemented": [
+    "Summary counts and paged per-room/rule values with explicit_override/carried_forward/unresolved origin, effective statuses and literal source evidence",
+    "240KiB page budget, actual nextOffset and explicit oversized-row rejection",
+    "Current/base revision and input identity on all read sections; historical reads remain available, new stale applies rejected by existing version gate"
+  ],
+  "dedicatedUnitTests": 13,
+  "standaloneFirstStageTests": 3,
+  "sourceSnapshotRetainedForStandaloneReplay": true,
+  "actualMcp": {
+    "checks": 5,
+    "cases": 2,
+    "pages": 28,
+    "calls": 32,
+    "protectedFiles": 53,
+    "freshProcessReplay": true,
+    "changedDraftRejected": true,
+    "allProtectedProjectAndProducerBytesUnchanged": true
+  },
+  "observedKnownOmission": "Retained first client draft carries300lx for OFFICE_A and STUDIO; corrected draft explicitly supplies450lx and550lx. Both immutable versions remain visible with stale-base flags after the real prior apply.",
+  "acceptance": {
+    "actualMcpReadback": true,
+    "actualAiClientUsedNewView": false,
+    "newAiModelCalls": false,
+    "hospitalDataProcessed": false,
+    "naturalLanguageCoverage": false,
+    "independentCustomer": false,
+    "professionalApproval": false
+  },
+  "readOnlyModeScope": "CAD-native generation disabled; this test invokes only reads and makes no claim about other legacy engineering source-edit actions",
+  "postIntegrationFullRegression": {
+    "passed": 389,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 127952.3224,
+    "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+    "logSHA256": "85e8ed3bbd9db7195c7e4b1c80aedecfe8f7f079bb71e91482455e89ef22f762"
+  },
+  "remaining": [
+    "Run the actual AI client against the new view and independently test omissions, wording, unit conversion and multi-document conflicts.",
+    "Literal quote/source identity and visible rule dispositions cannot certify that every customer demand was extracted or correctly interpreted.",
+    "No change to the existing CAD-only read-only semantics of legacy source-edit APIs; this test invokes only read actions."
+  ],
+  "privateEvidenceBundle": {
+    "fileName": "整层光度布局改进-完整试验证据.zip",
+    "verification": "Private companion archive-verification.json records actual ZIP SHA, CRC and every entry hash. Original trials, source snapshots and partial failures remain separate.",
+    "productRelease": false
+  }
+}

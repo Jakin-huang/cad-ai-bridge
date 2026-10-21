@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-21T15:25:11.678Z",
+  "afterCommit": "37164be",
+  "sourceIncrementOnly": true,
+  "status": "bounded_quality_serial_native_and_booklet_verified_original_single_pdf_compatibility_incomplete",
+  "scope": "Same known procedural twelve-room office source. This is not hospital, independent customer, unseen-project, complete-building or professional design acceptance.",
+  "implemented": [
+    "Source-derived perimeter-gap infill family; original flux/default direct choices preserved",
+    "Fixed per-product16-point diagnostic budget retains count strata and spreads spare geometry-family samples",
+    "Candidate-specific source-geometry reference-UGR ordering uses prior measured indirect eye background only as an uncalibrated ranking heuristic; actual transport is remeasured",
+    "Initial0.05 diagnostic ranking bands followed by power/uniformity; no physical gate tolerance relaxation",
+    "Final native scene composes frozen total-quality annotations and room-label placement without modifying the design model"
+  ],
+  "frozenTargets": {
+    "minimumAverageLux": 500,
+    "maximumAverageLux": 700,
+    "minimumUniformity": 0.6,
+    "maximumLpd": 8,
+    "maximumRequestedReferenceUgr": 19
+  },
+  "study": {
+    "inputSHA256": "f9df0f7d2095034e04609a12f3bf622cd36c6b50693ff9a18b3b5e72b93653d9",
+    "modelSHA256": "89d2a3032428eadf750e63c49b364ad216e95a4d9cc3b55e7aba3b5637b382b1",
+    "qualitySHA256": "8212c96b359b7a0f2ba90254790b070d24476a86d2e32af82db2b95a2cbe1bbb",
+    "limits": {
+      "maxCandidates": 2,
+      "maxMinutes": 60,
+      "maxConcurrentRooms": 2,
+      "beam": 32,
+      "perProductPointPool": 16,
+      "maxExaminedPlans": 64
+    },
+    "candidates": 2,
+    "elapsedMinutes": 53.61513333333333,
+    "totals": {
+      "rooms": 12,
+      "luminaires": 141,
+      "points": 1958,
+      "observers": 48
+    },
+    "averageRangeLux": [
+      568.3223609465242,
+      621.5610840727272
+    ],
+    "minimumFineUniformity": 0.6112667754642299,
+    "minimumMediumOrFineUniformity": 0.6086276122019063,
+    "maximumReferenceUgr": 17.31791590190134,
+    "sourceChoicesReconstructed": true,
+    "originalInputUnchanged": true,
+    "preexistingMeasuredBaselineImported": false
+  },
+  "candidateResults": [
+    {
+      "passed": false,
+      "modelSHA256": "7a613486a3aca48e53923bce54d172dae79529ba45cb80fa8012fb5ef6f13411",
+      "qualitySHA256": "1c62fb6be2f1548b651bef739f04a75cebe630dc7a22831c3c50ebe0692f71ef",
+      "failedChecks": [
+        "total_mean_and_uniformity_ROOM_2"
+      ],
+      "totals": {
+        "rooms": 12,
+        "luminaires": 140,
+        "points": 1958,
+        "observers": 48
+      }
+    },
+    {
+      "passed": true,
+      "modelSHA256": "89d2a3032428eadf750e63c49b364ad216e95a4d9cc3b55e7aba3b5637b382b1",
+      "qualitySHA256": "8212c96b359b7a0f2ba90254790b070d24476a86d2e32af82db2b95a2cbe1bbb",
+      "failedChecks": [],
+      "totals": {
+        "rooms": 12,
+        "luminaires": 141,
+        "points": 1958,
+        "observers": 48
+      }
+    }
+  ],
+  "feedback": {
+    "changedRooms": [
+      "ROOM_2"
+    ],
+    "unchangedRooms": 11,
+    "controllerInputOrLayoutRepair": false
+  },
+  "serialReference": {
+    "roomId": "ROOM_1",
+    "points": 187,
+    "profiles": 4,
+    "maxAbsoluteLuxError": 0,
+    "independentlyRetraced": true,
+    "scope": "Same fixed optical room, original world positions and settings; not an independent physical model or all-room serial rerun",
+    "ugrTolerance": 0.001,
+    "interpretation": "A separately retraced same-model room; no independent software or physical-model accuracy certification"
+  },
+  "power": {
+    "iesWattsPerFixture": 23,
+    "conservativeNameplateWattsPerFixture": 24,
+    "iesTotalWatts": 3243,
+    "conservativeTotalWatts": 3384,
+    "productApproval": false
+  },
+  "native": {
+    "checks": 6,
+    "nativeSteps": 4,
+    "savedObjectAndFinalSceneAudit": true,
+    "requestReplayInNewProcess": true,
+    "originalInputAndModelBytesUnchanged": true,
+    "sheets": [
+      {
+        "id": "E01",
+        "paper": "A3"
+      },
+      {
+        "id": "E01-2",
+        "paper": "A3"
+      },
+      {
+        "id": "E02",
+        "paper": "A1"
+      },
+      {
+        "id": "E03",
+        "paper": "A1"
+      },
+      {
+        "id": "E04",
+        "paper": "A3"
+      },
+      {
+        "id": "E05",
+        "paper": "A3"
+      }
+    ],
+    "pdfs": 6,
+    "pngs": 6,
+    "allSixPageVisualQa": true,
+    "bookletPages": 6,
+    "bookletStrictReaderPassed": true,
+    "originalSinglePdfStrictReaderPassed": false,
+    "pdfCompatibilityIssue": "All six source exports have duplicate /PageMode entries. Standard rendering succeeds, strict pypdf parsing fails. Source exports retained unchanged; merged booklet strict parsing passes. This is not PDF/A certification."
+  },
+  "verification": {
+    "opticalIncrementFullUnit": {
+      "passed": 380,
+      "failed": 0,
+      "scope": "Frozen optical increment before standalone proposal-readback preparation"
+    },
+    "postIntegrationFullRegression": {
+      "passed": 389,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 127952.3224,
+      "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+      "logSHA256": "85e8ed3bbd9db7195c7e4b1c80aedecfe8f7f079bb71e91482455e89ef22f762"
+    },
+    "independentQualityAndNativeChecks": 5,
+    "retainedFailedCandidates": true,
+    "allOriginalEvidenceArchivesUnchanged": true
+  },
+  "observed": {
+    "maxStatusResponseMs": 21373,
+    "minObservedGlobalFreeGiB": 1.1591072082519531,
+    "memoryScope": "Global free physical memory during this one trial, not owned-process peak or a new-machine guarantee",
+    "budgetScope": "53.62-minute source preflight and candidate search only; serial reference and native/PDF delivery are separate. No end-to-end or new-machine efficiency acceptance."
+  },
+  "acceptance": {
+    "declaredSyntheticFloorOpticalQuality": true,
+    "sameModelSerialComparison": true,
+    "currentMachineSavedCadAndBookletVisual": true,
+    "originalNativeSinglePdfStrictCompatibility": false,
+    "independentProjectTransfer": false,
+    "generalSemanticUnderstanding": false,
+    "professionalApproval": false,
+    "installationDesign": false,
+    "externalUsers": false,
+    "cleanMachine": false
+  },
+  "retainedTrialFolders": [
+    "engineering-floor-quality-20261021-infill",
+    "engineering-floor-quality-20261021-infill-balanced",
+    "engineering-floor-quality-20261021-glare-feedback",
+    "engineering-floor-quality-20261021-glare-diverse"
+  ],
+  "frozen": {
+    "zip": "20e12d2d2d9081390bbb21ee1915d535c75487e85e431fd633ece164cd27a2d2",
+    "dll": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34",
+    "previousFloorArchive": "c4ba28c53f9586639340b76b457444ba78940af0427be25837f20e387e8593f2",
+    "previousClientArchive": "c70426c3cdd6142f74c92747a8bcf6b4e9e644b613c63bfa3f7319ce1244ffe5"
+  },
+  "remainingPracticalGaps": [
+    "Original six native single-page PDFs have duplicate /PageMode dictionary keys: ordinary rendering works but strict parsing fails. Primary merged booklet passes strict parsing; product-wide PDF compatibility still needs repair across both design packs.",
+    "Per-room preflight still blocks status for up to21.373s; within-room cooperative yielding/cancellation remains unverified.",
+    "Known same-source numerical stability and serial agreement do not replace independent optical software/project validation; closed opaque diffuse geometry, fixed workplane and standing-reference UGR only.",
+    "Actual luminous opening, surface/installation authority, IES23W versus leaflet24W approval, daylight, internal obstruction and field glare remain unaccepted.",
+    "Full source/standard applicability, installation wiring/protection coordination, wider source-bound space layouts and independent cross-task quality remain incomplete.",
+    "Independent real projects, external users, clean machines and authenticated human professional review remain pending.",
+    "Frozen v2 ZIP/DLL unchanged; historical report/DLL full-release-gate mismatch is not rewritten or counted as passed."
+  ],
+  "privateEvidenceBundle": {
+    "fileName": "整层光度布局改进-完整试验证据.zip",
+    "verification": "Private companion archive-verification.json records actual ZIP SHA, CRC and every entry hash. Original trials, source snapshots and partial failures remain separate.",
+    "productRelease": false
+  }
+}

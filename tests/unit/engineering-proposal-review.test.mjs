@@ -1,0 +1,28 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {revisionRequirementReview,revisionRequirementReviewPage,revisionDraftBase} from '../../src/engineering-proposal-review.mjs';
+const sha='a'.repeat(64),quote='Teach at 550 lx; keep all other stated assumptions pending review.';
+function draft(){return {brief:{textSHA256:sha},request:{carryForward:{quote,reason:'Explicit inherited-condition authorization, still requiring semantic review'},rooms:[{roomId:'ROOM',fromRoomId:'OLD',requirements:[],unresolvedRules:[]}]},project:{brief:quote,sources:[{id:'CURRENT',role:'brief',sha256:sha}],rooms:[{id:'ROOM',name:'Generic teaching space',use:'teaching'}],requirements:[{id:'TARGET',roomIds:['ROOM'],rule:'target_lux',value:300,status:'assumed',sourceIds:['CURRENT'],rationale:'Original inherited test assumption'}]},decisions:[{key:'requirement:TARGET',evidence:{sourceId:'CURRENT',quote},reason:'Selected scope evidence; not proof that the proposed value matches its meaning'}]};}
+test('readback exposes a known omitted target override instead of treating a literal quote as semantic coverage',()=>{
+ const d=draft(),before=JSON.stringify(d),r=revisionRequirementReview(d);assert.equal(r.rows[0].decision,'carried_forward');assert.deepEqual(r.rows[0].values,[300]);assert.equal(r.rows[0].evidence[0].quote,quote);assert.equal(r.rows[0].requirements[0].status,'assumed');assert.equal(r.summary.carriedForwardRows,1);assert.equal(r.summary.semanticCoverageAccepted,false);assert.equal(JSON.stringify(d),before);
+});
+test('explicit conflicting values and unresolved rules remain visible with no guessed effective value',()=>{
+ const d=draft(),room=d.request.rooms[0];room.requirements=[{rule:'target_lux',values:[450,550]}];room.unresolvedRules=[{rule:'control_mode',quote,reason:'Control mode remains explicitly unknown in this developer case'}];d.project.requirements[0].value=450;d.project.requirements.push({...d.project.requirements[0],id:'TARGET_2',value:550});d.decisions.push({...d.decisions[0],key:'requirement:TARGET_2'});const r=revisionRequirementReview(d),target=r.rows.find(r=>r.rule==='target_lux'),control=r.rows.find(r=>r.rule==='control_mode');assert.equal(target.decision,'explicit_override');assert.deepEqual(target.values,[450,550]);assert.equal(target.multipleDeclaredValues,true);assert.equal(control.decision,'unresolved');assert.deepEqual(control.values,[]);assert.equal(r.summary.unresolvedRows,1);assert.equal(r.summary.multipleValueRows,1);assert.equal(r.summary.professionalApproval,false);
+});
+test('a review projection rejects lost evidence, retired source, assembled-value drift and a guessed unresolved value',()=>{
+ for(const mutate of [d=>d.decisions=[],d=>d.project.sources[0].supersededBy='NEXT',d=>d.project.sources[0].sha256='b'.repeat(64),d=>d.request.rooms[0].requirements=[{rule:'target_lux',values:[550]}],d=>d.request.rooms[0].unresolvedRules=[{rule:'target_lux',quote,reason:'Unresolved target'}],d=>d.request.rooms=[]]){const d=draft();mutate(d);assert.throws(()=>revisionRequirementReview(d),/REVISION_REVIEW_/);}
+});
+test('UTF-8 byte-bounded pages retain every rule once and advance by actual returned rows',()=>{
+ const d=draft(),long='此段仅用于验证长引文逐字保留与分页，不代表工程依据。'.repeat(25);d.project.brief=long;d.request.carryForward.quote=long;
+ const baseRoom=d.project.rooms[0],basePlan=d.request.rooms[0],baseRequirement=d.project.requirements[0];d.project.rooms=[];d.request.rooms=[];d.project.requirements=[];d.decisions=[];
+ for(let i=0;i<12;i++){const id='ROOM_'+i,req='TARGET_'+i;d.project.rooms.push({...baseRoom,id});d.request.rooms.push({...basePlan,roomId:id});d.project.requirements.push({...baseRequirement,id:req,roomIds:[id],value:300+i});d.decisions.push({key:'requirement:'+req,evidence:{sourceId:'CURRENT',quote:long},reason:'Known long-evidence paging fixture'});}
+ const rows=[];let offset=0;
+ do{const p=revisionRequirementReviewPage(d,{offset,limit:12,maxBytes:12000});assert.ok(Buffer.byteLength(JSON.stringify(p),'utf8')<=12000);assert.ok(p.items.length>0&&p.items.length<12);assert.equal(p.nextOffset,offset+p.items.length);assert.equal(p.summary.semanticCoverageAccepted,false);rows.push(...p.items);offset=p.nextOffset;if(!p.hasMore)break;}while(offset<12);
+ assert.equal(rows.length,12);assert.equal(new Set(rows.map(r=>r.roomId)).size,12);assert.deepEqual(rows.map(r=>r.values[0]),Array.from({length:12},(_,i)=>300+i));assert.ok(rows.every(r=>r.evidence[0].quote===long));const empty=revisionRequirementReviewPage(d,{offset:12});assert.deepEqual(empty.items,[]);assert.equal(empty.hasMore,false);
+});
+test('oversized rows fail explicitly and invalid page bounds cannot silently truncate or loop',()=>{
+ const d=draft(),long='字'.repeat(900);d.project.brief=long;d.request.carryForward.quote=long;d.decisions[0].evidence.quote=long;assert.throws(()=>revisionRequirementReviewPage(d,{maxBytes:1024}),/ROW_TOO_LARGE/);
+ for(const bounds of [{offset:-1},{offset:.5},{limit:0},{limit:101},{maxBytes:511},{maxBytes:262145}])assert.throws(()=>revisionRequirementReviewPage(d,bounds),/PAGE_BOUNDS/);
+});
+test('historical readback names stale revision or input without claiming that a current base is approved',()=>{
+ const d=draft();d.request.expectedRevision=0;d.request.expectedInputSHA256=sha.toUpperCase();const current={revision:0,inputSHA256:sha};assert.equal(revisionDraftBase(d,current).staleBase,false);assert.equal(revisionDraftBase(d,{...current,revision:1}).staleBase,true);assert.equal(revisionDraftBase(d,{...current,inputSHA256:'b'.repeat(64)}).staleBase,true);assert.throws(()=>revisionDraftBase(d,{revision:0,inputSHA256:'missing'}),/BASE_IDENTITY_REQUIRED/);
+});

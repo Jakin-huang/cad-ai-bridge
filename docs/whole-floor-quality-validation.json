@@ -263,5 +263,59 @@
     "subsequentModelFullQualityAccepted": false,
     "subsequentModelNativeDeliveryBlocked": true,
     "oldEvidenceZipUnchanged": true
+  },
+  "subsequentInfillStudy": {
+    "afterCommit": "37164be",
+    "status": "first_candidate_failed_second_candidate_partial_controlled_stop_no_acceptance",
+    "originalInputAndThresholdsPreserved": true,
+    "sourceOnlyIncrement": true,
+    "layoutFamily": "original grids/removals plus bounded perimeter-gap infill",
+    "initialRanking": "0.05 diagnostic objective bands then power; physical limits exact",
+    "originalFailureRetained": true,
+    "relatedUnitTestsAfterRanking": 17,
+    "oldTwelveRoomModelExactReplay": true,
+    "scope": "Same known synthetic source; no independent customer, general semantic, complete-building or professional acceptance",
+    "progress": "docs/engineering-design-progress.json",
+    "firstCandidate": {
+      "complete": true,
+      "rooms": 12,
+      "luminaires": 141,
+      "points": 1958,
+      "observers": 48,
+      "passed": false,
+      "failedChecks": [
+        "total_mean_and_uniformity_ROOM_1"
+      ],
+      "room1AverageLux": 603.9982287540105,
+      "room1Uniformity": 0.4496288698730671
+    },
+    "secondCandidate": {
+      "status": "controlled_stop_known_reference_ugr_failure",
+      "changedRoomLayouts": [
+        "ROOM_1"
+      ],
+      "unchangedRoomLayouts": 11,
+      "sourceChoiceReconstructed": true,
+      "inputUnchanged": true,
+      "controllerInputOrLayoutRepair": false,
+      "completedRoomOutputs": 8,
+      "wholeReportPublished": false,
+      "room1MaximumReferenceUgr": 19.162266537465214,
+      "limit": 19,
+      "localIlluminanceConditionsMet": true
+    },
+    "originalReceiptUnchanged": true,
+    "recoveredState": "prepared"
+  },
+  "latestValidation": "docs/lighting-layout-search-validation.json",
+  "historicalScopeNote": "Top-level status/results/gap list describe the retained original failed trial. Later scoped optical/native/booklet success and the still-failed single-PDF strict compatibility are recorded in latestValidation; original records/ZIP remain unchanged.",
+  "subsequentGlareFeedbackStudy": {
+    "validation": "docs/lighting-layout-search-validation.json",
+    "originalFailedTrialStillFailed": true,
+    "newDeclaredSyntheticFloorQuality": true,
+    "newSameModelSerialComparison": true,
+    "newSavedCadAndPrimaryBooklet": true,
+    "originalSinglePdfStrictCompatibility": false,
+    "independentOrProfessionalAcceptance": false
   }
 }
