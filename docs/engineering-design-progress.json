@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "baseline": "v2.0.0-preview.1",
   "target": "complex-engineering-design-to-human-review",
+  "productGoal": "Reusable understanding and completion of complex engineering tasks through design, editing, checking, drawing output and human review",
+  "examplePolicy": {
+    "hospital": "Isolated retrospective evaluator only, never the product identity or task selector",
+    "taskSelection": "Explicit installed task kind, independent of project label",
+    "quality": "Retain existing requirements, source/assumption grades, thresholds and immutable outputs across tasks"
+  },
   "updated": "2026-10-22",
   "pilot": "hospital-ordinary-lighting-retrospective-reconstruction",
   "stages": [
@@ -150,7 +156,9 @@
     "originalNativeSinglePdfStrictCompatibility": false,
     "knownSyntheticActualAiRequirementReadback": true,
     "knownSyntheticActualAiNativePublicationPhase": true,
-    "zeroErrorSemanticPositiveTrial": false
+    "zeroErrorSemanticPositiveTrial": false,
+    "structuredDocumentVersionAndLiteralCitationMechanics": true,
+    "genericMultiDocumentSemanticUnderstanding": false
   },
   "knownInputGaps": [
     "Original client brief not located",
@@ -160,12 +168,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve cross-project/task quality and A-to-B-to-A isolation; hospital remains an isolated example",
-    "P0 Reliable actual-client requirement proposals/evidence/assumption grades and usable completion; current known positive trials reached valid states but both failed whole-trial usability",
-    "P0 Structured multi-document source/version/authority/coverage and conflicts; composite test briefs are not this product capability",
-    "P0 Bound and yield within-room preflight work; prior observed status latency21.373s remains unresolved",
-    "P1 Broader source-bound layouts, explicit split/merge/multiple-use coordination, standards and installation/wiring/protection detail",
-    "P2 Independent real projects, external users, clean machines and authenticated professional review, each accepted separately"
+    "P0 Preserve cross-project/task quality and A→B→A isolation; hospital remains only an isolated example",
+    "P0 Validate actual AI-client multi-document interpretation through the new shared source/version/citation interface; reliable first draft, omissions, units, conflicts, assumption grades and completion budget remain unaccepted",
+    "P0 Bound and yield within-room preflight work; observed status latency21.373s remains a practical gap",
+    "P1 Expand explicit source/standard applicability and priority decisions, richer layouts, split/merge/multiple uses and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review, accepted separately"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -796,6 +803,46 @@
       "durationMs": 143795.5735,
       "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
       "logSHA256": "8ae2942238d75281689d8c47ba59df64b7887554337000910f3aeca57e393338"
+    }
+  },
+  "previousPrioritiesBeforeStructuredDocumentFoundation": [
+    "P0 Preserve cross-project/task quality and A-to-B-to-A isolation; hospital remains an isolated example",
+    "P0 Reliable actual-client requirement proposals/evidence/assumption grades and usable completion; current known positive trials reached valid states but both failed whole-trial usability",
+    "P0 Structured multi-document source/version/authority/coverage and conflicts; composite test briefs are not this product capability",
+    "P0 Bound and yield within-room preflight work; prior observed status latency21.373s remains unresolved",
+    "P1 Broader source-bound layouts, explicit split/merge/multiple-use coordination, standards and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review, each accepted separately"
+  ],
+  "projectDocumentIncrement": {
+    "validation": "docs/project-document-validation.json",
+    "interface": "docs/project-documents.md",
+    "status": "bounded_mechanisms_verified_general_semantics_unaccepted",
+    "twoDesignPacks": true,
+    "structuredOriginalDocumentVersions": true,
+    "serverDerivedFieldCoverage": true,
+    "literalCitations": true,
+    "staleModelGuards": true,
+    "actualAiClientAccepted": false,
+    "automaticAuthorityOrPriorityAccepted": false,
+    "professionalApproval": false,
+    "releaseRepackaged": false,
+    "fullRegression": {
+      "passed": 417,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 144869.6126,
+      "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+      "logSHA256": "612d4ba65e1c83202938209f7113ebcdd14f63e80f0757a1118d470e6762a268"
+    },
+    "actualMcpCalls": 54,
+    "actualTaskCenterHttpChecks": 7,
+    "existingDeliveredTasksRechecked": {
+      "tasks": 6,
+      "calls": 7,
+      "protectedFiles": 149,
+      "registeredPdfDownloads": 5,
+      "reportSHA256": "a3c0a3c03b018e7a27254290f962bd019701942116e0ca24cdcc9c288e14d0f5",
+      "newNativeCadExecuted": false
     }
   }
 }

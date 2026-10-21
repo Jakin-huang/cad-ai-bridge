@@ -168,3 +168,7 @@ apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规
 共享空间数据读取使用 cad_engineering_task：`{action:"data",jobId:上游job-task,expectedProjectId:原项目UUID,expectedTaskSHA256:原任务摘要,section:"space_bindings",offset:0,limit:25}`；专业项目读取使用 cad_design_project 的 `{action:"status",jobId:job-design,section:"input"}`。两种身份分别从现有上下文复制，不互换 action 或 jobId。
 
 若 draft 返回 REVISION_PLAN_QUOTE_NOT_IN_BRIEF，其消息包含 sourceTextSHA256、invalidCount 和有界 invalidEvidence（精确字段 path、原提交引文摘要和长度）。先针对列出的字段重读该版本原文，用连续原句重新提交；不能把多个不相邻句子拼成一个 quote。摘要核对只定位原提交，不代表语义正确；服务端不替换引文或选择工程值。
+
+多份需求/协调/依据文件可用 `cad_project_documents` 分别冻结版本；不要先拼接为唯一原始权威文档。仅输入根内 UTF-8 txt/md 可直接登记，PDF/扫描件不能假称已解析。创建文档集后，`cad_engineering_task prepare` 顶层传 `documents:set`，先阻断设计。用 `read` 取原文、`targets` 按原任务身份取齐实际输入字段；逐项解释并引用具体 documentId/textSHA256/连续原句。单字段复制 singleTargetValuesSHA256，不猜 SHA；brief 只是兼容摘要，不能代替逐份依据。全部字段和非对照文档都要显式处置，不明确的冲突/条件提交 unresolved 或 conflict，不猜文档优先级或已确认值。review 的 ready 只说明完整字段与字面引用检查通过；semanticCoverageAccepted/authorityVerified/professionalApproval 仍为 false。
+
+`bind` 只把同任务、同输入和当前文档集的审阅关联起来，不修改工程参数。文档或输入换版后重新审阅；已有模型须专业修订后重算，不能只换绑定继续交付。`read_review` 分页复核 summary/targets/decisions/documents，current=false 是历史记录；不要把旧 ready 当作当前通过。设计、质量、交付、审核包前读取新 status.documentEvidence；get_job 保存快照不能证明来源仍为最新。evaluation_only 不读正文、不引用、不按其答案生成设计。未带多文档的已有任务继续原契约；不因为医院样例改变其他任务的效果或专业能力范围。

@@ -7,6 +7,8 @@ export function createSpacePlanningAdapter(context){
  const manager=createSpacePlanningManager(context);
  return {dataSections:planningDataSections,readData:(binding,q,manifest)=>readPlanningData(manager,binding,q,manifest,context),id:'office-space-planning',version:1,complexDesign:true,limitations:'Bounded rectangular interior shell, fixed source entry/windows/keepouts, two-sided straight corridor and rectangular bays. Source-declared area, adjacency, furniture and aisle checks; no building/fire/accessibility/daylight/acoustic/MEP approval. Not independent customer acceptance.',prepareSchema:planningPrepareSchema,operationSchemas:planningOperationSchemas,constraintSensitiveOperations:['design','deliver'],
  validatePrepare:p=>planningPrepareSchema.parse(p),prepare:manager.prepare,inspect:manager.inspect,
+ documentChildJobId:requestId=>'job-spaceplan-'+requestId,
+ async documentInput(binding){const {s,input}=await manager.load(binding);return {childJobId:binding.childJobId,input,inputSHA256:s.inputSHA256,modelSHA256:s.modelSHA256};},
  validateOperation(op,p){if(!planningOperationSchemas[op])throw Error('TASK_OPERATION_UNSUPPORTED');return planningOperationSchemas[op].parse(p);},invoke:manager.invoke,
  async dependencyNodes({binding}){
   const {s,input,model}=await manager.load(binding),nodes=[],add=(id,kind,label,value,dependsOn=[],authority='declared',available)=>{nodes.push({id,kind,label:label.slice(0,200),value:JSON.parse(JSON.stringify(value)),dependsOn,authority,...(kind==='source'?{sourceRole:'input'}:{}),...(['design','check','artifact','review'].includes(kind)?{available:!!available}:{})});};

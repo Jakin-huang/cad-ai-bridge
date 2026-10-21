@@ -2,6 +2,7 @@ import {z} from 'zod';
 import {engineeringSchema} from './engineering-contracts.mjs';
 import {engineeringRevisionSchema} from './engineering-revision-contracts.mjs';
 import {engineeringTaskSchema} from './engineering-task-contracts.mjs';
+import {projectDocumentsSchema} from './project-document-contracts.mjs';
 const str=z.string().min(1).max(260);
 const id=z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 const layerName=z.string().regex(/^(?:0|[A-Z][A-Z0-9_-]{0,63})$/);
@@ -149,4 +150,5 @@ export const readonlyProjectSchema=z.discriminatedUnion('action',schemas.project
 schemas.engineering=engineeringSchema;
 schemas.engineering_revision=engineeringRevisionSchema;
 schemas.engineering_task=engineeringTaskSchema;
+schemas.project_documents=projectDocumentsSchema;
 export const publicProjectSchema=z.discriminatedUnion('action',schemas.project.options.map(option=>option.shape.action.value==='start'?option.extend({items:z.array(projectItem.extend({plan:publicWorkflowSchema.shape.plan})).min(1).max(100)}):option));

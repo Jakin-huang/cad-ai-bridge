@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "baseCommit": "88414a74888ac208b40d41cc97429959288bbc32",
+  "status": "bounded_mechanisms_verified_general_semantics_unaccepted",
+  "scope": "Original-document identity, version, literal citations and actual input-field coverage across two existing bounded design packs",
+  "hospitalOnlyIsolatedExample": true,
+  "hospitalDataProcessedThisIncrement": false,
+  "taskKinds": [
+    "ordinary-lighting",
+    "office-space-planning"
+  ],
+  "actualMcpProtocol": true,
+  "actualAiClientTestedThisIncrement": false,
+  "semanticUnderstandingAccepted": false,
+  "authorityVerified": false,
+  "automaticPriorityResolution": false,
+  "professionalApproval": false,
+  "externalUsersAccepted": false,
+  "cleanMachineAccepted": false,
+  "releaseRepackaged": false,
+  "goalComplete": false,
+  "priorObservedChecks": {
+    "firstFullRegression": {
+      "passed": 416,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 146019.8692
+    },
+    "firstMcp": {
+      "checks": 9,
+      "calls": 54,
+      "passed": true,
+      "newNativeCadExecuted": false
+    }
+  },
+  "limits": [
+    "Known fixture JSON values are a source/citation test carrier, not independent natural customer documents; mechanical acceptance does not resolve semantic contradictions or choose document priority",
+    "Known synthetic fixture values, not independent customer interpretation",
+    "Explicit document registration, not automatic external file monitoring",
+    "UTF-8 txt/md input only; standard excerpts do not certify PDF clauses or applicability",
+    "Identity and same-byte evaluator isolation, not transformed-data detection or external authority certification",
+    "Generic interrupted preparation/bind recovery remains unaccepted",
+    "Existing layout, physical-quality, within-room responsiveness, installation and professional review gaps remain",
+    "M2-M4 and the historic full release gate remain incomplete"
+  ],
+  "fullRegression": {
+    "passed": 417,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 144869.6126,
+    "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+    "logSHA256": "612d4ba65e1c83202938209f7113ebcdd14f63e80f0757a1118d470e6762a268"
+  },
+  "actualProtocol": {
+    "checks": 9,
+    "calls": 54,
+    "expectedRejectedCalls": 6,
+    "newNativeCadExecuted": false,
+    "externalModelCalled": false,
+    "sourceProtectedFiles": 8,
+    "reportSHA256": "dafca8ef4f4a85390b93bd55b1f2c3f7302707f8a67748d760cf8538ec89c99b",
+    "traceSHA256": "fdec5e34f180e1fc07b454e53c2f64e00b78f04ff7c2ae0250a166091860da52"
+  },
+  "taskCenterHttp": {
+    "checks": 7,
+    "calls": 6,
+    "nativeCalls": 0,
+    "browserVisualReviewed": false,
+    "reportSHA256": "db6cbe53ea2b20b2f687803c8e56608b11236e35dcfb91d2e20f870a0a5d08c9"
+  },
+  "existingDeliveredTaskRegression": {
+    "tasks": 6,
+    "calls": 7,
+    "protectedFiles": 149,
+    "registeredPdfDownloads": 5,
+    "reportSHA256": "a3c0a3c03b018e7a27254290f962bd019701942116e0ca24cdcc9c288e14d0f5",
+    "newNativeCadExecuted": false
+  },
+  "staticCheck": {
+    "passed": true,
+    "publicFiles": 472,
+    "checks": 3,
+    "scope": "Static allowlist, syntax, JSON, links, dependencies and private-path checks only; not the historic full release gate"
+  },
+  "frozenBaseline": {
+    "tagCommit": "19c1eba9a76187bb2b806fba9b9776745b7abbcc",
+    "zipSHA256": "20e12d2d2d9081390bbb21ee1915d535c75487e85e431fd633ece164cd27a2d2",
+    "pluginSHA256": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34",
+    "previousEvidenceArchiveSHA256": "7568cec6d83a95665542f1a25413076e34dbe8b700bb4ddb721d630f9edc95d8",
+    "unchanged": true,
+    "historicFullReleaseGatePassed": false
+  },
+  "retainedNonPassingAttempts": [
+    {
+      "kind": "default_sandbox_test_launch",
+      "result": "spawn EPERM before tests executed; rerun with authorized local subprocess access"
+    },
+    {
+      "kind": "new_test_pagination_harness",
+      "result": "7 tests had passed; own newly added dependency-page loop used the wrong completion condition. Verified test child stopped, harness fixed, final full regression passed. This interrupted run was not a product acceptance pass."
+    }
+  ],
+  "evidenceDirectories": [
+    "artifacts/project-documents-validation-20261022",
+    "artifacts/project-documents-mcp-20261022",
+    "artifacts/project-documents-mcp-20261022-final"
+  ]
+}

@@ -24,6 +24,7 @@ import {createEngineeringManager} from './engineering-projects.mjs';
 import {createEngineeringRevisionManager} from './engineering-revision-plans.mjs';
 import {createEngineeringTaskAdapters} from './engineering-task-adapters.mjs';
 import {createEngineeringTaskManager} from './engineering-task-manager.mjs';
+import {createProjectDocumentManager} from './project-documents.mjs';
 import {builtInBackends,requireBackendCapability} from './backend-contracts.mjs';
 const writes=new Set(['create_drawing','create_test_drawing','prepare_project','repair_copy','apply','edit']);
 export async function launchHost(exe,args){
@@ -40,6 +41,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
  const engineering=createEngineeringManager({execute,runs,getInputRoot:async()=>(await getSettings()).workspace});
  const engineeringRevisions=createEngineeringRevisionManager({runs,engineering,getInputRoot:async()=>(await getSettings()).workspace});
  const engineeringTasks=createEngineeringTaskManager({runs,adapters:createEngineeringTaskAdapters({schemas,execute,runs})});
+ const documents=createProjectDocumentManager({runs,getInputRoot:async()=>(await getSettings()).workspace,taskContext:binding=>engineeringTasks.documentContext(binding)});
  async function execute(action,args={}){
   let parsed;try{if(!schemas[action])throw Error('INVALID_ACTION: unsupported action');parsed=schemas[action].parse(args);}catch(error){return failure(error);}
   // Evidence reads remain responsive while a CAD job is in flight.
@@ -58,7 +60,8 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    if(action==='engineering')return await engineering.run(parsed);
    if(action==='engineering_revision')return await engineeringRevisions.run(parsed);
    if(action==='engineering_task')return await engineeringTasks.run(parsed);
-  }catch(error){const r=failure(error,{stage:'result'});return action==='engineering_task'?{...r,jobId:parsed.jobId??(parsed.action==='prepare'?'job-task-'+parsed.requestId.toLowerCase():undefined),safeToRetry:false,...(/UNCONFIRMED|lost reply/i.test(error.message)?{outcome:'unconfirmed'}:{})}:r;}
+   if(action==='project_documents')return await documents.run(parsed);
+  }catch(error){const r=failure(error,{stage:'result'});if(action==='project_documents')return {...r,error:{...r.error,code:error.message?.match(/^(DOCUMENT_[A-Z_]+)(?::|$)/)?.[1]??r.error.code},safeToRetry:false};return action==='engineering_task'?{...r,jobId:parsed.jobId??(parsed.action==='prepare'?'job-task-'+parsed.requestId.toLowerCase():undefined),safeToRetry:false,...(/UNCONFIRMED|lost reply/i.test(error.message)?{outcome:'unconfirmed'}:{})}:r;}
   const enqueued=performance.now(),work=queue.then(()=>run(action,parsed,enqueued));queue=work.catch(()=>{});return work;
  }
  async function run(action,parsed,enqueued){
