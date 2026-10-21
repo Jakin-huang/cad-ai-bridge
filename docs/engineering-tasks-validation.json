@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-10-21",
+  "afterCommit": "8a242ac",
+  "scope": "generic task identity/adapters/receipts and known synthetic execution isolation, not general complex design",
+  "implementation": {
+    "genericTaskEnvelope": true,
+    "explicitRegisteredCapabilityRouting": true,
+    "ordinaryLightingAdapter": true,
+    "drawingAnalysisAdapter": true,
+    "bindingAndResultDigestChecks": true,
+    "largeAnalysisPaging": true,
+    "unconfirmedExecutionBlocksNewOperations": true,
+    "readOnlyBoundary": true,
+    "genericRequirementsAndStandardsGraph": false,
+    "secondComplexDesignPack": false
+  },
+  "validation": {
+    "unitSuite": {
+      "passed": 316,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "bceb7bf2d24fa355a0b09ba3ae63c0e2568bde47f3c38b9dee05f894519cee6e"
+    },
+    "finalTargeted": {
+      "passed": 10,
+      "failed": 0,
+      "logSHA256": "b9c6427c7ca520065d2789222f87b022f43bfd9b82a96d7f9a54cc9b2346302b"
+    },
+    "realMcpCadChecks": 11,
+    "finalSourceReplayChecks": 8,
+    "pdf": {
+      "pages": 5,
+      "size": "A3",
+      "visualInspection": true,
+      "parserWarning": "Native AutoCAD PDF duplicate PageMode key; pages parsed and rendered; originals retained"
+    },
+    "fullSuiteScope": "316 tests passed; final byte-read and path hardening subsequently rechecked by ten targeted tests and fresh MCP replay"
+  },
+  "observed": {
+    "lightingA": {
+      "method": "flux_estimate_only",
+      "luminaires": 9,
+      "watts": 216,
+      "circuits": 1,
+      "sheets": 5,
+      "modelChecksPassed": 28,
+      "modelChecksFailed": 0,
+      "pending": 6,
+      "modelSHA256": "af054cfc3f26caf1eee996e905f19f9461ecb182a4cca5a586d9043ad30bd391",
+      "nativeDelivered": true
+    },
+    "analysisB": {
+      "source": "separate_procedural_native_drawing",
+      "entities": 4,
+      "boundaryLengthM": 24,
+      "annotationIssues": 1
+    },
+    "lightingC": {
+      "distinctBriefAndModel": true,
+      "nativeDelivered": false
+    },
+    "replayCreatesNewJobs": false
+  },
+  "acceptance": {
+    "knownSyntheticPersistentIsolation": true,
+    "generalComplexDesignTransfer": false,
+    "independentRealProject": false,
+    "AIClientInterpretation": false,
+    "newHospitalDesign": false,
+    "fullFloorPhotometry": false,
+    "externalUsers": false,
+    "newMachine": false,
+    "professionalReview": false
+  },
+  "frozenV2": {
+    "zipSHA256": "20e12d2d2d9081390bbb21ee1915d535c75487e85e431fd633ece164cd27a2d2",
+    "pluginSHA256": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34",
+    "repackaged": false
+  },
+  "evidence": [
+    "tests/unit/engineering-task.test.mjs",
+    "tests/task-isolation-integration.mjs",
+    "tests/task-isolation-replay.mjs",
+    "docs/engineering-tasks.md"
+  ],
+  "static": {
+    "status": "passed",
+    "checks": 3,
+    "logSHA256": "2829545dfd54902c30d757d0e925f85d39313d461b25acad263b7fbfedae77c5"
+  },
+  "reviewBundle": {
+    "manifestEntries": 195,
+    "zipFiles": 196,
+    "crcVerified": true,
+    "allFileHashesVerified": true,
+    "zipSHA256": "b6ec7b43d97a3960b13d959ab3077abd3a39d9668d6a294a1bbcf6a4682e6d65",
+    "rawAssetsPublished": false
+  }
+}

@@ -142,7 +142,8 @@
     "finiteDiffuseSubset": true,
     "crossProjectPortability": false,
     "crossTaskComplexDesign": false,
-    "persistentTaskSwitchIsolation": false
+    "persistentTaskSwitchIsolation": false,
+    "knownPersistentTaskIsolationNative": true
   },
   "knownInputGaps": [
     "Original client brief not located",
@@ -152,7 +153,7 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 generic project/task contract and discipline adapters; actual capability matching; cross-project/cross-task and A-to-B-to-A isolation regression without weakening prior gates",
+    "P0 generic requirements/source/standard dependency and change-invalidation model behind the new task envelope; explicit routing and known A/B/C isolation locally verified, semantic/cross-pack migration not accepted",
     "P0 first-pack source-bound floor-quality budgets and complete evidence; parallel implementation unit-verified only, defaults serial, actual Radiance/CAD performance and quality pending",
     "P0 source-bound project/room-schedule/use/authoritative-condition changes shared by supported packs; hospital missing inputs remain case-specific blockers",
     "M3 independent office-space planning design pack and lighting coordination; checks/takeoff alone do not count as a second complex design task",
@@ -209,23 +210,27 @@
   "productDirection": {
     "currentComplexDesignScope": "bounded_ordinary_lighting_only",
     "genericCoreImplemented": false,
-    "capabilityRoutingImplemented": false,
+    "capabilityRoutingImplemented": true,
     "secondComplexDesignPackImplemented": false,
     "clarifiedByUser": "2026-10-21",
     "targetArchitecture": [
       "generic_task_core",
       "replaceable_discipline_packs",
       "isolated_case_data"
-    ]
+    ],
+    "genericTaskEnvelopeImplemented": true,
+    "capabilityRoutingMethod": "explicit_exact_registered_kind_not_natural_language"
   },
   "taskPortability": {
     "plan": "docs/task-portability.md",
-    "validation": "docs/task-portability-validation.json",
+    "validation": "docs/engineering-tasks-validation.json",
     "genericBoundedSchedulerImplemented": true,
     "nonLightingAnalysisUnitRegression": true,
     "complexTaskTransferAccepted": false,
     "persistentSwitchIsolationAccepted": false,
-    "independentHeldoutProjectsAccepted": 0
+    "independentHeldoutProjectsAccepted": 0,
+    "genericTaskEntryImplemented": true,
+    "knownPersistentTaskIsolationNativeVerified": true
   },
   "pendingSourceIncrement": {
     "afterCommit": "aee613e",
@@ -236,5 +241,28 @@
     "releaseRepackaged": false,
     "finalUnitTestsPassed": 306,
     "staticChecksPassed": 3
+  },
+  "genericEngineeringTasks": {
+    "validation": "docs/engineering-tasks-validation.json",
+    "registeredAdapters": [
+      "ordinary-lighting",
+      "drawing-analysis"
+    ],
+    "secondComplexDesignFamilyImplemented": false,
+    "genericRequirementsAndStandardsDependencyModel": false,
+    "knownSyntheticNativeChecks": 11,
+    "finalSourceReplayAndReadOnlyChecks": 8,
+    "AIClientInterpretationInThisIncrement": false,
+    "independentHeldoutProjects": 0,
+    "fullGenericTaskAcceptance": false
+  },
+  "latestGenericTaskIncrement": {
+    "afterCommit": "8a242ac",
+    "validation": "docs/engineering-tasks-validation.json",
+    "implementation": "task_envelope_explicit_adapters_and_receipts",
+    "nativeEvidence": "known_synthetic_A_B_C_isolation_and_A_delivery",
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
   }
 }

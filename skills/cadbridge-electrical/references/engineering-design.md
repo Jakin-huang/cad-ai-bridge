@@ -2,6 +2,8 @@
 
 目标是把项目资料解释为可追溯的设计约束，通过 CAD AI Bridge 新建、编辑、核对并交付待人工审核成果。当前 cad_design_project 仅实现明确边界的普通照明设计试验，支持利用系数法与有限IES直射逐点模式，不宣称通用工程推理、医院全专业设计、反射/UGR验收或专业签审。
 
+源码增量提供cad_engineering_task通用任务入口（冻结v2包尚无）。先capabilities核对已安装适配器，明确task.kind后绑定项目UUID和任务摘要；后续invoke不得覆盖子任务身份。ordinary-lighting仍只调用原有照明能力，drawing-analysis只做来源绑定检查/计量；不能将未支持的任务套入照明，也不能把外层任务路由称为通用复杂工程设计。详见[任务入口与边界](../../../docs/engineering-tasks.md)。
+
 ## 解释输入
 
 从用户提供的任务书、建筑条件、标准、产品资料和校审要求识别项目类型、范围、设计日期、房间功能、几何、目标照度、LPD、间距、回路容量、压降、安装高度与控制方式。project.sources 的每个来源必须记录 id、role、sha256 和说明。每条requirements精确字段是id、rule、value、roomIds（数组）、sourceIds（数组）、rationale（非空解释）、status（documented/interpreted/assumed）；不是kind、roomId或description。rule只使用工具枚举的target_lux/max_lpd/max_spacing/max_devices/max_circuit_watts/max_drop/control_mode/mounting_height/min_uniformity/max_avg_lux。用 requirement.sourceIds 追踪依据；明确区分 documented、interpreted、assumed。对照成图不得作为生成来源。建筑条件若从历史成图剥离，derivedFromFinalDrawing=true；不能称独立盲测。

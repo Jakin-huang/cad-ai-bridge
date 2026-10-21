@@ -6,6 +6,8 @@ A local MCP and Skill connector between your existing CAD software and AI client
 
 Extract the complete user ZIP, open **开始使用.exe**, choose your drawing folder and connect WorkBuddy. Complete its first-trust confirmation and select the connector in your task. The [offline illustrated guide](使用说明.html) explains the steps. Portable runtimes, locked dependencies and the project plugin are included; development tools and administrator rights are unnecessary.
 
+Unreleased source adds `cad_engineering_task` for explicit capability matching, project/task identity and persisted operation receipts. Known synthetic lighting/analysis task switching has local MCP/CAD evidence. This does not establish another complex design discipline or independent customer acceptance. The source tree has 26 tools; the frozen user package retains 24. See [scope and usage](docs/engineering-tasks.md).
+
 **No drawings, example datasets, test previews, private libraries or historical test deliverables are distributed in source or release packages.** Supply your own inputs. Runtime jobs live in per-user data storage; maintainer test data and release staging live outside the source project. [Data separation](docs/asset-separation.md)
 
 Source development requires Node.js 22.19+, PowerShell 7+, .NET Framework 4.8 and AutoCAD 2022. Run npm ci and setup.cmd. Other local stdio MCP clients can import the generated mcp-config.local.json and install the portable Skill through their own mechanism.

@@ -5,14 +5,15 @@ import {deliveryMarkdown} from './delivery.mjs';
 export async function toolResponse(action,args,raw,{readFile=fs.readFile}={}){
  const original=raw;
  try{
-  if(action==='workflow'||action==='engineering'){const markdown=raw.delivery?.markdown??deliveryMarkdown(raw.files||raw.delivery?.files||[]);if(markdown)raw={...raw,delivery:{...raw.delivery,markdown}};}
+  if(['workflow','engineering','engineering_task'].includes(action)){const markdown=raw.delivery?.markdown??deliveryMarkdown(raw.files||raw.delivery?.files||[]);if(markdown)raw={...raw,delivery:{...raw.delivery,markdown}};}
+  if(action==='engineering_task'&&raw.execution?.result?.quantityRows){const {quantityRows,issues,...rest}=raw.execution.result;raw={...raw,execution:{...raw.execution,result:{...rest,issues:issues?.slice(0,20),issuesTruncated:issues?.length>20,quantityRowCount:quantityRows.length,details:{jobId:rest.jobRoot?.split(/[\\/]/).at(-1),tool:'cad_read_result',kinds:['quantityRows','issues','quantityResults','checkResults']}}}};}
   if(action==='analyze'){const {quantityRows,issues,...rest}=raw;raw={...rest,issues:issues?.slice(0,20),issuesTruncated:issues?.length>20,quantityRowCount:quantityRows?.length};}
   if(action==='workflow'&&args.response==='summary'){
    const {query,snapshot,children,groups,summary,...rest}=raw;
    raw={...rest,summary:summary?{changed:summary.changed,created:summary.created,removed:summary.removed,skippedCount:summary.skipped?.length}:undefined,snapshot:snapshot?{documentId:snapshot.documentId,revision:snapshot.revision,units:snapshot.units}:undefined,details:{jobId:raw.jobRoot?.split(/[\\/]/).at(-1),tool:'cad_read_result',kinds:query?['entities']:[]}};
   }
   const result=boundForTransport(raw),content=[{type:'text',text:JSON.stringify(result)}];
-  if(action==='workflow'||action==='engineering'){const markdown=result.delivery?.markdown??deliveryMarkdown(result.files||result.delivery?.files||[]);if(markdown)content.push({type:'text',text:'交付文件：最终答复请直接使用以下实际文件链接，不改写成代码路径。\n'+markdown});}
+  if(['workflow','engineering','engineering_task'].includes(action)){const markdown=result.delivery?.markdown??deliveryMarkdown(result.files||result.delivery?.files||[]);if(markdown)content.push({type:'text',text:'交付文件：最终答复请直接使用以下实际文件链接，不改写成代码路径。\n'+markdown});}
   if(action==='export'&&args.format==='png'&&result.ok&&result.exported.bytes<=4*1024*1024)content.push({type:'image',mimeType:'image/png',data:(await readFile(result.exported.file)).toString('base64')});
   if(action==='workflow')for(const file of(result.files||[]).filter(f=>['before-png','after-png','png'].includes(f.kind)&&f.bytes<=4*1024*1024).slice(-2))content.push({type:'image',mimeType:'image/png',data:(await readFile(file.file)).toString('base64')});
   return {content,isError:!result.ok};
