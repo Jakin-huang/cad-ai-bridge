@@ -60,7 +60,7 @@ allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指�
 
 ## 有限光源与漫反射复核
 
-布局选择仍采用有来源的IES直射网格。需要附加反射总照度时，在输入中显式登记 `lightingEnvironment={model:"closed_diffuse_rooms",geometry:"ies_rectangular_opening",sourceIds,status,description,rooms:[...]}`，逐空间声明 roomId、enclosure="closed_opaque"、floorReflectance/wallReflectance/ceilingReflectance（0—0.9）、sourceIds、status（documented/interpreted/assumed）和描述，必须恰好覆盖全部房间。反射率不是通用医院事实；没有装修表时只能明确作为假设。
+默认design以有来源IES直射网格预检；solve_lighting和optimize_lighting则以完整复核后的维持总照度选择候选，此时target_lux和max_avg_lux约束总平均照度，直射值仅作诊断。需要反射总照度时，在输入中显式登记 `lightingEnvironment={model:"closed_diffuse_rooms",geometry:"ies_rectangular_opening",sourceIds,status,description,rooms:[...]}`，逐空间声明 roomId、enclosure="closed_opaque"、floorReflectance/wallReflectance/ceilingReflectance（0—0.9）、sourceIds、status（documented/interpreted/assumed）和描述，必须恰好覆盖全部房间。反射率不是通用医院事实；没有装修表时只能明确作为假设。
 
 维护者先独立核验官方Radiance运行时来源和发行摘要，再用 `node scripts/register-radiance-runtime.mjs TRUSTED-ROOT NEW-PRIVATE-PROFILE.json` 登记四个工具及完整lib支持文件摘要。配置 CADBRIDGE_RADIANCE_RUNTIME 或本机 dataHome/radiance-runtime.json。该脚本不下载、不认证发布者；私有配置和二进制不放进源码/通用发行包。
 
@@ -71,3 +71,29 @@ allowedRoomUses 可限定候选用途，schematicSymbol=panel/downlight 可指�
 `status` 可读取 lighting_quality；运行时显示当前房间/档次。报告、CSV、原场景/IES及逐档输出摘要被绑定，篡改会阻断读取/交付；需求修订使旧复核失效。UGR、真实发光面分布及产品条件、完整规范、专业签审仍须另验。
 
 客户端中断后先读status与记录。只有已核实记录进程停止、模型一致，且原阶段为assess_lighting时，才可调用 `recover_lighting`（jobId、requestId、expectedModelSHA256）。它归档旧锁并保留旧计算目录，旧结果不复用，可在新目录另发复核；不认证所有子进程状态，不处理CAD创建/交付中断，也不重放CAD。活进程或无法核实的进程拒绝恢复；CAD交付仍按原不确定状态处理。
+
+
+## 受保护种子的功能理解
+
+`prepare_from_seed` 的可选 `functionalIntake` 让客户端补齐未确认功能，不必重写建筑或产品。逐房间提交 `{roomId,primary?,secondaryUses?,unresolved?}`；primary为 `{use,classId,reason,evidence:[{sourceId,quote}]}`，secondaryUses各项另带labelId；unresolved各项为 `{labelId,reason,evidence}`，主用途未解决时labelId=roomId。use仅支持ordinary-lighting既有枚举office/duty/teaching/corridor/pantry；classId只能从lighting_basis返回的本机源绑定类别中选择。引用与推理分开：quote必须逐字复制seed.brief中的原句，sourceId对应role=brief且SHA256与原brief的UTF-8字节一致。reason说明任务与类别之间的解释，不声称标准适用性已获确认。
+
+只能补use=unknown且无standardSpace的主用途，或sourceSpaceLabels里尚未评估的secondary_use；已确认分类、别名关系、几何、工作面、表面、姿态、灯具和已有缺项不可覆盖。服务端自动把分类记为interpreted，兼用工作面继承种子、采用共同固定条件方法。确实不是共同条件或功能无法确认时必须unresolved，不得猜成office/meeting以通过。unresolved会形成持续阻断，即使其他数值约束齐全也不设计/出图。现方法只核对原句存在、源摘要及应用一致性，不自动认证语义判断正确。
+
+先读取授权的brief/seed，用lighting_basis核对候选类别；引用原任务陈述，解释全部用途或保留未解项，再prepare_from_seed。通过status的input/functional_intake核对理解记录和缺项。只有prepared且输入完整时才继续solve_lighting/design；有共同用途或总照度条件时以完整物理/已请求UGR复核作为发布与交付门槛，直接诊断不是照明质量验收。不要通过prepare改写全项目来绕过种子保护。
+
+
+### 准备后的精确只读调用
+
+只读status只接收action、jobId、可选section，不能附加requestId、space、spaces、sections、include、view等字段。准备完成后，按返回的jobId各读取一次：
+
+```json
+{"action":"status","jobId":"job-design-返回的UUID","section":"input"}
+```
+
+```json
+{"action":"status","jobId":"job-design-返回的UUID","section":"functional_intake"}
+```
+
+section只支持一个字符串，不是数组；功能理解没有spaceId等过滤参数。输入缺项时，blocked是明确结果，不是等待后台处理，报告问题后停止轮询。若工具拒绝参数，先核对本例，不轮流猜字段。只有已经启动、确在运行的物理计算才需要等待进度。
+
+functionalIntake的secondaryUses和unresolved可省略或传空数组表示没有该类条目；整条房间记录必须至少有一项主用途、兼用解释或未决功能，不接受全空记录。不得用空数组抹去未评估的真实兼用功能，缺少它的评估仍然阻断。

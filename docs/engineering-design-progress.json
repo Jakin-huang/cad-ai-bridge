@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "baseline": "v2.0.0-preview.1",
   "target": "complex-engineering-design-to-human-review",
-  "updated": "2026-10-20",
+  "updated": "2026-10-21",
   "pilot": "hospital-ordinary-lighting-retrospective-reconstruction",
   "stages": [
     {
@@ -27,7 +27,8 @@
         "Original customer brief missing; one retrospective case is not general understanding acceptance",
         "Additional source-bound lighting table subset locally enforced; professional applicability and full coverage pending",
         "Spatially excluded source annotations remain source-linked pending inputs; no automatic standard, room-use or requirement inference",
-        "Additional source names/use roles preserved; unassessed secondary uses block ordinary-lighting design"
+        "Additional source names/use roles preserved; unassessed secondary uses block ordinary-lighting design",
+        "Actual installed client quotes one frozen synthetic brief to fill only unconfirmed functional slots; three final cases correctly prepare/block without protocol errors after retained failures; known geometry and inherited prior metadata, not clean blind/customer or general semantic acceptance"
       ]
     },
     {
@@ -41,7 +42,8 @@
         "Three explicitly classified synthetic conditions with actual standard base constraints: 36 lights/4 circuits/5 sheets; not hospital acceptance",
         "Source-bound finite rectangular IES diffuse assessment, total-light upper-bound failure, raw-evidence tamper gate and native CAD delivery verified; input-only total-light startup and bounded measured-feedback optimization now verified on development cases, not hospital acceptance",
         "Source-label digest and CAD-note omission gates verified; source-bound fixed-condition ordinary multi-use intersection verified on an explicit development case; hospital applicability, architecture-change impact and multiple observation/workplane modes incomplete",
-        "Office/meeting shared-use case retains both source classes and project500–700lx; real finite/standing-UGR initial12 lights then adopted10 lights with unchanged input, not actual AI understanding or hospital acceptance"
+        "Office/meeting shared-use case retains both source classes and project500–700lx; real finite/standing-UGR initial12 lights then adopted10 lights with unchanged input, not actual AI understanding or hospital acceptance",
+        "Actual client-derived office/meeting case continues into finite/standing-UGR design; unchanged task values across visible-control revision, but one requirement evidence status conservatively becomes interpreted; source/input hashes kept separate"
       ]
     },
     {
@@ -51,7 +53,8 @@
         "Actual AI-created revision 0 continued through native CAD: 19 luminaires, six circuits, five sheets",
         "Original brief: 19 luminaires, six circuits, five sheets",
         "R2 simulated brief change: 18 luminaires, separate delivery",
-        "Saved CAD readback, PDF physical size and visual review passed"
+        "Saved CAD readback, PDF physical size and visual review passed",
+        "Synthetic functional client case R1:12 luminaires/1 circuit/5A3; explicit occupancy/manual intent and pending sensor/wiring details; R0 visual gap and original bytes retained; not installation design acceptance"
       ]
     },
     {
@@ -82,7 +85,8 @@
         "Maintainer browser shows actual diffuse-calculation progress/results and downloads exact CSV bytes; stopped-recorded-owner calculation recovery verified, not general native CAD recovery",
         "Architecture task-center text/condition summary and downloaded review SHA verified; standalone HTML browser visual interaction remains unverified after file-protocol policy rejection; local controller tests are separate",
         "Task-center SHA-bound structured label/note review and actual CSV download verified; standalone HTML browser acceptance remains incomplete",
-        "Structured common-use view shows individual source classes and effective project500–700lx target; actual selected-revision CSV download SHA verified"
+        "Structured common-use view shows individual source classes and effective project500–700lx target; actual selected-revision CSV download SHA verified",
+        "SHA-bound functional-intake view shows literal source/reasons and unresolved blocking; final quality report actual download matches current R1 model SHA; frozen v2 and global installed skill not repackaged"
       ]
     }
   ],
@@ -134,10 +138,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "Actual client intake of source-bound functional assessments without altering protected architecture/fixture conditions; programmatic seed does not prove understanding",
-    "Architectural change impact and explicit missing-use/geometry/requirement workflow for hospital floor",
-    "Nonrectangular boundaries/openings, whole-floor budget and observer coverage with explicit evidence limits",
-    "Project-approved product/electrical evidence, installation routing, authenticated professional review and new-machine/external-user acceptance"
+    "P0 multi-source/project-brief version changes: invalidate affected functional interpretations, numeric requirements, models, CAD and review while retaining historical sources and unresolved conditions",
+    "P0 hospital geometry/functional missing-input workflow and independent original architecture/customer sources",
+    "P0 whole-floor budgets, independent unseen variants, observer/real-product evidence and correct electrical ratings",
+    "P1 installation routing, coordinated control/device design, incremental native edits and authenticated professional review; new-machine/external-user validation separate"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -154,12 +158,20 @@
   "lightingStandardsValidation": "docs/lighting-standards-validation.json",
   "lightingQualityValidation": "docs/lighting-quality-validation.json",
   "latestSourceIncrement": {
-    "afterCommit": "421fa9c",
-    "engineVersion": "1.10.0",
-    "scope": "source_bound_common_use_lighting_and_count_stratified_candidates",
-    "validation": "shared-use-lighting-validation.json",
+    "afterCommit": "4f8b054",
+    "engineVersion": "1.11.0",
+    "scope": "quoted_functional_intake_actual_client_and_readable_control_intent",
+    "validation": "functional-intake-validation.json",
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
+  },
+  "functionalIntake": {
+    "validation": "docs/functional-intake-validation.json",
+    "syntheticInstalledClientCases": 3,
+    "finalProtocolValidationErrors": 0,
+    "oneBriefLiteralSourceBinding": true,
+    "generalSemanticAcceptance": false,
+    "hospitalProjectAcceptance": false
   }
 }

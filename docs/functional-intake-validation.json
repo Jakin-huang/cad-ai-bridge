@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-20T15:33:15.735Z",
+  "engineVersion": "1.11.0",
+  "sourceBaseline": "4f8b054",
+  "scope": "Actual installed client interprets three fixed synthetic functional tasks; final positive input continues through physical quality, native CAD, visual correction and human-review-ready package. Not hospital/full-project acceptance.",
+  "developmentCases": true,
+  "heldOutProject": false,
+  "actualAiClient": true,
+  "hospitalDataExternallySent": false,
+  "professionalApproval": false,
+  "unitTests": {
+    "passed": 271,
+    "failed": 0,
+    "skipped": 0,
+    "newFunctionalAndControlTests": 10
+  },
+  "clientTrials": {
+    "originalStructuredOutcomesCorrect": true,
+    "originalProtocolUsabilityPassed": false,
+    "originalValidationErrors": {
+      "explicit": 1,
+      "unresolved": 12,
+      "conflict": 1
+    },
+    "firstProtocolRetry": {
+      "explicitProtocolValidationErrors": 1,
+      "cause": "Optional unresolved empty collection rejected; failed raw trace retained",
+      "acceptedCases": 0,
+      "clientProcessesFinished": 1
+    },
+    "finalCases": [
+      {
+        "caseId": "explicit",
+        "status": "prepared",
+        "constraintsVerified": 10,
+        "protocolValidationErrors": 0,
+        "elapsedMs": 279866,
+        "seedSHA256": "c5820af2285e2af05d8c36c14fb3e948564138eb0e46b06e33afe7d405bdb0f8",
+        "rawTraceSHA256": "83b78cd2d75be5eb3f663cac1e04e3fa045b8711306c5dcbef8f3126878457d2",
+        "calls": [
+          "lighting_basis",
+          "prepare_from_seed",
+          "status",
+          "status"
+        ],
+        "modelPublishedDuringIntake": false,
+        "blockedReadAttempts": 0
+      },
+      {
+        "caseId": "unresolved",
+        "status": "blocked",
+        "constraintsVerified": 10,
+        "protocolValidationErrors": 0,
+        "elapsedMs": 85893,
+        "seedSHA256": "2813627d05d480aa4b154ed98029e87907314466423bae45259973c17de3e304",
+        "rawTraceSHA256": "944efebaa57e4a2fd5e510b01e209ec79c45ec46f47d16faf535e422f5e9134a",
+        "calls": [
+          "lighting_basis",
+          "prepare_from_seed",
+          "status",
+          "status"
+        ],
+        "modelPublishedDuringIntake": false,
+        "blockedReadAttempts": 0
+      },
+      {
+        "caseId": "conflict",
+        "status": "blocked",
+        "constraintsVerified": 10,
+        "protocolValidationErrors": 0,
+        "elapsedMs": 220294,
+        "seedSHA256": "ea667cec249cb11efde3c7c9b1bd11549db8f82570f45f4457a1867d72dfcc06",
+        "rawTraceSHA256": "2a245b16b5c094bb795addbf802bec01eb1028ae3bf888bd0966088123310df2",
+        "calls": [
+          "lighting_basis",
+          "prepare_from_seed",
+          "status",
+          "status"
+        ],
+        "modelPublishedDuringIntake": false,
+        "blockedReadAttempts": 0
+      }
+    ],
+    "sameInputBytesAcrossRounds": true,
+    "allTrialsRetained": true,
+    "caseCaveat": "Known geometry and programmatic briefs; inherited ARCH_REVIEW_0 pending metadata contains an earlier office/meeting statement. Original unresolved client noticed the conflict. No clean/blind or independent-project claim.",
+    "generalSemanticAcceptance": false,
+    "latencyPerformanceAcceptance": false
+  },
+  "pipeline": {
+    "checksPassed": 12,
+    "assertions": [
+      "Actual client trace, unchanged seed and frozen input identity are retained before design",
+      "Actual client unresolved task cannot publish a model or native output",
+      "Actual client conflict task cannot publish a model or native output",
+      "Client-derived functional classes and all numeric constraints pass actual finite/UGR assessment before model publication",
+      "Model retains exact client quotes, both classes and the original protected conditions",
+      "Independent design audit includes literal source/application integrity with no failed checks",
+      "Real native CAD saves and reopens the actual client-derived project with all requested sheets",
+      "Input and seed bytes remain unchanged through delivery; professional approval remains pending",
+      "Only conservative control-requirement status changed; actual client values, quotes and all protected conditions remain identical",
+      "Fresh revision quality and independent readable control-intent checks both pass",
+      "Native saved readback contains complete visible control notes and all revision sheets",
+      "Original native delivery and actual client input remain unchanged; approval is still pending"
+    ],
+    "originalClientInputSHA256": "dbe716df3bc58bf2fa2cc97d2dff43d9a6ab220cfe9e90e1887cc4b6157e6954",
+    "finalInputSHA256": "8734c5e162d26d97cc86c7c43e433f111711f6904b3ddb84ddbab8c02f4cdefc",
+    "originalClientInputBytesUnchanged": true,
+    "finalMetadataDifference": "Only the control requirement status documented -> interpreted by existing same-value revise flow; all values, reasons, quotes, functions and other seed conditions identical",
+    "modelSHA256": "e1ab9ba5c6b92277f0a00b37db797a0e9b86980e8ef4bee83bd1add2ea5ba342",
+    "deliveredRevision": 1,
+    "spaces": 1,
+    "devices": 12,
+    "circuits": 1,
+    "sheets": 5,
+    "modelChecks": {
+      "passed": 42,
+      "failed": 0,
+      "pending": 15
+    },
+    "summary": [
+      {
+        "roomId": "OFFICE",
+        "averageLux": 621.5014163212121,
+        "minimumLux": 408.27859400000006,
+        "maximumLux": 740.4231179999999,
+        "uniformity": 0.6569230307095365,
+        "directAverageLux": 525.5732160545458,
+        "indirectAverageLux": 95.9282002666663,
+        "medium": {
+          "averageLux": 619.2030921212123,
+          "minimumLux": 405.970747,
+          "maximumLux": 738.9576450000001,
+          "uniformity": 0.6556342372407421
+        },
+        "maximumPointChange": 4.769991999999888,
+        "targets": {
+          "minimumLux": 500,
+          "maximumAverageLux": 700,
+          "minimumUniformity": 0.6
+        }
+      }
+    ],
+    "ugr": [
+      {
+        "roomId": "OFFICE",
+        "maximumUgr": 16.912185540631747
+      }
+    ],
+    "readableControlIntent": true,
+    "physicalControlInstallationDesignAccepted": false,
+    "originalNativeDeliveryUnchanged": true,
+    "freshFinalQualityAssessment": true,
+    "scope": "Bounded initial feasible layout; not globally optimal or a complete installation design"
+  },
+  "independent": {
+    "ok": true,
+    "observers": 4,
+    "samplesPerSource": 25600,
+    "maximumDirectEyeDifferenceLux": 0.04807409721553313,
+    "maximumRelativeDifference": 0.00018075317520714222,
+    "scope": "Independent arithmetic and finite-opening direct vertical irradiance, not diffuse background or actual product approval"
+  },
+  "visual": {
+    "historicalR0PagesInspected": 5,
+    "historicalIssue": "Control mode present in backend but not clearly readable in the PDF; corrected in new R1 without changing requirement values",
+    "finalA3PagesInspected": 5,
+    "mergedPdfRenderIdentical": true,
+    "controlIntentAndPendingDetailReadable": true,
+    "professionalDrawingAcceptance": false
+  },
+  "browser": {
+    "finalUnresolvedCaseRemainsBlocked": true,
+    "finalR1LiteralSourcesExpanded": true,
+    "downloadedFinalQualityReportSHA256": "b2d7dca71690fd4eabf53a2056bc3276341af99149df3500d87591721bb028b5",
+    "downloadedReportModelSHA256": "e1ab9ba5c6b92277f0a00b37db797a0e9b86980e8ef4bee83bd1add2ea5ba342",
+    "finalStatusShowsAwaitingReview": true
+  },
+  "package": {
+    "ok": true,
+    "filesVerified": 382,
+    "zipSHA256": "49f15ae27bede05c6ad0741c904c5a8e2659de3f17addcf2a318d466cb87c896",
+    "zipBytes": 5567234,
+    "allFinalPagesVisuallyInspected": true,
+    "allRoundsRetained": true,
+    "sameInputBytesAcrossRounds": true,
+    "professionalApproval": false
+  },
+  "limits": [
+    "One exact UTF-8 brief source only; no full multi-document, version-change or general semantic acceptance",
+    "Programmatic tasks and known8x6m geometry, with inherited prior metadata; not an unseen customer or hospital case",
+    "No new hospital whole-floor design, independent architecture or source-linked hospital lift/teaching classification",
+    "Standing fixed-condition enclosed rectangular-source model only; no seated/actual-workstation/daylight/aperture or installed-product acceptance",
+    "IES23W versus leaflet24W unresolved; nominal product/electrical suitability still pending",
+    "Readable control intent is not sensor/manual bypass wiring, installation coordination or physical control-device design",
+    "Frozen v2 preview unchanged; source increment unreleased; external user/new machine/professional review and M2–M4 incomplete"
+  ],
+  "nextPriorities": [
+    "P0 multi-source/project-brief version changes: invalidate affected functional interpretations, numeric requirements, models, CAD and review while retaining historical sources and unresolved conditions",
+    "P0 hospital geometry/functional missing-input workflow and independent original architecture/customer sources",
+    "P0 whole-floor budgets, independent unseen variants, observer/real-product evidence and correct electrical ratings",
+    "P1 installation routing, coordinated control/device design, incremental native edits and authenticated professional review; new-machine/external-user validation separate"
+  ],
+  "finalSourceVerificationDate": "2026-10-21"
+}
