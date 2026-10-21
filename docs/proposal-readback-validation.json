@@ -3,7 +3,7 @@
   "updatedAt": "2026-10-21T15:25:11.679Z",
   "afterCommit": "37164be",
   "sourceIncrementOnly": true,
-  "status": "immutable_requirement_readback_mcp_verified_actual_ai_client_pending",
+  "status": "historical_mcp_readback_snapshot_with_actual_client_followup",
   "scope": "Source-bound readback of explicit ordinary-lighting revision drafts; this is an adapter feature, not a generic-domain requirement interpreter.",
   "implemented": [
     "Summary counts and paged per-room/rule values with explicit_override/carried_forward/unresolved origin, effective statuses and literal source evidence",
@@ -51,5 +51,12 @@
     "fileName": "整层光度布局改进-完整试验证据.zip",
     "verification": "Private companion archive-verification.json records actual ZIP SHA, CRC and every entry hash. Original trials, source snapshots and partial failures remain separate.",
     "productRelease": false
+  },
+  "historicalSnapshotStatus": "immutable_requirement_readback_mcp_verified_actual_ai_client_pending",
+  "actualClientFollowup": {
+    "validation": "docs/requirement-review-client-validation.json",
+    "knownActualClientReadback": true,
+    "positiveSemanticTrialUsabilityAccepted": false,
+    "noHistoricalResultsRewritten": true
   }
 }

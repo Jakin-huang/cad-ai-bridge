@@ -9,12 +9,18 @@ import {dependencyDigest} from './task-dependencies.mjs';
 import {previewLightingSpaceScope,reviseLightingSpaceScope} from './lighting-space-revisions.mjs';
 import {jobDirectory,jobJson} from './jobs.mjs';import {hashFile} from './drawings.mjs';
 import {revisionRequirementReview,revisionRequirementReviewPage,revisionDraftBase} from './engineering-proposal-review.mjs';
+import {assertLiteralEvidence} from './literal-evidence.mjs';
 const same=(a,b)=>dependencyDigest(a??null)===dependencyDigest(b??null),short=(...v)=>dependencyDigest(v).slice(0,24),copy=v=>structuredClone(v);
 function quoted(text,record){if(!text.includes(record.quote))throw Error('REVISION_PLAN_QUOTE_NOT_IN_BRIEF');return record;}
 function rebind(v,ids){if(!v||typeof v!=='object')return;if(Array.isArray(v)){v.forEach(x=>rebind(x,ids));return;}let changed=false;if(v.sourceId&&ids[v.sourceId]){v.sourceId=ids[v.sourceId];changed=true;}if(v.sourceIds){changed=v.sourceIds.some(s=>ids[s])||changed;v.sourceIds=[...new Set(v.sourceIds.map(s=>ids[s]??s))];}if(changed&&v.status==='documented')v.status='interpreted';if(changed&&v.classification==='documented')v.classification='interpreted';for(const[k,x]of Object.entries(v))if(!['sources','sourceId','sourceIds'].includes(k))rebind(x,ids);}
 export async function compileRevisionPlan(before,q,{runs,inputRoot}){
  if(!before.spaceProgram)throw Error('REVISION_PLAN_SHARED_BASE_REQUIRED');
  const brief=await inspectBriefSource(q.briefFile,{inputRoot});if(brief.textSHA256!==q.expectedBriefSHA256.toLowerCase())throw Error('REVISION_PLAN_BRIEF_CHANGED');
+ const evidenceRecords=[{path:'sourceEvidence.quote',quote:q.sourceEvidence.quote},{path:'carryForward.quote',quote:q.carryForward.quote}];
+ const add=(record,label)=>{if(record)evidenceRecords.push({path:label+'.quote',quote:record.quote});};
+ q.rooms.forEach((r,i)=>{const label='rooms['+i+']('+r.roomId+')';add(r,label);add(r.conditions,label+'.conditions');add(r.classification,label+'.classification');r.requirements.forEach((v,j)=>add(v,label+'.requirements['+j+']('+v.rule+')'));r.unresolvedRules.forEach((v,j)=>add(v,label+'.unresolvedRules['+j+']('+v.rule+')'));});
+ q.removedRooms.forEach((r,i)=>add(r,'removedRooms['+i+']('+r.roomId+')'));q.standardScopes.forEach((r,i)=>add(r,'standardScopes['+i+']'));q.resolvedMissingInputs.forEach((r,i)=>add(r,'resolvedMissingInputs['+i+']'));
+ assertLiteralEvidence(brief.text,evidenceRecords,{code:'REVISION_PLAN_QUOTE_NOT_IN_BRIEF',sourceTextSHA256:brief.textSHA256});
  const prior=before.spaceProgram;if(q.spacePack.jobId!==prior.pack.jobId||q.spacePack.revision<prior.pack.revision)throw Error('REVISION_PLAN_PRODUCER_OR_VERSION_CHANGED');
  const {pack,current}=await loadPlanningHandoff(q.spacePack,{runs,expectedProjectId:prior.expectedProjectId});if(!current)throw Error('SHARED_SOURCE_SUPERSEDED');
  const oldBriefs=before.sources.filter(s=>s.role==='brief'&&!s.supersededBy&&s.sha256.toLowerCase()===crypto.createHash('sha256').update(before.brief).digest('hex'));if(oldBriefs.length!==1)throw Error('REVISION_PLAN_SINGLE_BRIEF_REQUIRED');
@@ -42,7 +48,7 @@ export async function compileRevisionPlan(before,q,{runs,inputRoot}){
   for(const o of [...r.requirements,...r.unresolvedRules])quoted(brief.text,o);
   const sourceRequirements=before.requirements.filter(a=>a.roomIds.includes(source.id)),rules=[...new Set([...sourceRequirements.map(a=>a.rule),...overrides.keys()])];
   for(const rule of rules){if(unresolved.has(rule))continue;const original=sourceRequirements.filter(a=>a.rule===rule),override=overrides.get(rule),values=override?override.values:original.map(a=>a.value);
-   for(const [i,value]of values.entries()){const old=original[Math.min(i,original.length-1)],preserve=old&&source.id===r.roomId&&old.roomIds.length===1&&i<original.length,id=preserve?old.id:generatedId('R',r.roomId,rule,i);if(old?.status==='assumed'&&override?.status&&override.status!=='assumed')throw Error('REVISION_PLAN_ASSUMPTION_UPGRADE');p.requirements.push({id,rule,value,roomIds:[r.roomId],sourceIds:old?.sourceIds?copy(old.sourceIds):[briefId],rationale:override?.reason??r.reason,status:old?.status==='assumed'?'assumed':override?.status??(old?.status==='documented'?'interpreted':old?.status??'interpreted')});evidence.set('requirement:'+id,override??r);}
+   for(const [i,value]of values.entries()){const old=original[Math.min(i,original.length-1)],preserve=old&&source.id===r.roomId&&old.roomIds.length===1&&i<original.length,id=preserve?old.id:generatedId('R',r.roomId,rule,i);if(old?.status==='assumed'&&override?.status&&override.status!=='assumed')throw Error('REVISION_PLAN_ASSUMPTION_UPGRADE: room='+r.roomId+' rule='+rule+' fromRoomId='+source.id+' sourceStatus=assumed; preserve assumed or omit status');p.requirements.push({id,rule,value,roomIds:[r.roomId],sourceIds:old?.sourceIds?copy(old.sourceIds):[briefId],rationale:override?.reason??r.reason,status:old?.status==='assumed'?'assumed':override?.status??(old?.status==='documented'?'interpreted':old?.status??'interpreted')});evidence.set('requirement:'+id,override??r);}
   }
   for(const o of r.unresolvedRules)markMissing(generatedId('RULE',r.roomId,o.rule),'Unresolved '+o.rule+' for '+r.roomId+': '+o.reason,o);
   if(r.use==='unknown')markMissing(generatedId('USE',r.roomId),'Room function explicitly unresolved: '+r.reason,r);

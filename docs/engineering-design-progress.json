@@ -105,8 +105,9 @@
     },
     {
       "id": "M2",
-      "status": "incomplete_floor_quality_and_generic_task_core_unaccepted",
-      "target": "complete_first_discipline_and_generic_task_core"
+      "status": "incomplete_generic_semantics_document_authority_and_practical_acceptance",
+      "target": "complete_first_discipline_and_generic_task_core",
+      "previousStatus": "incomplete_floor_quality_and_generic_task_core_unaccepted"
     },
     {
       "id": "M3",
@@ -146,7 +147,10 @@
     "knownPersistentTaskIsolationNative": true,
     "syntheticTwelveRoomDeclaredOpticalQuality": true,
     "syntheticTwelveRoomSavedCadAndBookletVisual": true,
-    "originalNativeSinglePdfStrictCompatibility": false
+    "originalNativeSinglePdfStrictCompatibility": false,
+    "knownSyntheticActualAiRequirementReadback": true,
+    "knownSyntheticActualAiNativePublicationPhase": true,
+    "zeroErrorSemanticPositiveTrial": false
   },
   "knownInputGaps": [
     "Original client brief not located",
@@ -156,11 +160,12 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve cross-project/task quality and A→B→A isolation on every increment; hospital remains one isolated example, independent unseen projects still required",
-    "P0 Actual AI-client requirement-to-proposal coverage using the newly inspectable values; retain wrong first drafts and independently test wording, omissions, units and conflicting documents",
-    "P0 Bound and yield within-room preflight work; observed status latency21.373s remains a practical gap",
-    "P1 Broader source-bound layouts, source/standard applicability, split/merge/multiple-use coordination and installation/wiring/protection detail",
-    "P2 Independent real projects, external users, clean machines and authenticated professional review, accepted separately"
+    "P0 Preserve cross-project/task quality and A-to-B-to-A isolation; hospital remains an isolated example",
+    "P0 Reliable actual-client requirement proposals/evidence/assumption grades and usable completion; current known positive trials reached valid states but both failed whole-trial usability",
+    "P0 Structured multi-document source/version/authority/coverage and conflicts; composite test briefs are not this product capability",
+    "P0 Bound and yield within-room preflight work; prior observed status latency21.373s remains unresolved",
+    "P1 Broader source-bound layouts, explicit split/merge/multiple-use coordination, standards and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review, each accepted separately"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -737,12 +742,12 @@
     "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "currentFullRegression": {
-    "passed": 401,
+    "passed": 407,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 143289.8147,
+    "durationMs": 143795.5735,
     "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
-    "logSHA256": "3ab6f5069d45fbf218c7f39420fd320a87307a08557c3ea6b1b8ea2566c2add8"
+    "logSHA256": "8ae2942238d75281689d8c47ba59df64b7887554337000910f3aeca57e393338"
   },
   "previousPrioritiesBeforePdfReviewClosure": [
     "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
@@ -767,6 +772,30 @@
       "durationMs": 143289.8147,
       "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
       "logSHA256": "3ab6f5069d45fbf218c7f39420fd320a87307a08557c3ea6b1b8ea2566c2add8"
+    }
+  },
+  "previousPrioritiesBeforeActualReviewClient": [
+    "P0 Preserve cross-project/task quality and A→B→A isolation on every increment; hospital remains one isolated example, independent unseen projects still required",
+    "P0 Actual AI-client requirement-to-proposal coverage using the newly inspectable values; retain wrong first drafts and independently test wording, omissions, units and conflicting documents",
+    "P0 Bound and yield within-room preflight work; observed status latency21.373s remains a practical gap",
+    "P1 Broader source-bound layouts, source/standard applicability, split/merge/multiple-use coordination and installation/wiring/protection detail",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review, accepted separately"
+  ],
+  "requirementReviewClientIncrement": {
+    "validation": "docs/requirement-review-client-validation.json",
+    "actualAiReadback": true,
+    "knownSyntheticPublicationPhase": true,
+    "positiveSemanticTrialUsabilityAccepted": false,
+    "structuredMultiDocumentAuthorityManagement": false,
+    "professionalApproval": false,
+    "releaseRepackaged": false,
+    "fullRegression": {
+      "passed": 407,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 143795.5735,
+      "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+      "logSHA256": "8ae2942238d75281689d8c47ba59df64b7887554337000910f3aeca57e393338"
     }
   }
 }

@@ -21,6 +21,13 @@ async function setup(){
   rooms:[{roomId:'OFFICE_A',fromRoomId:'OFFICE_A',use:'teaching',...evidence,requirements:[{rule:'target_lux',values:[450],status:'assumed',...evidence}]},{roomId:'CIRCULATION',fromRoomId:'CIRCULATION',use:'corridor',...evidence}],removedRooms:['RECEPTION','MEETING','TEAM'].map(roomId=>({roomId,...evidence}))};
  return {...f,child,before,q,evidence,revision:createEngineeringRevisionManager({runs:f.runs,engineering:f.engineering,getInputRoot:async()=>f.runs})};
 }
+
+test('draft evidence errors identify every invalid request field through the executor and publish no partial draft',async()=>{
+ const f=await setup(),stateFile=path.join(f.child,'engineering.json'),before=await hashFile(stateFile),files=await fs.readdir(f.child),effects=f.effects(),q=structuredClone(f.q);q.sourceEvidence={...q.sourceEvidence,quote:'A missing source sentence in this request'};q.rooms[0].requirements[0].quote='First separate sentence.Second separate sentence.';
+ const execute=createExecutor({runs:f.runs,getSettings:async()=>({workspace:f.runs}),launch:async()=>{throw Error('No CAD during evidence validation');}}),r=await execute('engineering_revision',q);
+ assert.equal(r.ok,false);assert.equal(r.error.code,'REVISION_PLAN_QUOTE_NOT_IN_BRIEF');const details=JSON.parse(r.error.message.slice(r.error.message.indexOf(': ')+2));assert.equal(details.invalidCount,2);assert.deepEqual(details.invalidEvidence.map(e=>e.path),['sourceEvidence.quote','rooms[0](OFFICE_A).requirements[0](target_lux).quote']);assert.equal(details.sourceTextSHA256,f.q.expectedBriefSHA256);assert.equal(await hashFile(stateFile),before);assert.deepEqual(await fs.readdir(f.child),files);assert.equal(f.effects(),effects);
+ const valid=await f.revision.run(f.q);assert.equal(valid.status,'prepared');assert.equal(await hashFile(stateFile),before);assert.equal(f.effects(),effects);
+});
 test('compact draft has no project/native effect; apply preserves history, retires the model, and replay cannot mutate the project',async()=>{
  const f=await setup(),stateSHA=await hashFile(path.join(f.child,'engineering.json')),modelSHA=await hashFile(path.join(f.child,'model-0.json')),effects=f.effects(),draft=await f.revision.run(f.q);
  assert.equal(draft.status,'prepared',JSON.stringify(draft));assert.equal(await hashFile(path.join(f.child,'engineering.json')),stateSHA);assert.equal(f.effects(),effects);

@@ -11,7 +11,7 @@ export const revisionPlanSchema=z.strictObject({
  rooms:z.array(z.strictObject({roomId:id,use:z.enum(['office','duty','teaching','corridor','pantry','clinical','unknown']),fromRoomId:id,...evidence,
   conditions:z.strictObject({heightM:z.number().min(2).max(10).optional(),workplaneM:z.number().min(0).max(2).optional(),obstacles:z.array(z.array(point).min(3).max(50)).max(20).optional(),...evidence}).optional(),
   classification:z.strictObject({classId:id,...evidence}).optional(),
-  requirements:z.array(z.strictObject({rule:revisionRule,values:z.array(value).min(1).max(10),status:z.enum(['assumed','interpreted']).optional(),...evidence})).max(10).default([]),
+  requirements:z.array(z.strictObject({rule:revisionRule,values:z.array(value).min(1).max(10),status:z.enum(['assumed','interpreted']).optional().describe('Preserve the source assumption grade. If the source requirement is assumed, use assumed or omit status; interpreted is an invalid upgrade.'),...evidence})).max(10).default([]),
   unresolvedRules:z.array(z.strictObject({rule:revisionRule,...evidence})).max(10).default([])
  })).min(1).max(100),
  removedRooms:z.array(z.strictObject({roomId:id,...evidence})).max(100).default([]),

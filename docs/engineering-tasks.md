@@ -148,3 +148,9 @@ cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、
 两个设计包原生交付后均可 invoke review_pdfs。parameters 仅传 expectedModelSHA256 和 expectedSourceSHA256，分别复制 status.current.modelSHA256 与 pdfReviewSourceSHA256；外层另用唯一 requestId 及原任务身份。另存 PDF 和 manifest，不重做 CAD。当前 files 优先审核 PDF，pdf_source 是原始 CAD 导出，delivery.files 保持原生交付记录；均按已登记摘要下载。任务中心支持两包状态读取和审核 PDF 准备。
 
 相同源复用当前包；输入/模型/修订变化后旧包仅历史。篡改、签名/加密输入、非单张或纸张不符、现有异物均拒绝。产品 manifest 的 independentStrictReaderAccepted/visualAccepted/professionalApproval 不由生成器自动提升；本机已知 11 张实际导出的独立格式、渲染、重放和下载证据见[验证](pdf-review-workflow-validation.json)。其他阅读器矩阵与通用中断恢复仍待验收。
+
+## 引文诊断与实际客户端审阅
+
+紧凑draft的原句验证在发布前聚合所有字段，REVISION_PLAN_QUOTE_NOT_IN_BRIEF错误消息以有界JSON列出sourceTextSHA256、invalidCount、invalidEvidence中的字段path/quoteSHA256/quoteLength及truncated。服务端只核对连续原文，不替换或归一化引文，不推断含义；不会产生部分draft或新设计。源要求为assumed时仍不得提交interpreted，契约明确允许保留assumed或省略status，拒绝消息给出room/rule/fromRoomId。
+
+实际客户端已在已知合成案例使用requirements分页进行应用前审阅，并有客户端直接发起原生交付、审核PDF和链接的证据；仍有错误调用、非连续引文、假设升级尝试及测试轮数上限失败。有效最终模型、提交证明、交付阶段与整次可用性分开记录，详见[验证](requirement-review-client-validation.json)。这不表示任意自然语言、结构化多文档权威管理或独立工程验收已通过。

@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "afterCommit": "abcf83c612155e71562733d146d37d3592079b7e",
+  "scope": "Actual installed AI-client requirement review and synthetic same-source ordinary-lighting revision/publication; hospital remains isolated example",
+  "implemented": [
+    "Domain-neutral aggregate literal evidence validator with bounded field paths, quote digests, source identity and no quote replacement/semantic inference",
+    "Revision drafts reject all unmatched literals before publication; errors identify room/rule fields and retain exact evidence gate",
+    "Clear distinction between generic shared-space data and discipline status actions; source assumption grade documented in schema and diagnostic",
+    "Public Skill requires complete effective-value review before apply, explicit unit handling and no invented document priority",
+    "Client trace auditor counts success-enveloped permission refusal as an error, while successful source content is not scanned"
+  ],
+  "actualClient": {
+    "product": "Installed WorkBuddy",
+    "bundledCli": "2.115.0",
+    "cliSHA256": "eacd161ce6b05037bc0910ed44f1d5a5a16a88954785151cced179a6d50887d8",
+    "model": "Configured default auto; actual routed provider/model not established",
+    "codingDelegate": false,
+    "inputs": "Only known synthetic input/brief/technical identities, public Skill and owned tool responses; oracle outside client read scope",
+    "hospitalDataProcessed": false
+  },
+  "historicalBlindReadback": {
+    "drafts": 2,
+    "rows": 80,
+    "pages": 16,
+    "clientChecks": 19,
+    "independentChecks": 11,
+    "protectedProjectProducerFiles": 59,
+    "knownTwoTargetOmissionsDetected": true,
+    "correctedDraftRecognized": true,
+    "bothHistoricalBasesRecognized": true,
+    "explicitSkillReadObserved": false,
+    "limit": "Known frozen retained drafts with direct process guidance; not a new customer or general semantic benchmark"
+  },
+  "freshSyntheticTrials": [
+    {
+      "id": "positive_first",
+      "finalEngineeringStatePassed": true,
+      "wholeClientTrialPassed": false,
+      "clientChecks": 75,
+      "independentFinalStateChecks": 61,
+      "correctedToolErrors": 3,
+      "errors": [
+        "Wrong discipline data action rejected",
+        "Non-contiguous combined quote rejected",
+        "Client attempted a generated public tool-definition cache Read outside test allowlist; denied"
+      ],
+      "finalStatus": "designed",
+      "finalClientEvent": "success"
+    },
+    {
+      "id": "conflict",
+      "finalEngineeringStatePassed": true,
+      "wholeClientTrialPassed": true,
+      "clientChecks": 75,
+      "independentFinalStateChecks": 61,
+      "correctedToolErrors": 0,
+      "retainedValues": [
+        550,
+        650
+      ],
+      "finalStatus": "blocked",
+      "newModelOrCad": false
+    },
+    {
+      "id": "positive_fresh_retry",
+      "finalEngineeringStatePassed": true,
+      "wholeClientTrialPassed": false,
+      "clientChecks": 75,
+      "independentFinalStateChecks": 61,
+      "correctedToolErrors": 1,
+      "errors": [
+        "Assumed source requirement submitted as interpreted and rejected",
+        "CLI reports Max turns (28) exceeded; raw subtype error_during_execution retained"
+      ],
+      "finalStatusBeforePublication": "designed",
+      "previousAiSolutionsCopied": false,
+      "testBudgetAdjustment": "Future review-mode maximum increased to48 after this failure; no third semantic trial was run and no pass inferred"
+    }
+  ],
+  "publicationPhase": {
+    "actualAiInvokedDeliverAndReviewPdfs": true,
+    "checks": 10,
+    "protocolErrors": 0,
+    "elapsedMs": 142563,
+    "nativeSteps": 4,
+    "savedCadChecks": 5,
+    "physicalLuminaires": 52,
+    "circuits": 5,
+    "watts": 1248,
+    "symbolRepresentations": 110,
+    "sheetPrimitives": 621,
+    "dwgs": 1,
+    "sheets": 5,
+    "strictReviewPdfs": 5,
+    "pixelIdenticalAt120Dpi": 5,
+    "currentRendersDirectlyInspected": 5,
+    "actualFinalClientClickableDwgAndAllPdfLinks": true,
+    "modelSHA256": "aa69e716d0f9ac989054996e39017063e7f9cd89aacf52cee664d0d567a45364",
+    "inputSHA256": "d819e5c0e988894843f523a65b18cb4799b76efb710038d16fdad43812dcaa0c",
+    "priorSemanticTrialPassed": false,
+    "acceptanceScope": "Publication phase on independently valid saved model after failed semantic client trial; not uninterrupted or zero-error end-to-end acceptance",
+    "method": "Assumed lumen-flux estimate, no new IES/diffuse/reference-UGR/installation acceptance",
+    "pendingItems": 52,
+    "professionalApproval": false
+  },
+  "postClientIsolation": {
+    "actualMcpCalls": 7,
+    "tasks": 6,
+    "registeredReviewPdfDownloads": 5,
+    "protectedFileHashes": 149,
+    "scope": "Existing current-state/hash compatibility and A-to-B-to-A reads; no new independent task design"
+  },
+  "failuresRetained": [
+    "Original positive and retry trials and every non-applied request",
+    "Earlier targeted evidence test expected two invalid fields but shared fixture object also changed carryForward; validator correctly found three. Test fixture split without changing production validation",
+    "First regression-manifest preparation had a Python syntax error before execution; corrected before actual MCP run"
+  ],
+  "fullRegression": {
+    "passed": 407,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 143795.5735,
+    "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
+    "logSHA256": "8ae2942238d75281689d8c47ba59df64b7887554337000910f3aeca57e393338"
+  },
+  "evidence": {
+    "blindClient": {
+      "fileName": "client-review.json",
+      "sha256": "c2f0b354b1567ff9a48a77301ace5ec73835ad9dc9b55133da6c3a0b1756e105"
+    },
+    "blindIndependent": {
+      "fileName": "independent-audit.json",
+      "sha256": "b31ff319e6d03853f7b46f3f6ec2497e6b8dd0a726d4d17542aed3f9d4c53f30"
+    },
+    "firstFinalState": {
+      "fileName": "final-state-audit-positive.json",
+      "sha256": "bc9e354cd31b82c4196954103adcc21e177e9925a87793ece077b8ed2b38f672"
+    },
+    "conflictFinalState": {
+      "fileName": "final-state-audit-conflict.json",
+      "sha256": "440a638be37f64d7fffc85a23e2a76922de37dc818dcb22a56eefef431b09a0d"
+    },
+    "retryFinalState": {
+      "fileName": "final-state-audit-positive.json",
+      "sha256": "16ebd4477955049a25deac2b6ce1da15d30a24b734b529ab6f21b95bd7ef4e19"
+    },
+    "publication": {
+      "fileName": "client-publication.json",
+      "sha256": "c6b5472bd6bf6d81984cda4aa2ec3bd722c1a674e04c732e2412aab3cfa2c020"
+    },
+    "pdf": {
+      "fileName": "independent-pdf-check.json",
+      "sha256": "7732ea942f64b106d44b37b014b3b7dbcb332ed3dc531f3106098b348e5cfbf6"
+    },
+    "visual": {
+      "fileName": "pdf-visual-review.json",
+      "sha256": "f731d413fff259084ea58e7133cdf14ccb2c08b13f3eabe5c4ef5d883d7b6019"
+    },
+    "isolation": {
+      "fileName": "task-switch-regression.json",
+      "sha256": "463bafd43b5c2c2e2544c979b0895c851ef7eaae40af1a8e2fce0b4a2e5cda13"
+    }
+  },
+  "acceptance": {
+    "actualAiUsesEffectiveRequirementReadbackOnKnownCases": true,
+    "knownSyntheticStateAndPublicationPhase": true,
+    "zeroErrorSemanticPositiveTrial": false,
+    "uninterruptedZeroErrorEndToEnd": false,
+    "structuredMultiDocumentAuthorityManagement": false,
+    "generalRequirementCoverage": false,
+    "independentCustomerProject": false,
+    "professionalApproval": false,
+    "cleanMachine": false,
+    "externalUsers": false
+  },
+  "sourceScopeLimit": "Original document files and hashes are retained in the local experiment; Bridge currently binds the preassembled composite as one active brief. This does not implement general per-document role/version/authority or precedence handling.",
+  "remainingP0": [
+    "Reliable first proposals, rule/assumption preservation, exact evidence and usable completion under realistic tool/context budgets",
+    "Structured multi-document source/version/authority/coverage and conflict handling; do not equate a composite brief with this capability",
+    "Within-room geometry preflight responsiveness; prior observed max status latency21.373s remains unresolved",
+    "Cross-project/task preservation on each increment; independent unseen sources still required"
+  ],
+  "releaseRepackaged": false,
+  "frozenReleaseGatePassed": false,
+  "milestones": {
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  }
+}

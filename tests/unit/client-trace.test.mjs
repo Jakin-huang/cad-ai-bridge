@@ -11,6 +11,12 @@ test('nested MCP Bridge rejection is a tool error even when outer transport succ
  assert.equal(toolResultErrors({type:'function_call_result',status:'success',output:{text:'Input validation error: unsupported field'}})[0].kind,'input_protocol_error');
  assert.equal(toolResultErrors({type:'function_call_result',status:'failed'})[0].kind,'transport_or_tool_error');
 });
+
+test('client permission refusal inside a successful text envelope remains a usability error, while source content is not scanned',()=>{
+ const text='Error: Permission to use Read has been denied because this tool requires approval but permission prompts are not available in non-interactive mode. Retain this refused attempt.';
+ const wrap=v=>({type:'function_call_result',callId:'read-cache',status:'success',output:{text:JSON.stringify([{type:'text',text:typeof v==='string'?v:JSON.stringify(v)}])}});
+ assert.deepEqual(toolResultErrors(wrap(text)),[{callId:'read-cache',kind:'client_permission_denied'}]);assert.deepEqual(toolResultErrors(wrap({ok:true,text,sourceDocument:'A quoted source warning is data'})),[]);assert.deepEqual(toolResultErrors(wrap('The supplied manual discusses permission denied errors.')),[]);
+});
 test('visible assistant delivery survives a later memory/footer result without inventing links',()=>{
  const events=normalizeClientEvents([{type:'assistant',message:{role:'assistant',content:[{type:'tool_use',id:'cad',name:'DeferExecuteTool',input:{}}]}},{type:'user',message:{content:[{type:'tool_result',tool_use_id:'cad',content:'actual result'}]}},{type:'assistant',message:{role:'assistant',content:[{type:'text',text}]}},{type:'result',subtype:'success',result:'Delivery links are above; memory could not be saved'}]);
  const delivery=findDeliveryMessage(events,[[dwg],[csv],[png]]);assert.equal(delivery.source,'assistant_text');assert.equal(delivery.text,text);assert.equal(delivery.sourceIndex,2);

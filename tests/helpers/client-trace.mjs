@@ -17,7 +17,7 @@ export function toolResultErrors(event){
  if(event.status==='failed')return [{callId:event.callId,kind:'transport_or_tool_error'}];
  function unpack(v,depth=0){
   if(depth>12||v==null)return [];
-  if(typeof v==='string'){try{return unpack(JSON.parse(v),depth+1);}catch{return /Input validation error/.test(v)?[{kind:'input_protocol_error'}]:[];}}
+  if(typeof v==='string'){try{return unpack(JSON.parse(v),depth+1);}catch{if(/^Error: Permission to use [A-Za-z_]+ has been denied because this tool requires approval but permission prompts are not available in non-interactive mode\./.test(v.trim()))return [{kind:'client_permission_denied'}];return /Input validation error/.test(v)?[{kind:'input_protocol_error'}]:[];}}
   if(Array.isArray(v))return v.flatMap(x=>unpack(x,depth+1));
   if(typeof v!=='object')return [];
   // Inspect the response envelope, never an embedded blocked intake/quality

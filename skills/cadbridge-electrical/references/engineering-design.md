@@ -155,8 +155,16 @@ cad_engineering_task的invoke是另一层包装：外层始终带自己的reques
 5. draft 返回不可变 draft:{jobId,draftId,sha256} 和 prepared/blocked、范围、阻断与待审摘要。read 传原 draft 和 section=summary/requirements/conditions/proposal。requirements 按房间/规则给出实际 values、状态、来源原句及 explicit_override/carried_forward/unresolved，按 offset/limit 和240KiB字节预算分页，沿 nextOffset 读取全部；不能把沿用旧值当成已落实新任务书。所有 read 返回 base.staleBase/currentRevision；过期提案仍可查看历史，以新请求 apply 会被原版本门槛拒绝。summary.requirementsReview 仅统计声明处置，不证明自然语言需求已全部提取。其余两节保留 offset/limit。核对每个要求的实际值及未决项、条件处置和项目提案后 apply 传 {action:'apply',requestId:新的UUID,draft:原引用}。它核对原版本与证据，产生新输入，旧模型/质量/图纸/审核失效；重复同请求返回原结果与当前状态。
 6. prepared 后用 cad_design_project design，仅传 action/jobId/expectedRevision；status 读取新 input/model/checks。blocked 是保留冲突/未知后的有效输入状态，停止设计和轮询，如实说明待解决项。不要把“提案已登记”当成已设计或工程验收。
 
+apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规则，核对 values 与每一项新任务要求，不能仅看 summary 计数或 prepared。特别检查新任务明确改值的槽位是否仍标为 carried_forward；原句存在也可能错误沿用旧值。发现遗漏或误值时另建修正 draft，保留原稿，再完整审阅选定稿。base.staleBase=true 的历史稿不能当作当前可执行设计。
+
+单位按公开契约换算，保留原文与换算理由；照度用 lx、功率用 W、间距/安装高用 m，压降用百分数数值。多份同时有效资料须逐份读取、检查身份及原句；数值相同但单位不同不算矛盾，含义不同则保留全部要求并阻断受影响设计，不能按文件先后或名称猜优先级。当前紧凑修订只绑定一份活动任务书；预先合并的测试资料包不代表 Bridge 已实现独立多文档版本、权威或冲突协调。无法可靠装配来源时说明缺口并保持待解决，不虚构引用。
+
 
 初次总光照搜索的源码布局族增加外围行/列间隙补灯：从原网格及实际边界派生，保留原灯位，新增点仍受边界、障碍、功率、有限发光面及UGR方法适用性检查。它只用于solve_lighting/optimize_lighting的源候选与选择重放；默认design的旧直射/流明法选择不变。无实测基线时按直射诊断目标偏差分组后优先试算较低功率方案，0.05诊断分组仅用于排序，不是照度/均匀度/UGR验收容差；所有候选必须完整物理复核，不能因排序接近目标而采纳。
 
 
 源码总光照搜索的候选覆盖继续保持每产品16个诊断预算：先覆盖可容纳的灯数层，再把剩余诊断分散到灯数范围并优先选择不同布局族/补灯方向，避免低灯数或同类删灯变体占满所有余位。同一初次诊断分组及功率下，均匀度距离参与组合排序；它仍不能替代物理验收。已有完整实测背景时，眩光反馈逐观察方向重用原间接眼照度，仅以新候选实际几何/IES源项估计排序，不将改变布局后的光传输当作已标定，也不按灯具产品身份一概处罚。原背景身份、观察位置或有效数值不符时返回不可预测；没有背景或有效眩光项时不补造通过值。所有入选方案仍须重新通过原UGR和照度门槛。
+
+共享空间数据读取使用 cad_engineering_task：`{action:"data",jobId:上游job-task,expectedProjectId:原项目UUID,expectedTaskSHA256:原任务摘要,section:"space_bindings",offset:0,limit:25}`；专业项目读取使用 cad_design_project 的 `{action:"status",jobId:job-design,section:"input"}`。两种身份分别从现有上下文复制，不互换 action 或 jobId。
+
+若 draft 返回 REVISION_PLAN_QUOTE_NOT_IN_BRIEF，其消息包含 sourceTextSHA256、invalidCount 和有界 invalidEvidence（精确字段 path、原提交引文摘要和长度）。先针对列出的字段重读该版本原文，用连续原句重新提交；不能把多个不相邻句子拼成一个 quote。摘要核对只定位原提交，不代表语义正确；服务端不替换引文或选择工程值。
