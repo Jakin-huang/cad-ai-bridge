@@ -1363,5 +1363,20 @@
     "newAiClient": false,
     "independentProjectAcceptance": false,
     "goalComplete": false
+  },
+  "scopeExecutionGuardIncrement": {
+    "validation": "docs/scope-execution-guard-validation.json",
+    "unreleased": true,
+    "formalTaskInvoke": true,
+    "directLightingGuard": true,
+    "projectReviewGuard": true,
+    "fullRegression": 558,
+    "actualMcpCalls": 35,
+    "newFormalTasks": 2,
+    "newComputedModels": 2,
+    "newNativeCad": false,
+    "newAiClient": false,
+    "independentProjectAcceptance": false,
+    "goalComplete": false
   }
 }

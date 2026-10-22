@@ -37,7 +37,7 @@ import {lightingQualityReviewHtml} from './engineering-report.mjs';
 import {resolveUgrMethod,ugrBasisSummary} from './ugr-evidence.mjs';
 import {optimizeLighting,solveInitialLighting,verifyLightingOptimization} from './lighting-optimizer.mjs';
 
-export function createEngineeringManager({runs,execute,lightingProfile,radianceProfile,ugrProfile,initialSolver=solveInitialLighting,getInputRoot=async()=>{throw Error('ENGINEERING_INPUT_ROOT_REQUIRED');}}){
+export function createEngineeringManager({runs,execute,lightingProfile,radianceProfile,ugrProfile,initialSolver=solveInitialLighting,assertExecutionScope=async()=>{},getInputRoot=async()=>{throw Error('ENGINEERING_INPUT_ROOT_REQUIRED');}}){
  let queue=Promise.resolve();
  const ownerLive=pid=>{if(!Number.isInteger(pid)||pid<2||pid>2147483647)return true;try{process.kill(pid,0);return true;}catch(error){return error.code!=='ESRCH';}};
  const location=id=>path.join(runs,id),read=async file=>JSON.parse(await fs.readFile(file,'utf8'));
@@ -70,6 +70,7 @@ export function createEngineeringManager({runs,execute,lightingProfile,radianceP
  async function run(raw){
   let q=engineeringSchema.parse(raw);
   if(process.env.CADBRIDGE_READ_ONLY==='1'&&['deliver','revise_title','revise_notes','revise_scope'].includes(q.action))throw Error('READ_ONLY: engineering CAD generation or title revision disabled');
+  if(q.jobId&&q.action!=='status')await assertExecutionScope(q.jobId);
   if(q.action==='inspect_brief')return inspectBriefSource(q.briefFile,{inputRoot:await getInputRoot()});
   if(q.action==='lighting_basis')return lightingBasisSummary(lightingProfile?{file:lightingProfile}:undefined);
   if(q.action==='ugr_basis')return ugrBasisSummary(ugrProfile?{file:ugrProfile}:undefined);

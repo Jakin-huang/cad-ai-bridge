@@ -41,7 +41,7 @@ async function runtimeSettings(){const settings=await loadConfig();await verifyP
 export function createExecutor({getSettings=runtimeSettings,launch=launchHost,runs=path.join(dataHome(),'runs')}={}){
  let queue=Promise.resolve(),bootstrap;
  const projects=createProjectManager({execute,getSettings,runs});
- const engineering=createEngineeringManager({execute,runs,getInputRoot:async()=>(await getSettings()).workspace});
+ const engineering=createEngineeringManager({execute,runs,assertExecutionScope:jobId=>engineeringTasks.assertChildScope(jobId),getInputRoot:async()=>(await getSettings()).workspace});
  const engineeringRevisions=createEngineeringRevisionManager({runs,engineering,getInputRoot:async()=>(await getSettings()).workspace});
  const engineeringTasks=createEngineeringTaskManager({runs,adapters:createEngineeringTaskAdapters({schemas,execute,runs})});
  const documents=createProjectDocumentManager({runs,getInputRoot:async()=>(await getSettings()).workspace,taskContext:binding=>engineeringTasks.documentContext(binding)});

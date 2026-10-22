@@ -7,6 +7,7 @@ export function engineeringAgentStep({snapshot,graph,workflow,operations,options
  const result=(phase,next=null)=>{const body={...base,phase,issues,next};return {...body,snapshotSHA256:dependencyDigest(body)};};
  const block=(code,detail)=>{issues.push({code,detail});return result('blocked');};
  if(snapshot.pendingOperations?.length)return block('OPERATION_UNCONFIRMED',snapshot.pendingOperations);
+ if(snapshot.executionScope?.eligible===false)return block('SCOPE_EXECUTION_BLOCKED',snapshot.executionScope);
  if(snapshot.lastFailure)return block('LAST_OPERATION_FAILED',snapshot.lastFailure);
  if(!c)return block('TASK_NOT_PREPARED','Read the preparation receipt; no operation can be inferred.');
  if(c.documentEvidence?.enabled&&!c.documentEvidence.eligible)return block('SOURCE_REVIEW_REQUIRED',c.documentEvidence);

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "status": "unreleased_task_execution_scope_guard_verified",
+  "afterCommit": "7075e6c12740f237100c95727a5c5707a4b50a12",
+  "released": false,
+  "goalComplete": false,
+  "newNativeCad": false,
+  "newAiClient": false,
+  "semanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "professionalApproval": false,
+  "implementation": [
+    "Optional immutable scope selection is carried from intake adoption into the formal task manifest; old unscoped tasks keep their contract",
+    "Current document identity, candidate kind and all declared predecessor delivery evidence are checked before a new task or operation",
+    "Task status, next_step, dependency graph and project review expose blocked plan evidence; stale delivery never counts as current project coverage",
+    "Direct lighting design/revision calls resolve their persisted parent task and enforce the same scope guard",
+    "Prior receipts remain replayable with current eligibility shown; new invalid operations create neither execution receipts nor adapter effects",
+    "Stale work can be explicitly prepared as a replacement under valid new predecessor evidence; the old task is not refreshed"
+  ],
+  "verification": {
+    "fullRegression": {
+      "passed": 558,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 202514.0882
+    },
+    "actualMcp": {
+      "calls": 35,
+      "adapters": [
+        {
+          "kind": "ordinary-lighting",
+          "calls": 18,
+          "computedDesign": true,
+          "sourceChangeInvalidated": true,
+          "freshReadonlyVerified": true,
+          "newOperationBlocked": true,
+          "oldReceiptReplayed": true
+        },
+        {
+          "kind": "office-space-planning",
+          "calls": 17,
+          "computedDesign": true,
+          "sourceChangeInvalidated": true,
+          "freshReadonlyVerified": true,
+          "newOperationBlocked": true,
+          "oldReceiptReplayed": true
+        }
+      ],
+      "newFormalTasks": 2,
+      "newComputedModels": 2,
+      "newNativeCad": false
+    }
+  },
+  "limits": [
+    "Cross-task model change, transitive staleness and re-preparation use synthetic persisted adapter stage stubs in unit tests; their delivery/PDF flags are not real native evidence",
+    "Actual MCP uses the existing explicit synthetic conditions-only fixtures and test-supplied interpretations, not unfamiliar customer input or an autonomous AI trial",
+    "Actual MCP verifies source revision invalidation; it does not add a new prospective native multi-task design or plan-change CAD acceptance",
+    "Scope association is explicit and optional, exact-source-bound, and task-identity-bound; older unscoped tasks are not retroactively governed and no globally newest project plan is inferred",
+    "A changed predecessor requires a new scope snapshot and explicit preparation of affected work; the old task cannot adopt a new scope or silently reuse its design",
+    "Checks are performed before operations and on subsequent reads; no cross-task transaction lock freezes upstream writers during a running native operation",
+    "This guard verifies declared evidence currency, not semantic sufficiency, actual geometric data transfer, standards applicability or professional coordination",
+    "No new external-user, new-machine, cross-model or professional acceptance; v2.0 and v2.1 frozen tags/packages remain unchanged"
+  ],
+  "retainedFailure": "The first adoption test omitted the frozen-condition passage from the scope citation and was correctly rejected by source coverage. Only the fixture citation was corrected; validation was not weakened.",
+  "logs": [
+    {
+      "file": "scope-guard-initial.log",
+      "sha256": "5c8c3a48dea5ff5249fe400b82f2426c923cc95f52dd7a3939090fdadc1a6d69"
+    },
+    {
+      "file": "scope-guard-policy.log",
+      "sha256": "ba00097cf49513a54b6199dc41eb1b435efdd5f9d5c69de5a09bf275568987fb"
+    },
+    {
+      "file": "scope-guard-adoption.log",
+      "sha256": "07a89d1f044175664806571c5c1637fddf07098a99be7ba57c80db54ffa03cb9"
+    },
+    {
+      "file": "scope-guard-adoption-corrected.log",
+      "sha256": "e12802f60f4134b58386470bb8d8dd2bbae5510d22af5a6eb0403261ea92532d"
+    },
+    {
+      "file": "scope-guard-full.log",
+      "sha256": "8de9814be3609ac07b7108775e79057a754d3be1701079f50892dfce5800c1f3"
+    },
+    {
+      "file": "scope-guard-mcp.log",
+      "sha256": "04a7c3778f837527e9bdb48ee7718c6a5167510b548204243fd4c545fb71779f"
+    }
+  ]
+}

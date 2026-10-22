@@ -13,12 +13,13 @@ export function compileProjectReview(q,snapshots){
   const unconfirmed=(s.pendingOperations??[]).length>0;
   const documentsCurrent=c.documentEvidence?.current!==false&&c.documentEvidence?.modelCurrent!==false&&c.documentEvidence?.eligible!==false;
   const failedChecks=(graph?.nodes??[]).filter(n=>n.kind==='check'&&(n.value?.ok===false||n.value?.passed===false||n.value?.checks?.some(c=>c.ok===false)));
-  const designed=!!c.modelSHA256&&currentScope&&!unconfirmed&&documentsCurrent&&checks?.failed===0&&!!graph&&graph.conflicts.length===0&&!failedChecks.length;
+  const designed=!!c.modelSHA256&&currentScope&&!unconfirmed&&documentsCurrent&&s.executionScope?.eligible!==false&&checks?.failed===0&&!!graph&&graph.conflicts.length===0&&!failedChecks.length;
   const delivered=designed&&c.status==='delivered'&&c.delivery?.verification?.ok===true&&c.delivery.modelSHA256===c.modelSHA256;
   if(!scope)issue('TASK_SCOPE_UNBOUND',s.jobId,{});
   else if(!currentScope)issue('TASK_SCOPE_STALE_OR_DIFFERENT',s.jobId,{boundScope:scope.ref});
   if(unconfirmed)issue('TASK_OPERATION_UNCONFIRMED',s.jobId,{operations:s.pendingOperations.map(o=>({operation:o.operation,requestId:o.requestId}))});
   if(!documentsCurrent)issue('TASK_DOCUMENT_EVIDENCE_STALE',s.jobId,{});
+  if(s.executionScope?.eligible===false)issue('TASK_EXECUTION_SCOPE_BLOCKED',s.jobId,{executionScope:s.executionScope});
   if(!designed)issue('CURRENT_DESIGN_NOT_VERIFIED',s.jobId,{});
   if(!delivered)issue('CURRENT_NATIVE_DELIVERY_NOT_VERIFIED',s.jobId,{});
   if(checks?.pending)issue('TASK_CHECKS_PENDING',s.jobId,{count:checks.pending});
