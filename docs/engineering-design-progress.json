@@ -749,13 +749,12 @@
     "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "currentFullRegression": {
-    "passed": 502,
+    "passed": 507,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 210552.4342,
-    "logSHA256": "3bcdbc4bad316b13c8bb56b311854a0669a8ea850ccd254922ff9fc5c5574e2b",
-    "command": "node --test tests/unit/*.test.mjs",
-    "scope": "Final source after circuit partition and decimal compatibility fix"
+    "durationMs": 250588.586,
+    "logSHA256": "fc69126bb990fcbed8c9381c99d8c6e3010a240b0820db8dab03ba8e9871d5ff",
+    "scope": "Before final routing cross-task condition ledger and assumption guards; see routing increment final affected tests"
   },
   "previousPrioritiesBeforePdfReviewClosure": [
     "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
@@ -1180,6 +1179,22 @@
     "declaredLimitPercent": 0.2,
     "maximumEstimatedDropPercent": 0.195992,
     "pending": 88,
+    "goalComplete": false
+  },
+  "routingIncrement": {
+    "validation": "docs/engineering-routing-validation.json",
+    "newNativeCad": true,
+    "newAiClient": false,
+    "declaredPlanarRouting": true,
+    "sourceAssumptionsRetained": true,
+    "wholeSegmentAudit": true,
+    "finalAffectedTests": {
+      "passed": 46,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 82786.2006,
+      "logSHA256": "85bdd314713216a0e74f49e5a056432ce9efaf224a208cc3a09e1631c59f2e4a"
+    },
     "goalComplete": false
   }
 }

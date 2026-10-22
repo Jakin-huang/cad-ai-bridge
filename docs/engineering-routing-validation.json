@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "fc227f0ddbe114cd57e0bb2583277360684ccba8",
+  "status": "declared_planar_routing_native_delivery_and_cross_task_conditions_verified",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "newAiClient": false,
+  "newNativeCad": true,
+  "controllerAuthoredSyntheticInput": true,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Explicit source-linked allowed rectangles, exclusions and clearance; no automatic permissions inferred from a final drawing",
+    "Bounded rectilinear shortest connections in fixed device visit order; no unconstrained fallback when disconnected or over budget",
+    "Shared route model drives circuit partitioning, lengths, drop estimates, CAD lines and HTML condition tables",
+    "Independent complete-segment region checks, terminal reachability, source/basis matching and saved CAD geometry verification",
+    "Routing conditions participate in source invalidation, shared-space frozen values, explicit scope decisions and assumption protection"
+  ],
+  "actual": {
+    "rooms": 9,
+    "lights": 65,
+    "circuits": 15,
+    "unchangedLampLayoutAndElectricalDeclarations": true,
+    "baselineRoutesOutsideDeclaredRegions": 15,
+    "allowedRegions": 20,
+    "exclusions": 1,
+    "clearanceMm": 100,
+    "gridNodes": 1559,
+    "routeSegments": 169,
+    "maximumEstimatedDropPercent": 0.193414,
+    "declaredLimitPercent": 0.2,
+    "automatedChecks": 236,
+    "pendingConditions": 89,
+    "modelSHA256": "c53ee9de2c241d30301887d423ba1a8357396ac76f4efdfb6dfb761d6e30109c",
+    "registeredOutputs": 24,
+    "reviewPdfPages": 5,
+    "protectedOldTaskFiles": 230,
+    "projectSpaces": 11,
+    "lightingDeliveredSpaces": 9,
+    "unresolvedSpaces": 2,
+    "packageSourceFiles": 42,
+    "packageIssueEntries": 181,
+    "packageLinksVerified": 72,
+    "packageManifestSHA256": "3416f09c6079d8d0f9522898e7e5d0d27af979101e2756d4d7f357c08ecb3713",
+    "routingAuthority": "assumed"
+  },
+  "regression": {
+    "initialTargeted": {
+      "passed": 9,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 9922.6936,
+      "logSHA256": "30f21e898ac7c58baa6fb311080319db1f1c465a91693f7876bc1ef396957265"
+    },
+    "targeted": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 8410.1629,
+      "logSHA256": "0f2dc23f5e8bfbcd44abcc747c121aa364400fc7459bc7c06649779d8284c115"
+    },
+    "fullBeforeFinalCrossTaskGuards": {
+      "passed": 507,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 250588.586,
+      "logSHA256": "fc69126bb990fcbed8c9381c99d8c6e3010a240b0820db8dab03ba8e9871d5ff"
+    },
+    "finalAffectedTests": {
+      "passed": 46,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 82786.2006,
+      "logSHA256": "85bdd314713216a0e74f49e5a056432ce9efaf224a208cc3a09e1631c59f2e4a"
+    },
+    "staticGate": {
+      "passed": 3,
+      "publicFiles": 579,
+      "logSHA256": "593aab8326d5c32ae65ab8bf489e5a56ccd8c51ce160de9a1c4d77c01948e528"
+    }
+  },
+  "independentVerification": {
+    "knownShortestDetourMm": 5200,
+    "completeSegmentInteriorGapRejected": true,
+    "disconnectedRegionsRejected": true,
+    "excludedTerminalRejected": true,
+    "sourceReplacementInvalidatesRouting": true,
+    "removedBasisAndAlteredClearanceRejected": true,
+    "legacyFeasibleModelDigestsPreserved": true,
+    "finalSourceReproducesNativeModel": true,
+    "strictPdfParsingAndPageSize": true,
+    "rawAndNormalizedRenderIdentical": true,
+    "visualLayout": true
+  },
+  "retainedObservations": [
+    "First targeted run had 9 passed/1 failed because a test compared raw route length to its six-decimal persisted value using exact equality; changed only that assertion to the documented half-unit rounding tolerance, then all 10 passed",
+    "507-test full suite predates final shared-space condition-ledger and assumption-guard additions; final 46 affected tests passed after those additions, not a claimed 508-test final full run",
+    "Native source snapshot predates final cross-task guard additions; final source separately retained and reproduces the exact delivered model",
+    "Raw CAD PDFs retain duplicate PageMode entries; normalized copies strictly parse and preserve content, physical size and pixels"
+  ],
+  "limits": [
+    "Developer-generated nine-space geometry with explicit assumed route permissions; no new AI/customer interpretation or engineering authority established",
+    "Axis-aligned planar rectangles only; no 3D elevations, vertical lengths, wall-penetration/fire-stopping permissions or conduit width/capacity verification",
+    "The declared external feeder strip is a developer assumption, not a verified installation location",
+    "Fixed device visit order; shortest individual links do not establish a globally optimal circuit or wiring design",
+    "Shared coincident circuit segments have no conduit grouping, capacity or per-segment construction annotation yet; control diagram remains schematic",
+    "Actual optical quality, product authority, supply fault/protection coordination and professional standards applicability remain pending in this case",
+    "Two project spaces remain uncovered; external users, clean machines and independent professional review remain unaccepted",
+    "No new browser trial for this review package; local links, copies, replay and source immutability verified"
+  ],
+  "evidence": {
+    "root": "artifacts/engineering-routing-validation-20261022",
+    "input": "input.json",
+    "routeSource": "routing-conditions.txt",
+    "preflight": "preflight.json",
+    "baselineFailures": "baseline-routing-checks.json",
+    "native": "native-report.json",
+    "finalReproduction": "final-model-reproduction.json",
+    "pdf": "independent-pdf-check.json",
+    "visual": "visual-review.json",
+    "projectPackage": "project-package/report.json",
+    "finalSource": "final-source-manifest.json",
+    "protectedReferences": 18
+  }
+}
