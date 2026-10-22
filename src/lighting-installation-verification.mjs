@@ -1,3 +1,4 @@
+import {auditInstallationPlans} from './lighting-installation-plan-audit.mjs';
 import crypto from 'node:crypto';
 
 // Independent electrical check from persisted terminal edges: accumulate lamp
@@ -53,6 +54,7 @@ export function auditLightingInstallation(m){
    add('installation_quantities_'+c.circuitId,Object.keys(amount).every(role=>near(c.conductorLengthsM[role],amount[role]))&&near(c.physicalPathLengthM,c.runs.reduce((n,r)=>n+r.lengthM,0)),'L, switched phase, neutral and PE lengths reconcile with physical runs; unlocated allowance is not a measured quantity');
   }
   if(m.scene){const pages=m.sheets.filter(s=>s.id.startsWith('E07-')),expectedCount=s.circuits.reduce((n,c)=>n+Math.ceil(c.runs.length/13),0);let drawing=pages.length===expectedCount;for(const [ci,c]of s.circuits.entries()){const label='Q'+String(ci+1).padStart(2,'0');for(let offset=0;offset<c.runs.length;offset+=13){const page=m.sheets.find(s=>s.id==='E07-'+label+'-'+(offset/13+1));if(!page){drawing=false;continue;}const text=m.scene.entities.filter(e=>e.kind==='text'&&e.position[0]>=page.region.min[0]&&e.position[0]<=page.region.max[0]).map(e=>e.text).join('\n');drawing&&=text.includes(c.circuitId)&&text.includes(c.maximumDropPercent.toFixed(4)+'%')&&c.runs.slice(offset,offset+13).every(r=>text.includes(r.id+' | ')&&text.includes(r.lengthM.toFixed(3)+'m / '+r.wireSectionMm2+'mm2')&&r.conductors.every(w=>text.includes(w.role+': '+r.from+'.'+w.fromTerminal+' -> '+r.to+'.'+w.toTerminal)));}}add('installation_drawing',drawing,'Every installation circuit/run/terminal assignment and voltage-drop result is present on its E07 page');}
+  checks.push(...auditInstallationPlans(m));
   add('installation_total_quantities',Object.keys(totals).every(role=>near(s.conductorLengthsM[role],totals[role])),'All circuit conductor quantities reconcile');
  }catch(error){add('installation_structure',false,error.message);}
  return checks;

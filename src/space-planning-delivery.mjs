@@ -1,3 +1,4 @@
+import {exportEngineeringSheets} from './engineering-sheet-export.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -12,7 +13,7 @@ export async function deliverSpacePlan({model,state,dir,execute,save}){
  for(let i=0;i<model.placements.length;i+=100){const instances=model.placements.slice(i,i+100).map(({symbol,...instance})=>instance);current=await native('apply',{drawing:current.drawing,expectedSha256:current.drawingSha256,documentId:current.snapshot.documentId,expectedRevision:current.snapshot.revision,requestId:crypto.randomUUID(),units:'mm',operations:[{type:'place_symbols',blockName:'SP_SPACE_TAG',instances}]});}
  const drawing=path.join(dir,'design-'+state.revision+'.dwg');await fs.copyFile(current.drawing,drawing,fs.constants.COPYFILE_EXCL);const drawingSHA256=await hashFile(drawing),scan=await native('scan',{drawing,limit:100000,exportDxf:true}),retained=JSON.parse((await fs.readFile(path.join(scan.jobRoot,'result.json'),'utf8')).replace(/^\uFEFF/,'')),verification={...verifySceneCapture(model.scene,model.placements,retained.query),scanJob:scan.jobRoot,drawingSHA256};
  const verificationFile=path.join(dir,'cad-verification-'+state.revision+'.json');await atomicJson(verificationFile,verification);if(!verification.ok)throw Error('PLANNING_SAVED_DRAWING_CHECK_FAILED');
- const exported=await native('export_many',{drawing,items:model.sheets.flatMap(s=>[{name:s.id,format:'pdf',region:s.region,plot:{paper:s.paper,orientation:'landscape',scale:'fixed',denominator:s.paperDenominator,style:'monochrome.ctb'}},{name:s.id,format:'png',region:s.region}])});
+ const exported=await exportEngineeringSheets(native,drawing,model.sheets);
  const files=[],add=async(kind,file)=>files.push({kind,file,sha256:await hashFile(file)});await add('dwg',drawing);await add('json',verificationFile);
  for(const item of exported.exports??[]){const f=item.exported??item;if(f.file)await add(f.format??path.extname(f.file).slice(1),f.file);}
  if((exported.exports??[]).length!==model.sheets.length*2||(exported.exports??[]).some(r=>r.ok===false))throw Error('PLANNING_EXPORT_INCOMPLETE');

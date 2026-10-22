@@ -12,6 +12,17 @@ import {frozenLightingSpaceConditions} from '../../src/lighting-space-program.mj
 const basis={sourceIds:['BRIEF'],status:'assumed',description:'Explicit synthetic mounting and manual-switch assumptions; no construction approval.'};
 function input(){const p=engineeringTestInput();p.routingConditions={mode:'declared_rectilinear_regions',clearanceMm:100,...basis,allowedRegions:[{id:'AREA',min:[-1000,-1500],max:[9000,7000],...basis}],exclusions:[]};p.installation={topology:'ceiling_junction_single_pole',routingHeightM:3.2,panelHeightM:1.5,...basis,rooms:[{roomId:'OFFICE',switchPosition:[1250,250],switchHeightM:1.3,switchRatingA:10,switchRatedVoltage:250,...basis}]};return p;}
 function good(m){const a=auditLightingInstallation(m);assert.ok(a.length);assert.deepEqual(a.filter(c=>!c.ok),[]);}
+test('installation plan detects shifted routes, omitted coordinates and incorrect vertical sequences',()=>{
+ const m=makeEngineeringDesign(input());good(m);
+ const fractional=input();fractional.installation.rooms[0].switchPosition[0]+=.0004;good(makeEngineeringDesign(fractional));
+ for(const mutate of [
+  n=>n.scene.entities.find(e=>e.layer==='E-INSTALL-PATH').points[0][0]+=10,
+  n=>n.scene.entities=n.scene.entities.filter(e=>!(e.kind==='text'&&/^V1  X=/.test(e.text))),
+  n=>{const page=n.sheets.find(s=>s.id.startsWith('E09-'));n.scene.entities.find(e=>e.kind==='text'&&e.position[0]>page.region.min[0]&&e.position[0]<page.region.max[0]&&e.text.startsWith('W1 | ')).text+=' > V1@0';},
+  n=>n.scene.entities.find(e=>e.layer==='E-INSTALL-REF').points[0][0]+=10,
+  n=>n.sheets=n.sheets.filter(s=>!s.id.startsWith('E08-'))
+ ]){const bad=structuredClone(m);mutate(bad);assert.ok(auditLightingInstallation(bad).some(c=>c.id.startsWith('installation_plan_')&&!c.ok));}
+});
 test('two-load hand calculation checks vertical switch loop, shared-current drops and role quantities',()=>{
  const p=input();p.electrical.extraLengthM=0;p.electrical.powerFactor=1;p.installation.routingHeightM=3;p.installation.panelHeightM=1;p.installation.rooms[0].switchPosition=[1000,1000];p.installation.rooms[0].switchHeightM=1;
  const ds=[{id:'D_A',roomId:'OFFICE',position:[3000,1000],mountingHeightM:2.5,watts:230},{id:'D_B',roomId:'OFFICE',position:[5000,1000],mountingHeightM:2.5,watts:230}],cs=[{id:'C',roomId:'OFFICE',deviceIds:['D_A','D_B']}],controls=[{id:'S',circuitId:'C'}],compiler=compileLightingInstallation(p,ds),installation=buildLightingInstallation(p,cs,ds,controls,compiler),m={input:p,devices:ds,circuits:cs,controls,installation};good(m);

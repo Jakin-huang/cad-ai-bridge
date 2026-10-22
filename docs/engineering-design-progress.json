@@ -1258,5 +1258,21 @@
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
+  },
+  "installationPlanIncrement": {
+    "validation": "docs/installation-plan-validation.json",
+    "newNativeCad": true,
+    "newAiClient": false,
+    "physicalDesignUnchanged": true,
+    "reviewPdfPages": 55,
+    "newLocationAndSequencePages": 30,
+    "visualReview": "31 direct inspections and 24 exact comparisons to previously inspected pages",
+    "sharedLargeSheetExport": true,
+    "engineeringAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
   }
 }

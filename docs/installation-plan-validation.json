@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "status": "native_delivery_and_visual_review_verified_engineering_acceptance_pending",
+  "goalComplete": false,
+  "newAiClient": false,
+  "professionalApproval": false,
+  "releaseRepackaged": false,
+  "implementation": [
+    "E08 per-circuit projected centerlines and coordinate leaders with node elevations",
+    "E09 complete indexed XYZ sequence, including vertical runs and electrical-crossing caveats",
+    "Independent persisted-scene coordinate/segment/leader/path reconciliation",
+    "Shared two-pack sheet exporter with bounded sequential batches and incomplete-output rejection"
+  ],
+  "preserved": [
+    "Original declared inputs, 65 lights, 15 circuits and terminal/voltage-drop model",
+    "Hospital reference isolation and original frozen v2"
+  ],
+  "remaining": [
+    "Actual conditions and product approval remain assumed",
+    "Cross-circuit combined installation plans and detail/containment/protection coordination",
+    "Complex control topology and two missing project spaces",
+    "Independent customer/AI/generalization and professional acceptance",
+    "General native timeout recovery is not implemented; failed jobs and partial artifacts remain unconfirmed",
+    "E01 retains technical source wording and conservative schematic-control notes; no general prose/semantic acceptance",
+    "Small per-circuit schedules are intentionally separate and do not establish efficient construction-sheet composition"
+  ],
+  "observations": [
+    "Initial 110-item export rejected by native 50-item schema limit after successful drawing readback",
+    "50-item second batch hit existing 45-second host timeout; exact recorded process confirmed absent before independent trial",
+    "Ten-sheet batches completed all 55 sheets; failed task states and partial native outputs retained",
+    "Initial coordinate leaders crossed excessively; visual inspection prompted spatial sorting and centering",
+    "Intermediate full suite 510 passed / 17 failed because shared native test fixture lacked actual name/format response fields; corrected fixture, final full 527 passed",
+    "PDF operation marker initially rejected count110; corrected to55 final review PDFs and marker succeeded",
+    "Intermediate monochrome PDF made solid coordinate leaders indistinguishable from installation paths; explicit dashed geometry fixed without modifying the plugin or plot style",
+    "Final booklet builder verified all 55 pages against source renderings; visual sign-off was completed later and is recorded separately, not inferred from builder success",
+    "Evidence sealer initially confused 195 source files with 199 package outputs including four metadata files; corrected to verify both declared counts, without modifying the package",
+    "Final static check first failed because the sandbox denied Node syntax-check child processes; authorized local rerun passed all three static gates"
+  ],
+  "verification": {
+    "fullRegression": {
+      "passed": 527,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Before final presentation-only refinements"
+    },
+    "finalAffectedRegression": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    },
+    "nativeCad": true,
+    "pdfPages": 55,
+    "newInstallationPlanPages": 15,
+    "newPathSequencePages": 15,
+    "directlyInspectedNewOrChangedPages": 31,
+    "unchangedPagesComparedToPreviouslyInspectedPages": 24,
+    "unchangedPagePixelsIdentical": true,
+    "bookletPages": 55,
+    "bookletPixelIdentity": true,
+    "independentNodalLoads": 65,
+    "independentCsvRuns": 160,
+    "automatedDesignChecks": 365,
+    "pendingDesignChecks": 90
+  },
+  "design": {
+    "rooms": 9,
+    "lights": 65,
+    "circuits": 15,
+    "installationRuns": 160,
+    "physicalDesignUnchanged": true,
+    "modelSHA256": "28f6c5cfa61d3d5cfe2c8cd07dcd8be39d421595996c3e8cad48c62cfd667b01"
+  },
+  "projectPackage": {
+    "sourceFiles": 195,
+    "declaredSpaces": 11,
+    "lightingSpaces": 9,
+    "missingLightingSpaces": 2,
+    "issueEntries": 183,
+    "issueEntriesCanOverlap": true,
+    "localLinksVerified": true,
+    "newBrowserAcceptance": false,
+    "reportSHA256": "d7ca3b145be13bdb17ce56351691d1f725767839193fd473a0b7752c74e135d3"
+  },
+  "evidence": {
+    "location": "Local private artifact directory; excluded from public source and release",
+    "bookletSHA256": "7e77871816065c218c2ea4eb7b7337b7c37ec1b11b9aaf73517b365ad5c98e98",
+    "protectedFiles": 2491,
+    "previousProtectedFiles": 672,
+    "protectedReferences": 22
+  },
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 618,
+    "logSHA256": "622174c3eb87e1cda99580187d45c7776dc7d4d126aa027141a1de3dfab0e52f"
+  }
+}

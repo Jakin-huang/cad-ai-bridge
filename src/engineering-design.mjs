@@ -1,3 +1,4 @@
+import {drawLightingInstallationPlans} from './lighting-installation-plan.mjs';
 import {drawLightingInstallation} from './lighting-installation-drawing.mjs';
 import {compileLightingInstallation,buildLightingInstallation} from './lighting-installation.mjs';
 import {buildRouteSchedule} from './engineering-route-schedule.mjs';
@@ -134,7 +135,7 @@ export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[],archit
 }
 
 export function makeEngineeringScene(model){
- const p=model.input,entities=[],sheets=[],placements=[],geometryWarnings=[],layers=[['E-ARCH',8],['E-LIGHT',7],['E-WIRE',3],['E-CONTROL',6],['E-TEXT',7],['E-FRAME',7],...(p.routingConditions?[['E-ROUTE-LIMIT',1]]:[])].map(([name,color])=>({name,color}));
+ const p=model.input,entities=[],sheets=[],placements=[],geometryWarnings=[],layers=[['E-ARCH',8],['E-LIGHT',7],['E-WIRE',3],['E-CONTROL',6],['E-TEXT',7],['E-FRAME',7],...(model.installation?[['E-INSTALL-PATH',3],['E-INSTALL-NODE',6],['E-INSTALL-REF',8]]:[]),...(p.routingConditions?[['E-ROUTE-LIMIT',1]]:[])].map(([name,color])=>({name,color}));
  const point=p=>[...p,0],line=(a,b,layer='E-FRAME')=>{if(distance(a,b)<1e-6){geometryWarnings.push({code:'DEGENERATE_SEGMENT_OMITTED',layer,position:a,reason:'Zero-length segment has no drawable extent'});return;}entities.push({kind:'line',layer,points:[point(a),point(b)]});};
  const text=(pos,t,h=250,layer='E-TEXT')=>entities.push({kind:'text',layer,position:point(pos),text:String(t).replace(/[\r\n]/g,' '),height:h,rotationRadians:0});
  const symbol=(name,geometry)=>({name,geometry,attributes:['DEVICE_ID','ROOM','CIRCUIT','CONTROL','MODEL','PHYSICAL_ID'].map((tag,i)=>({tag,position:[0,-300-i*200,0],height:160,visible:false,value:''}))});
@@ -145,7 +146,7 @@ export function makeEngineeringScene(model){
  let notes=sheet('E01','设计说明及依据'),notePage=1,y=22200;const note=t=>{for(let i=0;i<t.length;){let end=Math.min(i+65,t.length);if(/[A-Za-z0-9_.]/.test(t[end-1]??'')&&/[A-Za-z0-9_.]/.test(t[end]??'')){const space=t.lastIndexOf(' ',end);if(space>i+20)end=space+1;else while(end<t.length&&/[A-Za-z0-9_.]/.test(t[end]))end++;}if(y<3000){notes=sheet('E01-'+(++notePage),'设计说明及依据（续）');y=22200;}text([notes.origin[0]+1500,y],t.slice(i,end),280);y-=600;i=end;}};
  for(const t of ['设计范围：'+p.scope,...(model.circuitPartitioning?.length?['回路细分：按原压降/电流限值搜索分组，保留灯位、线径和保护参数；仅核对示意路径估算，敷设及保护配合待审。']:[]),model.lightingDesignBasis==='finite_diffuse_required'?'设计方法：总照度与已请求的UGR复核选择候选布局；图中计算表保留直射口径，完整复核另附报告。':p.photometricDesign?'设计方法：IES直射点源计算选择网格；维持照度Eavg、Emin/Eavg及上限约束。无反射光、日光或UGR验收。':'设计方法：房间功能与明确约束驱动的网格候选选择、利用系数法估算、回路和控制同源生成。',p.photometricDesign?'计算 E=sum(I*cos(gamma)/r^2*MF)；房间墙体按不透明竖直边界；点源远场适用性待复核。':'估算公式 E=N*Phi*UF*MF/A；LPD=N*W/A。无IES时不判定逐点照度、均匀度、UGR合格。',...(model.lightingStandardEvidence?.rooms??[]).map(r=>'标准类别 '+r.roomId+' = '+r.label+'；维持照度至少'+r.minimumLux+'lx，U0至少'+r.minimumUniformity+'；工作面'+r.workplaneM+'m；现行LPD基准上限'+r.maximumLpd+'W/m2；UGR待审'),...p.luminaires.map(f=>'灯具 '+f.id+' = '+f.label+'；'+f.watts+'W / '+f.lumens+'lm；MF='+f.maintenanceFactor+'；候选用途 '+(f.allowedRoomUses?.join('/')??'按项目条件')),'配电：L、N、PE分开；终端短路、过负荷及接地故障保护按设计模型。保护配合与敷设修正待专项复核。','照明连线表示回路归属；吊顶、梁、风口、现场敷设及开关线数量需深化协调。',...p.standards.map(s=>'依据：'+s.code+' '+s.edition+'；生效 '+s.effectiveFrom+'；本机证据条款 '+model.standardEvidence.filter(c=>c.standardId===s.id).map(c=>c.locator).join('/')),'输入：'+(p.sources.some(s=>s.derivedFromFinalDrawing)?'历史成图剥离建筑条件；回溯复现测试，不是独立新项目验收。':'项目提供建筑条件。'),'主要待审：'+[...new Set(model.issues.filter(i=>i.severity==='review').map(i=>i.code))].join('、')])note(t);
  if(p.routingConditions)note('路径条件：按声明允许区域及禁入区生成正交路径；避让 '+p.routingConditions.clearanceMm+'mm；平面长度参与回路压降，立体敷设、穿墙、管线容量及控制接线待审。');
- if(model.installation)note('安装接线：E07按声明位置和标高生成单极手动接线、L/SL/N/PE与逐灯压降；E02/E03仍为归属示意，E06为平面基本估量，不得与E07叠加采购。LED冲击电流、底盒容量、管槽及保护配合待审。');
+ if(model.installation)note('安装定位：E08/E09提供路径投影、坐标和全路径标高；E07按声明位置和标高生成单极手动接线、L/SL/N/PE与逐灯压降；E02/E03仍为归属示意，E06为平面基本估量，不得与E07叠加采购。LED冲击电流、底盒容量、管槽及保护配合待审。');
  for(const t of sourceDocumentLines(model.sourceDocuments))note(t);
  if(p.architecturalChanges?.length){const c=p.architecturalChanges.at(-1);note('当前建筑 '+c.sourceId+'；替代 '+c.supersededSourceId+'；边界及声明入口锚点按来源重建，旧图及旧审核仅历史。');note('建筑变更 '+c.rooms.filter(r=>r.boundaryChanged).length+'间边界 / '+c.rooms.filter(r=>r.entriesChanged).length+'间入口；全范围重算，其他冻结条件不改；入口语义、开口尺寸及专业适用性待审。');}
  if(p.briefRevision){note('当前任务书 '+p.briefRevision.sourceId+'；替代 '+p.briefRevision.supersededSourceId+'；旧图及旧审核不作为当前版本依据。');note('原条件续用 '+(p.sourceCarryForwards?.length||0)+'项，已绑定本版原句及冻结值摘要；原假设、安装与专业适用性仍待审。');}
@@ -181,6 +182,7 @@ export function makeEngineeringScene(model){
   for(const r of rs.segments)addLine(r.label+' | '+r.start.map(n=>n.toFixed(3)).join(',')+' -> '+r.end.map(n=>n.toFixed(3)).join(',')+' | '+r.lengthM.toFixed(3)+'m | '+r.traversals+'次 | '+r.circuits.map(c=>aliases.get(c.circuitId)+'x'+c.passes).join(' '),r.label+' 续 |');
  }
  drawLightingInstallation(model,{sheet,text,line});
+ drawLightingInstallationPlans(model,{sheet,text,line});
  const {name:initialViewName,...initialView}=sheets.find(s=>s.id==='E02').view;
  const scene=sceneSchema.parse({layers,symbols,entities,views:sheets.map(s=>s.view),view:initialView});
  return {scene,placements,sheets,geometryWarnings,drawingOrigin:b.min,drawingScale:scale,representations:{luminairePlan:'E02',controlPlan:'E03'}};

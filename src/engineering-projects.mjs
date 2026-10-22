@@ -1,3 +1,4 @@
+import {exportEngineeringSheets} from './engineering-sheet-export.mjs';
 import {installationRows} from './lighting-installation-drawing.mjs';
 import {installationAssumptionsPreserved} from './lighting-installation.mjs';
 import {compileScopeRevision,verifyScopeHistory,retainScopeRecord} from './engineering-scope-proof.mjs';
@@ -271,7 +272,7 @@ export function createEngineeringManager({runs,execute,lightingProfile,radianceP
      const drawing=path.join(dir,'design-'+state.revision+'.dwg');await fs.copyFile(current.drawing,drawing,fs.constants.COPYFILE_EXCL);const drawingSHA256=await hashFile(drawing);
      const scan=await call('scan',{drawing,limit:100000,exportDxf:true});const retained=await read(path.join(scan.jobRoot,'result.json'));
      const verification={...verifyEngineeringCad(deliveryModel,retained.query,retained.snapshot),scanJob:scan.jobRoot,drawingSHA256};await atomicJson(path.join(dir,'cad-verification-'+state.revision+'.json'),verification);if(!verification.ok)throw Error('ENGINEERING_CAD_READBACK_FAILED');
-     const exported=await call('export_many',{drawing,items:model.sheets.flatMap(s=>[{name:s.id,format:'pdf',region:s.region,plot:{paper:s.paper??'A3',orientation:'landscape',scale:'fixed',denominator:s.paperDenominator,style:'monochrome.ctb'}},{name:s.id,format:'png',region:s.region}])});
+     const exported=await exportEngineeringSheets(call,drawing,model.sheets);
      const fileList=[{kind:'dwg',file:drawing,sha256:drawingSHA256},...projectionFiles,...await retainSourceDocumentIndex({dir,revision:state.revision,index:model.sourceDocuments})];
      for(const item of exported.exports||[]){const output=item.exported??item;if(output.file)fileList.push({kind:item.format??output.format??path.extname(output.file).slice(1),file:output.file,sha256:await hashFile(output.file)});}
      if(model.input.photometricDesign){const file=path.join(dir,'r'+state.revision+'-point-illuminance.csv'),rows=[['room','xM','yM','workplaneM','maintainedDirectLux','sourceSHA256'],...model.roomCalculations.flatMap(c=>c.photometry.points.map(p=>[c.roomId,...p.positionM,p.lux,c.photometry.sourceSHA256]))];await fs.writeFile(file,'\uFEFF'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n')+'\r\n');fileList.push({kind:'csv',file,sha256:await hashFile(file)});}
