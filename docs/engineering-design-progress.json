@@ -1157,5 +1157,16 @@
     "controllerSemanticRepair": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "projectReviewPackageIncrement": {
+    "validation": "docs/project-review-package-validation.json",
+    "packageEntry": true,
+    "actualBrowser": true,
+    "downloadVerified": true,
+    "sourceFiles": 42,
+    "oldTaskFilesUnchanged": 186,
+    "engineeringAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

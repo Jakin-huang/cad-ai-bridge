@@ -212,3 +212,5 @@ apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规
 
 
 项目级只读审核：`cad_engineering_task action=project_review` 传 `expectedProjectId`、显式 `tasks:[{jobId,expectedTaskSHA256}]`、列表内的 `scopeTaskJobId` 和 `requiredKinds`。范围任务必须具有当前已发布共享空间包。`section=summary/tasks/spaces/issues`，按 `offset/limit` 读取全页，续页用 `expectedReportSHA256`；旧摘要或读取期间变化拒绝。报告按空间核对所需专业的当前设计/原生交付，列出漏项、重复任务待选择、过期来源、未确认操作与待审依据；未列任务/专业未知。覆盖率不代表规范适用、完整工程或人工签审；不触发重算/出图，不改原任务。
+
+项目级待审包：先读 `project_review` 取得当前 `reportSHA256`，再调用 `project_review_package`，传相同 `expectedProjectId/tasks/scopeTaskJobId/requiredKinds`、新 `requestId` 和必填 `expectedReportSHA256`；此动作写入独立本地目录，不能在只读模式使用。返回 `entry` 为离线 HTML 入口，包含两类任务成果、空间覆盖、登记需求/条件/来源/标准及全部问题；包内复制登记成果并记录摘要，不自动复制标准全文或原始输入资料。复制后再次检查所有任务快照，变化则保留失败目录且不发布成功结果；同请求只校验后重用，不能覆写。上限10000个成果、2 GiB源文件；超限明确失败。旧包始终是历史快照，审核前重新查询当前摘要；覆盖完整也不代表工程验收或专业签审。

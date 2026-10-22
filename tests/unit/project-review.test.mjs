@@ -23,12 +23,17 @@ test('project review reports missing lighting spaces, stale cross-pack coverage 
  const env=process.env.CADBRIDGE_READ_ONLY;let r;try{process.env.CADBRIDGE_READ_ONLY='1';r=await f.manager.run(q);}finally{if(env===undefined)delete process.env.CADBRIDGE_READ_ONLY;else process.env.CADBRIDGE_READ_ONLY=env;}assert.equal(r.summary.scopeSpaces,11);assert.equal(r.summary.issuesByCode.SPACE_DESIGN_MISSING,7);assert.equal(r.summary.issuesByCode.SPACE_DELIVERY_MISSING,11);assert.equal(r.summary.deliveryCoverageComplete,false);assert.equal(r.engineeringAcceptance,false);assert.equal(f.effects(),before);
  const rows=[];for(let offset=0;offset<11;offset+=3){const page=await f.manager.run({...q,section:'spaces',offset,limit:3,expectedReportSHA256:r.reportSHA256});rows.push(...page.items);}
  assert.deepEqual(await tree(f.runs),originalFiles);
+ const packageRequest={...q,action:'project_review_package',requestId:crypto.randomUUID(),expectedReportSHA256:r.reportSHA256};
+ const packet=await f.manager.run(packageRequest);assert.equal(packet.ok,true);assert.equal(packet.summary.deliveryCoverageComplete,false);assert.equal(packet.professionalApproval,false);assert.equal(f.effects(),before);
+ for(const [file,sha]of originalFiles)assert.equal(crypto.createHash('sha256').update(await fs.readFile(file)).digest('hex'),sha);
+ assert.equal((await f.manager.run(packageRequest)).replayed,true);
  assert.equal(rows.length,11);assert.equal(rows.filter(r=>r.disciplines[0].designedBy.length===1).length,4);
  await assert.rejects(()=>f.manager.run({...q,expectedProjectId:crypto.randomUUID()}),/PROJECT_MISMATCH/);
  await assert.rejects(()=>f.manager.run({...q,tasks:[taskRef(b),taskRef(b)]}),/DUPLICATE_SCOPE/);
  const changed=structuredClone(p);changed.title='Same scope new brief';planningBrief(changed);
  const revised=await f.manager.run(invoke(b,'revise_program',{expectedRevision:0,expectedInputSHA256:d.current.inputSHA256,brief:changed.brief,program:changed.program,relations:changed.relations,parameters:changed.parameters,reason:'Explicit upstream program revision invalidates previous shared space publication'}));assert.equal(revised.ok,true);
  await assert.rejects(()=>f.manager.run(q),/PUBLISHED_SCOPE_REQUIRED/);
+ await assert.rejects(()=>f.manager.run(packageRequest),/PUBLISHED_SCOPE_REQUIRED|SNAPSHOT_CHANGED/);
  // Historical pages cannot be requested through a stale current-report token.
  await assert.rejects(()=>f.manager.run({...q,expectedReportSHA256:r.reportSHA256,section:'spaces'}),/PUBLISHED_SCOPE_REQUIRED|SNAPSHOT_CHANGED/);
  assert.equal(f.effects(),before);

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "10a43f1e2c7dac7d7256118d60a17c2086cefdd1",
+  "status": "project_review_package_and_local_browser_verified",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "newAiClient": false,
+  "newNativeCad": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Explicit report-bound project_review_package action with unique request and read-only-mode rejection",
+    "Independent copied outputs, full report, dependency evidence, manifest and offline HTML entry",
+    "Current snapshot recheck before publication, retained partial failures, verified replay and file-integrity checks",
+    "Chinese review categories, space coverage, assumptions and source values; original details preserved",
+    "Explicit PDF downloads and existing registered CAD PNG preview; no standard full text automatically copied"
+  ],
+  "actual": {
+    "includedTasks": 2,
+    "sourceFiles": 42,
+    "projectSpaces": 11,
+    "lightingDeliveredSpaces": 9,
+    "unresolvedSpaces": 2,
+    "issueEntries": 179,
+    "protectedTaskFiles": 186,
+    "localLinksVerified": 72,
+    "reportSHA256": "20be5a7ce596965e56593c46407cf7e7014c1f72f8f3cc0ba3dfde1aeefc1ef2",
+    "manifestSHA256": "1fed47502f5ce0978e60cc323c7c56518593a58d6d5cc0e4ecec1e9c31ff668b",
+    "browserPreview": true,
+    "actualPdfDownloadVerified": true
+  },
+  "regression": {
+    "full": {
+      "passed": 497,
+      "failed": 0,
+      "logSHA256": "42acda25443853356f471387250cb8543676129b1d4cfd2aa5d9acb0a7f4848b",
+      "scope": "Full suite before Chinese labels and browser download/preview presentation adjustments"
+    },
+    "targeted": {
+      "passed": 9,
+      "failed": 0,
+      "logSHA256": "7d863a9583c6364850f394430aa24c6f81d82ae977f3756afcd9b3f1a49d114b"
+    },
+    "chinese": {
+      "passed": 4,
+      "failed": 0,
+      "logSHA256": "133aeaa724503579244edc52bf5172d47d32f06e0c46f0de9b8f10b8b4bbaea8"
+    },
+    "final": {
+      "passed": 4,
+      "failed": 0,
+      "logSHA256": "0f88f6ffc5459ff49f63d49f11d5bf6fde4508ae99da4957890e29eb569dbf7a",
+      "scope": "Final package tests after presentation adjustments; final real integration and browser checks are separate"
+    },
+    "staticGate": {
+      "passed": 3,
+      "publicFiles": 569,
+      "logSHA256": "4640186397d96dff8c28cd85fe24aa92029691bd9b0ffb66053da46f32851cf8"
+    }
+  },
+  "retainedIterations": [
+    "project-review-package-validation-20261022: initial raw-code presentation",
+    "project-review-package-validation-20261022-final: Chinese categories; inline PDF viewer blank",
+    "project-review-package-validation-20261022-browser: explicit downloads and PNG preview"
+  ],
+  "limits": [
+    "Existing known synthetic project; no new design or independent customer acceptance",
+    "Package does not determine standard applicability or resolve outstanding project conditions",
+    "Historical snapshot only; later changes require a new current report and new package",
+    "Original copied files retain their own source paths; the main entry and all its links are relative, but copied legacy HTML/JSON internal references are not rewritten",
+    "Only loopback browser read/preview and one downloaded PDF verified; offline file-protocol, independent reviewers and new machines unaccepted",
+    "No authenticated reviewer comments or signature workflow completed"
+  ],
+  "evidence": {
+    "root": "artifacts/project-review-package-validation-20261022-browser",
+    "integration": "report.json",
+    "browser": "browser-validation.json",
+    "retainedTaskFiles": 186,
+    "protectedReferences": 15,
+    "archiveSHA256": "1300b5da0cc35a3c3dcab66ef981e79028095f316eaee698b39590339ada88e5",
+    "archiveFiles": 49
+  }
+}

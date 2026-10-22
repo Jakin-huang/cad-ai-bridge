@@ -1,3 +1,4 @@
+import {publishProjectReviewPackage} from './project-review-package.mjs';
 import {compileProjectReview,projectReviewPage} from './project-review.mjs';
 import {taskReconciliations,reconcileTask} from './task-reconciliation.mjs';
 import fs from 'node:fs/promises';
@@ -43,13 +44,14 @@ export function createEngineeringTaskManager({runs,adapters}){
    const selected=q.kind?[capability(q.kind)]:adapters;
    return {ok:true,selection:'Exact explicit task kind; no natural-language or professional applicability claim',...(q.kind||q.section!=='all'?{scope:{kind:q.kind??null,section:q.section,operation:q.operation??null}}:{}),adapters:selected.map(a=>{const item={id:a.id,version:a.version,complexDesign:a.complexDesign,limitations:a.limitations};if(['all','data'].includes(q.section))item.dataSections=a.dataSections??[];if(['all','reconciliation'].includes(q.section)&&a.reconciliationSchema)item.reconciliation={operations:a.reconciliationOperations,parameters:z.toJSONSchema(a.reconciliationSchema),scope:'Stopped calculation before result/model/native publication only; old receipt retained and never re-executed'};if(['all','prepare'].includes(q.section))item.prepareParameters=z.toJSONSchema(a.prepareSchema);if(['all','operations'].includes(q.section)){const entries=q.operation?[[q.operation,a.operationSchemas[q.operation]]]:Object.entries(a.operationSchemas);if(entries.some(([,schema])=>!schema))throw Error('TASK_OPERATION_UNSUPPORTED');item.operations=Object.fromEntries(entries.map(([k,v])=>[k,z.toJSONSchema(v)]));}return item;}),unsupportedKinds:'Any task kind absent from the installed adapter registry',professionalApproval:false};
   }
-  if(q.action==='project_review'){
+  if(['project_review','project_review_package'].includes(q.action)){
    if(new Set(q.tasks.map(t=>t.jobId)).size!==q.tasks.length||new Set(q.requiredKinds).size!==q.requiredKinds.length)throw Error('PROJECT_REVIEW_DUPLICATE_SCOPE');
    if(!q.tasks.some(t=>t.jobId===q.scopeTaskJobId))throw Error('PROJECT_REVIEW_SCOPE_TASK_NOT_INCLUDED');
    for(const kind of q.requiredKinds)capability(kind);
    const collect=async()=>{const snapshots=[];for(const ref of q.tasks){const ctx=await load({...ref,expectedProjectId:q.expectedProjectId}),status=await summary(ctx),graph=ctx.binding?await dependencies(ctx,status.current):undefined,scope=ctx.binding&&ctx.adapter.projectReviewScope?await ctx.adapter.projectReviewScope({binding:ctx.binding,manifest:ctx.manifest,current:status.current}):undefined;snapshots.push({status,graph,scope});}return snapshots;};
    const first=await collect(),report=compileProjectReview(q,first),second=await collect();
    if(dependencyDigest(first)!==dependencyDigest(second))throw Error('PROJECT_REVIEW_CHANGED_DURING_READ');
+   if(q.action==='project_review_package')return publishProjectReviewPackage({runs,q,report,snapshots:first,assertCurrent:async()=>{if(dependencyDigest(first)!==dependencyDigest(await collect()))throw Error('PROJECT_REVIEW_CHANGED_DURING_PUBLICATION');}});
    return projectReviewPage(report,q);
   }
   if(q.action==='prepare'){
