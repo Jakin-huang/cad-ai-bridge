@@ -1107,5 +1107,21 @@
       "logSHA256": "6b11d472778dab70ec06f62e1af165af9d05ea037d9ba853aa380fc8c2326351"
     },
     "goalComplete": false
+  },
+  "singleSidedIncrement": {
+    "validation": "docs/single-sided-validation.json",
+    "newLayoutFamily": true,
+    "sameTaskRevisionVerified": true,
+    "firstVisualAccepted": false,
+    "finalBoundedVisualAccepted": true,
+    "fullRegression": {
+      "passed": 487,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 176471.0984,
+      "logSHA256": "b8450c2d49f1db5316a237d17e85103f8dc3c75051289ae85ea4a74bf032ea80"
+    },
+    "overallPracticalAcceptance": false,
+    "goalComplete": false
   }
 }

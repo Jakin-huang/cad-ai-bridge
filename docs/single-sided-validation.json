@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "51bf04795f5f86bc3fa7179df4d2f1cc84cb3c5f",
+  "status": "opt_in_single_sided_family_and_same_task_native_sheet_revision_verified",
+  "goalComplete": false,
+  "overallPracticalAcceptance": false,
+  "professionalApproval": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Optional budget.corridorMode=allow_single_sided adds edge corridors to the existing two-sided family",
+    "Original source entry/windows/keepouts and all area/depth/window/furniture/route/relationship limits remain binding",
+    "Default/two_sided candidate semantics preserved; opt-in family also supports bounded improvement and source-defined ranking",
+    "Scene version 5 separates dimensions, bottom notes and footer; old version projections remain unchanged"
+  ],
+  "actualNative": {
+    "actualAiClient": false,
+    "syntheticDeclaredInput": true,
+    "oldFamily": "bounded_family_exhausted",
+    "expandedFamily": "feasible_found",
+    "rooms": 2,
+    "seats": 4,
+    "metrics": {
+      "roomAreaM2": 48.36,
+      "corridorAreaM2": 28,
+      "unassignedM2": 5.6
+    },
+    "auditPassed": 32,
+    "pending": 4,
+    "firstModelSHA256": "7863aa7c171d5c7c7828ec5987aeedc2578bd7c1e81954b015d4e8c6b54eef0e",
+    "finalModelSHA256": "5915b90f9a3d23f50306f0f8dc6092856b330e88f5eed54b7b7a0588efa2c4bb",
+    "firstVisualAccepted": false,
+    "firstVisualIssues": [
+      "SP02/SP03 overall width text overlapped the bottom note"
+    ],
+    "finalSceneVersion": 5,
+    "finalRevision": 1,
+    "sameTask": true,
+    "planGeometryAndRequirementsUnchanged": true,
+    "briefTextUnchanged": true,
+    "revisionSourceIdsRecorded": true,
+    "oldOutputsUnchanged": true,
+    "nativeHostRuns": 8,
+    "rawPdfs": 10,
+    "reviewPdfs": 10,
+    "finalStrictAndPixelIdenticalPdfs": 5,
+    "finalPagesViewed": 5,
+    "boundedFinalVisualAccepted": true,
+    "fullEngineeringAcceptance": false
+  },
+  "regression": {
+    "targetedAfterTestGuardFix": {
+      "passed": 5,
+      "failed": 0,
+      "logSHA256": "305242a7954adc76cb10c6f2d9d7ffc0e0519645049c74b68c03925725ee15aa"
+    },
+    "previousFullAfterSheetFix": {
+      "passed": 486,
+      "failed": 1,
+      "logSHA256": "835b0a660d4978b7b12f2bcfd6a76e4116b3e0ced83e6e666179530b9b399453",
+      "failure": "New regression assertion read text on a non-text scene entity; corrected with optional field access. Production geometry unchanged."
+    },
+    "sandboxAttempt": {
+      "status": "runner_spawn_denied",
+      "error": "spawn EPERM",
+      "assertionsExecuted": false,
+      "retriedWithLocalProcessPermission": true
+    },
+    "targetedBeforeSheetFix": {
+      "passed": 15,
+      "failed": 0
+    },
+    "fullBeforeSheetFix": {
+      "passed": 486,
+      "failed": 0,
+      "logSHA256": "e83814b8d4861b04133ee24a7e6233473045ddf20afeb82a35c40d1a375ddd66"
+    },
+    "full": {
+      "passed": 487,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 176471.0984,
+      "logSHA256": "b8450c2d49f1db5316a237d17e85103f8dc3c75051289ae85ea4a74bf032ea80"
+    },
+    "legacy": {
+      "calls": 7,
+      "downloads": 5,
+      "protectedFiles": 149
+    },
+    "priorSelectionFiles": 42,
+    "staticGate": {
+      "ok": true,
+      "checks": 3,
+      "publicFiles": 553,
+      "logSHA256": "54d0ed6dce961472a68ca63452a013bac8408e323db52dc6220eceb2120b6524",
+      "scope": "Public source/privacy/syntax/JSON/links and pinned dependencies; full historical release gate remains incomplete"
+    }
+  },
+  "limits": [
+    "Known developer input, not independent real architecture/customer brief or actual AI selection of the new budget option",
+    "Only straight single-/two-sided corridors in a rectangular shell, not arbitrary room topology, corner corridors or full architectural design",
+    "Four professional/source/site/MEP conditions remain pending; geometry does not establish standards applicability",
+    "First native output failed visual acceptance; R1 corrects it without changing the plan, retaining all historical artifacts",
+    "M2–M4, independent projects/external users/new machines, professional review and full release acceptance remain incomplete"
+  ],
+  "evidence": {
+    "artifactRoot": "artifacts/single-sided-validation-20261022",
+    "nativeAudit": "native-source-audit.json",
+    "firstVisual": "visual-review-r0.json",
+    "finalVisual": "visual-review-r1.json"
+  }
+}
