@@ -1,3 +1,4 @@
+import {loadPlanningHandoff} from './space-planning-handoff.mjs';
 import {currentPdfReview} from './pdf-review-package.mjs';
 import {planningDataSections,readPlanningData} from './space-planning-data.mjs';
 import path from 'node:path';
@@ -10,6 +11,11 @@ export function createSpacePlanningAdapter(context){
  documentChildJobId:requestId=>'job-spaceplan-'+requestId,
  async documentInput(binding){const {s,input}=await manager.load(binding);return {childJobId:binding.childJobId,input,inputSHA256:s.inputSHA256,modelSHA256:s.modelSHA256};},
  validateOperation(op,p){if(!planningOperationSchemas[op])throw Error('TASK_OPERATION_UNSUPPORTED');return planningOperationSchemas[op].parse(p);},invoke:manager.invoke,
+ async projectReviewScope({binding,manifest}){
+  const {s}=await manager.load(binding);if(!s.sharedSpaces)return undefined;
+  const loaded=await loadPlanningHandoff(s.sharedSpaces.ref,{runs:context.runs,expectedProjectId:manifest.project.id});
+  return {providesScope:true,ref:s.sharedSpaces.ref,current:loaded.current,spaces:loaded.pack.spaces.map(s=>({id:s.id,name:s.name})),pending:loaded.pack.pending};
+ },
  async dependencyNodes({binding}){
   const {s,input,model}=await manager.load(binding),nodes=[],add=(id,kind,label,value,dependsOn=[],authority='declared',available)=>{nodes.push({id,kind,label:label.slice(0,200),value:JSON.parse(JSON.stringify(value)),dependsOn,authority,...(kind==='source'?{sourceRole:'input'}:{}),...(['design','check','artifact','review'].includes(kind)?{available:!!available}:{})});};
   for(const source of input.sources)add('source:'+source.id,'source',source.description,source,[],source.supersededBy?'retired':'declared');

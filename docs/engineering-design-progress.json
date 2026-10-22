@@ -1123,5 +1123,28 @@
     },
     "overallPracticalAcceptance": false,
     "goalComplete": false
+  },
+  "projectReviewIncrement": {
+    "validation": "docs/project-review-validation.json",
+    "explicitCrossTaskScope": true,
+    "readOnlyActualProjects": 2,
+    "newDesignAcceptance": false,
+    "goalComplete": false,
+    "fullRegressionBeforeFinalQualityGate": {
+      "passed": 491,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 158973.1728,
+      "logSHA256": "30da32bd467df91806b22630432fb68aa2d7d3dba61141675d148971efe24cbb"
+    },
+    "finalTargeted": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 12610.7165,
+      "logSHA256": "dd51f96e82c4fdb52101c98216a52c4c4cf10e9323c62468bb75e5db59cb64c8",
+      "scope": "All project-review integration and pure report tests, including the new explicit failed-quality gate; full suite not rerun after this final guard."
+    },
+    "finalReadOnlyCalls": 2
   }
 }

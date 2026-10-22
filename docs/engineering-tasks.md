@@ -162,3 +162,6 @@ cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、
 `cad_engineering_task capabilities` 保留无筛选时的完整兼容响应。`section=summary` 读取类型简表；给出精确 `kind` 后，可用 `section=prepare/operations/data/reconciliation` 只取当前需要的部分。查询单操作须 `section=operations` 并传 `operation`；未知专业、未知操作或缺少必要范围会明确拒绝，不创建任务或启动 CAD。分段返回的准备/操作 schema 与完整响应中的对应项相同。
 
 照明 `design` 新增可选 `expectedInputSHA256`，存在时会在计算和模型复用之前校验；原有仅传 `expectedRevision` 的请求保持兼容。空间规划继续执行原有必填输入摘要约束。
+
+
+项目级只读审核：`cad_engineering_task action=project_review` 传 `expectedProjectId`、显式 `tasks:[{jobId,expectedTaskSHA256}]`、列表内的 `scopeTaskJobId` 和 `requiredKinds`。范围任务必须具有当前已发布共享空间包。`section=summary/tasks/spaces/issues`，按 `offset/limit` 读取全页，续页用 `expectedReportSHA256`；旧摘要或读取期间变化拒绝。报告按空间核对所需专业的当前设计/原生交付，列出漏项、重复任务待选择、过期来源、未确认操作与待审依据；未列任务/专业未知。覆盖率不代表规范适用、完整工程或人工签审；不触发重算/出图，不改原任务。

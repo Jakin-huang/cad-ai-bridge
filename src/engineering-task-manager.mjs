@@ -1,3 +1,4 @@
+import {compileProjectReview,projectReviewPage} from './project-review.mjs';
 import {taskReconciliations,reconcileTask} from './task-reconciliation.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -42,7 +43,17 @@ export function createEngineeringTaskManager({runs,adapters}){
    const selected=q.kind?[capability(q.kind)]:adapters;
    return {ok:true,selection:'Exact explicit task kind; no natural-language or professional applicability claim',...(q.kind||q.section!=='all'?{scope:{kind:q.kind??null,section:q.section,operation:q.operation??null}}:{}),adapters:selected.map(a=>{const item={id:a.id,version:a.version,complexDesign:a.complexDesign,limitations:a.limitations};if(['all','data'].includes(q.section))item.dataSections=a.dataSections??[];if(['all','reconciliation'].includes(q.section)&&a.reconciliationSchema)item.reconciliation={operations:a.reconciliationOperations,parameters:z.toJSONSchema(a.reconciliationSchema),scope:'Stopped calculation before result/model/native publication only; old receipt retained and never re-executed'};if(['all','prepare'].includes(q.section))item.prepareParameters=z.toJSONSchema(a.prepareSchema);if(['all','operations'].includes(q.section)){const entries=q.operation?[[q.operation,a.operationSchemas[q.operation]]]:Object.entries(a.operationSchemas);if(entries.some(([,schema])=>!schema))throw Error('TASK_OPERATION_UNSUPPORTED');item.operations=Object.fromEntries(entries.map(([k,v])=>[k,z.toJSONSchema(v)]));}return item;}),unsupportedKinds:'Any task kind absent from the installed adapter registry',professionalApproval:false};
   }
+  if(q.action==='project_review'){
+   if(new Set(q.tasks.map(t=>t.jobId)).size!==q.tasks.length||new Set(q.requiredKinds).size!==q.requiredKinds.length)throw Error('PROJECT_REVIEW_DUPLICATE_SCOPE');
+   if(!q.tasks.some(t=>t.jobId===q.scopeTaskJobId))throw Error('PROJECT_REVIEW_SCOPE_TASK_NOT_INCLUDED');
+   for(const kind of q.requiredKinds)capability(kind);
+   const collect=async()=>{const snapshots=[];for(const ref of q.tasks){const ctx=await load({...ref,expectedProjectId:q.expectedProjectId}),status=await summary(ctx),graph=ctx.binding?await dependencies(ctx,status.current):undefined,scope=ctx.binding&&ctx.adapter.projectReviewScope?await ctx.adapter.projectReviewScope({binding:ctx.binding,manifest:ctx.manifest,current:status.current}):undefined;snapshots.push({status,graph,scope});}return snapshots;};
+   const first=await collect(),report=compileProjectReview(q,first),second=await collect();
+   if(dependencyDigest(first)!==dependencyDigest(second))throw Error('PROJECT_REVIEW_CHANGED_DURING_READ');
+   return projectReviewPage(report,q);
+  }
   if(q.action==='prepare'){
+
    const adapter=capability(q.task.kind),parameters=adapter.validatePrepare(q.parameters),manifest={schemaVersion:1,project:q.project,task:q.task,adapterVersion:adapter.version,parameters,...(q.documents?{documents:q.documents}:{})},sha=digest(manifest);if(Buffer.byteLength(JSON.stringify(manifest))>2*1024*1024)throw Error('TASK_INPUT_TOO_LARGE');
    if(q.documents){if(!adapter.documentInput)throw Error('DOCUMENT_TASK_KIND_UNSUPPORTED');if(q.documents.projectId!==q.project.id)throw Error('DOCUMENT_PROJECT_MISMATCH');await loadDocumentSet(runs,q.documents);}
    await fs.mkdir(runs,{recursive:true});const jobId='job-task-'+q.requestId,dir=path.join(runs,jobId);if(q.documents){const existing=await fs.stat(dir).then(()=>true,e=>{if(e.code==='ENOENT')return false;throw e;});if(!existing)await loadDocumentSet(runs,q.documents,{requireCurrent:true});}let created=false;try{await fs.mkdir(dir);created=true;}catch(e){if(e.code!=='EEXIST')throw e;}

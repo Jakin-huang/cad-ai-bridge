@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "19aadd2350987ec69c17ec06c9cdf6865be5792e",
+  "status": "read_only_project_scope_and_issue_aggregation_verified",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "newNativeCadExecuted": false,
+  "actualAiClient": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Explicit same-project task identities and a current published upstream space scope",
+    "Per-space current design/native delivery coverage for caller-required task kinds; absent or ambiguous assignments stay visible",
+    "Exact source version identity, stale document/model evidence and unconfirmed operation gates",
+    "Dependency conflicts, assumed/unverified source/requirement/standard values and existing pending checks retained",
+    "Paginated report digest plus second complete read rejects mixed snapshots; no design/native mutation",
+    "Explicit failed current check prevents old native delivery being counted as verified current coverage"
+  ],
+  "actualReadOnly": {
+    "cases": 2,
+    "calls": 20,
+    "protectedFiles": 306,
+    "perCase": [
+      {
+        "scopeSpaces": 11,
+        "lightingDeliveredSpaces": 5,
+        "missingLightingSpaces": 6,
+        "issueEntries": 119,
+        "reportSHA256": "bd588b02a52712954279fc8d599757170f69b41a64ed3ee0792407900884cb6c",
+        "engineeringAcceptance": false
+      },
+      {
+        "scopeSpaces": 11,
+        "lightingDeliveredSpaces": 5,
+        "missingLightingSpaces": 6,
+        "issueEntries": 119,
+        "reportSHA256": "efd2c7f0a65776727829646ec728e9a41d90f2898b7ce419c51138d61d9c54d8",
+        "engineeringAcceptance": false
+      }
+    ],
+    "note": "Existing developer projects intentionally selected five lighting spaces. Six omitted spaces are gaps relative to the new explicitly requested eleven-space review scope, not evidence that the original selective task silently omitted its own scope."
+  },
+  "regression": {
+    "staticGate": {
+      "ok": true,
+      "checks": 3,
+      "publicFiles": 557,
+      "logSHA256": "5fcd7f3b0ff8aa0d333839ddaad5c3e272d601283eeb0ebabf52c2f7675b5039",
+      "scope": "Public source/privacy/syntax/JSON/links and pinned dependencies; full historical release gate remains incomplete"
+    },
+    "fullBeforeFinalQualityGate": {
+      "passed": 491,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 158973.1728,
+      "logSHA256": "30da32bd467df91806b22630432fb68aa2d7d3dba61141675d148971efe24cbb"
+    },
+    "finalTargeted": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 12610.7165,
+      "logSHA256": "dd51f96e82c4fdb52101c98216a52c4c4cf10e9323c62468bb75e5db59cb64c8",
+      "scope": "All project-review integration and pure report tests, including the new explicit failed-quality gate; full suite not rerun after this final guard."
+    },
+    "finalCurrentSourceReadback": {
+      "ok": true,
+      "cases": 2,
+      "calls": 2,
+      "protectedFiles": 306,
+      "reportDigestsUnchanged": true,
+      "evidenceSHA256": "49552afb12acbd6c5dec71d2b0aa8a537bad3ddd7ec193a6e0976bd68fc7b753"
+    }
+  },
+  "limits": [
+    "Only listed tasks, published spaces and requested disciplines; unlisted project scope remains unknown",
+    "Issue entries may describe overlapping concerns and are not counts of distinct engineering defects",
+    "No new design, photometric calculation, native CAD or actual AI/customer understanding acceptance",
+    "No standard applicability decision, semantic source verification, new-machine/user or certified professional review",
+    "Coverage completeness never grants engineering acceptance; M2-M4 remain incomplete"
+  ],
+  "evidence": {
+    "artifactRoot": "artifacts/project-review-validation-20261022",
+    "report": "report.json",
+    "sourceAudit": "native-source-audit.json"
+  },
+  "retainedPreparationIssue": {
+    "stage": "final_source_snapshot",
+    "error": "EEXIST",
+    "reason": "Initial live integration already retained source/; write-once copy refused the first existing file before any commit. Final source uses a separate final-source/ and final-source-manifest.json; original snapshot retained."
+  }
+}
