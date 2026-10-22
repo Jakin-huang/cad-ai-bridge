@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "01dd77d6ca8230af459846c148c7ada6af3f7647",
+  "product": "CAD AI Bridge",
+  "status": "source_ordered_project_selection_native_state_verified_actual_client_reliability_incomplete",
+  "goalComplete": false,
+  "overallPracticalAcceptance": false,
+  "independentCustomerAcceptance": false,
+  "generalUnderstandingAccepted": false,
+  "professionalApproval": false,
+  "hospitalDataProcessed": false,
+  "hospitalPolicy": "Hospital remains isolated evaluator, explicit installed task kind selects the capability; no final reference design read or supplied",
+  "releaseRepackaged": false,
+  "implemented": [
+    "Source selection with ordered lexicographic criteria and simultaneous hard limits, explicit original text citations and interpreted/assumed/unresolved grades",
+    "Shared intake preserves frozen physical conditions and known selection; required unresolved slot omission blocks without internal-score fallback",
+    "All known contradictory limits retained and design blocked; candidate search rejects violated bounds and compares source vectors",
+    "Independent metric, limit, vector and candidate-identity recomputation; source policy appears on current native sheets and task center",
+    "Absent selection preserves historical solve path and scene versions; normal revision keeps old outputs and assumptions"
+  ],
+  "actualClientTrials": {
+    "scope": "Known public synthetic office originals, not an unseen/customer or hospital design; expected oracle excluded, no controller semantic repair",
+    "trials": [
+      {
+        "phase": "positive",
+        "caseId": "positive",
+        "wholeClientTrialPassed": false,
+        "finalEngineeringStatePassed": true,
+        "checks": 82,
+        "protocolErrors": 13,
+        "errors": [
+          "Actual installed client terminal success without tool errors"
+        ],
+        "result": "designed",
+        "elapsedMs": 194663,
+        "traceSHA256": "fc10851cc453508ab6bd50f0bd2da01ee29648974be9556161a5c12349983c1a",
+        "inputSHA256": "9ddf86fa6443b4d94d471859a801a5a7b04447df4ed045cb470becad861b3b10",
+        "modelSHA256": "7e222a759a2ede1fa1b7fb35040a6c42981cb96d24950a64f68422e8f410b944",
+        "design": {
+          "rooms": 10,
+          "seats": 36,
+          "relations": 3,
+          "sheets": 5,
+          "checks": 210,
+          "pending": 6
+        },
+        "metrics": {
+          "net_room_area_m2": 321.3,
+          "circulation_area_m2": 48,
+          "partition_and_threshold_area_m2": 11.95,
+          "area_preference_deviation_m2": 18.26,
+          "unassigned_area_m2": 49.75,
+          "maximum_entry_route_mm": 21350,
+          "total_entry_route_mm": 128550
+        }
+      },
+      {
+        "phase": "conflict",
+        "caseId": "conflict",
+        "wholeClientTrialPassed": false,
+        "finalEngineeringStatePassed": true,
+        "checks": 83,
+        "protocolErrors": 5,
+        "errors": [
+          "Actual installed client terminal success without tool errors"
+        ],
+        "result": "blocked_source_conflict",
+        "elapsedMs": 392399,
+        "traceSHA256": "3d9fdd15a4030be95fd29f0cc4e6973b20334598a6100b7c00882596032e952b",
+        "inputSHA256": "79c95cc0e407b8b8789430b05aea111a95cdadd3c5118178f95d6ae25f322f10"
+      },
+      {
+        "phase": "positive-paths-fixed",
+        "caseId": "positive",
+        "wholeClientTrialPassed": false,
+        "finalEngineeringStatePassed": true,
+        "checks": 84,
+        "protocolErrors": 2,
+        "errors": [
+          "Actual installed client terminal success without tool errors"
+        ],
+        "result": "designed",
+        "elapsedMs": 953604,
+        "traceSHA256": "5719345da877b9a37af585aab2db8cf419bec7645358151a709d73dd50c5d633",
+        "inputSHA256": "cac47c4ea9dbf1111ea21a1fc010da79102bf735ef6d3ca7967e00dd4f284e1f",
+        "modelSHA256": "5d7e0180dfc32b02f47669ad0c71e0394124424f2d2890536b2ae6f1cfec0edf",
+        "design": {
+          "rooms": 10,
+          "seats": 36,
+          "relations": 3,
+          "sheets": 5,
+          "checks": 210,
+          "pending": 10
+        },
+        "metrics": {
+          "net_room_area_m2": 321.3,
+          "circulation_area_m2": 48,
+          "partition_and_threshold_area_m2": 11.95,
+          "area_preference_deviation_m2": 18.26,
+          "unassigned_area_m2": 49.75,
+          "maximum_entry_route_mm": 21350,
+          "total_entry_route_mm": 128550
+        }
+      },
+      {
+        "phase": "conflict-paths-fixed",
+        "caseId": "conflict",
+        "wholeClientTrialPassed": false,
+        "finalEngineeringStatePassed": true,
+        "checks": 98,
+        "protocolErrors": 8,
+        "errors": [
+          "Actual installed client terminal success without tool errors"
+        ],
+        "result": "blocked_source_conflict",
+        "elapsedMs": 121704,
+        "traceSHA256": "a2209cc3c32762d0a0fd07d2e8f577b317ab569cf9925e6c6b406bd065942fcd",
+        "inputSHA256": "c6f1206504a4d78e1b5445f3a477b0330a3351cc76398fc309a42d6b92a44b54"
+      }
+    ],
+    "publication": {
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "calls": 20,
+      "protocolErrors": 1,
+      "errors": [
+        "Publication actual client terminal success without tool errors"
+      ],
+      "elapsedMs": 320832,
+      "traceSHA256": "79fcbfd35d093a4ecc4eb49d46cf7524c46d9a879282c4f5538958c474fabb95",
+      "inputSHA256": "9ddf86fa6443b4d94d471859a801a5a7b04447df4ed045cb470becad861b3b10",
+      "modelSHA256": "7e222a759a2ede1fa1b7fb35040a6c42981cb96d24950a64f68422e8f410b944",
+      "design": {
+        "rooms": 10,
+        "seats": 36,
+        "sheets": 5,
+        "checks": 210,
+        "pending": 6
+      },
+      "nativeJobs": 4,
+      "nativePluginSHA256": "4f97fdc91a365dcc76809408954a9a171857a928f05c9ad18d14a9d6d360db34",
+      "actualImagesReceived": 5,
+      "allImageBytesIdentical": true,
+      "strictReaderPages": 5,
+      "sourceReviewPixelIdentical": true,
+      "allFivePdfRendersViewed": true
+    },
+    "singleUninterruptedProjectAcceptance": false,
+    "earlierFailuresNotOverwritten": true
+  },
+  "projectTradeoff": {
+    "method": "Original ordered objectives, not an overall-quality score",
+    "priorities": [
+      {
+        "metric": "maximum_entry_route_mm",
+        "direction": "minimize"
+      },
+      {
+        "metric": "total_entry_route_mm",
+        "direction": "minimize"
+      },
+      {
+        "metric": "area_preference_deviation_m2",
+        "direction": "minimize"
+      }
+    ],
+    "limits": [
+      {
+        "id": "NET_ROOM_AREA",
+        "metric": "net_room_area_m2",
+        "comparison": "at_least",
+        "value": 300
+      },
+      {
+        "id": "CIRCULATION_AREA",
+        "metric": "circulation_area_m2",
+        "comparison": "at_most",
+        "value": 60
+      },
+      {
+        "id": "PARTITION_AREA",
+        "metric": "partition_and_threshold_area_m2",
+        "comparison": "at_most",
+        "value": 20
+      }
+    ],
+    "initial": {
+      "net_room_area_m2": 328.64,
+      "circulation_area_m2": 48,
+      "partition_and_threshold_area_m2": 12.16,
+      "area_preference_deviation_m2": 3.48,
+      "unassigned_area_m2": 42.2,
+      "maximum_entry_route_mm": 21700,
+      "total_entry_route_mm": 124600
+    },
+    "selected": {
+      "net_room_area_m2": 321.3,
+      "circulation_area_m2": 48,
+      "partition_and_threshold_area_m2": 11.95,
+      "area_preference_deviation_m2": 18.26,
+      "unassigned_area_m2": 49.75,
+      "maximum_entry_route_mm": 21350,
+      "total_entry_route_mm": 128550
+    },
+    "delta": {
+      "net_room_area_m2": -7.34,
+      "circulation_area_m2": 0,
+      "partition_and_threshold_area_m2": -0.21,
+      "area_preference_deviation_m2": 14.78,
+      "unassigned_area_m2": 7.55,
+      "maximum_entry_route_mm": -350,
+      "total_entry_route_mm": 3950
+    },
+    "improvementFound": true,
+    "overallBetterAccepted": false,
+    "interpretation": "Longest entrance route falls by 350mm, while total route grows by 3950mm, net room area falls by 7.34m² and area-preference deviation grows by 14.78m². All declared project hard bounds and original program constraints hold; sacrifices require review. No universal superiority claim."
+  },
+  "regression": {
+    "full": {
+      "passed": 475,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 165942.7608,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "0f56c7103495ffa87cd6f9e3a37f04e7bccf1c53af7fa40ffddde9883f215291"
+    },
+    "staticGate": {
+      "ok": true,
+      "checks": 3,
+      "publicFiles": 540,
+      "logSHA256": "900f97fca3ee3dd8f612a5eec4a59bab9b9aa42533b9be53b6e61cdfb8e1ee36",
+      "scope": "Public source/privacy/syntax/JSON/links and pinned dependencies; full historical release gate remains incomplete"
+    },
+    "legacy": {
+      "calls": 7,
+      "downloads": 5,
+      "protectedFiles": 149
+    },
+    "threeKindReadonly": {
+      "calls": 8,
+      "downloads": 16,
+      "protectedFiles": 68,
+      "newNativeCadExecuted": false,
+      "actualAiPerformedThisSwitch": false
+    }
+  },
+  "limits": [
+    "Original and repeated actual-client sessions include file-path mistakes; successful final model/output state does not erase tool errors",
+    "Only known source-assisted synthetic cases; no independent customer understanding or broad semantic coverage acceptance",
+    "Source quote and hash checks do not prove complete extraction, correct authority or standard applicability; standards remain explicitly empty/pending in this fixture",
+    "Straight corridor/two-sided rectangular bays and limited furniture; current site geometry, complex layouts and cross-discipline installation design remain incomplete",
+    "A primary-objective improvement can worsen net floor area, total routes and room preferences within their original ranges; no universal quality or global optimum claim",
+    "Actual AI received five native PNGs but reported some small labels unreadable; PDF renders were separately viewed; no general vision or browser-UI acceptance",
+    "Raw CAD PDFs emitted duplicate PageMode warnings; current derived review PDFs strictly parse and preserve raw source pixels, not universal reader acceptance",
+    "M2–M4, external users/new machines, independent real projects, professional approval and the full historical release gate remain incomplete"
+  ],
+  "nextPriorities": [
+    "P0 Preserve explicit task identities, source/assumption grades, original thresholds, both design packs, analysis and hospital evaluator isolation",
+    "P0 Improve actual-client source access and correction: wrong file/array-name paths still produce errors; locate invalid literal evidence by precise field and current source identity without supplying replacement answers; retain first failures and distinguish final state from uninterrupted execution",
+    "P0 Validate substantive engineering outcomes on broader independent briefs and real current architecture; establish explicit source-backed standard applicability/conflict decisions rather than only registered citations",
+    "P1 Richer layout families, shared-space split/merge and multi-use coordination, installation/wiring/protection details and cross-pack design",
+    "P2 Independent real-project/customer evaluation, external users, clean machines and authenticated professional review"
+  ],
+  "evidence": {
+    "artifactRoot": "artifacts/project-selection-validation-20261022",
+    "archive": "项目原文选案与原生交付-完整试验证据.zip",
+    "oldReportsNotRewritten": true,
+    "publicSourceSnapshotBeforeEachActualClient": true
+  }
+}

@@ -16,6 +16,7 @@ export function createSpacePlanningAdapter(context){
   add('condition:shell','condition','Source shell, entry, facade windows and retained keepouts',input.shell,input.shell.sourceIds.map(id=>'source:'+id),input.shell.status==='unresolved'?'unverified':'declared');
   add('condition:parameters','condition','Declared planning and clearance dimensions',input.parameters,input.parameters.sourceIds.map(id=>'source:'+id),input.parameters.status==='unresolved'?'unverified':input.parameters.status);
   for(const r of [...input.program,...input.relations])add('requirement:'+r.id,'requirement',r.name??r.id,r,r.sourceIds.map(id=>'source:'+id),r.status==='unresolved'?'unverified':r.status);
+  if(input.selection)add('requirement:selection','requirement','Source-declared project objective order and bounds',input.selection,input.selection.sourceIds.map(id=>'source:'+id),input.selection.status==='unresolved'?'unverified':input.selection.status);
   for(const r of input.standards)add('standard:'+r.id,'standard',r.code+' '+r.edition,r,['source:'+r.sourceId],'unverified');
   for(const r of input.missingInputs)add('condition:missing:'+r.id,'condition',r.description,r,r.sourceIds.map(id=>'source:'+id),'unverified');
   add('design:model','design','Current space-planning model',{revision:s.revision,inputSHA256:s.inputSHA256,modelSHA256:s.modelSHA256},nodes.map(n=>n.id),'declared',!!model);

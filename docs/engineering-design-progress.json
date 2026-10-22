@@ -168,11 +168,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve explicit task identity, both design packs, analysis, historical outputs and hospital evaluator isolation",
-    "P0 Source-backed project objectives and reviewable area/circulation/route tradeoffs; broader independent briefs/current architecture and explicit standard applicability/conflict decisions",
-    "P0 Actual-client image/text/numerical cross-check and source-backed corrections; general understanding acceptance remains separate",
-    "P1 Richer source-bound layouts, split/merge/multiple-use coordination and installation/wiring/protection design",
-    "P2 Independent real projects, external users, clean machines and authenticated professional signoff"
+    "P0 Preserve explicit task identities, source/assumption grades, original thresholds, both design packs, analysis and hospital evaluator isolation",
+    "P0 Improve actual-client source access and correction: wrong file/array-name paths still produce errors; locate invalid literal evidence by precise field and current source identity without supplying replacement answers; retain first failures and distinguish final state from uninterrupted execution",
+    "P0 Validate substantive engineering outcomes on broader independent briefs and real current architecture; establish explicit source-backed standard applicability/conflict decisions rather than only registered citations",
+    "P1 Richer layout families, shared-space split/merge and multi-use coordination, installation/wiring/protection details and cross-pack design",
+    "P2 Independent real-project/customer evaluation, external users, clean machines and authenticated professional review"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -1038,6 +1038,31 @@
       "durationMs": 205769.8481,
       "command": "node --test tests/unit/*.test.mjs",
       "logSHA256": "8044215722110ae672eeb79fb62b02963ec8aabdfba705e9a58c55bdf784163a"
+    },
+    "professionalApproval": false,
+    "goalComplete": false,
+    "releaseRepackaged": false
+  },
+  "previousPrioritiesBeforeProjectSelection": [
+    "P0 Preserve explicit task identity, both design packs, analysis, historical outputs and hospital evaluator isolation",
+    "P0 Source-backed project objectives and reviewable area/circulation/route tradeoffs; broader independent briefs/current architecture and explicit standard applicability/conflict decisions",
+    "P0 Actual-client image/text/numerical cross-check and source-backed corrections; general understanding acceptance remains separate",
+    "P1 Richer source-bound layouts, split/merge/multiple-use coordination and installation/wiring/protection design",
+    "P2 Independent real projects, external users, clean machines and authenticated professional signoff"
+  ],
+  "projectSelectionIncrement": {
+    "validation": "docs/project-selection-validation.json",
+    "sourceOrderedCriteriaAndHardBounds": true,
+    "actualAiInterpretationAndConflictFinalStatesVerified": true,
+    "actualAiUninterruptedAcceptance": false,
+    "actualNativeDwGAndFiveReviewPdfs": true,
+    "fullRegression": {
+      "passed": 475,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 165942.7608,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "0f56c7103495ffa87cd6f9e3a37f04e7bccf1c53af7fa40ffddde9883f215291"
     },
     "professionalApproval": false,
     "goalComplete": false,

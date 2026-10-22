@@ -198,4 +198,8 @@ apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规
 完成仅是输入修订和来源重新绑定。用返回的 `job-notechange-UUID` 及同 task 查询 `status`，确认原任务新的实际版本、摘要和来源状态；再按该专业契约 design、检查、deliver、review_pdfs。旧输入/模型/图纸/审核留历史，不改旧PDF，不另建项目绕过；状态不明先核对收据，不换UUID重复。新的来源索引JSON/CSV及图面显示原始文档名、版本、用途和冻结原文行定位，登记身份与字面位置不认证权威或标准适用性。
 
 空间新图面版本明确显示“实际净面积、要求范围、倾向面积”，范围使用“至”；关系表列几何实际值与要求。旧模型按原图面版本读取，不重画历史。所有图仍待专业审核；几何关系、窗接触与走廊路径不能当作消防、无障碍、采光或施工验收。
+
+空间项目可在原文中声明选案要求，由 `selection` 表达：`method:"lexicographic"`，`criteria:[{metric,direction:"minimize"或"maximize"}]` 按原文先后排列；`limits:[{id,metric,comparison:"at_least"或"at_most",value}]` 是同时有效的硬边界，不是权重。面积指标使用平方米、入口路径使用毫米；可用指标以实际 capabilities 为准。共享 intake draft 的 selection 另附 status、reason、evidence；sourceIds/evidenceQuote 由当前原文引用生成。baseline 的 unresolved 空槽表示必须解释，遗漏保持阻断；已经解释或假设的旧选案条件冻结，不能用首次 intake 覆盖。冲突保留全部已知排序和界限，未知保持 unresolved，不能删掉一条界限或沿用内置评分继续设计。
+
+有 selection 时，design 自动执行有预算的项目排序搜索，候选必须通过全部边界，按声明顺序比较而非旧 scalar score；study.selectionSearch 和各方案 selection 给出实际指标与取舍。原文明确的项目目标可能牺牲未设为边界的其他指标，须向审核者说明，不能称综合更优。其自检独立复算指标、顺序向量及界限；新图面列出项目排序和实际边界结果。没有 selection 的历史任务维持原契约和图面；选择规则不认证原文权威、标准适用、全局最优或专业批准。
 空间规划 `design.budget.searchMode` 可选 `improve`（缺省保持原首批可行搜索）。先获得既有可行方案，再按剩余节点/时间预算继续搜索；`maxPlans` 是保留候选数，不是改进搜索的停止条件。自动采纳保护首批最佳方案的房间净面积不减少、走廊及隔墙/门槛占地不增加，其他几何与项目阈值仍照常审核；取舍候选单独留在 study 的 `tradeoffPlans`，不能按较低组合评分宣称总体更好。面积偏好与未分配地面的评分、保护策略、原方案、候选及预算均需向审核者说明；入口路径等可能仍在原上限内变长。节点预算严格计数，时间为可让出检查点的协作预算，不承诺硬实时停止；未证明全局最优、任意布局、标准适用或专业验收。已有模型须按正常修订流程换版，不能在原修订反复设计或覆盖旧输出。
