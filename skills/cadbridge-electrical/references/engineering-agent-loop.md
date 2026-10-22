@@ -29,3 +29,11 @@ next.arguments 不含 requestId；该操作确认开始后必须保存其 UUID�
 交付核对当前 DWG、各张 PDF、计算/表格及已声明交付物；用实际图面检查发现遗漏、遮挡、字体和说明错误。多专业任务显式关联共享空间版本，变更后重新检查受影响任务；仅状态隔离通过不等于协调设计通过。项目待审包可用既有 project_review/project_review_package，前提是已发布共享空间范围及明确的任务列表。
 
 报告分别说明：需求解释、计算/几何检查、原生 CAD、图面审查、独立项目可用性和专业审核。原文义务已登记不等于已实现，自动检查通过不等于专业合规。医院最终图只在设计冻结后的隔离比较中使用。
+
+## 已交付前置任务的显式证据
+
+范围中的候选/dependsOn只声明计划。前置正式任务已完成当前来源审阅、设计检查、原生CAD与审核PDF后，可用 `cad_engineering_intake action=bind_scope_task` 传新的requestId、当前review、workItemId、task身份和expectedModelSHA256。契约由capabilities section=scope的bindTaskParameters查询。项目、专业、原文集合和当前模型均须一致；原文集合不一致的旧任务不能仅凭相似名称采纳。
+
+绑定返回新的不可变review，保留previousReview与原记录；后续明确使用新ref。旧ref仍表示旧快照，不自动增加绑定，也不提供项目全局最新计划的推断。原文覆盖和前置证据均有效时，未绑定候选才可准备条件。executionBindings区分delivered_for_review和stale；已有交付项不再建议重复准备。
+
+每个绑定冻结输入、模型及全部前置证据摘要。前置换版会使范围快照中的下游绑定失效；仅重绑新的前置不能使旧下游绑定恢复，须有新的下游设计版本。冻结下游输入后，status/read/commit同样重新核对。已采纳正式任务的invoke尚未自动读取这个范围快照；在后续设计、计算和出图前重查所用范围的前置证据，失效时先处理相关任务，不能只依靠正式任务next_step判断跨任务计划有效。原有来源/共享空间执行检查仍独立生效。该机制不自动理解任务、不推断共享模型关系，也不认证全部工程内容或专业签审。

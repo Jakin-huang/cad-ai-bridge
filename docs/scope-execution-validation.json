@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "status": "unreleased_scope_plan_execution_evidence_verified",
+  "afterRelease": "v2.1.0-preview.1",
+  "released": false,
+  "goalComplete": false,
+  "newNativeCad": false,
+  "newAiClient": false,
+  "independentSemanticAcceptance": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "implementation": [
+    "Bind current formal task identity, matching project/kind/document set and delivered-for-review evidence into a new immutable scope snapshot",
+    "Pin input/model and predecessor evidence digests, propagate source/model/dependency invalidation",
+    "Rebinding only a changed predecessor cannot refresh an unchanged downstream design",
+    "Frozen dependent status, historical read eligibility and commit check the same live scope evidence",
+    "Reuse durable task/source/receipt protocols without project-name branches or a second task database"
+  ],
+  "verification": {
+    "fullRegressionBeforeFinalMetadataCompatibilityAndLifecycleTest": {
+      "passed": 551,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 195506.6592
+    },
+    "finalRelatedRegression": {
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 7376.3154,
+      "scope": "Includes final requestId metadata compatibility and ready-draft to stale-predecessor status/read/commit lifecycle check; full suite not rerun after these additions"
+    },
+    "actualMcp": {
+      "calls": 9,
+      "originalSourceBlocks": 17,
+      "freshReadonlyVerified": true,
+      "originalProtectedFilesUnchanged": 3857,
+      "newFormalTasks": 0,
+      "newScopeRecords": 2
+    }
+  },
+  "limits": [
+    "Formal task association is explicit; matching bytes and task identity do not certify semantic fit or standards applicability",
+    "New scope snapshots retain previousReview; older snapshots do not automatically inherit bindings or imply a globally newest project plan",
+    "Current task documents must exactly match scope documents; legacy tasks without original-document review cannot be silently promoted",
+    "Plan prerequisites govern execution readiness; they do not infer actual shared-model data or replace professional coordination checks",
+    "Positive dependency progression and change scenarios are module/lifecycle regressions; actual MCP association is retrospective over a previously delivered known development office task",
+    "No new prospective complex multi-task design, actual AI interpretation, hospital/school independent project, external user, new machine or professional acceptance",
+    "v2.0/v2.1 frozen versions remain unchanged; this increment is unreleased development source",
+    "Scope evidence is checked by scope review and intake status/read/commit; already prepared task invoke does not yet automatically inherit this scope snapshot. Existing adapter source/shared-space guards remain independent; plan-wide invocation enforcement remains incomplete."
+  ],
+  "retainedFailure": "First integration reached the expected read-only MCP rejection, but its harness tried to parse plain MCP validation text as JSON. The failed log/report are retained; final harness explicitly handles isError responses.",
+  "logs": [
+    {
+      "file": "scope-execution-compatibility.log",
+      "sha256": "e21c8cf2216cb5b5db8d8752ee7d01aa56154d64d41a408d98db08e36beb98eb"
+    },
+    {
+      "file": "scope-execution-targeted.log",
+      "sha256": "4fbc9bf922d3ac9b97342722de80843a88a70aeee2d5ce0f2311e6e9c0a6379b"
+    },
+    {
+      "file": "scope-execution-pinned.log",
+      "sha256": "f6a8b61ce4be091f35914d679a18dbd41005f4681e7e8ba0f73c56167565d3a8"
+    },
+    {
+      "file": "scope-execution-final-targeted.log",
+      "sha256": "85fc8c476a6d83c11b86f36f3d519a00e3db98833f67e971eb2331ef1dd6e890"
+    },
+    {
+      "file": "scope-execution-full.log",
+      "sha256": "429bca8a0ae1df0b5bf1ce041d934a649206b2cf4f1af6bfd2be88c792ead1af"
+    },
+    {
+      "file": "scope-execution-status-final.log",
+      "sha256": "ffc7b2bc475d6de9a2daeb1d82ce22769b037bcddd08818a144d7c09e9a50c55"
+    },
+    {
+      "file": "scope-execution-complete-targeted.log",
+      "sha256": "ebcfe8d8c4782069973ae57dde62d482e53bbf098722f69ab26242bf46a29b0a"
+    },
+    {
+      "file": "scope-execution-mcp.log",
+      "sha256": "5ad52d0348b5d39c8b1ead8dd7382037bbbc475dfc721f236bc2aee67a12658e"
+    },
+    {
+      "file": "scope-execution-mcp-verified.log",
+      "sha256": "bbcb13ff7576e81a703a755cd3d066d7b29f4694c77dff69a75dec1c34536cb6"
+    },
+    {
+      "file": "scope-execution-mcp-final.log",
+      "sha256": "8b4311242950c5ac263cf25edb59dda84caf80e5d88e22d742b6c7078d1ff731"
+    }
+  ]
+}

@@ -1350,5 +1350,18 @@
     "newReviewPdfPages": 20,
     "fullRegression": 547,
     "actualClientReadback": "failed_model_service_quota"
+  },
+  "scopeExecutionIncrement": {
+    "validation": "docs/scope-execution-validation.json",
+    "unreleased": true,
+    "deliveredTaskEvidenceBinding": true,
+    "transitiveInvalidation": true,
+    "dependentIntakeEligibility": true,
+    "actualMcpCalls": 9,
+    "newFormalTasks": 0,
+    "newNativeCad": false,
+    "newAiClient": false,
+    "independentProjectAcceptance": false,
+    "goalComplete": false
   }
 }

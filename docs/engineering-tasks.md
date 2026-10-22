@@ -193,3 +193,11 @@ fields_only仅保留历史字段核对口径，不能冒称任务书完整理解
 `action=next_step` 使用现有任务身份，读取持久状态并返回 `phase/issues/next/snapshotSHA256`；只读，不执行 CAD。`next` 给出当前版本的工具调用参数，调用者为确认执行的操作补充新的 requestId，执行后重新查询。空间包可显式 `designBudget` 指定原有预算/单侧走廊族。来源过期、依赖冲突、未确认操作、输入或设计检查失败将阻断；返回待人工审核不等于需求理解、整项目或专业审核通过。工作流详见[通用 Agent 闭环](../skills/cadbridge-electrical/references/engineering-agent-loop.md)。
 
 空间关系新增 `max_frontage_difference`：沿走廊方向的两房间净开间差不超过 valueMm，0 表示等开间；容差必须显式给出。求解、独立几何检查和图纸说明一致执行，原面积偏好不自动改变。该关系不表示相邻、等面积或任意空间长度方向，也不补齐缺失建筑条件。
+
+## 已交付前置任务的显式证据
+
+范围中的候选/dependsOn只声明计划。前置正式任务已完成当前来源审阅、设计检查、原生CAD与审核PDF后，可用 `cad_engineering_intake action=bind_scope_task` 传新的requestId、当前review、workItemId、task身份和expectedModelSHA256。契约由capabilities section=scope的bindTaskParameters查询。项目、专业、原文集合和当前模型均须一致；原文集合不一致的旧任务不能仅凭相似名称采纳。
+
+绑定返回新的不可变review，保留previousReview与原记录；后续明确使用新ref。旧ref仍表示旧快照，不自动增加绑定，也不提供项目全局最新计划的推断。原文覆盖和前置证据均有效时，未绑定候选才可准备条件。executionBindings区分delivered_for_review和stale；已有交付项不再建议重复准备。
+
+每个绑定冻结输入、模型及全部前置证据摘要。前置换版会使范围快照中的下游绑定失效；仅重绑新的前置不能使旧下游绑定恢复，须有新的下游设计版本。冻结下游输入后，status/read/commit同样重新核对，不只在最后采纳时拒绝。历史值和图纸保持可读。已采纳正式任务的invoke仍使用原有来源/共享空间检查，本增量尚未把范围快照自动注入每一次正式执行；调用者须在继续操作前重查范围，通用范围级执行守卫仍待完成。该机制不自动理解任务、不推断共享模型关系，也不认证全部工程内容或专业签审。
