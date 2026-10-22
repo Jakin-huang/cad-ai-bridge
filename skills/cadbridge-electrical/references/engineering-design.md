@@ -218,3 +218,9 @@ apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规
 回路设计：普通照明生成器在原灯数/负荷分组已满足声明电流、载流量和压降限制时保留原分组；仅在超限时搜索固定灯具顺序的连续分组，先最少回路，再比较示意路径估长。保留灯位、灯具、线径、断路器、载流量假设和所有原限值，不自动改大线径或保护参数。每房间最多核算20000组候选；预算耗尽、固定供电声明冲突和该分组族无可行方案分别报告，不能外推所有安装方案无解。`model.circuitPartitioning`记录发生细分的房间及前后指标，审核HTML与CAD说明保留范围。该估算沿用既有保守示意路径和电阻压降公式，实际敷设、温升修正、短路与保护配合仍待专项验证。
 
 声明路径条件：普通照明输入可选 `routingConditions`，`mode=declared_rectilinear_regions`；`allowedRegions` 和 `exclusions` 均为有 `id/min/max/sourceIds/status/description` 的轴对齐矩形，坐标毫米；根对象同样提供来源、状态和说明，以及必填 `clearanceMm`（1—5000）。允许区域取并集，禁入区向四周扩展声明避让距离；矩形边界表示中心线路径可达边界，不代表管线宽度或穿墙许可。固定灯具访问顺序下搜索各连接的最短正交路径，路径参与回路分组、长度及保守压降核算，E02绘制扩展禁入区边界；控制图仍为归属示意。网格最多20000点、最短路最多累计2000000次有效节点取出；不连通、端点越界和预算耗尽明确失败，不回退无约束连线。独立检查沿每条完整线段的区域边界分段验证，不能只检查端点。路径条件参与来源失效、冻结条件、空间变更逐项记录及假设保护；没有该字段的历史任务保持原模式。当前不核定三维高度/竖向长度、穿墙、防火封堵、管槽容量、共线回路分段标注和控制接线，实际安装及专业签审仍待验收。
+
+## 原文逐段覆盖
+
+新建 cad_project_documents 文档集默认 coveragePolicy=fields_and_sources。已有字段全有引文仍不代表原文要求都已录入。用 source_blocks 按 nextOffset 读取全部非对照段落；blockId/blockSHA256 来自原文版本和UTF-16位置，不自行拼接或猜测。review.sourceCoverage 每段明确 disposition(mapped/context/unresolved/conflict)、targetIds、reason。mapped 必须链接真实 targets，且对应字段的连续引文位于该段或包含该段；context 的 targetIds 为空并说明非设计要求的理由。遗漏、未解决或冲突阻止 ready/bind。禁止为了放行将要求改为背景或把严格文档集降级；fields_only 仅用于明确声明的历史字段核对，不能表示原文完整理解。原文更新使旧映射失效。
+
+使用 cad_engineering_intake 时，parameters 同样接受 sourceCoverage。首次 draft 可保留缺项形成 blocked 草稿，再 read section=input 取得实际目标ID，并按 source_blocks 补全映射后提交新 draft；不得先 commit 再补原文覆盖。read_review section=source_coverage 可逐项复核，summary 返回段落计数。旧任务没有该记录时保持旧历史，不追认覆盖。原文逐段处置属于可追踪的结构检查，不证明语义正确、规范权威或专业审核。

@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "34edadf6f04defcc753acb9e6524655217c3e24b",
+  "status": "implementation_and_local_regression_verified_actual_client_running",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "newNativeCad": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "New document sets default to bidirectional field and original-source coverage; historical sets retain their previous policy",
+    "Stable sentence/line blocks retain source text identity and UTF-16 locations, repeated statements and bounded long lines; evaluator text is excluded",
+    "Each source block explicitly mapped to cited actual input targets, classified as context, unresolved or conflicting; omissions and unresolved/conflicting blocks prevent review binding",
+    "Both ordinary-lighting and office-space-planning, direct document review and compact intake enforce the same source coverage gate",
+    "Strict document sets and tasks cannot be downgraded by updates or binding to another weaker set",
+    "Model source index retains source disposition records; drawings disclose structural coverage counts separately from semantic and professional acceptance"
+  ],
+  "regression": {
+    "initialAffected": {
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "812dfcd3fb2ceceb41928f312e2c9eed402ca07725d2ac78d8c7a06ad36eb931"
+    },
+    "strictInitial": {
+      "passed": 2,
+      "failed": 2,
+      "skipped": 0,
+      "logSHA256": "faae2993d852c69cee085c1930ade536108a629e27afa2de2f4ca7f34cd34220"
+    },
+    "strictFinal": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "72ef275a87d9dc901a7e987441d91acc3856cefb29a8a1d1dc90978bdf2eaacd"
+    },
+    "fullBeforeFinalDowngradeGuard": {
+      "passed": 516,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "848681ece13fb0a536d945205fee5b3c8a49e8a96c378726d592f0d5f74789c4"
+    },
+    "finalAffected": {
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "027bb85a8da0f74a1c709fe78276b6ee9eaab1e11effa3b63d0b2e685a879e49"
+    }
+  },
+  "actualClient": {
+    "status": "running_unaccepted",
+    "case": "explicit-replacement",
+    "developmentInput": true,
+    "independentCustomer": false,
+    "sourceDocuments": 5,
+    "sourceBlocks": 39,
+    "lastObservedToolPhase": "read_targets_and_source_blocks",
+    "wholeTrialPassed": false,
+    "controllerSemanticRepair": false,
+    "modelValuesAccepted": false,
+    "evidence": "artifacts/source-coverage-client-20261022"
+  },
+  "legacy": {
+    "actualReadOnlyMcp": true,
+    "taskKinds": [
+      "ordinary-lighting",
+      "office-space-planning"
+    ],
+    "protectedFiles": 124,
+    "originalStaleSpaceTaskRetained": true,
+    "retroactiveSourceCoverageClaimed": false,
+    "evidence": "legacy-final-check.json"
+  },
+  "retainedObservations": [
+    "Initial strict test fixture had a semicolon and therefore four real sentence blocks rather than three; fixture disclaimer changed to a single sentence and the original failing run retained",
+    "First historical check incorrectly expected both old document tasks current; persisted source head proves the space task was already stale before this change. Final check verifies current/stale status against those original persisted versions and retains all 124 file hashes",
+    "516 full tests precede the final cross-set downgrade guard; final 49 affected tests passed after it",
+    "Actual-client source snapshot predates the final downgrade guard and two local integration harnesses; no interpretation/engineering success claimed while the original client handle remains live"
+  ],
+  "limits": [
+    "Structural disposition does not prove that every clause was understood correctly; a mistaken context classification or incorrect interpretation still needs independent evaluation",
+    "Sources remain declared and unverified; standard authority, applicability and professional approval are not inferred",
+    "Explicit fields_only remains a legacy mechanical-review mode and does not establish original-demand coverage",
+    "No new CAD/PDF delivery or independent client/project acceptance in this increment yet",
+    "M2, M3 and M4 remain incomplete; hospital stays an isolated retrospective evaluator"
+  ],
+  "evidence": {
+    "root": "artifacts/source-coverage-client-20261022",
+    "liveProcess": "process.json",
+    "clientTrace": "live-events.ndjson",
+    "clientReport": "client-report.json (only after terminal completion)",
+    "legacy": "legacy-final-check.json",
+    "source": "final-source-manifest.json",
+    "protectedFiles": 435,
+    "protectedReferences": 20
+  },
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 589,
+    "logSHA256": "edfab283acad7d32445d56594fb4be28e2819d7c303c632e4922a56ec796100f"
+  }
+}

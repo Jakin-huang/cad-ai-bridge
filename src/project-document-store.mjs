@@ -9,6 +9,7 @@ import {hashFile,isWithin} from './drawings.mjs';
 import {jobDirectory,jobJson} from './jobs.mjs';
 import {dependencyDigest as digest} from './task-dependencies.mjs';
 import {documentSetRefSchema} from './project-document-contracts.mjs';
+import {documentSourceBlocks,checkSourceCoverage} from './document-source-coverage.mjs';
 export const documentBytesSHA=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 export async function documentLock(dir,name,work){const file=path.join(dir,name);let lease;try{lease=await fs.open(file,'wx');}catch(e){if(e.code==='EEXIST')throw Error('DOCUMENT_OPERATION_BUSY_OR_UNCONFIRMED');throw e;}try{await lease.writeFile(JSON.stringify({pid:process.pid,startedAt:new Date().toISOString()}));return await work();}finally{await lease.close();await fs.unlink(file);}}
 export async function loadDocumentSet(runs,raw,{requireCurrent=false}={}){
@@ -21,7 +22,9 @@ export async function loadDocumentSet(runs,raw,{requireCurrent=false}={}){
  return {ref,dir,head,version,current};
 }
 export async function freezeDocumentVersion(options){const policyDir=path.join(options.runs,'job-docpolicy-'+options.projectId.toLowerCase());await fs.mkdir(policyDir,{recursive:true});return documentLock(policyDir,'policy.lock',()=>freezeVersion({...options,policyDir}));}
-async function freezeVersion({runs,inputRoot,jobId,projectId,revision,requestId,requestSHA256,documents,prior,policyDir}){
+async function freezeVersion({runs,inputRoot,jobId,projectId,revision,requestId,requestSHA256,documents,prior,policyDir,coveragePolicy}){
+ coveragePolicy=coveragePolicy??prior?.version.coveragePolicy??(prior?'fields_only':'fields_and_sources');
+ if(prior?.version.coveragePolicy==='fields_and_sources'&&coveragePolicy!=='fields_and_sources')throw Error('DOCUMENT_SOURCE_COVERAGE_DOWNGRADE');
  const root=await fs.realpath(inputRoot),dir=path.join(runs,jobId),frozen=[];
  let policy;try{policy=await jobJson(policyDir,'policy.json');}catch(e){if(e.code!=='ENOENT')throw e;policy={projectId,evaluationSHA256:[],inputSHA256:[]};}if(policy.projectId!==projectId)throw Error('DOCUMENT_POLICY_PROJECT_CHANGED');
  // Both document identities and all earlier evaluation bytes remain quarantined.
@@ -40,7 +43,7 @@ async function freezeVersion({runs,inputRoot,jobId,projectId,revision,requestId,
  // reserved evaluation bytes never become generation inputs in another set.
  policy.evaluationSHA256=[...new Set([...policy.evaluationSHA256,...evalBytes])].sort();policy.inputSHA256=[...new Set([...policy.inputSHA256,...frozen.filter(d=>d.role!=='evaluation_only').flatMap(d=>[d.rawSHA256,d.textSHA256].filter(Boolean))])].sort();await atomicJson(path.join(policyDir,'policy.json'),policy);
  for(const d of frozen){const bytes=d._bytes;delete d._bytes;try{await fs.writeFile(path.join(dir,d.snapshot),bytes,{flag:'wx'});}catch(e){if(e.code!=='EEXIST'||await hashFile(path.join(dir,d.snapshot))!==d.rawSHA256)throw Error('DOCUMENT_SNAPSHOT_PUBLICATION_UNCONFIRMED');}}
- const version={schemaVersion:1,jobId,projectId,revision,requestId,requestSHA256,previous:prior?.ref??null,documents:frozen,semanticCoverageAccepted:false,professionalApproval:false},ref={jobId,projectId,revision,sha256:digest(version)};
+ const version={schemaVersion:1,jobId,projectId,revision,requestId,requestSHA256,previous:prior?.ref??null,documents:frozen,coveragePolicy,semanticCoverageAccepted:false,professionalApproval:false},ref={jobId,projectId,revision,sha256:digest(version)};
  await fs.writeFile(path.join(dir,'version-'+revision+'.json'),JSON.stringify(version,null,2)+'\n',{flag:'wx'});await atomicJson(path.join(dir,'head.json'),ref);return ref;
 }
 export async function readDocumentText(ctx,id){const d=ctx.version.documents.find(d=>d.id===id);if(!d)throw Error('DOCUMENT_ID_UNKNOWN');if(d.role==='evaluation_only')throw Error('DOCUMENT_EVALUATION_CONTENT_FORBIDDEN');const bytes=await fs.readFile(path.join(ctx.dir,d.snapshot));if(documentBytesSHA(bytes)!==d.rawSHA256)throw Error('DOCUMENT_SNAPSHOT_CHANGED');const text=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes).replace(/^\uFEFF/,'');if(documentBytesSHA(text)!==d.textSHA256)throw Error('DOCUMENT_TEXT_CHANGED');return {document:d,text};}
@@ -53,16 +56,32 @@ export function documentTargets(kind,input){
  if(rows.length>2000)throw Error('DOCUMENT_TARGET_BUDGET');return rows.map(r=>({...r,valueSHA256:digest(r.value),singleTargetValuesSHA256:digest([{id:r.id,value:r.value}])}));
 }
 export async function verifyDocumentReview(runs,ref){const dir=await jobDirectory(runs,ref.jobId),record=await jobJson(dir,'review.json');if(digest(record)!==ref.sha256||record.jobId!==ref.jobId)throw Error('DOCUMENT_REVIEW_CHANGED');return record;}
+export async function documentSetSourceBlocks(ctx,documentId){
+ const docs=documentId?[ctx.version.documents.find(d=>d.id===documentId)]:ctx.version.documents.filter(d=>d.role!=='evaluation_only');
+ if(docs.some(d=>!d))throw Error('DOCUMENT_ID_UNKNOWN');const blocks=[];
+ for(const d of docs){const {text}=await readDocumentText(ctx,d.id);blocks.push(...documentSourceBlocks(d,text));if(blocks.length>5000)throw Error('DOCUMENT_SOURCE_BLOCK_BUDGET');}
+ return blocks;
+}
+export async function documentCoverage(ctx,targets,decisions,entries){return checkSourceCoverage(await documentSetSourceBlocks(ctx),targets,decisions,entries,{required:ctx.version.coveragePolicy==='fields_and_sources'});}
+export async function assertTaskCoveragePolicy(runs,childJobId,ctx){
+ if(ctx.version.coveragePolicy==='fields_and_sources')return;
+ const dir=await jobDirectory(runs,childJobId);
+ for(const file of [path.join(dir,'document-required.json'),path.join(runs,'document-required-'+childJobId+'.json')]){
+  let marker;try{marker=JSON.parse(await fs.readFile(file,'utf8'));}catch(e){if(e.code==='ENOENT')continue;throw e;}
+  if(marker.coveragePolicy==='fields_and_sources'||marker.set&&(await loadDocumentSet(runs,marker.set)).version.coveragePolicy==='fields_and_sources')throw Error('DOCUMENT_TASK_COVERAGE_DOWNGRADE');
+ }
+}
 export async function taskDocumentStatus({runs,childJobId,inputSHA256,modelSHA256,modelBindingSHA256,requireCurrent=false,requireModel=false}){
  const dir=await jobDirectory(runs,childJobId);let binding;try{binding=await jobJson(dir,'document-binding.json');}catch(e){if(e.code==='ENOENT'){for(const marker of [path.join(dir,'document-required.json'),path.join(runs,'document-required-'+childJobId+'.json')]){try{await fs.stat(marker);throw Error('DOCUMENT_REQUIRED_BINDING_MISSING');}catch(missing){if(missing.code!=='ENOENT')throw missing;}}return undefined;}throw e;}
- const ctx=await loadDocumentSet(runs,binding.set),review=binding.review?await verifyDocumentReview(runs,binding.review):undefined;
+ const ctx=await loadDocumentSet(runs,binding.set),review=binding.review?await verifyDocumentReview(runs,binding.review):undefined;await assertTaskCoveragePolicy(runs,childJobId,ctx);
  if(binding.childJobId!==childJobId||binding.projectId!==binding.set.projectId)throw Error('DOCUMENT_TASK_BINDING_CHANGED');
  if(review&&(review.childJobId!==childJobId||review.task.jobId!==binding.parentJobId||review.projectId!==binding.projectId||digest(review.set)!==digest(binding.set)||review.inputSHA256!==binding.inputSHA256||!review.ready))throw Error('DOCUMENT_REVIEW_BINDING_CHANGED');
+ if(review&&ctx.version.coveragePolicy==='fields_and_sources'){const coverage=await documentCoverage(ctx,review.targets,review.decisions,review.sourceCoverage);if(coverage.blockers.length||digest(coverage.summary)!==digest(review.sourceCoverageSummary))throw Error('DOCUMENT_SOURCE_COVERAGE_CHANGED');}
  const bindingSHA256=digest(binding),inputCurrent=binding.inputSHA256===inputSHA256,current=ctx.current&&inputCurrent&&!!review?.ready,modelCurrent=!modelSHA256||modelBindingSHA256===bindingSHA256;
- const result={enabled:true,set:binding.set,review:binding.review,bindingSHA256,current,inputCurrent,documentsCurrent:ctx.current,reviewReady:!!review?.ready,modelCurrent,eligible:current&&modelCurrent,semanticCoverageAccepted:false,professionalApproval:false,scope:'Original-document identity, literal citations and declared field coverage; no automatic semantic, authority or standards-applicability acceptance'};
+ const result={enabled:true,set:binding.set,review:binding.review,bindingSHA256,current,inputCurrent,documentsCurrent:ctx.current,reviewReady:!!review?.ready,...(review?.sourceCoverageSummary?{sourceCoverage:review.sourceCoverageSummary}:{}),modelCurrent,eligible:current&&modelCurrent,semanticCoverageAccepted:false,professionalApproval:false,scope:'Original-document identity, literal citations and declared field coverage; no automatic semantic, authority or standards-applicability acceptance'};
  if(requireCurrent&&!current)throw Error('DOCUMENT_REVIEW_REQUIRED_OR_STALE: '+JSON.stringify(result));if(requireModel&&modelSHA256&&!modelCurrent)throw Error('DOCUMENT_MODEL_RECOMPUTATION_REQUIRED');return result;
 }
-export async function initializeTaskDocuments({runs,context,set}){await loadDocumentSet(runs,set,{requireCurrent:true});if(context.projectId!==set.projectId)throw Error('DOCUMENT_PROJECT_MISMATCH');const dir=await jobDirectory(runs,context.childJobId);await fs.writeFile(path.join(dir,'document-required.json'),JSON.stringify({parentJobId:context.task.jobId,projectId:context.projectId}),{flag:'wx'});await fs.writeFile(path.join(dir,'document-binding.json'),JSON.stringify({schemaVersion:1,parentJobId:context.task.jobId,childJobId:context.childJobId,projectId:context.projectId,inputSHA256:context.inputSHA256,set,review:null},null,2)+'\n',{flag:'wx'});}
+export async function initializeTaskDocuments({runs,context,set}){const ctx=await loadDocumentSet(runs,set,{requireCurrent:true});if(context.projectId!==set.projectId)throw Error('DOCUMENT_PROJECT_MISMATCH');const dir=await jobDirectory(runs,context.childJobId);await fs.writeFile(path.join(dir,'document-required.json'),JSON.stringify({parentJobId:context.task.jobId,projectId:context.projectId,set,coveragePolicy:ctx.version.coveragePolicy??'fields_only'}),{flag:'wx'});await fs.writeFile(path.join(dir,'document-binding.json'),JSON.stringify({schemaVersion:1,parentJobId:context.task.jobId,childJobId:context.childJobId,projectId:context.projectId,inputSHA256:context.inputSHA256,set,review:null},null,2)+'\n',{flag:'wx'});}
 export async function taskDocumentDependencyNodes({runs,binding,current}){
  if(!current?.documentEvidence?.enabled)return [];
  const record=await jobJson(await jobDirectory(runs,binding.childJobId),'document-binding.json'),ctx=await loadDocumentSet(runs,record.set),nodes=[];

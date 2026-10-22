@@ -749,12 +749,11 @@
     "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "currentFullRegression": {
-    "passed": 512,
+    "passed": 516,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 173009.7298,
-    "logSHA256": "7ece3dfdd9d6f974a79faea982480e836e5ce53d8727dcf9ad610d24636643b5",
-    "scope": "Final route schedule product code; later native harness metadata and independent Python CSV verification separately executed"
+    "logSHA256": "848681ece13fb0a536d945205fee5b3c8a49e8a96c378726d592f0d5f74789c4",
+    "scope": "Before final cross-set source-coverage downgrade guard; final 49 affected tests passed after it"
   },
   "previousPrioritiesBeforePdfReviewClosure": [
     "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
@@ -1204,6 +1203,18 @@
     "segments": 133,
     "reviewPdfPages": 9,
     "physicalDesignUnchanged": true,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "sourceCoverageIncrement": {
+    "validation": "docs/source-coverage-validation.json",
+    "defaultNewDocumentSourceCoverage": true,
+    "bothDesignPacks": true,
+    "compactIntakeGate": true,
+    "actualClient": "running_unaccepted",
+    "newNativeCad": false,
     "goalComplete": false,
     "M2": "incomplete",
     "M3": "incomplete",

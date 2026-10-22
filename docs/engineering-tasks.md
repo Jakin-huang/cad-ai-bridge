@@ -175,3 +175,9 @@ cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、
 ## 路径区段表
 
 带routingConditions的新设计附带routeSchedule：区段端点、回路及经过次数、分开的去重/累计长度和基本导体估量。deliver增加E06及续表、route-segments.csv；HTML审核页同步列出区段和估量。CSV沿用防公式转义，负坐标带单引号，程序读取时仅对完整数值字面量解码。三根L/N/PE基础估量不含控制线设计、核定竖向和管槽容量，不是采购或施工批准；原始路径每次重复经过均计量。缺失区段、篡改次数、数量及表格文字会使自检失败。实际验证与限制见[区段核算验证](route-schedule-validation.json)。
+
+## 原文要求与设计条件双向核对
+
+新建文档集默认fields_and_sources。cad_project_documents source_blocks按分页返回原文句段、位置与摘要；review.sourceCoverage逐段登记mapped/context/unresolved/conflict、targetIds和reason。未处置或未解决句段阻止审阅绑定；mapped必须有对应字段及相关原句。read_review section=source_coverage可读取完整处置。紧凑intake的parameters也接收sourceCoverage，可先形成blocked草稿、读取实际input目标后再补全。更新原文使旧映射失效，严格文档集及任务不能降级。
+
+fields_only仅保留历史字段核对口径，不能冒称任务书完整理解。句段处置和数值字段自检仍需与独立语义判断、标准适用及工程审核分开。验证结果见[原文覆盖验证](source-coverage-validation.json)。
