@@ -24,7 +24,7 @@ test('declared router detours around expanded exclusion with independently known
  const reversed=compileDeclaredRouter({...q,allowedRegions:[...q.allowedRegions].reverse()},[a,b]).route([{position:b}],b,electrical);assert.deepEqual(reversed,path);
 });
 test('design, independent audit, source bindings and circuit lengths use the same declared route conditions',()=>{
- const p=engineeringTestInput(),legacy=makeEngineeringDesign(p);p.routingConditions=conditions();const original=structuredClone(p),m=makeEngineeringDesign(p);assert.deepEqual(p,original);assert.equal(m.engineVersion,'1.15.0');assert.deepEqual(m.devices,legacy.devices);assert.deepEqual(m.input.electrical,legacy.input.electrical);
+ const p=engineeringTestInput(),legacy=makeEngineeringDesign(p);p.routingConditions=conditions();const original=structuredClone(p),m=makeEngineeringDesign(p);assert.deepEqual(p,original);assert.equal(m.engineVersion,'1.16.0');assert.deepEqual(m.devices,legacy.devices);assert.deepEqual(m.input.electrical,legacy.input.electrical);
  const audit=auditEngineeringDesign(m);assert.equal(audit.ok,true,JSON.stringify(audit.checks.filter(c=>!c.ok)));assert.ok(audit.pending.some(p=>p.code==='ROUTING_INSTALLATION_REVIEW'));assert.ok(m.routes.every(r=>Math.abs(length(r.vertices)/1000-m.circuits.find(c=>c.id===r.circuitId).routeLengthM)<=0.0000005));
  const changed=structuredClone(m);changed.routes[0].vertices=[[500,-500],[4000,-500],[4000,5000]];assert.ok(auditDeclaredRoutes(changed).some(c=>c.id.startsWith('routing_regions_')&&!c.ok));
  const omitted=structuredClone(m);delete omitted.routingBasis;assert.equal(auditDeclaredRoutes(omitted).find(c=>c.id==='routing_source_basis').ok,false);

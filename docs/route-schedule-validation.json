@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "c545e213a0bdad4b398676acd3800d98fb778bcf",
+  "status": "route_schedule_native_delivery_verified",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "newAiClient": false,
+  "newNativeCad": true,
+  "controllerAuthoredSyntheticInput": true,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Split orthogonal routes at endpoints and crossings; retain every source-leg traversal including return runs",
+    "Separate unique planar path length from circuit traversal length and base conductor estimates",
+    "Paginated E06 schedule, full CSV and HTML report use the same persisted model",
+    "Independent source-leg coverage, material quantities, CAD schedule text and exported CSV reconciliation"
+  ],
+  "actual": {
+    "rooms": 9,
+    "lights": 65,
+    "circuits": 15,
+    "physicalDesignUnchanged": true,
+    "segments": 133,
+    "sharedSegments": 24,
+    "uniquePlanarLengthM": 205.378333,
+    "planarTraversalLengthM": 480.045,
+    "maximumCoincidentCircuits": 15,
+    "maximumTraversals": 15,
+    "materials": [
+      {
+        "wireSectionMm2": 2.5,
+        "conductorsPerTraversal": 3,
+        "planarConductorLengthM": 1440.135,
+        "extraConductorLengthM": 225
+      }
+    ],
+    "automatedChecks": 241,
+    "pendingConditions": 89,
+    "reviewPdfPages": 9,
+    "registeredOutputs": 37,
+    "csvRows": 133,
+    "modelSHA256": "8db7d2f6be3f74b6af6f5f800d6f581b167fff4224c8aeefb1e64684f7d6ed7f",
+    "protectedTaskFiles": 274,
+    "projectSpaces": 11,
+    "lightingDeliveredSpaces": 9,
+    "unresolvedSpaces": 2,
+    "packageSourceFiles": 55,
+    "packageIssueEntries": 181,
+    "packageLinksVerified": 94,
+    "packageManifestSHA256": "a80b35cd66079336c857325167f14e29938caef52ceff57926b07d61eae1bbc8"
+  },
+  "regression": {
+    "targeted": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 7454.6516,
+      "logSHA256": "40b9ff7b683eae6f987d86e41aedc1bce58ddf6c896de7d6ea0b7e20ed1a3aa1"
+    },
+    "full": {
+      "passed": 512,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 173009.7298,
+      "logSHA256": "7ece3dfdd9d6f974a79faea982480e836e5ce53d8727dcf9ad610d24636643b5"
+    },
+    "staticGate": {
+      "passed": 3,
+      "publicFiles": 584,
+      "logSHA256": "ada9ced60bf69a59addcef0683dc2a55d76e14c456b287b19780ede416eb0a41"
+    }
+  },
+  "verification": {
+    "fullFinalProductTests": true,
+    "nativeSavedGeometry": true,
+    "strictReviewPdfParsing": true,
+    "rawAndNormalizedPixelIdentity": true,
+    "allNinePagesVisuallyInspected": true,
+    "csvSourceLegReconciliation": true,
+    "missingSegmentAndReturnCountTamperingRejected": true,
+    "materialsAndDrawingTextTamperingRejected": true,
+    "oldTaskFilesUnchanged": true
+  },
+  "retainedObservations": [
+    "Initial preflight helper compared in-memory undefined properties with persisted JSON and failed before CAD; persisted comparison and exact regeneration passed without modifying original evidence",
+    "Initial Python CSV checker did not decode the established apostrophe escape on negative numeric coordinates; corrected to accept only complete escaped numeric literals, then all 133 rows and 15 source-circuit lengths reconciled",
+    "Finalization attempted before the CSV check existed failed without writing results; rerun only after CSV verification succeeded",
+    "Original CAD PDFs retain duplicate PageMode warnings; normalized PDFs strictly parse and have identical rendered pixels",
+    "512 full tests cover final product code; subsequent changes only improve the native harness task title and add the independently executed CSV verifier"
+  ],
+  "limits": [
+    "Known developer input, not independent customer understanding or cross-project practical acceptance",
+    "Three base L/N/PE conductors per traversal only; no switching/vertical conductor design, conduit fill or selection, joints or procurement acceptance",
+    "Per-segment coordinates are in the schedule; no corresponding segment labels on the plan or conduit grouping",
+    "Continuation pages use the first schedule page circuit/column legend",
+    "Assumed routing permissions, lighting products, standards applicability, protection and optical quality still need evidence in this case",
+    "Two project spaces remain uncovered; external users, clean machines and professional review remain pending",
+    "No new browser interaction for this review package; copy hashes, local links, stale snapshot and replay verified"
+  ],
+  "evidence": {
+    "root": "artifacts/route-schedule-validation-20261022",
+    "preflight": "preflight.json",
+    "native": "native-report.json",
+    "pdf": "independent-pdf-check.json",
+    "csv": "independent-csv-check.json",
+    "visual": "visual-review.json",
+    "package": "project-package/report.json",
+    "source": "final-source-manifest.json",
+    "protectedReferences": 19
+  }
+}

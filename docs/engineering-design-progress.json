@@ -749,12 +749,12 @@
     "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "currentFullRegression": {
-    "passed": 507,
+    "passed": 512,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 250588.586,
-    "logSHA256": "fc69126bb990fcbed8c9381c99d8c6e3010a240b0820db8dab03ba8e9871d5ff",
-    "scope": "Before final routing cross-task condition ledger and assumption guards; see routing increment final affected tests"
+    "durationMs": 173009.7298,
+    "logSHA256": "7ece3dfdd9d6f974a79faea982480e836e5ce53d8727dcf9ad610d24636643b5",
+    "scope": "Final route schedule product code; later native harness metadata and independent Python CSV verification separately executed"
   },
   "previousPrioritiesBeforePdfReviewClosure": [
     "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
@@ -1196,5 +1196,17 @@
       "logSHA256": "85bdd314713216a0e74f49e5a056432ce9efaf224a208cc3a09e1631c59f2e4a"
     },
     "goalComplete": false
+  },
+  "routeScheduleIncrement": {
+    "validation": "docs/route-schedule-validation.json",
+    "newNativeCad": true,
+    "newAiClient": false,
+    "segments": 133,
+    "reviewPdfPages": 9,
+    "physicalDesignUnchanged": true,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
   }
 }

@@ -1,3 +1,4 @@
+import {buildRouteSchedule} from './engineering-route-schedule.mjs';
 import {compileDeclaredRouter} from './engineering-routing.mjs';
 import {partitionLightingCircuits} from './lighting-circuit-partition.mjs';
 import crypto from 'node:crypto';
@@ -123,7 +124,8 @@ export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[],archit
   devices.push(...roomDevices);
  }
  devices.forEach((d,i)=>d.label='L'+String(i+1).padStart(2,'0'));controls.forEach((c,i)=>c.label='S'+String(i+1).padStart(2,'0'));
- const model={schemaVersion:1,engineVersion:router?'1.15.0':circuitPartitioning.length?'1.14.0':'1.13.0',...(router?{routingBasis:router.basis}:{}),...(circuitPartitioning.length?{circuitPartitioning}:{}),...(sourceDocuments?{sourceDocuments}:{}),...(layoutSelections?{lightingDesignBasis:'finite_diffuse_required',layoutSelections}:{} ),controlRouting:'schematic_bus',ok:true,projectId:p.projectId,title:p.title,revision,inputSHA256:engineeringDigest(p),designDate:p.designDate,input:p,standardEvidence,architecturalEvidence,photometricEvidence,lightingStandardEvidence,roomCalculations,devices,circuits,controls,routes,issues:intake.issues,decisions:roomCalculations.map(c=>({roomId:c.roomId,fixture:c.fixture,count:c.count,reason:layoutSelections?'Bounded source-derived candidate; finite diffuse total-light and requested UGR assessment mandatory before adoption/delivery':p.photometricDesign?'Lowest installed watts in the bounded explicit grids satisfying maintained direct-point mean, uniformity and maximum mean; no reflected-light or UGR acceptance':'Lowest installed watts among feasible explicit grid candidates',requirementIds:c.requirementIds,formula:c.formula,alternatives:c.alternatives})),reviewStatus:'awaiting_human_review',professionalApproval:false};
+ const routeSchedule=router?buildRouteSchedule(routes,circuits,router.basis.conditionsSHA256):undefined;
+ const model={schemaVersion:1,...(routeSchedule?{routeSchedule}:{}),engineVersion:router?'1.16.0':circuitPartitioning.length?'1.14.0':'1.13.0',...(router?{routingBasis:router.basis}:{}),...(circuitPartitioning.length?{circuitPartitioning}:{}),...(sourceDocuments?{sourceDocuments}:{}),...(layoutSelections?{lightingDesignBasis:'finite_diffuse_required',layoutSelections}:{} ),controlRouting:'schematic_bus',ok:true,projectId:p.projectId,title:p.title,revision,inputSHA256:engineeringDigest(p),designDate:p.designDate,input:p,standardEvidence,architecturalEvidence,photometricEvidence,lightingStandardEvidence,roomCalculations,devices,circuits,controls,routes,issues:intake.issues,decisions:roomCalculations.map(c=>({roomId:c.roomId,fixture:c.fixture,count:c.count,reason:layoutSelections?'Bounded source-derived candidate; finite diffuse total-light and requested UGR assessment mandatory before adoption/delivery':p.photometricDesign?'Lowest installed watts in the bounded explicit grids satisfying maintained direct-point mean, uniformity and maximum mean; no reflected-light or UGR acceptance':'Lowest installed watts among feasible explicit grid candidates',requirementIds:c.requirementIds,formula:c.formula,alternatives:c.alternatives})),reviewStatus:'awaiting_human_review',professionalApproval:false};
  const drawing=makeEngineeringScene(model);return {...model,...drawing};
 }
 
@@ -161,6 +163,18 @@ export function makeEngineeringScene(model){
  for(let offset=0;offset<model.roomCalculations.length;offset+=24){const calc=sheet(offset?'E05-'+(offset/24+1):'E05','计算及灯具清单');text([calc.origin[0]+1500,22200],'房间 | 灯具数 | 维持平均lx/目标lx | W/m2 | 灯具型号',280);
  model.roomCalculations.slice(offset,offset+24).forEach((c,i)=>text([calc.origin[0]+1500,21200-i*700],`${p.rooms.find(r=>r.id===c.roomId).name} [${c.roomId}] | ${c.count} | ${(c.photometry?.averageLux??c.estimatedLux).toFixed(1)}/${c.targetLux} | ${c.lpd.toFixed(2)} | ${c.fixture}`,260));
  text([calc.origin[0]+1500,3500],p.photometricDesign?'本表为IES直射点源维持照度；详细Emin/Eavg见计算CSV；反射、眩光和实际条件待审。':'本表照度为利用系数法估算；光度、眩光和实际保护条件仍需专业复核。',270);}
+ if(model.routeSchedule){
+  let page=0,tableSheet,yy;const open=()=>{if(++page>100)throw Error('ROUTE_SCHEDULE_SHEET_BUDGET');tableSheet=sheet(page===1?'E06':'E06-'+page,'路径分段与回路占用表');yy=22200;};open();
+  const addLine=(line,prefix='')=>{let part='';for(const word of line.split(' ')){if(part.length+word.length+1>170){if(yy<3500)open();text([tableSheet.origin[0]+1500,yy],part,220);yy-=500;part=prefix;}part+=(part?' ':'')+word;}if(part){if(yy<3500)open();text([tableSheet.origin[0]+1500,yy],part,220);yy-=500;}};
+  const rs=model.routeSchedule,aliases=new Map(model.circuits.map((c,i)=>[c.id,'Q'+String(i+1).padStart(2,'0')]));
+  addLine('区段端点为项目坐标(mm)，长度为m；交叉点不代表电气连接；管槽容量及控制线待审。');
+  addLine('独立路径 '+rs.summary.uniquePlanarLengthM.toFixed(3)+'m；按回路重复累计 '+rs.summary.planarTraversalLengthM.toFixed(3)+'m；共线区段 '+rs.summary.sharedSegments+'个。');
+  addLine('下列每次经过仅计基本L/N/PE三根；不含控制线、接头、核定竖向敷设及施工损耗。');
+  for(const r of rs.materials)addLine('基本导体 '+r.wireSectionMm2+'mm2：平面估量 '+r.planarConductorLengthM.toFixed(3)+'m；另列原声明附加估量 '+r.extraConductorLengthM.toFixed(3)+'m，不能作为已审采购量。');
+  addLine('回路索引：'+model.circuits.map(c=>aliases.get(c.id)+'='+c.id).join(' '));
+  addLine('区段 | 起点 -> 终点(mm) | 长度(m) | 经过次数 | 回路索引x该回路经过次数');
+  for(const r of rs.segments)addLine(r.label+' | '+r.start.map(n=>n.toFixed(3)).join(',')+' -> '+r.end.map(n=>n.toFixed(3)).join(',')+' | '+r.lengthM.toFixed(3)+'m | '+r.traversals+'次 | '+r.circuits.map(c=>aliases.get(c.circuitId)+'x'+c.passes).join(' '),r.label+' 续 |');
+ }
  const {name:initialViewName,...initialView}=sheets.find(s=>s.id==='E02').view;
  const scene=sceneSchema.parse({layers,symbols,entities,views:sheets.map(s=>s.view),view:initialView});
  return {scene,placements,sheets,geometryWarnings,drawingOrigin:b.min,drawingScale:scale,representations:{luminairePlan:'E02',controlPlan:'E03'}};
