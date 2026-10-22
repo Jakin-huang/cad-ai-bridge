@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "912b2d3c365b1eb1df0e3df46d59c3a037d717fa",
+  "product": "CAD AI Bridge",
+  "status": "bounded_source_note_revision_and_r1_native_publication_verified",
+  "hospitalPolicy": "Isolated evaluator only; explicit task kinds, original source/assumption grades and quality thresholds preserved",
+  "hospitalDataProcessed": false,
+  "syntheticNonPrivate": true,
+  "overallPracticalAcceptance": false,
+  "generalUnderstandingAccepted": false,
+  "generalVisualUnderstandingAccepted": false,
+  "independentCustomerAcceptance": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "scope": "Known ten-space synthetic office program and declared fixed shell; staged original execution, independent read-only client image review, then separate same-task source-bound R1 correction/native delivery/self-image review",
+  "implemented": [
+    "Shared source-bound missing-input description revision for ordinary-lighting and office-space-planning; strict same-task identity/current revision/old value/source proofs",
+    "Only selected description changes; original grades, IDs, severity, source links, all other fields and unresolved conditions remain",
+    "Immutable plans and note history, unconfirmed interruption state, read-only status and task-center link; input-stage completion only",
+    "Model-bound original document/version/role/literal-line provenance; immutable JSON/CSV downloads; no authority certification or evaluator content",
+    "Scene version3 explicit area range/preference and derived geometric relation values; old scene1/2 and no-index lighting model hashes unchanged",
+    "Source snapshot propagates into lighting optimization candidates; pure presentation separated from filesystem/store dependencies"
+  ],
+  "actualReadOnlyImageClient": {
+    "elapsedMs": 272422,
+    "calls": 14,
+    "protocolErrors": 0,
+    "controllerSuppliedExpectedFinding": false,
+    "controllerSuppliedReplacementText": false,
+    "specificDefectIndependentlyFound": true,
+    "rawTraceSHA256": "d083e083c775b9e46b983794c9077f77609cf41747651bfbe2d306416bb8383c",
+    "images": 5,
+    "rawImageByteIdentical": 3,
+    "sdkResizedA2": 2,
+    "resizedDimensions": [
+      2000,
+      1414
+    ],
+    "partialUnderstandingOnly": true,
+    "generalVisualAccuracyAccepted": false,
+    "limitations": [
+      "Read old 20..30 notation as 20.30",
+      "Suggested an unsupported wall/boundary explanation; not a source-backed fact"
+    ],
+    "initialFalseVerifierReportRetained": true
+  },
+  "actualR1Client": {
+    "elapsedMs": 314130,
+    "calls": 27,
+    "protocolErrors": 0,
+    "checks": 72,
+    "wholeBoundedTrialPassed": true,
+    "controllerSemanticRepair": false,
+    "controllerSuppliedReplacementText": false,
+    "sameOriginalTask": true,
+    "sourceDocument": "MAIN",
+    "onlyChangedField": "missingInputs/DECLARED_SHELL_ONLY.description",
+    "rawTraceSHA256": "444771ec0acbdb751f6f8b70fd0acd72b4ac13248f411e876e995dfbfd5d3739",
+    "immutablePlanSHA256": "84fc903dae7ff76a9b861440a333cb512a3bcd8125ac7d945a8cd5769e2f87f0",
+    "inputSHA256": "96786c5e3341dbe7a37b0e656bd1ebdced1e09a7ba77d4b3c528f7807350dcb0",
+    "modelSHA256": "bfe4f5e1438b1cc69aacc88bfbade9a0f9e9e84202fa6d949381c701dacc2b49",
+    "newNativeJobs": 4,
+    "allFiveNativeImagesActuallyRead": true,
+    "actualDeliveredNativeImageByteIdentical": 5,
+    "finalDrawingAndPdfAndSourceCsvLinksVerified": true,
+    "design": {
+      "rooms": 10,
+      "seats": 36,
+      "relations": 3,
+      "sheets": 5,
+      "geometricChecks": 209,
+      "pending": 9,
+      "title": "合成设计机构办公方案",
+      "sourceDocuments": 4
+    }
+  },
+  "drawingReview": {
+    "strictPages": 5,
+    "sourceAndReviewPixelIdentical": 5,
+    "allFiveIndependentlyViewed": true,
+    "boundedChangedContentAccepted": true,
+    "fullDrawingCompletionAccepted": false,
+    "professionalApproval": false,
+    "originalR0ContentRejectionRetained": true,
+    "rawPdfDuplicatePageModeWarningsRetained": true
+  },
+  "regression": {
+    "full": {
+      "passed": 468,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 159075.3933,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "c7e460930673721709d4dd2a20b27bd956bb4e47cc077ebc9ecfbebe34ed7d06"
+    },
+    "staticGate": {
+      "ok": true,
+      "staticOnly": true,
+      "publicFiles": 526,
+      "checks": 3,
+      "logSHA256": "0eb03deab7fd60ae206006372bd9473fc4e173500220d6c03cf1aeb080cda02d"
+    },
+    "mechanicalTwoPackMcp": {
+      "calls": 21,
+      "checks": 3,
+      "newNativeCadExecuted": false
+    },
+    "currentThreeKindReadonly": {
+      "calls": 8,
+      "downloads": 16,
+      "protectedFiles": 68,
+      "analysisStillBindsOriginalR0NotNewR1": true,
+      "actualAiPerformedThisSwitch": false
+    },
+    "legacySixTasks": {
+      "calls": 7,
+      "downloads": 5
+    },
+    "historicalTraces": {
+      "count": 15,
+      "changedPreviouslyPassingVerdicts": 0,
+      "oldReportsRewritten": false
+    }
+  },
+  "retainedFailures": [
+    "Original R0 corrupted pending-note description and content rejection remain",
+    "Actual image client range misread and unsupported explanation remain in verbatim review",
+    "Initial visual verifier raw-byte identity assumption failed on two SDK-resized A2 pages; initial false report retained, corrected report separate",
+    "Initial unit fixture misunderstood blocked success envelope; final checks require original blocking/no model/severity",
+    "Initial source-index unit syntax loader failure and nonmutating omitted-audit golden probe retained in development log",
+    "Initial R1 readonly verifier setup TypeError before MCP; corrected existing protected-file manifest, not project data"
+  ],
+  "limits": [
+    "No independent customer or held-out source/architecture; known synthetic input family and controller workflow instructions",
+    "R0 execution, read-only image review and R1 correction are three actual sessions, not uninterrupted autonomous project completion",
+    "Literal source inclusion/provenance is not semantic sufficiency, source authority or professional standards applicability",
+    "Fixed rectangular shell, straight corridor and finite room/furniture family; no arbitrary architecture or global optimality",
+    "Declared/assumed conditions and all nine pending items remain; fire/accessibility/daylight/acoustics/MEP/installation and authenticated signoff unaccepted",
+    "Only current-machine bounded validation; independent users, new machines and full historical release gate remain outstanding",
+    "Frozen v2 release/DLL and old archives not repackaged; M2–M4 incomplete"
+  ],
+  "nextPriorities": [
+    "P0 Preserve both design packs, analysis, explicit identities, historical outputs and hospital-only evaluator isolation",
+    "P0 Move beyond metadata: broader independent source briefs/current architecture, explicit standard applicability and conflict decisions, measurable source/semantic coverage without guessing authority",
+    "P0 Require actual-client image/text/numerical cross-check and source-backed corrections before handoff; keep visual mistakes separate from successful tool execution",
+    "P1 Richer source-bound layouts, split/merge/multiple-use coordination and project quality with installation/wiring/protection detail",
+    "P2 Independently validate real customers, external users, clean machines and authenticated professional review"
+  ],
+  "evidence": {
+    "artifactRoot": "artifacts/source-note-validation-20261022",
+    "archive": "来源说明修订与实际读图-完整试验证据.zip",
+    "actualReadOnlyImageClient": "space-visual-review-client-20261022",
+    "actualCorrectionClient": "space-note-correction-client-20261022",
+    "originalR0": "space-natural-client-20261022",
+    "sourceSnapshotCapturedBeforeEachClient": true,
+    "oldSourceAndReportsRetained": true
+  }
+}

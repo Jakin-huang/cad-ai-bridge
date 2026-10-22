@@ -168,11 +168,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve two design packs, analysis, explicit task identities, old outputs and isolated hospital evaluator",
-    "P0 Actual-client visual review and source-bound correction of adopted pending-note text plus readable original-document/version locators, preserving IDs/severity/values/grades and old versions",
-    "P0 Broader independent briefs and source/standard applicability under original quality gates",
-    "P1 Source-bound architecture and richer layouts, split/merge/multiple uses, complete project quality and installation coordination",
-    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+    "P0 Preserve both design packs, analysis, explicit identities, historical outputs and hospital-only evaluator isolation",
+    "P0 Move beyond metadata: broader independent source briefs/current architecture, explicit standard applicability and conflict decisions, measurable source/semantic coverage without guessing authority",
+    "P0 Require actual-client image/text/numerical cross-check and source-backed corrections before handoff; keep visual mistakes separate from successful tool execution",
+    "P1 Richer source-bound layouts, split/merge/multiple-use coordination and project quality with installation/wiring/protection detail",
+    "P2 Independently validate real customers, external users, clean machines and authenticated professional review"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -984,6 +984,34 @@
       "durationMs": 150062.397,
       "command": "node --test tests/unit/*.test.mjs",
       "logSHA256": "635c026224b49b425db7262d14e48c158f8998bba7b51983a1c3ab47975d365a"
+    },
+    "professionalApproval": false,
+    "goalComplete": false,
+    "releaseRepackaged": false
+  },
+  "previousPrioritiesBeforeSourceNote": [
+    "P0 Preserve two design packs, analysis, explicit task identities, old outputs and isolated hospital evaluator",
+    "P0 Actual-client visual review and source-bound correction of adopted pending-note text plus readable original-document/version locators, preserving IDs/severity/values/grades and old versions",
+    "P0 Broader independent briefs and source/standard applicability under original quality gates",
+    "P1 Source-bound architecture and richer layouts, split/merge/multiple uses, complete project quality and installation coordination",
+    "P2 Independent real projects, external users, clean machines and authenticated professional review"
+  ],
+  "sourceNoteIncrement": {
+    "validation": "docs/source-note-validation.json",
+    "sameTaskSourceDescriptionCorrection": true,
+    "twoDesignPacks": true,
+    "actualReadOnlyImageReview": true,
+    "actualR1NativeAndImageRead": true,
+    "boundedChangedContentAccepted": true,
+    "generalVisualUnderstandingAccepted": false,
+    "remainingSpacePending": 9,
+    "fullRegression": {
+      "passed": 468,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 159075.3933,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "c7e460930673721709d4dd2a20b27bd956bb4e47cc077ebc9ecfbebe34ed7d06"
     },
     "professionalApproval": false,
     "goalComplete": false,

@@ -1,4 +1,5 @@
 import {createEngineeringTitleManager} from './engineering-title.mjs';
+import {createEngineeringNotesManager} from './engineering-notes.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -45,6 +46,7 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
  const engineeringTasks=createEngineeringTaskManager({runs,adapters:createEngineeringTaskAdapters({schemas,execute,runs})});
  const documents=createProjectDocumentManager({runs,getInputRoot:async()=>(await getSettings()).workspace,taskContext:binding=>engineeringTasks.documentContext(binding)});
  const title=createEngineeringTitleManager({runs,tasks:engineeringTasks,documents});
+ const notes=createEngineeringNotesManager({runs,tasks:engineeringTasks,documents});
  const intake=createEngineeringIntakeManager({runs,getInputRoot:async()=>(await getSettings()).workspace,tasks:engineeringTasks,documents});
  async function execute(action,args={}){
   let parsed;try{if(!schemas[action])throw Error('INVALID_ACTION: unsupported action');parsed=schemas[action].parse(args);}catch(error){return failure(error);}
@@ -67,7 +69,8 @@ export function createExecutor({getSettings=runtimeSettings,launch=launchHost,ru
    if(action==='project_documents')return await documents.run(parsed);
    if(action==='engineering_intake')return await intake.run(parsed);
    if(action==='engineering_title')return await title.run(parsed);
-  }catch(error){const r=failure(error,{stage:'result'});if(action==='engineering_title')return {...r,error:{...r.error,code:error.message?.match(/^((?:TITLE|DOCUMENT)_[A-Z_]+)(?::|$)/)?.[1]??r.error.code},safeToRetry:false,...(/UNCONFIRMED/.test(error.message)?{outcome:'unconfirmed'}:{})};if(action==='engineering_intake')return {...r,error:{...r.error,code:error.message?.match(/^((?:INTAKE|DOCUMENT)_[A-Z_]+)(?::|$)/)?.[1]??r.error.code},safeToRetry:false,...(/UNCONFIRMED/.test(error.message)?{outcome:'unconfirmed'}:{})};if(action==='project_documents')return {...r,error:{...r.error,code:error.message?.match(/^(DOCUMENT_[A-Z_]+)(?::|$)/)?.[1]??r.error.code},safeToRetry:false};return action==='engineering_task'?{...r,jobId:parsed.jobId??(parsed.action==='prepare'?'job-task-'+parsed.requestId.toLowerCase():undefined),safeToRetry:false,...(/UNCONFIRMED|lost reply/i.test(error.message)?{outcome:'unconfirmed'}:{})}:r;}
+   if(action==='engineering_notes')return await notes.run(parsed);
+  }catch(error){const r=failure(error,{stage:'result'});if(action==='engineering_notes')return {...r,error:{...r.error,code:error.message?.match(/^((?:NOTES|DOCUMENT)_[A-Z_]+)(?::|$)/)?.[1]??r.error.code},safeToRetry:false,...(/UNCONFIRMED/.test(error.message)?{outcome:'unconfirmed'}:{})};if(action==='engineering_title')return {...r,error:{...r.error,code:error.message?.match(/^((?:TITLE|DOCUMENT)_[A-Z_]+)(?::|$)/)?.[1]??r.error.code},safeToRetry:false,...(/UNCONFIRMED/.test(error.message)?{outcome:'unconfirmed'}:{})};if(action==='engineering_intake')return {...r,error:{...r.error,code:error.message?.match(/^((?:INTAKE|DOCUMENT)_[A-Z_]+)(?::|$)/)?.[1]??r.error.code},safeToRetry:false,...(/UNCONFIRMED/.test(error.message)?{outcome:'unconfirmed'}:{})};if(action==='project_documents')return {...r,error:{...r.error,code:error.message?.match(/^(DOCUMENT_[A-Z_]+)(?::|$)/)?.[1]??r.error.code},safeToRetry:false};return action==='engineering_task'?{...r,jobId:parsed.jobId??(parsed.action==='prepare'?'job-task-'+parsed.requestId.toLowerCase():undefined),safeToRetry:false,...(/UNCONFIRMED|lost reply/i.test(error.message)?{outcome:'unconfirmed'}:{})}:r;}
   const enqueued=performance.now(),work=queue.then(()=>run(action,parsed,enqueued));queue=work.catch(()=>{});return work;
  }
  async function run(action,parsed,enqueued){

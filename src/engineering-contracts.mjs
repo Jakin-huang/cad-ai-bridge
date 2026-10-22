@@ -1,4 +1,5 @@
 import {titleRevisionParameters} from './engineering-title-contracts.mjs';
+import {noteRevisionParameters} from './engineering-notes-contracts.mjs';
 import {lightingSpaceProgramSchema,lightingSpaceChangesSchema,adoptSpacesFields,lightingSpaceProgramIssues} from './lighting-space-program.mjs';
 import {z} from 'zod';
 import {spaceScopeDecisionsSchema} from './space-scope-decisions.mjs';
@@ -80,11 +81,12 @@ export const engineeringSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('design'),jobId,expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:digest.optional().describe('Optional exact current input digest; when provided it is verified before model reuse or computation.')}),
  z.strictObject({action:z.literal('deliver'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
  z.strictObject({action:z.literal('review_pdfs'),jobId,requestId:z.uuid(),expectedModelSHA256:digest,expectedSourceSHA256:digest}),
+ z.strictObject({action:z.literal('revise_notes'),jobId,requestId:z.uuid(),...noteRevisionParameters.shape}),
  z.strictObject({action:z.literal('revise_title'),jobId,requestId:z.uuid(),...titleRevisionParameters.shape}),
  z.strictObject({action:z.literal('revise'),jobId,expectedRevision:z.number().int().nonnegative(),changes:z.array(z.strictObject({requirementId:id,value:requirementValue,reason:z.string().min(1).max(1000),sourceId:id})).min(1).max(100)}),
  z.strictObject({action:z.literal('review'),jobId,expectedModelSHA256:digest,origin:z.enum(['simulation','unverified_external_record']),reviewer:z.string().min(1).max(128),comments:z.array(z.strictObject({id,target:z.string().min(1).max(128),decision:z.enum(['comment','revise','claimed_accepted']),text:z.string().min(1).max(2000)})).min(1).max(100)})
 ]);
-export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineeringSchema.options.filter(s=>!['deliver','revise_title'].includes(s.shape.action.value)));
+export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineeringSchema.options.filter(s=>!['deliver','revise_title','revise_notes'].includes(s.shape.action.value)));
 
 export function inspectEngineeringInput(raw){
  const input=engineeringInputSchema.parse(raw),issues=[];

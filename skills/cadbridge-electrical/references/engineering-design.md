@@ -188,3 +188,13 @@ apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规
 文档 role 是资料用途，专业 `input.sources.role` 是另一套契约。照明来源只接受 architecture/brief/standard/catalog/review_instruction，不能直接照抄 requirements/coordination/standard_excerpt 等文档用途。文本摘要和来源身份原样复制，类型名称并不确认权威或标准适用性。`supersedes/supersededBy` 会退役整份来源；协调文件仅替代一个房间的一项指标时，应保留主文其他约束及来源有效性，用实际要求与原句记录局部替代，不能把整份主文标成作废。结构参数错误应按当前契约和原输入修正，不用虚构任务身份、空几何/产品或测试填充字段探测接口；来源与参数错误也不等于 CAD 宿主故障。
 
 `bind` 只把同任务、同输入和当前文档集的审阅关联起来，不修改工程参数。文档或输入换版后重新审阅；已有模型须专业修订后重算，不能只换绑定继续交付。`read_review` 分页复核 summary/targets/decisions/documents，current=false 是历史记录；不要把旧 ready 当作当前通过。设计、质量、交付、审核包前读取新 status.documentEvidence；get_job 保存快照不能证明来源仍为最新。evaluation_only 不读正文、不引用、不按其答案生成设计。未带多文档的已有任务继续原契约；不因为医院样例改变其他任务的效果或专业能力范围。
+
+### 出图后的可视审阅与待审说明更正（未发行源码）
+
+机检、PDF规范化与图面/内容审阅分别记录。客户端具备图像读取能力且具有对应文件读取权限时，应实际打开当前输出PNG或审核渲染，逐页核对原文与图面；只看到链接/成功状态不能称已经看图。图像过小或不支持时如实说明，不猜看不清的字。审阅意见也可能误读范围或推测不存在的修正，需对照原文和实际结构化值，不能因此擅改面积、人数、标准或物理条件。
+
+同一任务的 `cad_engineering_notes` 只更正 `missingInputs.description`。先 `inspect` 传原 `task={jobId,expectedProjectId,expectedTaskSHA256}`，取得实际 `expectedRevision/expectedInputSHA256/documents` 及每项 `id/description/severity/expectedDescriptionSHA256`；读当前冻结原文，再 `revise` 传新 `requestId`、同 `task` 和 `parameters={expectedRevision,expectedInputSHA256,notes:[{id,expectedDescriptionSHA256,description,reason,evidence:[{documentId,textSHA256,quote}]}]}`。新 description 是10到1000字/字符的单段原文，必须完整位于单份连续 quote；不要凭错字猜词或从对照取答案。保留“待审/声明/假设”的原意，不能移除缺项、改变ID/严重级/来源链接、降低假设或称已解决。若没有当前原文依据则保持待审，不勉强修订。
+
+完成仅是输入修订和来源重新绑定。用返回的 `job-notechange-UUID` 及同 task 查询 `status`，确认原任务新的实际版本、摘要和来源状态；再按该专业契约 design、检查、deliver、review_pdfs。旧输入/模型/图纸/审核留历史，不改旧PDF，不另建项目绕过；状态不明先核对收据，不换UUID重复。新的来源索引JSON/CSV及图面显示原始文档名、版本、用途和冻结原文行定位，登记身份与字面位置不认证权威或标准适用性。
+
+空间新图面版本明确显示“实际净面积、要求范围、倾向面积”，范围使用“至”；关系表列几何实际值与要求。旧模型按原图面版本读取，不重画历史。所有图仍待专业审核；几何关系、窗接触与走廊路径不能当作消防、无障碍、采光或施工验收。
