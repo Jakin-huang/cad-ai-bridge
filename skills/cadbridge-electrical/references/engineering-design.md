@@ -8,9 +8,13 @@
 
 用 `draft` 提交原句支持的逻辑解释：`frozen.expectedSHA256` 复制冻结摘要，附本版明确续用条件的 reason/evidence；照明 roomUses 逐房间解释用途，requirements 按 roomIds/rule/values 数组提交全部规则，保留全部矛盾值，数字按契约单位换算。空间包提交 program/relations，源壳与尺寸参数由服务器保持。每份非对照原文用 documentDispositions 标明 used/context/unresolved，used 必须实际引用；引用只填 documentId/连续 quote。不要重写 sources、几何、产品、供电或旧缺项，也不要退役仅局部指标被替代的主文。未解决的值用空 values/status=unresolved；遗漏会形成阻断草稿，不能沿用旧要求。新增待审项用 additionalPending，不能删除或升级原有假设。
 
+若 draft 返回 `INTAKE_LITERAL_EVIDENCE_INVALID`，message 中的 JSON 给出 documents 原文集身份、invalidCount 和有界 invalidEvidence（parameters 下的精确 path、documentId、sourceTextSHA256、quoteSHA256、quoteLength），truncated 表示详情未列全。该次未创建/覆盖草稿或正式任务。按文档ID重读这个版本原文，核对摘要并只修正实际错误的连续原句；不拼接不相邻句子、不归一化空白、不从对照取句子，也不因字面错误擅改工程值或来源权威。详情不含替换答案；未列出的错误需下一次完整检查，不能把详情上限当成通过范围。结构参数错误另按 INVALID_ARGUMENT 的字段路径处理。修正稿仍须读取全部需求、来源及条件，原有语义/专业待审不因此解决。
+
 `read` 用同一 baseline/draft 分页读齐 requirements，并核对 summary、conditions 和 sources；ready 仅为已实现的结构检查，不是语义或专业验收。需要纠正时用 previousDraft 建新稿，旧稿保留，不另建正式任务。blocked 时报告矛盾/缺项并停止设计；不靠空物理输入、虚构任务身份、填充字段或诊断宿主来探测参数。
 
 核对通过后 `commit` 传原 baseline/draft、实际 expectedInputSHA256、reviewed=true 和新 requestId；它只采纳一份输入并返回 task，不出图。重复采纳返回同一正式任务，结果不明先 status 核对收据，不能另建任务绕过。随后用正式任务身份查询单个 design 操作契约并调用原有设计/质量/交付流程。该入口当前是无历史基线的有界准备流程；既有来源修订、分类变更及范围编辑继续原协议，不能把未支持情况伪装成可用。医院仍仅是隔离对照样例。
+
+`cad_engineering_task` 的 status/invoke 将 jobId、expectedProjectId、expectedTaskSHA256 放在顶层，与 action 并列；invoke 再附新 requestId、operation 和该操作的 parameters。capabilities 中的 operation 契约描述 parameters；完整外层字段以工具 schema 为准。其他入口使用的嵌套 task 字段不能直接套用在这里。
 
 新任务书先用cad_design_project的inspect_brief读取输入根目录内txt/md，briefFile可为相对输入根的路径；原文text及textSHA256用于新brief来源，rawSHA256标识原文件字节；仅去可选UTF8 BOM、保留换行，不擅自改写。该调用只读，不认证来源权威。
 

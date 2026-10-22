@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "c81733bb8e53ebf5afd144ff92dabb87f3d96d50",
+  "product": "CAD AI Bridge",
+  "status": "exact_intake_evidence_diagnostics_and_quote_only_recovered_design_verified_unplanned_client_error_retained",
+  "goalComplete": false,
+  "overallPracticalAcceptance": false,
+  "generalUnderstandingAccepted": false,
+  "independentCustomerAcceptance": false,
+  "professionalApproval": false,
+  "hospitalDataProcessed": false,
+  "hospitalPolicy": "Hospital is an isolated evaluator only; explicit installed task kind determines behavior. No hospital/customer or final reference drawing used this round.",
+  "releaseRepackaged": false,
+  "newNativeCadExecuted": false,
+  "implemented": [
+    "Preflight all frozen/use/rule/program/relation/selection/additional-pending literal citations before creating a draft",
+    "Report precise parameter paths, document IDs, frozen document-set identity, original text SHA256, submitted quote SHA256 and UTF-16 string length",
+    "Count all invalid citations, return at most 12 details with an explicit truncation flag; source and submitted prose not returned as repair answers",
+    "Keep original spelling, units and whitespace literal; no replacement quotation, numeric value, status, authority or priority is inferred",
+    "Invalid requests leave previous drafts and baseline bytes unchanged, create no formal task and never start native CAD; old valid compilation/model semantics remain"
+  ],
+  "actualClient": {
+    "controlledFaultReproduction": true,
+    "knownPriorActualAiIntent": true,
+    "freshRequirementUnderstanding": false,
+    "controllerSuppliedReplacementQuotes": false,
+    "controllerSemanticRepair": false,
+    "calls": 22,
+    "elapsedMs": 506454,
+    "traceSHA256": "9a306d0c28db904bf2f3a685aef806f90cd7f7fe623183390a3ce9428af1668f",
+    "auditChecks": 41,
+    "expectedLiteralRejections": 1,
+    "unplannedErrors": 1,
+    "controlledRecoveryPassed": false,
+    "wholeClientTrialPassed": false,
+    "finalEngineeringStatePassed": true,
+    "diagnostic": [
+      {
+        "path": "parameters.program[7].evidence[0].quote",
+        "documentId": "MAIN",
+        "sourceTextSHA256": "ee670728fa0c1363a9cf1ef62ad47ef06a1203a1f05cf102d7287b9d2c21be9f",
+        "quoteSHA256": "a48c8fb906ffde50f8bee59a23285e460f7e7400b6dc63a0b0e38cfe2c29ab4e",
+        "quoteLength": 48
+      }
+    ],
+    "invalidCount": 1,
+    "attempts": [
+      {
+        "ok": false,
+        "changedQuotePaths": [],
+        "remainingInvalidQuotes": [
+          "parameters.program[7].evidence[0].quote"
+        ]
+      },
+      {
+        "ok": true,
+        "changedQuotePaths": [
+          "parameters.program[7].evidence[0].quote"
+        ],
+        "remainingInvalidQuotes": []
+      }
+    ],
+    "allNonQuoteParametersUnchanged": true,
+    "design": {
+      "rooms": 10,
+      "seats": 36,
+      "relations": 3,
+      "checks": 210,
+      "pending": 10
+    },
+    "inputSHA256": "cac47c4ea9dbf1111ea21a1fc010da79102bf735ef6d3ca7967e00dd4f284e1f",
+    "modelSHA256": "14d576e65f582f81838160748eea084ce7c430fb756ab147483f7ac644823bf2",
+    "metrics": {
+      "net_room_area_m2": 321.3,
+      "circulation_area_m2": 48,
+      "partition_and_threshold_area_m2": 11.95,
+      "area_preference_deviation_m2": 18.26,
+      "unassigned_area_m2": 49.75,
+      "maximum_entry_route_mm": 21350,
+      "total_entry_route_mm": 128550
+    },
+    "extraError": {
+      "code": null,
+      "layer": "tool_schema_validation",
+      "traceClassification": "transport_or_tool_error",
+      "tool": "cad_engineering_task",
+      "action": "invoke",
+      "operation": "design",
+      "kind": "Task identity was nested under task instead of the required top-level fields; client corrected it itself",
+      "guidanceClarifiedAfterTrial": true,
+      "guidanceRetestedInAnotherSession": false
+    },
+    "performanceClaim": "506454ms is an observed known-case recovery duration, not a measured speed improvement over the prior fresh-interpretation session; inputs, instructions and configured auto routing are not controlled equivalently"
+  },
+  "regression": {
+    "targeted": {
+      "passed": 16,
+      "failed": 0,
+      "logSHA256": "fd5ddc99c574e357cd42bec5e8d7fe62b2e0e8da66fc925cd4edebfca7dc5903"
+    },
+    "firstFixtureFailure": {
+      "scope": "First added unit-fixture run, not a production-code failure",
+      "passed": 14,
+      "failed": 2,
+      "reason": "The fixture reused shared evidence arrays. Mutating one intended quote also changed other fields; actual diagnostics correctly counted 11/16 invalid fields against intended 4/5. Fixture now clones the selected evidence array before mutation; production preflight unchanged.",
+      "recordedFrom": "Observed tool output; full raw first-run log was not saved",
+      "fullRawLogAvailable": false
+    },
+    "full": {
+      "passed": 478,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 164476.0463,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "417e0e7770e83eda912395e359f7e8cbb572f90145823156c2cd1a1746e1898a"
+    },
+    "staticGate": {
+      "ok": true,
+      "checks": 3,
+      "publicFiles": 544,
+      "logSHA256": "b02354d66430602f95241e3938d5caca769e5cf655f3d59446a35a0303d8b7ed",
+      "scope": "Public source/privacy/syntax/JSON/links and pinned dependencies; full historical release gate remains incomplete"
+    },
+    "legacy": {
+      "calls": 7,
+      "downloads": 5,
+      "protectedFiles": 149
+    },
+    "threeKindReadonly": {
+      "calls": 8,
+      "downloads": 16,
+      "protectedFiles": 68
+    },
+    "existingSourceSelection": {
+      "actualMcpProtocol": true,
+      "status": "delivered",
+      "currentModelUnchanged": true,
+      "protectedFiles": 42,
+      "newNativeCadExecuted": false
+    }
+  },
+  "limits": [
+    "One real prior AI rejected intent replayed in a new isolated synthetic baseline; no independent first draft, customer brief, final drawing or new design family",
+    "One deliberate first rejection plus one unplanned generic-task argument error; a valid final model does not make the complete session error-free",
+    "Mechanical quotation presence and source identity do not establish correct interpretation, authority, complete coverage or applicable standards",
+    "Actual AI changed one invalid quote only; numeric constraints, evidence grades, project objectives and pending professional conditions remain unchanged",
+    "No new CAD/PDF authoring this round; prior native output and review evidence remain protected by hashes and actual read-only status, not claimed rerendered",
+    "M2–M4, genuine current-architecture/standards completeness, independent real projects, external users/new machines, professional approval and the full historical release gate remain incomplete"
+  ],
+  "nextPriorities": [
+    "P0 Preserve source/assumption grades, original thresholds, explicit task identity, both design packs, analysis and hospital evaluator isolation",
+    "P0 Expand substantive design on current independent architecture and broader briefs; record source-backed standard applicability/conflicts and measure actual engineering completeness rather than repeat this known recovery case",
+    "P0 Keep actual-client source access and task outer/operation contracts reliable; one unplanned identity-shape error remains, post-trial guidance is not a new verified session",
+    "P1 Richer layout families, shared-space split/merge and multi-use coordination, cross-pack design and installation/wiring/protection detail",
+    "P2 Independent real-project/customer evaluation, external users, clean machines and authenticated professional review"
+  ],
+  "evidence": {
+    "artifactRoot": "artifacts/intake-evidence-validation-20261022",
+    "archive": "引文定位与实际客户端恢复-完整试验证据.zip",
+    "priorTrial": "intake-evidence-client-20261022",
+    "oldReportsNotRewritten": true
+  }
+}

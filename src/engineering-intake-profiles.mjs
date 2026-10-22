@@ -2,6 +2,7 @@
 // threshold relaxation, or professional authority is inferred here.
 import {z} from 'zod';
 import {planningSelectionSchema,planningSelectionIssues} from './planning-selection-contracts.mjs';
+import {verifyIntakeEvidence} from './intake-evidence.mjs';
 import {engineeringInputSchema,inspectEngineeringInput,requirementContract} from './engineering-contracts.mjs';
 import {spacePlanningInputSchema,planningInputIssues,planningProgramSchema,planningRelationSchema} from './space-planning-contracts.mjs';
 import {dependencyDigest as digest} from './task-dependencies.mjs';
@@ -27,7 +28,7 @@ export function intakeFrozenConditions(kind,input){const excluded=kind==='ordina
 export function validateIntakeBaseline(kind,raw){const input=intakeProfile(kind).inputSchema.parse(raw);if(input.sources.some(s=>s.derivedFromFinalDrawing))throw Error('INTAKE_REFERENCE_DERIVED_BASELINE');if(input.sources.some(s=>s.supersedes||s.supersededBy)||['briefRevision','architecturalChanges','spaceProgramChanges','functionalIntake','sourceCarryForwards'].some(k=>input[k]&&(Array.isArray(input[k])?input[k].length:true)))throw Error('INTAKE_BASELINE_HISTORY_UNSUPPORTED: use the existing source/version revision workflow');if(kind==='office-space-planning'&&input.selection?.status==='unresolved'&&(input.selection.criteria.length||input.selection.limits.length))throw Error('INTAKE_SELECTION_SLOT_NOT_EMPTY: retain existing conflicting project decisions through revision');return input;}
 export async function compileIntake({kind,baseline,frozenSHA256,parameters,documents,runs}){
  const profile=intakeProfile(kind),q=profile.parametersSchema.parse(parameters);if(q.frozen.expectedSHA256!==frozenSHA256)throw Error('INTAKE_FROZEN_CONDITIONS_CHANGED');
- const texts=new Map(),used=new Set(),citations=async evidence=>{const out=[];for(const e of evidence){if(!texts.has(e.documentId))texts.set(e.documentId,readDocumentText(documents,e.documentId));const d=await texts.get(e.documentId);if(!d.text.includes(e.quote))throw Error('INTAKE_LITERAL_EVIDENCE_INVALID: '+e.documentId);used.add(e.documentId);out.push({documentId:e.documentId,textSHA256:d.document.textSHA256,quote:e.quote});}return out;};
+ const texts=await verifyIntakeEvidence(q,documents),used=new Set(),citations=async evidence=>evidence.map(e=>{const d=texts.get(e.documentId);used.add(e.documentId);return {documentId:e.documentId,textSHA256:d.document.textSHA256,quote:e.quote};});
  const carry=await citations(q.frozen.evidence),aliases=new Map(baseline.sources.map(s=>[s.id,'SEED_'+digest(s.id).slice(0,16)])),sourceAliases=baseline.sources.map(s=>({originalId:s.id,id:aliases.get(s.id),sha256:s.sha256,role:s.role,derivedFromFinalDrawing:s.derivedFromFinalDrawing})),seedSources=baseline.sources.map(s=>({...s,id:aliases.get(s.id)}));
  let input=mapRefs(structuredClone(baseline),aliases),rows=[],blockers=[],claims=new Map();
  const claim=(target,reason,citations,disposition='supported')=>claims.set(target,{reason,citations,disposition});

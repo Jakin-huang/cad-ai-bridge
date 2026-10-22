@@ -168,10 +168,10 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve explicit task identities, source/assumption grades, original thresholds, both design packs, analysis and hospital evaluator isolation",
-    "P0 Improve actual-client source access and correction: wrong file/array-name paths still produce errors; locate invalid literal evidence by precise field and current source identity without supplying replacement answers; retain first failures and distinguish final state from uninterrupted execution",
-    "P0 Validate substantive engineering outcomes on broader independent briefs and real current architecture; establish explicit source-backed standard applicability/conflict decisions rather than only registered citations",
-    "P1 Richer layout families, shared-space split/merge and multi-use coordination, installation/wiring/protection details and cross-pack design",
+    "P0 Preserve source/assumption grades, original thresholds, explicit task identity, both design packs, analysis and hospital evaluator isolation",
+    "P0 Expand substantive design on current independent architecture and broader briefs; record source-backed standard applicability/conflicts and measure actual engineering completeness rather than repeat this known recovery case",
+    "P0 Keep actual-client source access and task outer/operation contracts reliable; one unplanned identity-shape error remains, post-trial guidance is not a new verified session",
+    "P1 Richer layout families, shared-space split/merge and multi-use coordination, cross-pack design and installation/wiring/protection detail",
     "P2 Independent real-project/customer evaluation, external users, clean machines and authenticated professional review"
   ],
   "plan": "docs/engineering-design-plan.md",
@@ -1063,6 +1063,31 @@
       "durationMs": 165942.7608,
       "command": "node --test tests/unit/*.test.mjs",
       "logSHA256": "0f56c7103495ffa87cd6f9e3a37f04e7bccf1c53af7fa40ffddde9883f215291"
+    },
+    "professionalApproval": false,
+    "goalComplete": false,
+    "releaseRepackaged": false
+  },
+  "previousPrioritiesBeforeIntakeEvidence": [
+    "P0 Preserve explicit task identities, source/assumption grades, original thresholds, both design packs, analysis and hospital evaluator isolation",
+    "P0 Improve actual-client source access and correction: wrong file/array-name paths still produce errors; locate invalid literal evidence by precise field and current source identity without supplying replacement answers; retain first failures and distinguish final state from uninterrupted execution",
+    "P0 Validate substantive engineering outcomes on broader independent briefs and real current architecture; establish explicit source-backed standard applicability/conflict decisions rather than only registered citations",
+    "P1 Richer layout families, shared-space split/merge and multi-use coordination, installation/wiring/protection details and cross-pack design",
+    "P2 Independent real-project/customer evaluation, external users, clean machines and authenticated professional review"
+  ],
+  "intakeEvidenceIncrement": {
+    "validation": "docs/intake-evidence-validation.json",
+    "exactSourceAndFieldDiagnostics": true,
+    "actualAiQuoteOnlyRecoveryFinalStateVerified": true,
+    "actualAiUnplannedErrorFree": false,
+    "newNativeCadExecuted": false,
+    "fullRegression": {
+      "passed": 478,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 164476.0463,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "417e0e7770e83eda912395e359f7e8cbb572f90145823156c2cd1a1746e1898a"
     },
     "professionalApproval": false,
     "goalComplete": false,
