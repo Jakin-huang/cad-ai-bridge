@@ -1274,5 +1274,18 @@
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
+  },
+  "sharedDocumentFreshnessIncrement": {
+    "validation": "docs/shared-document-freshness-validation.json",
+    "upstreamDocumentRevisionInvalidatesSharedSpaces": true,
+    "reviewRebindingRequiresModelRebuild": true,
+    "relatedTests": 34,
+    "newNativeCad": false,
+    "newAiClient": false,
+    "actualReadonlyMcpCalls": 4,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
   }
 }

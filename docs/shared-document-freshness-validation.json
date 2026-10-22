@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "status": "cross_task_document_freshness_verified_with_controller_and_existing_native_readback",
+  "goalComplete": false,
+  "newAiClient": false,
+  "newNativeCad": false,
+  "professionalApproval": false,
+  "engineeringAcceptance": false,
+  "releaseRepackaged": false,
+  "defect": "A delivered upstream space model remained current to downstream consumers after its original document set was superseded.",
+  "implementation": [
+    "Shared space loads now check upstream document-set, input-review and model-binding eligibility",
+    "Historical packs remain readable but stale for data pages, downstream operations and project coverage",
+    "Rebinding documents alone does not authorize an old model; rebuilding and delivery are required",
+    "Legacy tasks without original-document bindings retain their existing acceptance scope"
+  ],
+  "verification": {
+    "beforeFix": {
+      "passed": 0,
+      "failed": 1,
+      "expectedFailure": "Old published pack incorrectly returned current=true"
+    },
+    "relatedRegression": {
+      "passed": 34,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actualReadOnlyMcp": {
+      "calls": 4,
+      "existingProjectReportUnchanged": true,
+      "protectedFiles": 2491,
+      "protectedReferences": 22
+    },
+    "sourceMutationRecovery": "Synthetic source/body update, review rebinding and controller rebuild with CAD test doubles; not native or semantic acceptance",
+    "finalStrengthenedCase": {
+      "passed": 1,
+      "failed": 0,
+      "sourceBodyActuallyChanged": true,
+      "historicalPaginationStale": true
+    }
+  },
+  "limits": [
+    "No new actual AI client trial; prior model service quota exhaustion remains unresolved",
+    "No new native CAD or PDF generation; existing native project inspected read-only",
+    "Synthetic source assumptions are not independently authored customer requirements",
+    "Only declared document bindings and implemented shared-space dependencies are assessed",
+    "M2, M3 and M4 remain incomplete"
+  ],
+  "logs": [
+    {
+      "file": "shared-document-freshness-before.log",
+      "sha256": "5b270d536e319c569c530afae08f1effd91a00d456c830708739d75543089ce8"
+    },
+    {
+      "file": "shared-document-freshness-after.log",
+      "sha256": "8e14930c95727a03ec3a6969b4567bcd7dfd70c00d2c3b78d1de8664841797e9"
+    },
+    {
+      "file": "shared-document-freshness-regression.log",
+      "sha256": "a85ae218a599b066e3d77cd14eea1f36697a905979e14a7a8c3dd54a99872a3e"
+    },
+    {
+      "file": "shared-document-freshness-readback.log",
+      "sha256": "4fe0239d7c9ac5735bb6c9289db1614229ee2fdede33cf78f5ce1f5ce322b387"
+    },
+    {
+      "file": "shared-document-freshness-final.log",
+      "sha256": "9cf6586400fc17247ce45ccf1414d329680049ade54b85721b6a9ab4b778c53e"
+    }
+  ],
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 621,
+    "logSHA256": "eb8026ed2f230a773b3d53606c639fec48917143f861315c8b110c116ed32e8e"
+  },
+  "evidence": {
+    "protectedFiles": 2499,
+    "protectedReferences": 23,
+    "location": "Private local evidence directory; excluded from public release"
+  }
+}

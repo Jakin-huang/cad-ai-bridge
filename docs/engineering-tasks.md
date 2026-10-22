@@ -114,6 +114,8 @@ spaces/context/sources三节分别读取，最多100条且每页数据最多256K
 
 上游修订程序后，即使新方案尚未生成，旧照明status.spaceProgram.current也会变false。新设计、质量计算、优化、采纳和交付被阻断；历史请求仍能读取原收据，但current始终描述当前状态，不能把重放当成新成果。历史模型、图纸和审核字节保留。
 
+上游启用原始文档审核时，文档集换版也会使已发布空间包失效，即使空间任务仍显示已交付、模型修订号尚未变化。共享包加载同时核对文档版本、当前输入审核和模型所绑定的审核；`currentProducer.documentEvidence` 提供原因。只重新绑定文档不使旧模型恢复有效，必须完成模型重算和新原生交付。历史空间分页仍可读取，但 `current=false`；项目审核不得将其计为当前覆盖。未启用文档审核的历史任务保持原有校验范围，不追认其具有原文语义验收。
+
 显式adopt_spaces通过普通invoke调用，parameters含expectedRevision、expectedInputSHA256、新binding以及carryForward{expectedConditionsSHA256,reason,evidence{sourceId,quote}}。expectedConditionsSHA256由冻结的非几何照明条件规范JSON计算，包含各房间用途/高度/工作面/障碍和要求/标准/灯具/电气/光度/反射/眩光条件；quote须逐字来自摘要正确的活动照明任务书，说明其他条件继续适用。采用新来源ID并保留supersedes及spaceProgramChanges链，重查历史输入、旧/新功能摘要、来源和条件摘要。成功产生新输入修订，旧模型/CAD/质量结果及审核退出当前，全部选定空间保守重算，不做选择性CAD更新。
 
 adopt_spaces仍只支持同一上游生产任务、同一项目、同一选定房间ID清单及照明use不变的方案改版；不能绕过它的限制。新增/删除房间和明确用途/条件变化使用下述完整修订。流明估算设计可能返回ok=true/status=blocked的诊断结果，必须同时检查状态、模型存在及failed=0，不能只看ok。
