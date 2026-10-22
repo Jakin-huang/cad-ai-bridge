@@ -30,9 +30,9 @@
 
 ## 执行动作
 
-新项目先处理建筑条件：`inspect_architecture` 接收 requestId、drawing、expectedSha256、sourceId、sourceOrigin、inventoryOrigin、scope、boundaryLayers、labelLayers、expectedRooms；可提供 geometryLayers、ignoredLabels 和 inferRectangles。scope.rootHandles 是所选布局的根实体句柄，不能填定义内部句柄。先通过根层查询定位建筑块；所列空间同名时用 labelInstancePath 区分。
+新项目先处理建筑条件：`inspect_architecture` 接收 requestId、drawing、expectedSha256、sourceId、sourceOrigin、inventoryOrigin、scope、boundaryLayers、labelLayers、expectedRooms；可提供 geometryLayers、ignoredLabels、boundaryGroups 和 inferRectangles。scope.rootHandles 是所选布局的根实体句柄，不能填定义内部句柄。先通过根层查询定位建筑块；所列空间同名时用 labelInstancePath 区分。
 
-boundaryLayers 声明的是明确房间边界图层，必须是可验证闭合直线多段线；曲线、开口、重叠、遗漏和未展开外参会阻断完整性结论。geometryLayers 是需要绘制的背景几何，未支持的背景对象保留在捕获中并列为待审。ignoredLabels 必须逐个写排除理由。inventoryOrigin=source_labels 只能说明来源标签清点，不是独立项目空间表。sourceOrigin=historical_final_drawing 必须保留历史成图派生标记。
+boundaryLayers 声明的是明确房间边界图层，可为闭合直线多段线，或通过 boundaryGroups 显式列出的闭合 LINE 组；曲线、开口、重叠、遗漏和未展开外参会阻断完整性结论。boundaryGroups 每项为 {id,instancePaths}，使用完整源对象路径，3—200条 LINE 端点必须精确连接成单一简单闭环；顺序和方向可不同，系统不吸附、不补缺口、不将凹形改成矩形。相邻空间可显式共用同一边，未分配线、分叉、重复对象、多闭环或自交仍阻断。输出 boundaryInstancePaths 保留全部源线身份，不能当成专业房间分类或独立建筑来源认证。geometryLayers 是需要绘制的背景几何，未支持的背景对象保留在捕获中并列为待审。ignoredLabels 必须逐个写排除理由。inventoryOrigin=source_labels 只能说明来源标签清点，不是独立项目空间表。sourceOrigin=historical_final_drawing 必须保留历史成图派生标记。
 
 返回建筑包 jobId、packSHA256、覆盖和问题清单。不能仅凭 ok=true 继续：还须核对 coverage.completeInventory / geometryComplete 与 status。若明确允许矩形推断，也不能将 inferred 改称实测边界。
 

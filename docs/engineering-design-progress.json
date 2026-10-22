@@ -1092,5 +1092,20 @@
     "professionalApproval": false,
     "goalComplete": false,
     "releaseRepackaged": false
+  },
+  "lineBoundaryIncrement": {
+    "validation": "docs/line-boundary-validation.json",
+    "explicitSourceCycles": true,
+    "concaveSourceAndDesignVerified": true,
+    "automaticRoomInference": false,
+    "newDesignNativeDelivery": false,
+    "fullRegression": {
+      "passed": 482,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 192079.8228,
+      "logSHA256": "6b11d472778dab70ec06f62e1af165af9d05ea037d9ba853aa380fc8c2326351"
+    },
+    "goalComplete": false
   }
 }

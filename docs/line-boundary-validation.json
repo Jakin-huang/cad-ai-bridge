@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "4afe1a201a49463b05b5e240edd9b72bb8a061d6",
+  "status": "explicit_line_cycle_intake_and_bounded_design_verified",
+  "goalComplete": false,
+  "overallPracticalAcceptance": false,
+  "professionalApproval": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Explicit boundaryGroups retain all source LINE identities and exact endpoints",
+    "Accept one simple planar closed cycle, including concave outlines and explicit shared edges",
+    "Reject gaps without snapping, branches, reused or ambiguous objects, disconnected cycles, self intersections and incomplete boundary inventory",
+    "Preserve old polyline behavior and emit multi-segment source paths in JSON, CSV and architecture-change status"
+  ],
+  "actualNative": {
+    "actualAiClient": false,
+    "syntheticSource": true,
+    "checks": 11,
+    "spaces": 2,
+    "eachRoomAreaM2": 27,
+    "eachRoomVertices": 6,
+    "devices": 10,
+    "circuits": 2,
+    "method": "flux-method with assumed product and conditions",
+    "designChecks": {
+      "passed": 46,
+      "failed": 0,
+      "pending": 7
+    },
+    "nativeHostRuns": 6,
+    "sourceSHA256": "9128dc99c997d64b77890985b6bd39e0139725157eea3ca7265d4944fe674cac",
+    "packSHA256": "3d0928ccddfcdfd1b871aad4ce974c609f78b59e6e81c2ffc993f100ba386705",
+    "modelSHA256": "86e504a30d253be5e49cf0bddfcd5147acfaa9bf3ea610c5129a0ac65d122557",
+    "newDesignNativeDelivery": false,
+    "sourceUnchanged": true
+  },
+  "regression": {
+    "targetedObserved": {
+      "passed": 22,
+      "failed": 0
+    },
+    "full": {
+      "passed": 482,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 192079.8228,
+      "logSHA256": "6b11d472778dab70ec06f62e1af165af9d05ea037d9ba853aa380fc8c2326351"
+    },
+    "legacy": {
+      "calls": 7,
+      "downloads": 5,
+      "protectedFiles": 149
+    },
+    "existingNativeSelection": {
+      "protectedFiles": 42,
+      "readOnly": true
+    },
+    "staticGate": {
+      "ok": true,
+      "checks": 3,
+      "publicFiles": 548,
+      "logSHA256": "9092c5f94404cbae9cc36d3bb27402d2e8e97c898ea24a0e08dbcf76aedd2251",
+      "scope": "Public source/privacy/syntax/JSON/links and pinned dependencies; full historical release gate remains incomplete"
+    }
+  },
+  "limits": [
+    "Explicit source paths still require selection; this is not automatic room inference from arbitrary wall/door drawings",
+    "No geometric snapping, opening-gap closure, curved boundaries or source authority certification",
+    "This expands architectural intake for existing lighting design; office-space planning still has its own rectangular shell and straight-corridor constraints",
+    "Real CAD created/captured the synthetic input; the resulting design model was not newly delivered to DWG/PDF",
+    "No independent customer, natural-language client, real photometric quality or professional review acceptance",
+    "M2, M3, M4 and independent project/new-machine/external-user gates remain incomplete"
+  ],
+  "evidence": {
+    "artifactRoot": "artifacts/line-boundary-validation-20261022",
+    "nativeReport": "native-intake/line-boundary-integration-report.json",
+    "nativeAudit": "native-source-audit.json",
+    "fullUnitLog": "full-unit.log"
+  }
+}
