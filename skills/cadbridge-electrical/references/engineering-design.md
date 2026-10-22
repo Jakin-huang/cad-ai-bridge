@@ -224,3 +224,8 @@ apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规
 新建 cad_project_documents 文档集默认 coveragePolicy=fields_and_sources。已有字段全有引文仍不代表原文要求都已录入。用 source_blocks 按 nextOffset 读取全部非对照段落；blockId/blockSHA256 来自原文版本和UTF-16位置，不自行拼接或猜测。review.sourceCoverage 每段明确 disposition(mapped/context/unresolved/conflict)、targetIds、reason。mapped 必须链接真实 targets，且对应字段的连续引文位于该段或包含该段；context 的 targetIds 为空并说明非设计要求的理由。遗漏、未解决或冲突阻止 ready/bind。禁止为了放行将要求改为背景或把严格文档集降级；fields_only 仅用于明确声明的历史字段核对，不能表示原文完整理解。原文更新使旧映射失效。
 
 使用 cad_engineering_intake 时，parameters 同样接受 sourceCoverage。首次 draft 可保留缺项形成 blocked 草稿，再 read section=input 取得实际目标ID，并按 source_blocks 补全映射后提交新 draft；不得先 commit 再补原文覆盖。read_review section=source_coverage 可逐项复核，summary 返回段落计数。旧任务没有该记录时保持旧历史，不追认覆盖。原文逐段处置属于可追踪的结构检查，不证明语义正确、规范权威或专业审核。
+
+
+多字段/多段原文优先使用分批审核：cad_project_documents action=draft_review 绑定原 task、当前 set 和 expectedInputSHA256，首次不传 previousDraft，后续传上次返回的 draft。decisions 提交 targetIds/disposition/reason/citations，citation 仅需 documentId/连续原句 quote；sourceCoverage 仅需 blockId/disposition/targetIds/reason。此接口不接收逐字段/逐句段摘要，摘要从调用者指定的不可变输入与文档版本派生，不改变工程值或解释。每批最多100条决定或段落，建议8—10条；新批次按目标ID、文档ID或blockId替换相应决定，其他行保留。每个草稿独立不可变，旧草稿可回看，不自动合并不同分支。
+
+read_review_draft 支持 summary/missing/decisions/documents/source_coverage 分页。补齐后 commit_review 传原 task/set/expectedInputSHA256、最终 draft 和新 requestId，走完整正式 review 检查；完整冲突可以形成 ready=false 的正式审阅。草稿未齐时返回 committed=false；修正后使用新请求ID。readyForReview 只是草稿结构状态，正式 review 和 bind 仍须明确执行。输入或文档换版必须重新审核，跨任务草稿拒绝；只读模式只能读取草稿。此流程不确认原文语义、权威、标准适用性或专业签审。

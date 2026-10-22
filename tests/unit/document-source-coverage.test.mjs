@@ -16,6 +16,7 @@ test('source coverage rejects unrelated citations, unknown/stale/duplicate links
  const incomplete=checkSourceCoverage(blocks,targets,decisions,[entry]);assert.equal(incomplete.summary.complete,false);assert.equal(incomplete.blockers[0].code,'DOCUMENT_SOURCE_UNREVIEWED');
  const second={...entry,blockId:blocks[1].blockId,blockSHA256:blocks[1].blockSHA256};assert.throws(()=>checkSourceCoverage(blocks,targets,decisions,[entry,second]),/TARGET_CITATION_REQUIRED/);
  for(const invalid of [{...entry,blockSHA256:'b'.repeat(64)},{...entry,targetIds:['absent']},{...entry,targetIds:[]},{...entry,disposition:'context'}])assert.throws(()=>checkSourceCoverage(blocks,targets,decisions,[invalid]));
+ assert.throws(()=>checkSourceCoverage(blocks,targets,decisions,[{...entry,blockSHA256:'b'.repeat(64)}]),error=>{const detail=JSON.parse(error.message.slice(error.message.indexOf(': ')+2));assert.equal(detail.path,'sourceCoverage[0].blockSHA256');assert.equal(detail.blockId,entry.blockId);assert.equal(detail.expected,entry.blockSHA256);return true;});
  assert.throws(()=>checkSourceCoverage(blocks,targets,decisions,[entry,entry]),/UNKNOWN_OR_DUPLICATE/);
  const unresolved=checkSourceCoverage(blocks,targets,decisions,[entry,{...second,disposition:'unresolved',targetIds:[],reason:'Emergency lighting has no implemented design condition or supported task here.'}]);assert.equal(unresolved.summary.unreviewed,0);assert.equal(unresolved.summary.complete,false);assert.equal(unresolved.blockers[0].code,'DOCUMENT_SOURCE_UNRESOLVED');
 });

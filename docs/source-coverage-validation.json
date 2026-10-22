@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "updated": "2026-10-22",
   "baseCommit": "34edadf6f04defcc753acb9e6524655217c3e24b",
-  "status": "implementation_and_local_regression_verified_actual_client_running",
+  "status": "implementation_and_local_regression_verified_actual_client_failed",
   "goalComplete": false,
   "engineeringAcceptance": false,
   "professionalApproval": false,
@@ -50,17 +50,21 @@
     }
   },
   "actualClient": {
-    "status": "running_unaccepted",
+    "status": "terminal_failed",
     "case": "explicit-replacement",
     "developmentInput": true,
     "independentCustomer": false,
     "sourceDocuments": 5,
     "sourceBlocks": 39,
-    "lastObservedToolPhase": "read_targets_and_source_blocks",
+    "lastObservedToolPhase": "review_rejected_no_designed_model",
     "wholeTrialPassed": false,
     "controllerSemanticRepair": false,
     "modelValuesAccepted": false,
-    "evidence": "artifacts/source-coverage-client-20261022"
+    "evidence": "artifacts/source-coverage-client-20261022",
+    "elapsedMs": 1795804,
+    "finalEngineeringStatePassed": false,
+    "terminationReason": "Owned trial stopped after repeated identical source-block digest errors; terminal report retained",
+    "failureSummary": "One of 39 source-block digests was copied incorrectly and repeated; an intermediate partial review omitted required targets. No ready review, designed model or native CAD delivery resulted."
   },
   "legacy": {
     "actualReadOnlyMcp": true,
@@ -77,7 +81,8 @@
     "Initial strict test fixture had a semicolon and therefore four real sentence blocks rather than three; fixture disclaimer changed to a single sentence and the original failing run retained",
     "First historical check incorrectly expected both old document tasks current; persisted source head proves the space task was already stale before this change. Final check verifies current/stale status against those original persisted versions and retains all 124 file hashes",
     "516 full tests precede the final cross-set downgrade guard; final 49 affected tests passed after it",
-    "Actual-client source snapshot predates the final downgrade guard and two local integration harnesses; no interpretation/engineering success claimed while the original client handle remains live"
+    "Actual-client source snapshot predates the final downgrade guard and two local integration harnesses; no interpretation/engineering success claimed while the original client handle remains live",
+    "Terminal follow-up: the actual client trial ended unsuccessfully after 1795804 ms. Earlier running observations are historical, not a current live process. Correctly interpreted prepared values do not establish completed review or engineering delivery."
   ],
   "limits": [
     "Structural disposition does not prove that every clause was understood correctly; a mistaken context classification or incorrect interpretation still needs independent evaluation",
@@ -90,7 +95,7 @@
     "root": "artifacts/source-coverage-client-20261022",
     "liveProcess": "process.json",
     "clientTrace": "live-events.ndjson",
-    "clientReport": "client-report.json (only after terminal completion)",
+    "clientReport": "client-report.json",
     "legacy": "legacy-final-check.json",
     "source": "final-source-manifest.json",
     "protectedFiles": 435,

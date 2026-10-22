@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "324d80f4b67a715bff24f055c4f950842090b131",
+  "status": "implementation_and_recovered_client_native_verified_content_issue_pending",
+  "goalComplete": false,
+  "professionalApproval": false,
+  "engineeringAcceptance": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Immutable incremental review batches for both design packs, bound to exact task/input/document snapshots",
+    "Server derives redundant target, source-block and citation hashes; explicit interpretations, literal quotes and dispositions remain client decisions",
+    "Read missing items and repair only changed rows; formal commit reuses all existing review gates, then explicit bind/design",
+    "Indexed source-hash and citation errors; missing target IDs returned",
+    "Draft read permitted in read-only mode; cross-task, changed source, replay conflict and tampering rejected"
+  ],
+  "regression": {
+    "full": {
+      "passed": 518,
+      "failed": 0,
+      "scope": "Final product code; additional test assertions and oracle-only fixes checked separately",
+      "logSHA256": "f74fd0f132a5e51bc0fb0db9004457482f2f2133d9292382eac700090ed32ecf"
+    },
+    "finalAffected": {
+      "passed": 17,
+      "failed": 0,
+      "logSHA256": "1a7b40d7d9b3ad2fb36180d2a0985236b64f9498fdfaa7b86d2975cf524e1f01"
+    },
+    "sourceAliasOracle": {
+      "passed": 1,
+      "failed": 0
+    },
+    "protectedFiles": 435,
+    "protectedReferences": 20,
+    "recoveryContinuationGate": {
+      "passed": 1,
+      "failed": 0,
+      "logSHA256": "b70388a63a1921adf986a59638074db4858274f60a7e4ed6c47a8fd66068a5ca"
+    }
+  },
+  "actualClients": [
+    {
+      "evidence": "artifacts/source-coverage-client-20261022",
+      "status": "failed_no_designed_model",
+      "elapsedMs": 1795804,
+      "wholeClientTrialPassed": false
+    },
+    {
+      "evidence": "artifacts/document-drafts-client-20261022",
+      "status": "designed_after_recovery_but_turn_limit_reached",
+      "elapsedMs": 356907,
+      "protocolErrors": 1,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "oracleReaudit": "client-reaudit.json",
+      "originalReportPreserved": true,
+      "controllerSemanticRepair": false
+    },
+    {
+      "evidence": "artifacts/document-drafts-client-20261022-final",
+      "status": "completed_after_client_recovery",
+      "elapsedMs": 282350,
+      "protocolErrors": 3,
+      "checks": 67,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "controllerSemanticRepair": false
+    }
+  ],
+  "limits": [
+    "Known public developer fixture, not independent customer or held-out generalization",
+    "Source classification and literal linkage are structural checks, not proof of semantic completeness or standard authority",
+    "Native CAD and PDF mechanics verified; E01 contains a stale execution-phase restriction in client-authored scope, so final content/semantic acceptance remains incomplete.",
+    "Independent projects, external users, clean machines and professional review remain pending; M2-M4 incomplete"
+  ],
+  "evidence": {
+    "root": "artifacts/document-drafts-client-20261022-final",
+    "native": "artifacts/document-drafts-native-20261022",
+    "protectedFiles": 471,
+    "protectedReferences": 20
+  },
+  "newNativeCad": true,
+  "native": {
+    "evidence": "artifacts/document-drafts-native-20261022",
+    "verified": true,
+    "modelUnchanged": true,
+    "rooms": 2,
+    "lights": 29,
+    "circuits": 2,
+    "sheets": 5,
+    "sourceCoverage": {
+      "required": true,
+      "blocks": 39,
+      "reviewed": 39,
+      "unreviewed": 0,
+      "mapped": 25,
+      "context": 14,
+      "unresolved": 0,
+      "conflicts": 0,
+      "complete": true,
+      "semanticCoverageAccepted": false,
+      "professionalApproval": false
+    },
+    "modelSHA256": "92b31f061a76a9886d8dd1902f1c7b68250d249d0b823569d13ebd8d6e147be3",
+    "registeredFiles": 26,
+    "strictPdfPages": 5,
+    "sourceAndNormalizedPixelsIdentical": true,
+    "allPagesVisuallyInspected": true,
+    "layoutVerified": true,
+    "contentReviewAccepted": false,
+    "pendingContentIssue": "E01 repeats client-authored input.scope saying no CAD publication, although this continuation has produced review drawings. Trial execution restrictions leaked into project scope. Original input/model/drawings retained; not silently repaired."
+  },
+  "retainedObservations": [
+    "Original monolithic review failed after repeated bad digest, without a model; retained unchanged",
+    "First incremental client recovered one missing citation and designed, but exhausted its 48-turn budget; original report retained",
+    "Alias-aware re-audit corrected 18 false negatives from source-label changes; physical values/source identities matched; tool and terminal errors remain failures",
+    "Final client had one read pagination-limit error and two source-citation errors, then completed normally; whole zero-error trial remains false",
+    "Separate opt-in native continuation checks successful client termination, final-state acceptance, no controller semantic repair, and only the observed recovered citation/read-limit errors. It never upgrades zero-error usability",
+    "Native preflight initially omitted read from its page-error allowlist and refused before CAD; added only this observed read-only case and verified its test",
+    "Raw CAD PDFs retain duplicate PageMode warnings; normalized review PDFs parse strictly and render identically",
+    "Visual inspection found stale no-CAD-publication scope text on E01; original model and all outputs retained, final content acceptance not claimed",
+    "After client trials, public MCP description clarifies limit as 1-100 entries rather than character count and documents incremental actions; no engineering implementation changed. Syntax checked separately."
+  ],
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 598,
+    "logSHA256": "e64942b13e8b0a1d9016aa8d9b82d78127c2d59d166f0c8ae14ee00d69e6181e",
+    "finalDescriptionSyntaxChecked": true
+  }
+}

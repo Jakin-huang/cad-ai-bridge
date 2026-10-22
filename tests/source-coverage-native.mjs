@@ -3,9 +3,11 @@
 import fs from 'node:fs/promises';import path from 'node:path';import crypto from 'node:crypto';import assert from 'node:assert/strict';
 import {Client} from '@modelcontextprotocol/client';import {StdioClientTransport} from '@modelcontextprotocol/client/stdio';
 import {outsideProject,projectPath} from '../src/local-paths.mjs';import {hashFile} from '../src/drawings.mjs';import {engineeringDigest} from '../src/engineering-design.mjs';import {auditEngineeringDesign} from '../src/engineering-verification.mjs';
-const [clientFolder,target]=process.argv.slice(2),root=outsideProject(path.resolve(target)),read=async f=>JSON.parse(await fs.readFile(f,'utf8')),prior=await read(path.join(clientFolder,'client-report.json')),experiment=await read(path.join(clientFolder,'experiment.json'));
-assert.ok(prior.ok&&prior.wholeClientTrialPassed&&prior.finalEngineeringStatePassed);await fs.mkdir(root);
-const report={ok:false,newAiClient:false,actualAiClientInput:true,professionalApproval:false,calls:[],protectedFiles:[...experiment.protectedFiles]},save=()=>fs.writeFile(root+'/native-report.json',JSON.stringify(report,null,2)+'\n');
+import {qualifyRecoveredDocumentClient} from './helpers/recovered-document-client.mjs';
+const [clientFolder,target,mode]=process.argv.slice(2),root=outsideProject(path.resolve(target)),read=async f=>JSON.parse(await fs.readFile(f,'utf8')),prior=await read(path.join(clientFolder,'client-report.json')),experiment=await read(path.join(clientFolder,'experiment.json'));
+assert.ok(!mode||mode==='--recovered-client');
+let recovery;if(mode)recovery=qualifyRecoveredDocumentClient(prior,await fs.readFile(path.join(clientFolder,'events.ndjson'),'utf8'));else assert.ok(prior.ok&&prior.wholeClientTrialPassed&&prior.finalEngineeringStatePassed);await fs.mkdir(root);
+const report={ok:false,newAiClient:false,actualAiClientInput:true,wholeClientTrialPassed:prior.wholeClientTrialPassed,recovery:recovery??null,professionalApproval:false,calls:[],protectedFiles:[...experiment.protectedFiles,{file:path.join(clientFolder,'client-report.json'),sha256:await hashFile(path.join(clientFolder,'client-report.json'))},{file:path.join(clientFolder,'events.ndjson'),sha256:await hashFile(path.join(clientFolder,'events.ndjson'))}]},save=()=>fs.writeFile(root+'/native-report.json',JSON.stringify(report,null,2)+'\n');
 const c=new Client({name:'source-coverage-native',version:'1'});
 async function call(q){report.calls.push(q);await save();const raw=await c.callTool({name:'cad_engineering_task',arguments:q},{timeout:1800000}),r=JSON.parse(raw.content.find(x=>x.type==='text').text);await fs.appendFile(root+'/calls.ndjson',JSON.stringify({q,result:r})+'\n');assert.ok(r.ok,JSON.stringify(r));return r;}
 try{

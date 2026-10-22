@@ -1,6 +1,7 @@
 // This ledger makes omissions visible. It does not certify the meaning of text.
 import {z} from 'zod';
 import {dependencyDigest as digest} from './task-dependencies.mjs';
+import {documentError} from './document-diagnostics.mjs';
 export const sourceCoverageSchema=z.array(z.strictObject({
  blockId:z.string().min(1).max(180),blockSHA256:z.string().regex(/^[a-f0-9]{64}$/),
  disposition:z.enum(['mapped','context','unresolved','conflict']),
@@ -29,16 +30,16 @@ export function documentSourceBlocks(document,text){
 export function checkSourceCoverage(blocks,targets,decisions,raw,{required=true}={}){
  const entries=sourceCoverageSchema.parse(raw??[]),byId=new Map(blocks.map(b=>[b.blockId,b])),targetIds=new Set(targets.map(t=>t.id)),seen=new Set(),blockers=[];
  if(blocks.length>5000)throw Error('DOCUMENT_SOURCE_BLOCK_BUDGET');
- for(const entry of entries){const b=byId.get(entry.blockId);
-  if(!b||seen.has(entry.blockId))throw Error('DOCUMENT_SOURCE_BLOCK_UNKNOWN_OR_DUPLICATE');seen.add(entry.blockId);
-  if(entry.blockSHA256!==b.blockSHA256)throw Error('DOCUMENT_SOURCE_BLOCK_CHANGED');
+ for(const [index,entry] of entries.entries()){const b=byId.get(entry.blockId);
+  if(!b||seen.has(entry.blockId))throw documentError('DOCUMENT_SOURCE_BLOCK_UNKNOWN_OR_DUPLICATE',{index,blockId:entry.blockId});seen.add(entry.blockId);
+  if(entry.blockSHA256!==b.blockSHA256)throw documentError('DOCUMENT_SOURCE_BLOCK_CHANGED',{path:`sourceCoverage[${index}].blockSHA256`,blockId:b.blockId,documentId:b.documentId,expected:b.blockSHA256,received:entry.blockSHA256,next:'Re-read source_blocks for the same frozen set; repair this entry or use draft_review with snapshot-bound block IDs.'});
   if(new Set(entry.targetIds).size!==entry.targetIds.length||entry.targetIds.some(id=>!targetIds.has(id)))throw Error('DOCUMENT_SOURCE_TARGET_UNKNOWN_OR_DUPLICATE');
   if(entry.disposition==='mapped'){
    if(!entry.targetIds.length)throw Error('DOCUMENT_SOURCE_MAPPED_TARGET_REQUIRED');
    for(const id of entry.targetIds){const d=decisions.find(d=>d.targetIds.includes(id));
     // A link must be backed by a citation in this exact source block. An
     // unrelated quote elsewhere in the same document is not coverage.
-    if(!d||!['supported','assumption'].includes(d.disposition)||!d.citations.some(c=>c.documentId===b.documentId&&c.textSHA256===b.textSHA256&&c.quote.trim().length>=5&&(b.text.includes(c.quote)||c.quote.includes(b.text))))throw Error('DOCUMENT_SOURCE_TARGET_CITATION_REQUIRED');
+    if(!d||!['supported','assumption'].includes(d.disposition)||!d.citations.some(c=>c.documentId===b.documentId&&c.textSHA256===b.textSHA256&&c.quote.trim().length>=5&&(b.text.includes(c.quote)||c.quote.includes(b.text))))throw documentError('DOCUMENT_SOURCE_TARGET_CITATION_REQUIRED',{path:`sourceCoverage[${index}]`,blockId:b.blockId,documentId:b.documentId,targetId:id,next:'Provide a supported/assumption target decision citing this exact source passage, or explicitly retain the source as unresolved/conflict.'});
    }
   }else if(entry.disposition==='context'&&entry.targetIds.length)throw Error('DOCUMENT_SOURCE_CONTEXT_HAS_TARGETS');
   if(['unresolved','conflict'].includes(entry.disposition))blockers.push({code:'DOCUMENT_SOURCE_'+entry.disposition.toUpperCase(),blockId:b.blockId,documentId:b.documentId,targetIds:entry.targetIds,reason:entry.reason});

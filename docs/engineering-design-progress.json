@@ -749,11 +749,11 @@
     "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "currentFullRegression": {
-    "passed": 516,
+    "passed": 518,
     "failed": 0,
     "skipped": 0,
-    "logSHA256": "848681ece13fb0a536d945205fee5b3c8a49e8a96c378726d592f0d5f74789c4",
-    "scope": "Before final cross-set source-coverage downgrade guard; final 49 affected tests passed after it"
+    "logSHA256": "f74fd0f132a5e51bc0fb0db9004457482f2f2133d9292382eac700090ed32ecf",
+    "scope": "Final product implementation; later oracle and recovered-native-harness changes separately verified by 17 affected tests and one recovery gate test."
   },
   "previousPrioritiesBeforePdfReviewClosure": [
     "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
@@ -1213,11 +1213,24 @@
     "defaultNewDocumentSourceCoverage": true,
     "bothDesignPacks": true,
     "compactIntakeGate": true,
-    "actualClient": "running_unaccepted",
+    "actualClient": "terminal_failed_no_designed_model",
     "newNativeCad": false,
     "goalComplete": false,
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
+  },
+  "documentDraftIncrement": {
+    "validation": "docs/document-drafts-validation.json",
+    "bothDesignPacks": true,
+    "immutableBatches": true,
+    "actualClient": "completed_after_recovery_zero_error_trial_failed",
+    "goalComplete": false,
+    "newNativeCad": true,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete",
+    "contentReviewAccepted": false,
+    "scopeTextIssue": "Client execution restriction copied into project scope on E01"
   }
 }
