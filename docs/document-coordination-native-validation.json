@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "status": "native_document_change_space_and_lighting_revision_verified",
+  "goalComplete": false,
+  "newNativeCad": true,
+  "newAiClient": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "releaseRepackaged": false,
+  "knownDeveloperCase": true,
+  "verification": {
+    "checks": [
+      "native shell capture binds all15 declared source boundary/entry/window/keepout entities",
+      "source entry width mismatch is rejected before space design",
+      "shared source program retains11 spaces and pending proposal authority",
+      "initial lighting design has zero failed subset checks",
+      "document change alone retires the upstream space authority before program revision",
+      "stale document blocks another downstream native delivery",
+      "upstream program revision makes existing lighting stale before a new space model exists",
+      "new lighting delivery is blocked by superseded upstream without a native restart",
+      "old successful receipt remains historical while current source is visibly stale",
+      "wrong frozen lighting conditions digest cannot authorize adoption",
+      "adopted geometry/program invalidates lighting model, CAD and simulated review",
+      "actual OFFICE_A boundary and function changed, entire selected lighting scope marked for recomputation",
+      "adopted lighting redesign has zero failed subset checks",
+      "new lighting model uses changed upstream geometry with all frozen lighting conditions identical",
+      "old space/lighting drawings, PDFs and source models remain byte-identical",
+      "old lighting output replay never replaces current adopted revision1",
+      "whole project retains six explicitly unselected lighting spaces",
+      "fresh read-only process verifies adopted upstream, model and saved delivery",
+      "fresh process verifies new upstream document/model binding"
+    ],
+    "nativeChecks": 19,
+    "officeA": [
+      {
+        "areaM2": 36.34,
+        "seats": 4
+      },
+      {
+        "areaM2": 47.88,
+        "seats": 6
+      }
+    ],
+    "unchangedLightingConditions": true,
+    "lighting": [
+      {
+        "lights": 41,
+        "circuits": 5
+      },
+      {
+        "lights": 41,
+        "circuits": 5
+      }
+    ],
+    "oldCaseFilesUnchanged": 49,
+    "sourcePdfPages": 20,
+    "directlyInspectedPages": 20,
+    "finalBookletPages": 10,
+    "bookletSHA256": "aa798f3fabb5577e3b39a90077b53a53fdf4d50a6218aea8d233a543342ae760",
+    "bookletPixelIdentical": true,
+    "packageSourceFiles": 50,
+    "packageRegisteredFiles": 54,
+    "packageLinks": 86,
+    "projectSummary": {
+      "includedTasks": 2,
+      "scopeSpaces": 11,
+      "requiredKinds": [
+        "office-space-planning",
+        "ordinary-lighting"
+      ],
+      "designCoverageComplete": false,
+      "deliveryCoverageComplete": false,
+      "openIssues": 146,
+      "issuesByCode": {
+        "CHECK_ITEM_PENDING": 56,
+        "EVIDENCE_REVIEW_REQUIRED": 71,
+        "SPACE_DELIVERY_MISSING": 6,
+        "SPACE_DESIGN_MISSING": 6,
+        "TASK_CHECKS_PENDING": 2,
+        "TASK_SCOPE_PENDING": 5
+      },
+      "professionalApproval": false,
+      "engineeringAcceptance": false
+    }
+  },
+  "limits": [
+    "Known developer source and structured program, not independent client or semantic acceptance",
+    "Lighting is explicitly only5 of11 upstream spaces; remaining6 are outside this lighting scope",
+    "Lighting uses unchanged assumed flux-method conditions; no new IES/reflection/UGR/professional quality acceptance",
+    "Same producer and same selected room/use schedule adoption only; new/deleted rooms and use reclassification need new authority",
+    "Space family and professional standards limits unchanged",
+    "All source blocks mechanically mapped as assumptions to a known synthetic program; not an independent requirement interpretation test",
+    "No new actual AI trial; prior model-service quota failure remains unresolved",
+    "Package paths and hashes checked; no new browser visual acceptance",
+    "English developer scope and technical codes remain customer-facing presentation limitations",
+    "Current host only; independent projects, external users, clean machines and professional review remain pending",
+    "M2, M3 and M4 remain incomplete"
+  ],
+  "logs": [
+    {
+      "file": "document-coordination-native.log",
+      "sha256": "5b13ff5af4d108dae01de1654befe013caa7f5e6a89317794a36133ffee68848"
+    },
+    {
+      "file": "document-coordination-independent.log",
+      "sha256": "9762ede321c63e6a5818a908d442723eedf76b9ff856cfbb3b15bc701b440a23"
+    },
+    {
+      "file": "document-coordination-pdf.log",
+      "sha256": "11a0f4983e8c88fcaa26722293a6663e29a2afea811b25f7ce50f0bb7a11603d"
+    }
+  ],
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 623,
+    "logSHA256": "d2072e13ce0a6af9284008a1cd3a7bcca3def75da24bdeb9afdbd49f4977e6b8"
+  },
+  "evidence": {
+    "protectedFiles": 3041,
+    "protectedReferences": 24,
+    "location": "Private local evidence directory; excluded from public release"
+  }
+}

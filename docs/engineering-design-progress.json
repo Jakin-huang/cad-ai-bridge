@@ -1287,5 +1287,22 @@
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
+  },
+  "documentCoordinationNativeIncrement": {
+    "validation": "docs/document-coordination-native-validation.json",
+    "newNativeCad": true,
+    "newAiClient": false,
+    "nativeChecks": 19,
+    "sourcePdfPages": 20,
+    "finalBookletPages": 10,
+    "originalCaseFilesUnchanged": 49,
+    "knownDeveloperCase": true,
+    "independentSemanticAcceptance": false,
+    "engineeringAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
   }
 }
