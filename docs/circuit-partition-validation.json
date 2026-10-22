@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "4a1e61cf9b971fe6982a0a404001050339ca2d35",
+  "status": "bounded_circuit_design_native_delivery_and_project_package_verified",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "newAiClient": false,
+  "newNativeCad": true,
+  "controllerAuthoredSyntheticInput": true,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Preserve already feasible legacy grouping and complete model identity, including decimal product power",
+    "When declared current/drop conditions fail, search contiguous fixed-device-order groups for minimum circuit count then total schematic route length",
+    "Keep lights, product selection, input thresholds, conductor size and protective-device declarations unchanged",
+    "Record partition decisions in model, review report and CAD explanation; distinguish bounded infeasibility, fixed supply conflict and exhausted candidate budget"
+  ],
+  "actual": {
+    "rooms": 9,
+    "devices": 65,
+    "oldCircuits": 9,
+    "newCircuits": 15,
+    "changedRooms": 6,
+    "maximumDropPercent": 0.195992,
+    "declaredLimitPercent": 0.2,
+    "auditPassed": 203,
+    "pending": 88,
+    "modelSHA256": "7b73f0a67828caeb3dd3804ea8e660cdfa237b7268f625fc43946152ca9c2f54",
+    "oldFailedCircuitChecks": 6,
+    "newFailedChecks": 0,
+    "nativeSteps": 4,
+    "reviewPdfPages": 5,
+    "registeredOutputFiles": 24,
+    "oldTaskFilesUnchanged": 186,
+    "projectSpaces": 11,
+    "lightingDeliveredSpaces": 9,
+    "unresolvedSpaces": 2,
+    "reviewPackageSourceFiles": 42,
+    "reviewPackageIssues": 179,
+    "reviewPackageLinksVerified": 72,
+    "reviewPackageManifestSHA256": "8355655efe511e2e73ab97fb855c570bf9f3c814b08774f7ad4f3af2202ff839",
+    "finalSourceReproducesNativeModel": true
+  },
+  "regression": {
+    "initialFull": {
+      "passed": 501,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 202745.5006,
+      "logSHA256": "d9c506f85cec3275178f54502a19eeda5d9ca60b0d5b5605b168bd5e33774588"
+    },
+    "decimalTargeted": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 10151.03,
+      "logSHA256": "0dd6545a5bfce88606d103028bed2e516ba7ee18ebdfd8e3e607ca5abfa62232"
+    },
+    "finalFull": {
+      "passed": 502,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 210552.4342,
+      "logSHA256": "3bcdbc4bad316b13c8bb56b311854a0669a8ea850ccd254922ff9fc5c5574e2b"
+    },
+    "staticGate": {
+      "passed": 3,
+      "publicFiles": 573,
+      "logSHA256": "36bb46daa70fd5d76ed12cccb5383f57672778cea39e79742bab6f8aeb48aa57"
+    }
+  },
+  "independentChecks": {
+    "exhaustiveContiguousPartitionCases": 15,
+    "legacyIntegerModelDigest": true,
+    "legacyDecimalModelDigest": true,
+    "existingEngineeringAudit": true,
+    "rawAndNormalizedPdfPixelsIdentical": true,
+    "pdfStrictParse": true,
+    "pdfPageGeometry": true,
+    "visualLayout": true
+  },
+  "retainedObservations": [
+    "Initial full suite passed 501 tests, but separate decimal-product comparison found floating addition drift; fixed legacy multiplication and added a full-model digest regression before final full suite",
+    "Sandbox denied local Node child-process launch; authorized local test rerun succeeded",
+    "Raw CAD PDFs retain duplicate PageMode entries; normalized outputs pass strict parsing and preserve text, page size and rendered pixels",
+    "Original native source snapshot precedes the decimal fix; final source separately retained and reproduces the exact delivered model"
+  ],
+  "limits": [
+    "Known source-assisted nine-space developer geometry and explicit assumed 0.2% limit, not a new customer or code requirement",
+    "No actual AI interpretation trial in this increment",
+    "Optimality applies only to contiguous fixed device order and current schematic route family; not global wiring optimization",
+    "Existing engineering verifier recomputes circuit checks but does not independently prove explanatory decision metadata or global optimality",
+    "Actual installation routing, ceiling coordination, temperature corrections, short circuit and protective coordination remain pending",
+    "This case uses assumed flux estimates; optical quality, product authority and professional applicability remain pending",
+    "Two of eleven project spaces still have no lighting delivery",
+    "Package file integrity and relative links checked; no new browser trial in this increment",
+    "External users, new machines, independent real projects and authenticated professional review remain unaccepted"
+  ],
+  "evidence": {
+    "root": "artifacts/circuit-partition-validation-20261022",
+    "native": "report.json",
+    "legacy": "legacy-model.json",
+    "legacyAudit": "legacy-audit.json",
+    "independentAudit": "independent-design-audit.json",
+    "finalReproduction": "final-model-reproduction.json",
+    "pdf": "independent-pdf-check.json",
+    "visual": "visual-review.json",
+    "projectPackage": "project-package/report.json",
+    "finalSource": "final-source-manifest.json",
+    "protectedReferences": 17
+  }
+}

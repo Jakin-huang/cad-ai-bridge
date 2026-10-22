@@ -749,12 +749,13 @@
     "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "currentFullRegression": {
-    "passed": 407,
+    "passed": 502,
     "failed": 0,
     "skipped": 0,
-    "durationMs": 143795.5735,
-    "command": "node --test --test-concurrency=4 tests/unit/*.test.mjs",
-    "logSHA256": "8ae2942238d75281689d8c47ba59df64b7887554337000910f3aeca57e393338"
+    "durationMs": 210552.4342,
+    "logSHA256": "3bcdbc4bad316b13c8bb56b311854a0669a8ea850ccd254922ff9fc5c5574e2b",
+    "command": "node --test tests/unit/*.test.mjs",
+    "scope": "Final source after circuit partition and decimal compatibility fix"
   },
   "previousPrioritiesBeforePdfReviewClosure": [
     "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
@@ -1167,6 +1168,18 @@
     "oldTaskFilesUnchanged": 186,
     "engineeringAcceptance": false,
     "professionalApproval": false,
+    "goalComplete": false
+  },
+  "circuitPartitionIncrement": {
+    "validation": "docs/circuit-partition-validation.json",
+    "newNativeCad": true,
+    "newAiClient": false,
+    "oldCircuits": 9,
+    "newCircuits": 15,
+    "unchangedLights": 65,
+    "declaredLimitPercent": 0.2,
+    "maximumEstimatedDropPercent": 0.195992,
+    "pending": 88,
     "goalComplete": false
   }
 }

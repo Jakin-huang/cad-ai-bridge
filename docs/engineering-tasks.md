@@ -167,3 +167,5 @@ cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、
 项目级只读审核：`cad_engineering_task action=project_review` 传 `expectedProjectId`、显式 `tasks:[{jobId,expectedTaskSHA256}]`、列表内的 `scopeTaskJobId` 和 `requiredKinds`。范围任务必须具有当前已发布共享空间包。`section=summary/tasks/spaces/issues`，按 `offset/limit` 读取全页，续页用 `expectedReportSHA256`；旧摘要或读取期间变化拒绝。报告按空间核对所需专业的当前设计/原生交付，列出漏项、重复任务待选择、过期来源、未确认操作与待审依据；未列任务/专业未知。覆盖率不代表规范适用、完整工程或人工签审；不触发重算/出图，不改原任务。
 
 项目级待审包：先读 `project_review` 取得当前 `reportSHA256`，再调用 `project_review_package`，传相同 `expectedProjectId/tasks/scopeTaskJobId/requiredKinds`、新 `requestId` 和必填 `expectedReportSHA256`；此动作写入独立本地目录，不能在只读模式使用。返回 `entry` 为离线 HTML 入口，包含两类任务成果、空间覆盖、登记需求/条件/来源/标准及全部问题；包内复制登记成果并记录摘要，不自动复制标准全文或原始输入资料。复制后再次检查所有任务快照，变化则保留失败目录且不发布成功结果；同请求只校验后重用，不能覆写。上限10000个成果、2 GiB源文件；超限明确失败。旧包始终是历史快照，审核前重新查询当前摘要；覆盖完整也不代表工程验收或专业签审。
+
+回路设计：普通照明生成器在原灯数/负荷分组已满足声明电流、载流量和压降限制时保留原分组；仅在超限时搜索固定灯具顺序的连续分组，先最少回路，再比较示意路径估长。保留灯位、灯具、线径、断路器、载流量假设和所有原限值，不自动改大线径或保护参数。每房间最多核算20000组候选；预算耗尽、固定供电声明冲突和该分组族无可行方案分别报告，不能外推所有安装方案无解。`model.circuitPartitioning`记录发生细分的房间及前后指标，审核HTML与CAD说明保留范围。该估算沿用既有保守示意路径和电阻压降公式，实际敷设、温升修正、短路与保护配合仍待专项验证。
