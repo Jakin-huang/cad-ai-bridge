@@ -6,6 +6,10 @@
 
 已有结构化已知条件时，优先使用 `cad_engineering_intake`：`inspect_baseline` 只读取得输入根内 JSON 的原始摘要；`freeze` 关联当前文档集和项目/任务，固定几何、物理、产品、尺寸与原缺项。若调用上下文已给出 baseline/frozenSHA256，直接复用，不再次冻结或新建任务。`capabilities kind=...` 读取小型解释契约。
 
+新项目不需要先填一份旧需求作为种子。用 `capabilities {kind,section:"conditions"}` 读取仅已知条件的文件契约，在输入 JSON 顶层声明 `intakeMode:"conditions_only"`。空间规划省略 program/relations（或传空数组），只提供当前已知的壳体、入口/窗/保留构件、参数、来源和待补项；照明省略 requirements（或空数组），各房间 use 省略或为 unknown，不预填 standardSpace/secondaryUseAssessments。brief 仍用于记录已知物理条件及参数的原句，不能夹带最终方案或假装是当前委托答案。几何、产品、供电等未提供的必需条件不能自动补造。已有分类或设计历史继续使用原输入/修订协议。
+
+inspect_baseline 返回实际 intakeMode；仅条件的空间输入 rooms 为空，表示尚无功能房间程序，不是几何提取失败。freeze 保存原文件和规范化空逻辑列表；之后从独立原始文档解释 program/relations 或 roomUses/requirements，再 draft/read/commit。空列表不会生成占位房间、默认要求或设计；空间正式编译仍需至少一个有效房间程序，未能提供时保留冻结条件并继续补齐原文解释。当前原文逐段覆盖、冲突与缺项门槛均保留。该入口减少预填答案依赖，不自动识别任务类型或认证语义理解。
+
 用 `draft` 提交原句支持的逻辑解释：`frozen.expectedSHA256` 复制冻结摘要，附本版明确续用条件的 reason/evidence；照明 roomUses 逐房间解释用途，requirements 按 roomIds/rule/values 数组提交全部规则，保留全部矛盾值，数字按契约单位换算。空间包提交 program/relations，源壳与尺寸参数由服务器保持。每份非对照原文用 documentDispositions 标明 used/context/unresolved，used 必须实际引用；引用只填 documentId/连续 quote。不要重写 sources、几何、产品、供电或旧缺项，也不要退役仅局部指标被替代的主文。未解决的值用空 values/status=unresolved；遗漏会形成阻断草稿，不能沿用旧要求。新增待审项用 additionalPending，不能删除或升级原有假设。
 
 若 draft 返回 `INTAKE_LITERAL_EVIDENCE_INVALID`，message 中的 JSON 给出 documents 原文集身份、invalidCount 和有界 invalidEvidence（parameters 下的精确 path、documentId、sourceTextSHA256、quoteSHA256、quoteLength），truncated 表示详情未列全。该次未创建/覆盖草稿或正式任务。按文档ID重读这个版本原文，核对摘要并只修正实际错误的连续原句；不拼接不相邻句子、不归一化空白、不从对照取句子，也不因字面错误擅改工程值或来源权威。详情不含替换答案；未列出的错误需下一次完整检查，不能把详情上限当成通过范围。结构参数错误另按 INVALID_ARGUMENT 的字段路径处理。修正稿仍须读取全部需求、来源及条件，原有语义/专业待审不因此解决。

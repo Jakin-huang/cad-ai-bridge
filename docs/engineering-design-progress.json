@@ -1304,5 +1304,18 @@
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
+  },
+  "conditionsIntakeIncrement": {
+    "validation": "docs/conditions-intake-validation.json",
+    "conditionsWithoutPrefilledLogicalProgram": true,
+    "actualMcpCalls": 22,
+    "fullRegressionPassed": 533,
+    "newAiClient": false,
+    "newNativeCad": false,
+    "independentSemanticAcceptance": false,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
   }
 }

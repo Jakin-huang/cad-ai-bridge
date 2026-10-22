@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "status": "conditions_only_admission_and_two_pack_design_verified",
+  "goalComplete": false,
+  "newAiClient": false,
+  "newNativeCad": false,
+  "independentSemanticAcceptance": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "releaseRepackaged": false,
+  "problem": "First-time spatial intake required a complete prior room program before the client could interpret original requirements.",
+  "implemented": [
+    "Optional conditions_only baseline accepts no prefilled program/relations or lighting requirements",
+    "Lighting room use remains unknown until explicitly interpreted; prefilled classifications are rejected in this mode",
+    "Original physical/source cross-field checks are retained through schema extension",
+    "Source-linked interpretations and complete source coverage precede formal adoption and design",
+    "Existing full-input preparation, frozen conditions and historical records remain compatible",
+    "Scoped capabilities expose the conditions file schema; public skill describes limits and use"
+  ],
+  "verification": {
+    "beforeImplementation": {
+      "passed": 0,
+      "failed": 5
+    },
+    "targeted": {
+      "passed": 5,
+      "failed": 0
+    },
+    "fullRegression": {
+      "passed": 533,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 217351.9156
+    },
+    "actualMcp": {
+      "calls": 22,
+      "designedKinds": [
+        "ordinary-lighting",
+        "office-space-planning"
+      ],
+      "freshReadOnlyProcesses": 2,
+      "sourceCoverageComplete": true
+    },
+    "testFixtureCorrections": [
+      "Initial coverage incorrectly linked source metadata without quotations; corrected test links without weakening product checks",
+      "Initial test used an oversized whole-program quote; replaced with exact per-row quotes and conflict/unresolved source dispositions"
+    ]
+  },
+  "limits": [
+    "Test-supplied interpretations and known development inputs, not an independent AI or client trial",
+    "Physical/source conditions must still be explicitly supplied; arbitrary CAD extraction is not introduced",
+    "At least one valid room program is still needed to compile a spatial draft; no placeholder rooms or invented unknown values",
+    "Conditions-only mode does not automatically choose task kind, decide document authority or certify semantic coverage",
+    "Existing classified uses and task history use the original input/revision workflows",
+    "No new CAD/PDF, optical assessment, standard applicability or professional acceptance in this increment",
+    "M2, M3 and M4 remain incomplete; external users and clean machines remain unverified"
+  ],
+  "logs": [
+    {
+      "file": "intake-conditions-before.log",
+      "sha256": "7548b16ad7d7dbc6c10f9708d6ec83ef6a33e7805a16b5ee1779ac3fcb9ae4e8"
+    },
+    {
+      "file": "intake-conditions-after.log",
+      "sha256": "81088df3c03b07aa6028c336622fa16044efab318e7669afcb3fbda61a553ce9"
+    },
+    {
+      "file": "intake-conditions-corrected.log",
+      "sha256": "7b03caf737cde32e65b758a064f1af8bf72ea100b7d5d479f6f19ec9b8a6263c"
+    },
+    {
+      "file": "intake-conditions-final.log",
+      "sha256": "8c963c300f870b1f850720654beb9eb08182e74b2648d7219b1928b0afa00383"
+    },
+    {
+      "file": "conditions-intake-protocol.log",
+      "sha256": "5648164f6c3e5a9583b0b55c91cc2c93c930c619a07598807f6f75b0f740e1bf"
+    },
+    {
+      "file": "conditions-intake-full.log",
+      "sha256": "b0cab1a639118f0e2e2c26d6965d81d3612d12a9a9ed0b251a547e7dcd2395d4"
+    }
+  ],
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 627,
+    "logSHA256": "f2addb3c990a5d5de0072b631c725488eb1904bf7f435306c424748635c869df"
+  },
+  "evidence": {
+    "protectedFiles": 3128,
+    "protectedReferences": 25,
+    "location": "Private local evidence directory; no project files included in public source"
+  }
+}

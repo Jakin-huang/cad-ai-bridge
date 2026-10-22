@@ -180,6 +180,8 @@ cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、
 
 ## 原文要求与设计条件双向核对
 
+`cad_engineering_intake capabilities` 可用 `section=conditions` 查询 `intakeMode=conditions_only` 文件契约；默认仍返回原参数契约。新空间委托可只冻结壳体和物理条件，不先提供房间 program/relations；新照明委托可不预填 requirements，房间用途保留 unknown。原文解释随后通过同一 draft/read/commit 进入设计，正式任务中不保存 intakeMode 技术标记。原有完整输入方式保持兼容；两种格式都执行原几何/来源交叉检查、对照隔离与无导入历史限制。这里仍要求明确的结构化物理条件，不意味着从任意 CAD 自动识别现场条件，也不代表任意自然语言任务已能自动完成。
+
 新建文档集默认fields_and_sources。cad_project_documents source_blocks按分页返回原文句段、位置与摘要；review.sourceCoverage逐段登记mapped/context/unresolved/conflict、targetIds和reason。未处置或未解决句段阻止审阅绑定；mapped必须有对应字段及相关原句。read_review section=source_coverage可读取完整处置。紧凑intake的parameters也接收sourceCoverage，可先形成blocked草稿、读取实际input目标后再补全。更新原文使旧映射失效，严格文档集及任务不能降级。
 
 fields_only仅保留历史字段核对口径，不能冒称任务书完整理解。句段处置和数值字段自检仍需与独立语义判断、标准适用及工程审核分开。验证结果见[原文覆盖验证](source-coverage-validation.json)。
