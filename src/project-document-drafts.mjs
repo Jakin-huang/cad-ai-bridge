@@ -5,7 +5,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {dependencyDigest as digest} from './task-dependencies.mjs';
 import {jobDirectory,jobJson} from './jobs.mjs';
-import {loadDocumentSet,readDocumentText,documentSetSourceBlocks} from './project-document-store.mjs';
+import {loadDocumentSet,readDocumentText,documentSetSourceBlocks,verifyDocumentReview} from './project-document-store.mjs';
 import {checkSourceCoverage} from './document-source-coverage.mjs';
 import {documentError as fail} from './document-diagnostics.mjs';
 const scope={semanticCoverageAccepted:false,professionalApproval:false,authorityVerified:false};
@@ -36,8 +36,17 @@ export function createDocumentDraftManager({runs,context,taskContext,review,page
    return {...result,committed:true,draft:q.draft};
   }
   let prior;
+  if(q.previousDraft&&q.fromReview)throw fail('DOCUMENT_DRAFT_MULTIPLE_BASES',{next:'Select either previousDraft or fromReview, never both.'});
   if(q.previousDraft){prior=await load(q.previousDraft);assertScope(prior,q,task);}
-  if(!q.decisions.length&&!q.documentDispositions.length&&!q.sourceCoverage.length)throw fail('DOCUMENT_DRAFT_EMPTY_PATCH',{next:'Supply at least one explicit target, document or source decision.'});
+  if(q.fromReview){
+   const base=await verifyDocumentReview(runs,q.fromReview);
+   if(digest(base.task)!==digest(q.task)||base.childJobId!==task.childJobId||base.kind!==task.kind||digest(base.set)!==digest(q.set))throw fail('DOCUMENT_DRAFT_REVIEW_SCOPE_CHANGED',{next:'Only the same task and exact document version can seed a review. Changed documents need new source interpretation.'});
+   const current=new Map(targets.map(t=>[t.id,t])),old=new Map(base.targets.map(t=>[t.id,t]));
+   // A grouped rationale touching any changed value is not carried at all.
+   const decisions=base.decisions.filter(d=>d.targetIds.every(id=>current.has(id)&&old.has(id)&&digest(current.get(id).value)===digest(old.get(id).value))).flatMap(d=>d.targetIds.map(id=>({...d,targetIds:[id],expectedValuesSHA256:current.get(id).singleTargetValuesSHA256})));
+   prior={decisions,documentDispositions:base.documentDispositions,sourceCoverage:(base.sourceCoverage??[]).filter(e=>e.targetIds.every(id=>current.has(id)))};
+  }
+  if(!q.fromReview&&!q.decisions.length&&!q.documentDispositions.length&&!q.sourceCoverage.length)throw fail('DOCUMENT_DRAFT_EMPTY_PATCH',{next:'Supply at least one explicit target, document or source decision.'});
   if(Buffer.byteLength(JSON.stringify(q))>512*1024)throw fail('DOCUMENT_DRAFT_PATCH_BUDGET',{maxBytes:512*1024});
   const byTarget=new Map(targets.map(t=>[t.id,t])),blocks=await documentSetSourceBlocks(ctx),byBlock=new Map(blocks.map(b=>[b.blockId,b])),documents=ctx.version.documents.filter(d=>d.role!=='evaluation_only'),byDocument=new Map(documents.map(d=>[d.id,d]));
   const seen=new Set(),patch=[];
@@ -69,7 +78,7 @@ export function createDocumentDraftManager({runs,context,taskContext,review,page
   const used=new Set(decisions.flatMap(d=>d.citations.map(c=>c.documentId))),documentIssues=documentDispositions.filter(d=>d.disposition==='used'&&!used.has(d.documentId)||d.disposition==='context'&&used.has(d.documentId)).map(d=>({documentId:d.documentId,code:'DOCUMENT_DISPOSITION_CITATION_MISMATCH'}));
   const unresolvedTargets=decisions.filter(d=>['unresolved','conflict'].includes(d.disposition)).map(d=>d.targetIds[0]),unresolvedDocuments=documentDispositions.filter(d=>d.disposition==='unresolved').map(d=>d.documentId);
   const summary={targetCount:targets.length,reviewedTargets:decisions.length,documentCount:documents.length,reviewedDocuments:documentDispositions.length,sourceBlockCount:blocks.length,reviewedSourceBlocks:sourceCoverage.length,missingCount:missing.length,pendingLinks,documentIssues,unresolvedTargets,unresolvedDocuments,sourceBlockers:coverage.blockers,complete:!missing.length,readyForReview:!missing.length&&!pendingLinks.length&&!documentIssues.length&&!unresolvedTargets.length&&!unresolvedDocuments.length&&!coverage.blockers.length,...scope};
-  const jobId='job-docdraft-'+q.requestId.toLowerCase(),record={schemaVersion:1,jobId,requestSHA256:digest(q),previousDraft:q.previousDraft??null,task:q.task,set:q.set,inputSHA256:task.inputSHA256,childJobId:task.childJobId,decisions,documentDispositions,sourceCoverage,missing,summary,...scope},draft={jobId,sha256:digest(record)},dir=path.join(runs,jobId);
+  const jobId='job-docdraft-'+q.requestId.toLowerCase(),record={schemaVersion:1,jobId,requestSHA256:digest(q),previousDraft:q.previousDraft??null,...(q.fromReview?{fromReview:q.fromReview}:{}),task:q.task,set:q.set,inputSHA256:task.inputSHA256,childJobId:task.childJobId,decisions,documentDispositions,sourceCoverage,missing,summary,...scope},draft={jobId,sha256:digest(record)},dir=path.join(runs,jobId);
   try{await fs.mkdir(dir);await fs.writeFile(path.join(dir,'draft.json'),JSON.stringify(record,null,2)+'\n',{flag:'wx'});}catch(e){if(e.code!=='EEXIST')throw e;const old=await jobJson(await jobDirectory(runs,jobId),'draft.json');if(digest(old)!==draft.sha256||old.requestSHA256!==digest(q))throw fail('DOCUMENT_DRAFT_REQUEST_CONFLICT_OR_UNCONFIRMED',{requestId:q.requestId});}
   return {ok:true,draft,summary,next:'Append with previousDraft, inspect read_review_draft, then commit_review. Binding and design remain separate operations.',...scope};
  }

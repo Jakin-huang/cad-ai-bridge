@@ -229,3 +229,12 @@ apply 前逐项读取 requirements，沿实际 nextOffset 读齐全部房间/规
 多字段/多段原文优先使用分批审核：cad_project_documents action=draft_review 绑定原 task、当前 set 和 expectedInputSHA256，首次不传 previousDraft，后续传上次返回的 draft。decisions 提交 targetIds/disposition/reason/citations，citation 仅需 documentId/连续原句 quote；sourceCoverage 仅需 blockId/disposition/targetIds/reason。此接口不接收逐字段/逐句段摘要，摘要从调用者指定的不可变输入与文档版本派生，不改变工程值或解释。每批最多100条决定或段落，建议8—10条；新批次按目标ID、文档ID或blockId替换相应决定，其他行保留。每个草稿独立不可变，旧草稿可回看，不自动合并不同分支。
 
 read_review_draft 支持 summary/missing/decisions/documents/source_coverage 分页。补齐后 commit_review 传原 task/set/expectedInputSHA256、最终 draft 和新 requestId，走完整正式 review 检查；完整冲突可以形成 ready=false 的正式审阅。草稿未齐时返回 committed=false；修正后使用新请求ID。readyForReview 只是草稿结构状态，正式 review 和 bind 仍须明确执行。输入或文档换版必须重新审核，跨任务草稿拒绝；只读模式只能读取草稿。此流程不确认原文语义、权威、标准适用性或专业签审。
+
+
+同一照明任务的工程范围描述可通过 cad_engineering_task invoke operation=revise_scope 修订。先查 capabilities section=operations operation=revise_scope 与当前 input/status；参数 expectedRevision/expectedInputSHA256/expectedScope/scope/reason/evidence[{documentId,textSHA256,quote}]，仅scope文字变化，全部几何、要求、产品、来源及待审保持。执行权限、是否在本轮启动CAD等属于调用阶段限制，不能作为持久工程范围；服务端只核验来源字面引用，不自动认证新范围语义。修订会归档并失效旧模型、质量、图纸与审核，必须重新审阅绑定后design及出图。
+
+修订后 draft_review 可用 fromReview 引用同任务、同一冻结文档集的历史正式审阅（不能同时传previousDraft）。仅值完全相同的目标决定被继承；分组决定只要涉及任何已变目标就整组不继承。发生目标删除的原文映射需重新处置，当前改动/新增字段列入missing，不能自动放行。read_review_draft检查missing与pendingLinks，补充明确的新决定后commit_review/bind；文档版本或任务改变不允许继承。该机制同时适用于照明和空间规划的已有修订入口。
+
+### 声明安装条件的手动单极接线
+
+ordinary-lighting 可选 installation（ceiling_junction_single_pole）：明确全房间安装标高、开关位置/额定值及来源，配合 routingConditions。系统生成独立回路的L/SL/N/PE端子图、竖向及平面路径、逐灯压降、E07和安装CSV。感应/旁路不支持该拓扑；源条件缺失、相冲突或额定值不足会阻断。安装条件进入来源变更与范围依赖，不能从最终对照图抽取接线作为输入。E02/E03/E06仍为原示意及基本估量，不得与E07数量叠加。所有产品适配、底盒容量、管槽、穿墙和保护待审，不自动签审。详见 docs/lighting-installation.md。

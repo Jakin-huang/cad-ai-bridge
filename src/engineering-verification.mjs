@@ -1,3 +1,4 @@
+import {auditLightingInstallation} from './lighting-installation-verification.mjs';
 import {auditRouteSchedule} from './engineering-route-schedule-verification.mjs';
 import {auditDeclaredRoutes} from './engineering-routing-verification.mjs';
 import {architecturalRevisionIssues} from './engineering-architecture-revisions.mjs';
@@ -10,7 +11,7 @@ import {declaredRoomUses,auditSharedUseBasis,sharedUseInputIssues} from './light
 // Recompute postconditions from persisted model relationships. Never trust the
 // generator's ok flag, its room totals, or an existing signed-off state.
 export function auditEngineeringDesign(m){
- const checks=[],pending=[],p=m.input,add=(id,ok,detail,refs=[])=>checks.push({id,ok,detail,refs});
+ const checks=[...auditLightingInstallation(m)],pending=[],p=m.input,add=(id,ok,detail,refs=[])=>checks.push({id,ok,detail,refs});
  const near=(a,b,t=1e-4)=>Math.abs(a-b)<=t;
  const sourceMap=new Map(p.sources.map(s=>[s.id,s]));
  if(p.architecturalChanges?.length){const c=p.architecturalChanges.at(-1);add('architecture_revision_dependencies',!sourceRevisionIssues(p).some(i=>i.severity==='blocking')&&architecturalRevisionIssues(p).length===0,'Source-bound room transitions and active architecture supersession match the current input');add('drawing_architecture_revision',m.scene.entities.filter(e=>e.kind==='text').map(e=>e.text).join('').includes('当前建筑 '+c.sourceId+'；替代 '+c.supersededSourceId+'；边界及声明入口锚点按来源重建，旧图及旧审核仅历史。'),'CAD notes identify current/retired architecture and the scope of source anchors');}

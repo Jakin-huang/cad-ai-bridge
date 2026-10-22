@@ -13,7 +13,7 @@ export function replaceProjectArchitecture(input,pack,{changeId,priorRevision,pr
  if(p.sources.some(s=>s.id===pack.sourceId)||old.sha256.toLowerCase()===pack.sourceSHA256)throw Error('ARCHITECTURE_SOURCE_ID_OR_CONTENT_UNCHANGED');
  if(!pack.coverage.geometryComplete||pack.rooms.some(r=>!r.entries?.length))throw Error('ARCHITECTURE_REVISION_REQUIRES_OBSERVED_BOUNDARIES_AND_ENTRIES');
  if(p.rooms.length!==pack.rooms.length||p.rooms.some(r=>!pack.rooms.some(n=>n.id===r.id&&n.name===r.name)))throw Error('ARCHITECTURE_REVISION_SCHEDULE_CHANGE_UNSUPPORTED');
- const dependent=[...p.requirements,...p.standards,...p.luminaires,p.electrical,p.lightingEnvironment,p.glareAssessment,p.routingConditions,...p.rooms.flatMap(r=>[r.standardSpace,...(r.secondaryUseAssessments||[])])];
+ const dependent=[...p.requirements,...p.standards,...p.luminaires,p.electrical,p.lightingEnvironment,p.glareAssessment,p.routingConditions,p.installation,...p.rooms.flatMap(r=>[r.standardSpace,...(r.secondaryUseAssessments||[])])];
  if(references(dependent).includes(old.id))throw Error('ARCHITECTURE_NON_GEOMETRIC_DEPENDENCY_REQUIRES_NEW_AUTHORITY');
  const before=conditionBundles(p),changes=[];
  for(const r of p.rooms){const n=pack.rooms.find(n=>n.id===r.id),additional=sourceSpaceLabels(n,pack.sourceId);

@@ -3,7 +3,7 @@ const round=n=>Math.round(n*1e6)/1e6;
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const hash=v=>crypto.createHash('sha256').update(JSON.stringify(v)).digest('hex');
 export function auditRouteSchedule(m){
- const s=m.routeSchedule;if(!s&&m.engineVersion!=='1.16.0')return [];
+ const s=m.routeSchedule;if(!s&&!['1.16.0','1.17.0'].includes(m.engineVersion))return [];
  const checks=[],add=(id,ok,detail)=>checks.push({id,ok,detail,refs:[]});
  try{
   if(!s||!Array.isArray(s.segments)||s.segments.length>10000)throw Error('Missing or oversized segment schedule');

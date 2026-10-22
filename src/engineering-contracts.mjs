@@ -1,3 +1,5 @@
+import {scopeRevisionParameters} from './engineering-scope-contracts.mjs';
+import {lightingInstallationSchema,installationConditionIssues} from './lighting-installation.mjs';
 import {routingConditionsSchema,routingConditionIssues} from './engineering-routing.mjs';
 import {titleRevisionParameters} from './engineering-title-contracts.mjs';
 import {noteRevisionParameters} from './engineering-notes-contracts.mjs';
@@ -37,6 +39,7 @@ export const engineeringInputSchema=z.strictObject({
  rooms:z.array(z.strictObject({id,name:z.string().min(1).max(128),use:z.enum(['office','duty','teaching','corridor','pantry','clinical','unknown']),polygon:z.array(point).min(3).max(100),doors:z.array(point).max(20),obstacles:z.array(z.array(point).min(3).max(50)).max(20).default([]),sourceIds:z.array(id).min(1).max(20),geometryStatus:z.enum(['issued','inferred']),sourceSpaceLabels:z.array(sourceSpaceLabel).min(1).max(20).optional(),heightM:z.number().min(2).max(10),workplaneM:z.number().min(0).max(2),standardSpace:standardSpace.optional(),secondaryUseAssessments:z.array(secondaryUseAssessment).min(1).max(20).optional()})).min(1).max(100),
  architecture:z.array(primitive).max(8000),
  routingConditions:routingConditionsSchema.optional(),
+ installation:lightingInstallationSchema.optional(),
  luminaires:z.array(z.strictObject({id,label:z.string().min(1).max(128),watts:z.number().positive().max(500),lumens:z.number().positive().max(100000),utilizationFactor:z.number().positive().max(1),maintenanceFactor:z.number().positive().max(1),sourceId:id,photometry:z.enum(['assumed','catalog_only','ies_verified']),iesFile:z.strictObject({file:z.string().min(1).max(2000),sha256:digest}).optional(),rotationDegrees:z.number().finite().min(-360).max(360).optional(),schematicSymbol:z.enum(['panel','downlight']).optional(),allowedRoomUses:z.array(z.enum(['office','duty','teaching','corridor','pantry'])).min(1).max(5).optional(),ra:z.number().min(0).max(100),cctK:z.number().int().min(2000).max(7000)})).min(1).max(20),
  lightingStandards:z.strictObject({profileId:id,expectedProfileSHA256:digest}).optional(),
  lightingEnvironment:z.strictObject({model:z.literal('closed_diffuse_rooms'),rooms:z.array(reflectionRoom).min(1).max(100),geometry:z.literal('ies_rectangular_opening'),sourceIds:z.array(id).min(1).max(20),status:z.enum(['documented','interpreted','assumed']),description:z.string().min(20).max(1000)}).optional(),
@@ -84,11 +87,12 @@ export const engineeringSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('deliver'),jobId,requestId:z.uuid(),expectedModelSHA256:digest}),
  z.strictObject({action:z.literal('review_pdfs'),jobId,requestId:z.uuid(),expectedModelSHA256:digest,expectedSourceSHA256:digest}),
  z.strictObject({action:z.literal('revise_notes'),jobId,requestId:z.uuid(),...noteRevisionParameters.shape}),
+ z.strictObject({action:z.literal('revise_scope'),jobId,requestId:z.uuid(),...scopeRevisionParameters.shape}),
  z.strictObject({action:z.literal('revise_title'),jobId,requestId:z.uuid(),...titleRevisionParameters.shape}),
  z.strictObject({action:z.literal('revise'),jobId,expectedRevision:z.number().int().nonnegative(),changes:z.array(z.strictObject({requirementId:id,value:requirementValue,reason:z.string().min(1).max(1000),sourceId:id})).min(1).max(100)}),
  z.strictObject({action:z.literal('review'),jobId,expectedModelSHA256:digest,origin:z.enum(['simulation','unverified_external_record']),reviewer:z.string().min(1).max(128),comments:z.array(z.strictObject({id,target:z.string().min(1).max(128),decision:z.enum(['comment','revise','claimed_accepted']),text:z.string().min(1).max(2000)})).min(1).max(100)})
 ]);
-export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineeringSchema.options.filter(s=>!['deliver','revise_title','revise_notes'].includes(s.shape.action.value)));
+export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineeringSchema.options.filter(s=>!['deliver','revise_title','revise_notes','revise_scope'].includes(s.shape.action.value)));
 
 export function inspectEngineeringInput(raw){
  const input=engineeringInputSchema.parse(raw),issues=[];
@@ -109,7 +113,7 @@ export function inspectEngineeringInput(raw){
   }
  }
  for(const s of input.standards){const applicable=s.effectiveFrom<=input.designDate&&(!s.effectiveUntil||input.designDate<s.effectiveUntil);for(const c of s.clauses){if(!applicable)add('STANDARD_OUTSIDE_DATE','review',s.id+' is outside the declared design date',[c.id]);else if(!c.verified)add('STANDARD_CLAUSE_UNVERIFIED','review',s.id+' '+c.locator+' text is not verified',[c.id]);}}
- issues.push(...routingConditionIssues(input));
+ issues.push(...routingConditionIssues(input),...installationConditionIssues(input));
  if(!input.standards.length)add('STANDARDS_MISSING','review','No project standards supplied');
  if(input.sources.some(s=>s.derivedFromFinalDrawing))add('RETROSPECTIVE_INPUT','review','Architectural inputs were derived from historical final drawings; not a prospective blind trial');
  if(input.photometricDesign){

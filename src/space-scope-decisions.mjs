@@ -2,7 +2,7 @@
 import {z} from 'zod';
 import {dependencyDigest} from './task-dependencies.mjs';
 const sha=z.string().regex(/^[a-f0-9]{64}$/i),id=z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,63}$/);
-const key=z.string().regex(/^(project_context|routingConditions|electrical|lightingEnvironment|glareAssessment|photometricDesign|lightingStandards|functionalIntake|room:[A-Za-z][A-Za-z0-9_-]{0,63}|requirement:[A-Za-z][A-Za-z0-9_-]{0,63}|luminaire:[A-Za-z][A-Za-z0-9_-]{0,63}|standard:[A-Za-z][A-Za-z0-9_-]{0,63}|missing_input:[A-Za-z][A-Za-z0-9_-]{0,63}|source:[A-Za-z][A-Za-z0-9_-]{0,63})$/);
+const key=z.string().regex(/^(project_context|installation|routingConditions|electrical|lightingEnvironment|glareAssessment|photometricDesign|lightingStandards|functionalIntake|room:[A-Za-z][A-Za-z0-9_-]{0,63}|requirement:[A-Za-z][A-Za-z0-9_-]{0,63}|luminaire:[A-Za-z][A-Za-z0-9_-]{0,63}|standard:[A-Za-z][A-Za-z0-9_-]{0,63}|missing_input:[A-Za-z][A-Za-z0-9_-]{0,63}|source:[A-Za-z][A-Za-z0-9_-]{0,63})$/);
 export const spaceScopeDecisionSchema=z.strictObject({key,disposition:z.enum(['added','removed','revised','retained']),previousSHA256:sha.nullable(),nextSHA256:sha.nullable(),reason:z.string().min(20).max(1000),evidence:z.strictObject({sourceId:id,quote:z.string().min(5).max(4000)})});
 export const spaceScopeDecisionsSchema=z.array(spaceScopeDecisionSchema).min(1).max(2500);
 export const spaceScopeAuthoritySchema=z.strictObject({sourceId:id,supersededSourceId:id,previousBriefSHA256:sha,nextBriefSHA256:sha,replacementSHA256:sha,reason:z.string().min(20).max(1000),decisions:spaceScopeDecisionsSchema});
@@ -12,7 +12,7 @@ export function spaceScopeConditions(p){
  const rows=[{key:'project_context',value:Object.fromEntries(['projectId','title','designDate','discipline','scope'].map(k=>[k,p[k]]))}];
  for(const r of p.rooms){const {name,polygon,doors,geometryStatus,...conditions}=r;rows.push({key:'room:'+r.id,value:conditions});}
  for(const [prefix,items]of [['requirement',p.requirements],['luminaire',p.luminaires],['standard',p.standards],['missing_input',p.missingInputs],['source',p.sources]])for(const item of items)rows.push({key:prefix+':'+item.id,value:item});
- for(const k of ['routingConditions','electrical','lightingEnvironment','glareAssessment','photometricDesign','lightingStandards','functionalIntake'])if(p[k]!==undefined)rows.push({key:k,value:p[k]});
+ for(const k of ['installation','routingConditions','electrical','lightingEnvironment','glareAssessment','photometricDesign','lightingStandards','functionalIntake'])if(p[k]!==undefined)rows.push({key:k,value:p[k]});
  return rows.map(r=>({...r,sha256:dependencyDigest(r.value)})).sort((a,b)=>a.key.localeCompare(b.key));
 }
 export function spaceScopeDelta(before,after){

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "43555428d0e21fe3e3744225da313b47d5728c09",
+  "status": "local_proposal_revision_and_native_delivery_verified_remote_client_unaccepted",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Source-bound revise_scope on the original lighting task; only scope changes, every other input field remains identical",
+    "Old model/quality/native outputs and review become historical; changed input requires document rebind and redesign",
+    "Both design packs can seed immutable draft_review from the same task and exact document version; only unchanged target decisions carry, grouped decisions touching changed values do not carry",
+    "Catalog assumptions allowed as scope evidence without upgrading grades; evaluator text remains forbidden",
+    "Scope history is checked on status/design; stale inputs, wrong current scope, tampered records and carried context bypass rejected"
+  ],
+  "regression": {
+    "fullBeforeCatalogRoleFix": {
+      "passed": 520,
+      "failed": 0,
+      "logSHA256": "0b7f857bfe2803492cfa08ae39d5941784a7c13b286c7ce62c653937c3ed7b3b"
+    },
+    "finalAffected": {
+      "passed": 15,
+      "failed": 0,
+      "logSHA256": "eeb32581ce5ea185e9eaffc9733176de8ec78e00e19e6069af21eb6494be4c4b"
+    }
+  },
+  "actualClient": {
+    "evidence": "artifacts/scope-description-client-20261022",
+    "status": "terminal_failed",
+    "wholeClientTrialPassed": false,
+    "elapsedMs": 209830,
+    "productErrors": 2,
+    "externalError": "Configured WorkBuddy model service returned 429 quota exhausted",
+    "inputRevisionUnchangedOnFailure": true,
+    "automaticStopIssued": false,
+    "failedReportPreserved": true,
+    "retestNeededAfterServiceAvailability": true
+  },
+  "localContinuation": {
+    "localValidationPassed": true,
+    "checks": 10,
+    "actualAiAuthoredProposal": true,
+    "controllerAuthoredReplacement": false,
+    "controllerCompletedWorkflow": true,
+    "wholeClientTrialPassed": false,
+    "proposalParametersSHA256": "84bc79414c4e47c145d9f02765afc32cbc2481e545126a92170076222c4dbe44",
+    "fromRevision": 0,
+    "revision": 1,
+    "nonScopeInputsUnchanged": true,
+    "physicalDesignUnchanged": true,
+    "scopeDecisionGrade": "assumption retained"
+  },
+  "native": {
+    "evidence": "artifacts/scope-description-native-20261022",
+    "verified": true,
+    "rooms": 2,
+    "lights": 29,
+    "circuits": 2,
+    "sheets": 5,
+    "sourceCoverage": {
+      "required": true,
+      "blocks": 39,
+      "reviewed": 39,
+      "unreviewed": 0,
+      "mapped": 25,
+      "context": 14,
+      "unresolved": 0,
+      "conflicts": 0,
+      "complete": true,
+      "semanticCoverageAccepted": false,
+      "professionalApproval": false
+    },
+    "modelSHA256": "bb152a4b6dc515549adec08aa2e2610872bbd439bc056962b028933757393f08",
+    "registeredFiles": 26,
+    "strictPdfPages": 5,
+    "rawAndNormalizedPixelsIdentical": true,
+    "allFivePagesVisuallyInspected": true,
+    "oldExecutionPhaseTextRemoved": true,
+    "otherFourSheetBodiesPixelIdentical": true,
+    "oldNativeFilesPreserved": true,
+    "professionalApproval": false
+  },
+  "retainedObservations": [
+    "First harness syntax check found a Windows separator escape error before execution; no task or trial directory was created. Fixed to path.sep and syntax checked before retry.",
+    "Initial product scope proof incorrectly rejected catalog assumption evidence twice; actual client reread the original and was rejected again. Fixed source-role eligibility with a dedicated regression.",
+    "Client ended itself with provider quota exhaustion before an attempted owned-process stop; process was already terminal, so no stop was issued. No retry or purchase attempted.",
+    "Local continuation uses the last actual AI proposal parameters verbatim, assembles its scope-only review with the prior assumption grade and explicitly records controller workflow completion. It is not reclassified as a whole-client pass.",
+    "Original CAD PDFs retain duplicate PageMode warnings; normalized review PDFs parse strictly and render identically.",
+    "Specific stage-leak issue is closed. The AI-authored scope retains technical field names and literal coordination wording; professional prose quality/general understanding not certified."
+  ],
+  "limits": [
+    "Lighting scope prose correction does not change actual engineering scope or implement other disciplines; space planning retains its own supported revision operations",
+    "Changing documents/task identity prevents review inheritance; unchanged values/citations do not certify semantics",
+    "Known synthetic case, not independent customer/project acceptance",
+    "Actual-client rerun requires model service availability; no automatic quota purchase",
+    "Original M2-M4, independent projects, external users, clean machine and professional review remain incomplete"
+  ],
+  "evidence": {
+    "client": "artifacts/scope-description-client-20261022",
+    "native": "artifacts/scope-description-native-20261022"
+  },
+  "subsequentFullRegression": {
+    "passed": 525,
+    "failed": 0,
+    "validation": "docs/lighting-installation-validation.json"
+  },
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 604,
+    "logSHA256": "edda3a4da388dc32f375b421e5cb01c1d67fdea78d2fc660893f77ff062d65c3"
+  }
+}

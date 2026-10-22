@@ -749,11 +749,11 @@
     "P2 Independent projects, external users, clean machines and certified human review, each accepted separately"
   ],
   "currentFullRegression": {
-    "passed": 518,
+    "passed": 525,
     "failed": 0,
     "skipped": 0,
-    "logSHA256": "f74fd0f132a5e51bc0fb0db9004457482f2f2133d9292382eac700090ed32ecf",
-    "scope": "Final product implementation; later oracle and recovered-native-harness changes separately verified by 17 affected tests and one recovery gate test."
+    "durationMs": 263655.4103,
+    "logSHA256": "504572a5e97bc18aef54f851502fb3d80b3a4eec81b2c502fb051a41bd2b4a04"
   },
   "previousPrioritiesBeforePdfReviewClosure": [
     "P0 Normalize/validate review PDF delivery for both design packs while preserving raw exports; six native source PDFs fail strict parsing even though the merged booklet works",
@@ -1232,5 +1232,31 @@
     "M4": "incomplete",
     "contentReviewAccepted": false,
     "scopeTextIssue": "Client execution restriction copied into project scope on E01"
+  },
+  "scopeDescriptionIncrement": {
+    "validation": "docs/scope-description-validation.json",
+    "revision": 1,
+    "specificStageTextIssueResolved": true,
+    "actualClient": "failed_product_role_rejection_then_remote_quota_exhaustion",
+    "controllerCompletedWorkflow": true,
+    "wholeClientTrialPassed": false,
+    "newNativeCad": true,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
+  },
+  "installationIncrement": {
+    "validation": "docs/lighting-installation-validation.json",
+    "newNativeCad": true,
+    "newAiClient": false,
+    "explicitTerminalTopology": true,
+    "independentNodalLoads": 65,
+    "declaredInstallationsOnly": true,
+    "missingProjectSpaces": 2,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete"
   }
 }

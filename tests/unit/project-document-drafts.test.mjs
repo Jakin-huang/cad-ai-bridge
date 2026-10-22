@@ -8,6 +8,9 @@ import {createExecutor} from '../../src/runner.mjs';
 import {engineeringTestInput} from '../helpers/engineering-input.mjs';
 import {spaceTestInput} from '../helpers/space-input.mjs';
 import {readonlyProjectDocumentsSchema} from '../../src/project-document-contracts.mjs';
+import {readonlyEngineeringSchema} from '../../src/engineering-contracts.mjs';
+import {compileScopeRevision} from '../../src/engineering-scope-proof.mjs';
+import {engineeringDigest} from '../../src/engineering-design.mjs';
 const uuid=()=>crypto.randomUUID(),sha=s=>crypto.createHash('sha256').update(s).digest('hex'),ok=r=>{assert.equal(r.ok,true,JSON.stringify(r));return r;};
 for(const kind of ['ordinary-lighting','office-space-planning'])test(kind+': immutable batches repair one decision, preserve input, and commit only under the exact scope',async()=>{
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'docdraft-')),runs=path.join(root,'runs');await fs.mkdir(runs);let native=0;
@@ -42,6 +45,27 @@ for(const kind of ['ordinary-lighting','office-space-planning'])test(kind+': imm
  assert.equal(await fs.readFile(bindingFile,'utf8'),bindingBefore,'commit creates a review; binding remains explicit');
  ok(await call({action:'bind',requestId:uuid(),...scope,review:committed.review}));
  const result=ok(await execute('engineering_task',{action:'invoke',...task,requestId:uuid(),operation:'design',parameters:{expectedRevision:0,...(kind==='office-space-planning'?{expectedInputSHA256:scope.expectedInputSHA256,budget:{maxNodes:50000,maxMilliseconds:10000,maxPlans:1}}:{})}}));assert.equal(result.current.documentEvidence.sourceCoverage.complete,true);
+ const oldModel=await fs.readFile(path.join(child,'model-0.json'),'utf8'),oldInput=JSON.parse(await fs.readFile(path.join(child,'input-0.json'),'utf8'));
+ const changedField=kind==='ordinary-lighting'?'scope':'title',changedText=kind==='ordinary-lighting'?'Ordinary lighting design for the explicitly declared fixture geometry and conditions.':blocks[0].text;
+ const revision={expectedRevision:0,expectedInputSHA256:scope.expectedInputSHA256,...(kind==='ordinary-lighting'?{expectedScope:oldInput.scope,scope:changedText}:{expectedTitle:oldInput.title,title:changedText}),reason:'Correct descriptive text without changing any physical conditions or source grades.',evidence:[{documentId:'MAIN',textSHA256:sha(text),quote:blocks[0].text}]};
+ if(kind==='ordinary-lighting'){
+  assert.equal(readonlyEngineeringSchema.safeParse({action:'revise_scope',jobId:prepared.current.jobId,requestId:uuid(),...revision}).success,false);
+  const carried={...oldInput,briefRevision:{requiredConditionKeys:['project_context']}},carriedSHA=engineeringDigest(carried);await assert.rejects(()=>compileScopeRevision({runs,state:{jobId:prepared.current.jobId,revision:0,inputSHA256:carriedSHA},input:carried,parameters:{...revision,expectedInputSHA256:carriedSHA}}),/SCOPE_CARRIED_CONTEXT_REQUIRES_SOURCE_REVISION/);
+  for(const patch of [{expectedScope:'Wrong original scope value to reject.'},{rooms:[]},{evidence:[{documentId:'MAIN',textSHA256:'0'.repeat(64),quote:blocks[0].text}]},{evidence:[{documentId:'MAIN',textSHA256:sha(text),quote:'A quote not present in any original source document.'}]}])assert.equal((await execute('engineering_task',{action:'invoke',...task,requestId:uuid(),operation:'revise_scope',parameters:{...revision,...patch}})).ok,false);
+  assert.equal(ok(await execute('engineering_task',{action:'status',...task})).current.revision,0);
+ }
+ const changed=ok(await execute('engineering_task',{action:'invoke',...task,requestId:uuid(),operation:kind==='ordinary-lighting'?'revise_scope':'revise_title',parameters:revision}));assert.equal(changed.current.revision,1);assert.equal(changed.current.modelSHA256,undefined);assert.equal(changed.current.documentEvidence.eligible,false);
+ const newScope={...scope,expectedInputSHA256:changed.current.inputSHA256},seed=ok(await call({action:'draft_review',requestId:uuid(),...newScope,fromReview:committed.review}));assert.equal(seed.summary.readyForReview,false);
+ assert.deepEqual(ok(await call({action:'read_review_draft',task,draft:seed.draft,section:'missing',limit:100})).items,[{kind:'target',id:changedField}]);
+ assert.equal(ok(await call({action:'commit_review',requestId:uuid(),...newScope,draft:seed.draft})).committed,false);
+ assert.match((await call({action:'draft_review',requestId:uuid(),...newScope,task:otherTask,expectedInputSHA256:other.current.inputSHA256,fromReview:committed.review})).error.message,/REVIEW_SCOPE_CHANGED/);
+ const revised=ok(await call({action:'draft_review',requestId:uuid(),...newScope,previousDraft:seed.draft,decisions:[{...decision,targetIds:[changedField]}]}));assert.equal(revised.summary.readyForReview,true);
+ const revisedReview=ok(await call({action:'commit_review',requestId:uuid(),...newScope,draft:revised.draft}));ok(await call({action:'bind',requestId:uuid(),...newScope,review:revisedReview.review}));
+ ok(await execute('engineering_task',{action:'invoke',...task,requestId:uuid(),operation:'design',parameters:{expectedRevision:1,...(kind==='office-space-planning'?{expectedInputSHA256:newScope.expectedInputSHA256,budget:{maxNodes:50000,maxMilliseconds:10000,maxPlans:1}}:{})}}));
+ const nextInput=JSON.parse(await fs.readFile(path.join(child,'input-1.json'),'utf8'));assert.equal(nextInput[changedField],changedText);delete nextInput[changedField];delete oldInput[changedField];assert.deepEqual(nextInput,oldInput);assert.equal(await fs.readFile(path.join(child,'model-0.json'),'utf8'),oldModel);
+ if(kind==='ordinary-lighting'){
+  const state=JSON.parse(await fs.readFile(path.join(child,'engineering.json'),'utf8')),recordFile=path.join(child,state.scopeRevisions[0].file),record=await fs.readFile(recordFile);await fs.appendFile(recordFile,'\n');assert.match((await execute('engineering_task',{action:'status',...task})).error.message,/SCOPE_HISTORY_CHANGED/);await fs.writeFile(recordFile,record);assert.equal(ok(await execute('engineering_task',{action:'status',...task})).current.revision,1);
+ }
  const draftFile=path.join(runs,repair.draft.jobId,'draft.json'),original=await fs.readFile(draftFile,'utf8');await fs.writeFile(draftFile,original.replace('Explicit correction','Tampered correction'));assert.match((await call({action:'read_review_draft',task,draft:repair.draft})).error.message,/DRAFT_CHANGED/);await fs.writeFile(draftFile,original);
  await fs.writeFile(path.join(root,'main.txt'),text+'\nNew condition changes the document version.');ok(await call({action:'update',requestId:uuid(),set,documents:[{...docs[0],expectedRawSHA256:sha(text+'\nNew condition changes the document version.') }]}));
  assert.equal(ok(await call({action:'read_review_draft',task,draft:repair.draft})).current,false);assert.match((await call({action:'commit_review',requestId:uuid(),...scope,draft:repair.draft})).error.message,/SET_STALE/);assert.equal(native,0);

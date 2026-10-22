@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "43555428d0e21fe3e3744225da313b47d5728c09",
+  "status": "declared_manual_installation_native_and_independent_nodal_verification_passed",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "newAiClient": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Optional source-bound single-pole ceiling-junction topology with explicit panel/switch/routing heights and room switch positions",
+    "L/SL/N/PE terminal graphs; no crossing-derived junction, independent circuit neutrals; switch OFF/ON continuity checks",
+    "Per-load drop including vertical runs and switch loop; original extra allowance kept separate",
+    "Circuit partition also respects installation drop and declared switch current without changing original limits",
+    "Source revision, frozen shared-space conditions, document target and scope ledgers include installation",
+    "E07 connection/coordinate sheets plus full route CSV, terminal graph JSON and review HTML"
+  ],
+  "actual": {
+    "rooms": 9,
+    "lights": 65,
+    "circuits": 15,
+    "originalCircuits": 15,
+    "installationRuns": 160,
+    "maximumDropPercent": 0.18195204485921798,
+    "declaredMaximumDropPercent": 0.2,
+    "conductorLengthsM": {
+      "L": 362.25,
+      "SL": 223.495,
+      "N": 528.745,
+      "PE": 557.245
+    },
+    "modelSHA256": "7afe714f80d065d3e88c600965e4d3f1f14b42af96dcd432d8dfe38dc380e51a",
+    "originalLightsAndConditionsPreserved": true,
+    "automatedChecks": 350,
+    "pending": 90,
+    "reviewPdfPages": 25,
+    "registeredOutputs": 87,
+    "projectSpaces": 11,
+    "lightingDeliveredSpaces": 9,
+    "unresolvedSpaces": 2,
+    "packageSourceFiles": 105,
+    "packageIssues": 183
+  },
+  "verification": {
+    "independentNodalSolve": {
+      "circuits": 15,
+      "loads": 65,
+      "csvRuns": 160,
+      "method": "Independent NumPy nodal conductance solve with constant declared lamp currents; phase and neutral independently solved. Same declared resistance model, not external physical accuracy certification."
+    },
+    "savedCadAndReopen": true,
+    "strictReviewPdfs": true,
+    "rawAndNormalizedPixelIdentical": true,
+    "all25PagesVisuallyInspected": true,
+    "packageLinksVerified": 177,
+    "packageBrowserVisualAcceptance": false,
+    "professionalApproval": false,
+    "bookletPages": 25,
+    "bookletPixelIdentity": true
+  },
+  "regression": {
+    "targeted": {
+      "passed": 15,
+      "failed": 0,
+      "logSHA256": "f453d129f46b94ce2a87414fb4c13deeb1b2b7880e0f1bd630b121459f899abb"
+    },
+    "full": {
+      "passed": 525,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 263655.4103,
+      "logSHA256": "504572a5e97bc18aef54f851502fb3d80b3a4eec81b2c502fb051a41bd2b4a04"
+    }
+  },
+  "retainedObservations": [
+    "Initial sandbox test spawning failed EPERM before tests; escalated local test execution was approved",
+    "Initial hand-test expected second load drop 0.369V, but its correct independent arithmetic is (8+4+4+2+0.5)*0.018=0.333V; generator and graph audit already agreed. Fixed test expectation, not engineering values",
+    "Edit helper stopped on a missing import anchor in a module with no imports; completed the remaining edits explicitly before final tests and native run",
+    "Original CAD PDF PageMode duplicate warnings retained; normalized review pages parse strictly and render identically",
+    "One E07 continuation contains one remaining run; content complete but page utilization can improve",
+    "E02/E03 control coordinates remain schematic while E07 positions are explicit; no installation-specific plan overlay or conduit/box design is claimed"
+  ],
+  "limits": [
+    "All new mounting, switch and route permissions are developer assumptions; no real product LED/inrush/terminal/gang capacity approval",
+    "Single-pole local/regional manual only; occupancy, bypass, dimming, multi-way and emergency controls require distinct source-backed topology",
+    "Declared routing plane plus vertical drops, checked against planar permissions only; no 3D obstruction, penetration, containment fill or protection coordination acceptance",
+    "Constant declared-load resistive drop model; same-model nodal agreement is not measured electrical validation",
+    "Installation CSV contains full polylines, but E07 only endpoints; installation plan overlay and located segment labels remain needed",
+    "Nine-space known synthetic continuation; ARCHIVE/SUPPORT conditions are still missing; no invented scope completion",
+    "No new actual AI session because the configured service previously returned quota exhaustion; no retry or purchase",
+    "M2-M4, independent real projects, external users, clean machines and authenticated professional review remain incomplete"
+  ],
+  "evidence": {
+    "root": "artifacts/installation-design-20261022",
+    "preflight": "preflight.json",
+    "native": "native-report.json",
+    "nodal": "independent-installation-check.json",
+    "pdf": "independent-pdf-check.json",
+    "package": "project-package/report.json",
+    "protectedFiles": 672,
+    "protectedReferences": 21
+  },
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 612,
+    "logSHA256": "7c0c9386a2fd4eabfdd9fde6bb45e42345f0a36ed20554e6e77d171ce499df59"
+  }
+}
