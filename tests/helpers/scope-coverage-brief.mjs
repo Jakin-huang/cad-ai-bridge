@@ -1,0 +1,8 @@
+// Predeclared synthetic amendment. Not customer requirements or code values.
+export const coverageDocuments=[
+ {file:'coverage.txt',text:'本次为完全合成的开发验证修订，不含客户、医院或最终对照图。新任务书替代旧照明任务书，来源登记与退役须记录原句和理由。继续使用context所绑定的当前上游空间包，几何、名称和入口逐一来自共享包，不改变空间方案。原有接待工作间RECEPTION、会议室MEETING、团队办公室TEAM、办公室甲OFFICE_A及交通空间CIRCULATION全部保留。新增办公室乙OFFICE_B、管理办公室MANAGER、专注工作间FOCUS和小组讨论室TRAINING；这四个空间本次明确采用普通办公照明用途office，小组讨论室仅作普通会议交流，不解释成教学用途。辅助空间SUPPORT和资料空间ARCHIVE的实际活动、目标及控制条件尚未取得，继续不纳入本次可设计照明范围；必须在最终项目审核中保留这两个覆盖缺口，不能因名称猜用途、不能为凑全覆盖而布灯。'},
+ {file:'conditions.txt',text:'本次开发修订明确授权：所有原有空间的用途、物理条件和照明要求原值保留。四个新增空间OFFICE_B、MANAGER、FOCUS、TRAINING的高度、工作面和障碍条件，以及照度目标、功率密度、间距、灯数上限、控制方式、安装高、回路负荷及压降要求，逐项沿用baseline中OFFICE_A的现值；只是开发假设的明确继承，不是现场核验。未改变的供电、灯具、光通量、功率、维护系数、利用系数和原输入其他独立条件全部沿用，不换产品、不增加标准或光学文件。所有继承的假设仍为assumed，已有缺项和待审条件不得删除或升级。'},
+ {file:'review-boundary.txt',text:'本次目标是让明确授权的九个空间完成需求修订、设计、自检，并由后续独立验证继续真实CAD出图；客户端本阶段不出图、不模拟签审。没有取得SUPPORT和ARCHIVE的用途与条件前，不得宣布十一空间整层照明完成。该项目仍使用开发假设的利用系数估算，没有新的IES、反射、眩光或规范适用证据；模型检查通过不代表光度质量、施工或专业审核通过。所有新增、保留、来源继承和退役决定引用本任务书连续原句，不自行消除未知或改数值通过检查。'}
+];
+export const coverageBrief=coverageDocuments.map(d=>d.text).join('\n\n');
+export const coverageOracle={knownDeveloperCase:true,independentCustomerAcceptance:false,selected:['RECEPTION','MEETING','TEAM','OFFICE_A','OFFICE_B','MANAGER','FOCUS','TRAINING','CIRCULATION'],added:['OFFICE_B','MANAGER','FOCUS','TRAINING'],excludedUnresolved:['SUPPORT','ARCHIVE'],newRoomConditionsFrom:'OFFICE_A',uses:{RECEPTION:'office',MEETING:'office',TEAM:'office',OFFICE_A:'office',OFFICE_B:'office',MANAGER:'office',FOCUS:'office',TRAINING:'office',CIRCULATION:'corridor'}};

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "310b1119542c407ab39a13f1c9f1225b2ae8d9af",
+  "status": "actual_client_scope_amendment_and_native_publication_verified",
+  "goalComplete": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "releaseRepackaged": false,
+  "hospitalDataProcessed": false,
+  "scope": "Known developer-generated office source with explicit synthetic amendment. Source-assisted test, not independent customer or unseen-project acceptance.",
+  "actualClient": {
+    "successfulTrials": 1,
+    "protocolErrors": 0,
+    "allDraftRequirementRowsRead": {
+      "pages": 2,
+      "total": 72,
+      "covered": 72
+    },
+    "controllerSemanticRepair": false,
+    "revision": 2,
+    "rooms": 9,
+    "devices": 65,
+    "circuits": 9,
+    "designChecksPassed": 173,
+    "designChecksPending": 88,
+    "inputSHA256": "9442731768cb62b84683d3a2f25b13575194455788a9a5a7cb372376163dba77",
+    "modelSHA256": "12bb7e52dc58645081a9f9f51c4d42f022b9db1b96acd989f7f63c2460df2291"
+  },
+  "native": {
+    "steps": 4,
+    "reviewPdfs": 5,
+    "inputAndModelUnchanged": true,
+    "oldImmutableFilesUnchanged": 63,
+    "strictParseAndPixelIdentity": true,
+    "allFivePagesVisuallyInspected": true,
+    "professionalReview": false
+  },
+  "projectReview": {
+    "scopeSpaces": 11,
+    "lightingDeliveredSpaces": 9,
+    "missingLightingSpaces": [
+      "ARCHIVE",
+      "SUPPORT"
+    ],
+    "designCoverageComplete": false,
+    "deliveryCoverageComplete": false,
+    "issueEntries": 179,
+    "note": "Issue entries overlap; not counts of distinct defects. Original selective five-space task was not silently incomplete within its original scope."
+  },
+  "regression": {
+    "targeted": {
+      "passed": 6,
+      "failed": 0,
+      "logSHA256": "98ab786c0678545f9e1423aa234c1708317e4a424f297e459fb0bc79ec6d3202"
+    },
+    "fullSuiteRerun": false,
+    "scope": "Harness history/tamper checks and existing project review regression; no production algorithm changed in this increment.",
+    "staticGate": {
+      "passed": 3,
+      "publicFiles": 564,
+      "logSHA256": "f552d5f84f490283fc738cf5d47b1b16ee390ba519c10d0dcadad4c2398b158c"
+    }
+  },
+  "retainedFailures": [
+    "Initial approval rejection resolved by verified synthetic provenance and subsequent approval",
+    "Mutable result summary classification error",
+    "Wrong digest algorithm in first completed audit",
+    "Sandbox EPERM before test bodies; approved rerun passed"
+  ],
+  "limits": [
+    "Flux-method assumed products, targets and conditions; this case has no new real IES or standards applicability acceptance",
+    "Two unresolved spaces remain out of lighting scope",
+    "No authenticated professional review, independent real project, external user or clean-machine acceptance",
+    "One successful known-source AI trial is not broad task-understanding reliability acceptance"
+  ],
+  "evidence": {
+    "artifactRoot": "artifacts/scope-coverage-client-20261022",
+    "clientAudit": "independent-audit-v2.json",
+    "native": "native/report.json",
+    "pdf": "independent-pdf-check.json",
+    "visual": "visual-review.json",
+    "retainedState": "retained-state-manifest.json",
+    "protectedReferences": 14
+  }
+}

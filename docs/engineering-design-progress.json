@@ -1146,5 +1146,16 @@
       "scope": "All project-review integration and pure report tests, including the new explicit failed-quality gate; full suite not rerun after this final guard."
     },
     "finalReadOnlyCalls": 2
+  },
+  "scopeCoverageIncrement": {
+    "validation": "docs/scope-coverage-validation.json",
+    "actualClient": true,
+    "protocolErrors": 0,
+    "designedAndDeliveredSpaces": 9,
+    "projectSpaces": 11,
+    "unresolvedSpaces": 2,
+    "controllerSemanticRepair": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }
