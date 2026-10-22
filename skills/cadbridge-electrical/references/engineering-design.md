@@ -1,5 +1,13 @@
 # 工程需求、设计与审核
 
+只有原始委托、尚无房间模型或完整物理条件时，先用 `cad_project_documents` 冻结已核对的可用原文，再用 `cad_engineering_intake capabilities section=scope` 查询范围审阅契约。`review_scope` 传唯一 requestId、documents 和 workItems：每项含 id/description/disposition/reason/evidence[{documentId,quote}]/dependsOn，可另给 taskKind。candidate 是可能进入已知条件准备的候选；deferred 是另期委托；unsupported 是当前能力不能承接；unresolved/conflict 保留未解项；context 只能表示真正的背景。不要把未能完成的工程要求改成背景。任务类型必须明确选择，项目名称不触发模板。
+
+先通过 source_blocks 取齐原文句段，再在 review_scope.sourceCoverage 使用实际 blockId/blockSHA256、disposition、targetIds 和 reason。目标 ID 为 workItems/数组下标；mapped 只表示该段已进入范围记录，不表示其设计完成。每个 mapped 链接必须有该段实际原句，未解决义务使用 unresolved/conflict。即使文档集是历史 fields_only 模式，此阶段仍要求全部原文段落处置。这里只能核对声明与字面依据，不能认证解释含义。
+
+`read_scope_review` 用 review={jobId,sha256}，section=summary/work_items/source_coverage，按 offset/limit 和 nextOffset 读齐。返回 candidate 的 canPrepareConditions 仅表示可继续准备条件；designReady 和 wholeProjectAccepted 始终为 false。前置工作即使已列为 candidate，也没有完成证据，仍阻断其依赖任务。scope-review.json 是可下载的不可变审阅记录；任务列表中的结果是历史快照，继续前重新读取当前来源状态。
+
+后续 `freeze` 可传 `scope:{review,workItemId}`，必须是同一原文集、同一候选专业，原文覆盖完整且无未完成前置工作；后续委托、不支持项和过期来源拒绝。`commit` 再核对该关联，不用它替代原有条件、需求原句和专业检查。旧输入可不传 scope，以保持原协议；不得据此声称旧项目补做过范围审阅。范围审阅不自动划分或理解任务、不生成房间、物理数值或 CAD，也不批准标准适用性。
+
 出图前核对图签项目名与当前原文一致，种子结构的说明文字不能直接当成已完成设计的项目名。来源绑定任务可用 `cad_engineering_title inspect` 传原 task 身份，取得 expectedRevision/expectedInputSHA256/expectedTitle/documents；通过 cad_project_documents read 读需求或协调原文，自己解释项目名称，不从文件名、产品/标准标题或对照图猜。`revise` 传新 requestId、同 task、parameters{expectedRevision,expectedInputSHA256,expectedTitle,title,reason,evidence:[{documentId,textSHA256,quote}]}，quote 必须是连续原句并包含完整新 title，title 仅一行。
 
 该操作只修订标题，逐项保持其余输入；沿用原正式任务生成新版本，旧模型、图纸、质量和审核退出当前且保留。未变字段的原审阅决定按实际值摘要保持，标题另给原文证据并重新绑定；完成只是新的 prepared 输入，之后仍需按当前 revision/inputSHA256 设计，再用新 modelSHA256 交付和准备审核包。不要另建任务或直接改旧 PDF。`status` 用返回 job-titlechange 身份和原 task 核对；状态不明停止并读收据，不能换 UUID 重做。照明存在冻结 project_context 来源续用历史时本入口拒绝，继续原来源修订协议；此边界不能改成强行更新历史摘要或放宽其他门槛。

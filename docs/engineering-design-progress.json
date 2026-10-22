@@ -1317,5 +1317,23 @@
     "M2": "incomplete",
     "M3": "incomplete",
     "M4": "incomplete"
+  },
+  "scopeIntakeIncrement": {
+    "validation": "docs/scope-intake-validation.json",
+    "documentFirstScopeReview": true,
+    "independentOriginalSource": true,
+    "localAgentInterpretation": true,
+    "actualMcpCalls": 12,
+    "newAiClient": false,
+    "newNativeCad": false,
+    "independentSemanticAcceptance": false,
+    "fullRegressionBeforeFinalGuard": 538,
+    "finalRelatedRegression": 28,
+    "goalComplete": false,
+    "M2": "incomplete",
+    "M3": "incomplete",
+    "M4": "incomplete",
+    "frozenScopeReadIntegrity": true,
+    "historicalStaleScopeReadable": true
   }
 }

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "status": "document_first_scope_review_and_independent_source_boundary_verified",
+  "goalComplete": false,
+  "newAiClient": false,
+  "newNativeCad": false,
+  "independentSemanticAcceptance": false,
+  "engineeringAcceptance": false,
+  "professionalApproval": false,
+  "releaseRepackaged": false,
+  "implementation": [
+    "Source-linked scope review before any physical baseline, room model or formal design task",
+    "Explicit candidate, deferred, unsupported, unresolved, conflict and context obligations",
+    "Complete source-block ledger, literal quotations and immutable review identity",
+    "Only installed kinds with an actual intake preparation route can be candidates",
+    "Planned prerequisites have no completion evidence and block dependent preparation",
+    "Optional scope selection is verified at physical baseline freezing and again at adoption",
+    "Fresh source status and paginated records; downloadable historical JSON snapshot",
+    "Every frozen-input read/status/draft verifies the linked scope identity; unchanged historical records remain readable when source documents are superseded"
+  ],
+  "verification": {
+    "beforeWiring": {
+      "passed": 1,
+      "failed": 4,
+      "scope": "Unsupported-action rejection already passed; positive scope workflows did not exist"
+    },
+    "finalRelatedRegression": {
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 8193.2965,
+      "scope": "After final baseline-read integrity guard; includes stale historical document readability and tampered scope status/adoption rejection."
+    },
+    "actualFinalMcp": {
+      "calls": 12,
+      "freshReadOnlyProcess": true,
+      "deferredTaskPreparationRejected": true,
+      "formalTasksCreated": 0
+    },
+    "independentSource": {
+      "url": "https://exchange.curtin.edu.au/wp-content/uploads/2020/05/Lot-F06-Project-Definition-Plan_red-002.pdf",
+      "originalSHA256": "8cbe79c31ea445ad9ccfdbf6e71e5e781855a4eafc1b3cbff7b3e7e2ca48e424",
+      "documentPages": 77,
+      "reviewedPdfPages": [
+        44,
+        45,
+        46
+      ],
+      "reviewedScope": "Appendix A2 functional brief prose only; not whole-project acceptance",
+      "visuallyVerifiedTextRegions": 12,
+      "sourceAuthorIndependentOfTestGenerator": true,
+      "interpretationAuthor": "Local agent; not a separate clean AI client or independent professional evaluator",
+      "workItems": 15,
+      "counts": {
+        "candidate": 0,
+        "deferred": 1,
+        "unsupported": 9,
+        "unresolved": 3,
+        "conflict": 0,
+        "context": 2
+      },
+      "sourceBlocks": {
+        "total": 277,
+        "reviewed": 277,
+        "unreviewed": 0,
+        "mapped": 142,
+        "context": 64,
+        "unresolved": 71,
+        "complete": false
+      }
+    },
+    "fullRegressionBeforeFinalScopeGuards": {
+      "passed": 538,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 220515.8878
+    },
+    "previousRelatedRegression": {
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 13899.7612
+    }
+  },
+  "retainedFindings": [
+    "Original PDF and raw extraction include reference design information; they remain outside the MCP input root",
+    "PDF page 46 raw extraction exposes reference plan text not visible in the inspected render; selected prose regions exclude it",
+    "Initial selected text region omitted one theme bullet; corrected extraction is separately retained and visually checked",
+    "First integration precedes persistent replay identity binding; later two trials retain binding, and the last uses the final intake-kind guard",
+    "A candidate task remains an interpretation, not proof of semantic or professional applicability"
+  ],
+  "limits": [
+    "No automatic natural-language task classification, physical inference or engineering standard approval",
+    "Source coverage only records explicit dispositions; it does not certify their meanings",
+    "A2 review does not cover the complete external project or prove the hospital design is complete",
+    "This case correctly blocks unsupported or future work; it is not a new positive full-project design benchmark",
+    "Existing freeze callers can omit scope for compatibility and are not retroactively accepted as scope-reviewed",
+    "The preparer inspected references; a future independent AI trial needs a separate context with only the verified source text",
+    "No new browser visual acceptance, external-user test, clean-machine test or professional signature",
+    "M2, M3 and M4 remain incomplete"
+  ],
+  "logs": [
+    {
+      "file": "scope-intake-before.log",
+      "sha256": "834cd900d0be69edd11b5c5066a779d7442058461849b83b3ed67aeb0c5ff179"
+    },
+    {
+      "file": "scope-intake-after.log",
+      "sha256": "27cb799b7a53e4e786a403c30839b9bacfe01a7630e081547d1c70f46642fa19"
+    },
+    {
+      "file": "scope-intake-targeted.log",
+      "sha256": "c003f619ac40fbc2ab637cd6db5d95b4818cbfd47ef6ff7ceabdf6aea1c55721"
+    },
+    {
+      "file": "scope-intake-final.log",
+      "sha256": "cb9c7677446b82ea7312f05743c35c2739c84b69b531062c487a265b387e27ef"
+    },
+    {
+      "file": "scope-intake-full.log",
+      "sha256": "9103cb5570b9eb71f04ac27198ff102b790126d401e00173c58e527f6cbc7a1a"
+    },
+    {
+      "file": "scope-intake-final-targeted.log",
+      "sha256": "9d0b919d701d8da0e3bbeac3039235d94f6e518105b8f9ee295887a732f5cc2a"
+    },
+    {
+      "file": "independent-scope-mcp.log",
+      "sha256": "41cb04864b77f7b134c4ea6bfb14d62b32fbec9f999a655a31fd699b9def0685"
+    },
+    {
+      "file": "independent-scope-final-mcp.log",
+      "sha256": "41cb04864b77f7b134c4ea6bfb14d62b32fbec9f999a655a31fd699b9def0685"
+    },
+    {
+      "file": "independent-scope-verified-mcp.log",
+      "sha256": "41cb04864b77f7b134c4ea6bfb14d62b32fbec9f999a655a31fd699b9def0685"
+    },
+    {
+      "file": "scope-intake-integrity-final.log",
+      "sha256": "6344de6db8fd17ec58b8913a809b5e05f7dcc69cdcf6af5a5dbe93ce5e591af9"
+    },
+    {
+      "file": "scope-intake-integrity-complete.log",
+      "sha256": "007e524a3fd00ec2ac1101435ca6cc56f8457ed46024c1ed097c9f06da4bf3e2"
+    }
+  ],
+  "staticGate": {
+    "passed": 3,
+    "publicFiles": 630,
+    "logSHA256": "d1cdce2579af83091d9fc23d7e7d985db9edb2115ae55517d7c80dd09c5a0a56"
+  },
+  "evidence": {
+    "protectedFiles": 3285,
+    "protectedReferences": 26,
+    "location": "Private local evidence directory; original PDFs, text and project records excluded from public source",
+    "previousSnapshot": {
+      "sourceSHA256": "98abf693caa3543ddc03c1ec8a9e7e69574ae88b699d64bd678540ea486f62c2",
+      "protectedFiles": 3279,
+      "note": "Preserved pre-read-integrity-guard snapshot; final successor seal is in final-integrity"
+    },
+    "finalSnapshot": "Successor final-integrity snapshot; previous sealed snapshot retained"
+  }
+}

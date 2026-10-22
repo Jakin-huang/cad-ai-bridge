@@ -12,6 +12,8 @@
 
 ## 使用顺序
 
+尚无结构化设计输入时，可先用 `cad_engineering_intake review_scope/read_scope_review` 建立原文范围记录，保留候选任务、后续委托、不支持项、缺失条件、冲突和背景，逐句段关联原始文档。此时不需要 baseline 或正式设计任务；`capabilities section=scope` 返回契约。候选不代表已完成，依赖候选的任务仍待前置成果。后续 intake.freeze 的可选 scope 关联限定同文档集和同专业候选；详情见[公开技能的工程流程](../skills/cadbridge-electrical/references/engineering-design.md)。该机制不做自然语言自动分类，也不改变既有专业设计门槛。
+
 1. 调用`{"action":"capabilities"}`读取真实适配器、准备参数契约和operation参数契约。不能凭项目类型或工具名称推测支持能力。
 2. `prepare`提交唯一requestId、project{id,name,type}、task{kind,title,objective}及parameters。project.id是调用方生成并持续沿用的UUID。返回jobId和taskSHA256后原样保存。
 3. `status`使用jobId、expectedProjectId和expectedTaskSHA256；返回current为当前子任务状态，lastExecution为历史执行收据摘要，两者分别读取。
