@@ -168,11 +168,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve both design packs, analysis, explicit identities, historical outputs and hospital-only evaluator isolation",
-    "P0 Move beyond metadata: broader independent source briefs/current architecture, explicit standard applicability and conflict decisions, measurable source/semantic coverage without guessing authority",
-    "P0 Require actual-client image/text/numerical cross-check and source-backed corrections before handoff; keep visual mistakes separate from successful tool execution",
-    "P1 Richer source-bound layouts, split/merge/multiple-use coordination and project quality with installation/wiring/protection detail",
-    "P2 Independently validate real customers, external users, clean machines and authenticated professional review"
+    "P0 Preserve explicit task identity, both design packs, analysis, historical outputs and hospital evaluator isolation",
+    "P0 Source-backed project objectives and reviewable area/circulation/route tradeoffs; broader independent briefs/current architecture and explicit standard applicability/conflict decisions",
+    "P0 Actual-client image/text/numerical cross-check and source-backed corrections; general understanding acceptance remains separate",
+    "P1 Richer source-bound layouts, split/merge/multiple-use coordination and installation/wiring/protection design",
+    "P2 Independent real projects, external users, clean machines and authenticated professional signoff"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -1012,6 +1012,32 @@
       "durationMs": 159075.3933,
       "command": "node --test tests/unit/*.test.mjs",
       "logSHA256": "c7e460930673721709d4dd2a20b27bd956bb4e47cc077ebc9ecfbebe34ed7d06"
+    },
+    "professionalApproval": false,
+    "goalComplete": false,
+    "releaseRepackaged": false
+  },
+  "previousPrioritiesBeforeSpaceImprovement": [
+    "P0 Preserve both design packs, analysis, explicit identities, historical outputs and hospital-only evaluator isolation",
+    "P0 Move beyond metadata: broader independent source briefs/current architecture, explicit standard applicability and conflict decisions, measurable source/semantic coverage without guessing authority",
+    "P0 Require actual-client image/text/numerical cross-check and source-backed corrections before handoff; keep visual mistakes separate from successful tool execution",
+    "P1 Richer source-bound layouts, split/merge/multiple-use coordination and project quality with installation/wiring/protection detail",
+    "P2 Independently validate real customers, external users, clean machines and authenticated professional review"
+  ],
+  "spaceImprovementIncrement": {
+    "validation": "docs/space-improvement-validation.json",
+    "budgetedIncumbentSearch": true,
+    "allocationGuard": true,
+    "actualMcpAndNativeComparison": true,
+    "actualAiAcceptance": false,
+    "priorScalarCounterexampleRetained": true,
+    "fullRegression": {
+      "passed": 472,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 205769.8481,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "8044215722110ae672eeb79fb62b02963ec8aabdfba705e9a58c55bdf784163a"
     },
     "professionalApproval": false,
     "goalComplete": false,

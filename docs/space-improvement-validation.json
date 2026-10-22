@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "baseCommit": "e14f62e752a3474671b69754da7bdb893c002d3e",
+  "product": "CAD AI Bridge",
+  "status": "bounded_incumbent_improvement_with_allocation_guard_verified",
+  "hospitalPolicy": "Isolated evaluator only; explicit task kinds, source/assumption grades, thresholds and immutable outputs remain",
+  "hospitalDataProcessed": false,
+  "actualAiAcceptance": false,
+  "overallPracticalAcceptance": false,
+  "independentCustomerAcceptance": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "implemented": [
+    "Optional design budget.searchMode=improve; missing mode retains historical first-feasible behavior",
+    "Seed the existing feasible pool using the full original budget, then refine all available corridor variants with remaining shared node/time budgets",
+    "Retain feasible incumbents at budget end; bounded top candidate pool rather than stopping at maxPlans",
+    "Automatic adoption protects initial-best net room area, circulation area and partition/threshold footprint; rejected tradeoff plans retained for review",
+    "Explicit automaticImprovementFound distinguishes actual gain from retaining an incumbent; no promise that a bounded search always improves",
+    "Independent recomputation of objective, geometry and native saved scene; score/guard visible on paper and task center",
+    "No changes to source input, numeric requirements, grades, unresolved conditions or old output files"
+  ],
+  "finalComparison": {
+    "actualMcpProtocol": true,
+    "actualInstalledAiClient": false,
+    "calls": 11,
+    "automaticImprovementFound": false,
+    "cases": [
+      {
+        "mode": "first_feasible_variants",
+        "inputSHA256": "3eb6fa312a92dd143545b48411d7bca75653683dcade09dbfecae69a3d5f095c",
+        "modelSHA256": "5ecca5c39f8599bcffdd1ec7bc1ca020bda1fe815acd2a4963ed0e89469a9457",
+        "roomsNetM2": 328.64,
+        "circulationM2": 48,
+        "partitionAndThresholdM2": 12.16,
+        "areaDeviationM2": 3.480000000000013,
+        "unassignedM2": 42.2,
+        "score": 7.7,
+        "nodes": 51,
+        "elapsedMs": 141,
+        "rooms": 10,
+        "seats": 34,
+        "checks": 209,
+        "pending": [
+          "STANDARD_AND_PROFESSIONAL_APPLICABILITY",
+          "SOURCE_AND_SITE_AUTHORITY",
+          "ACOUSTIC_DAYLIGHT_AND_SERVICES",
+          "SITE_REVIEW"
+        ],
+        "entryRouteMm": [
+          {
+            "id": "RECEPTION",
+            "value": 2700
+          },
+          {
+            "id": "MANAGER",
+            "value": 5900
+          },
+          {
+            "id": "MEETING",
+            "value": 4500
+          },
+          {
+            "id": "TEAM",
+            "value": 11300
+          },
+          {
+            "id": "TRAINING",
+            "value": 10200
+          },
+          {
+            "id": "OFFICE_A",
+            "value": 17000
+          },
+          {
+            "id": "OFFICE_B",
+            "value": 21700
+          },
+          {
+            "id": "FOCUS",
+            "value": 14400
+          },
+          {
+            "id": "ARCHIVE",
+            "value": 17250
+          },
+          {
+            "id": "SUPPORT",
+            "value": 19650
+          }
+        ],
+        "reviewPdfs": 5
+      },
+      {
+        "mode": "improve",
+        "inputSHA256": "3eb6fa312a92dd143545b48411d7bca75653683dcade09dbfecae69a3d5f095c",
+        "modelSHA256": "6f1305754d8cad1685de4afaca67e920a21561b4c36cdda28425e1e55030cc52",
+        "roomsNetM2": 328.64,
+        "circulationM2": 48,
+        "partitionAndThresholdM2": 12.16,
+        "areaDeviationM2": 3.480000000000013,
+        "unassignedM2": 42.2,
+        "score": 7.7,
+        "nodes": 9398,
+        "elapsedMs": 15004,
+        "rooms": 10,
+        "seats": 34,
+        "checks": 210,
+        "pending": [
+          "STANDARD_AND_PROFESSIONAL_APPLICABILITY",
+          "SOURCE_AND_SITE_AUTHORITY",
+          "ACOUSTIC_DAYLIGHT_AND_SERVICES",
+          "SITE_REVIEW"
+        ],
+        "entryRouteMm": [
+          {
+            "id": "RECEPTION",
+            "value": 2700
+          },
+          {
+            "id": "MANAGER",
+            "value": 5900
+          },
+          {
+            "id": "MEETING",
+            "value": 4500
+          },
+          {
+            "id": "TEAM",
+            "value": 11300
+          },
+          {
+            "id": "TRAINING",
+            "value": 10200
+          },
+          {
+            "id": "OFFICE_A",
+            "value": 17000
+          },
+          {
+            "id": "OFFICE_B",
+            "value": 21700
+          },
+          {
+            "id": "FOCUS",
+            "value": 14400
+          },
+          {
+            "id": "ARCHIVE",
+            "value": 17250
+          },
+          {
+            "id": "SUPPORT",
+            "value": 19650
+          }
+        ],
+        "reviewPdfs": 5
+      }
+    ],
+    "tradeoff": {
+      "roomsNetGainM2": 0,
+      "circulationGainM2": 0,
+      "partitionAndThresholdGainM2": 0,
+      "unassignedReductionM2": 0,
+      "areaDeviationReductionM2": 0,
+      "entryRoutesLengthened": [],
+      "interpretation": "No automatic improvement found: incumbent retained. Tradeoff candidates remain for review."
+    },
+    "sourceInputSHA256": "3eb6fa312a92dd143545b48411d7bca75653683dcade09dbfecae69a3d5f095c",
+    "newNativeDrawings": 2,
+    "newNativeJobs": 8,
+    "strictAndPixelIdenticalPages": 10,
+    "allTenPagesViewed": true,
+    "sourceSnapshotBeforeNative": true
+  },
+  "retainedCounterexample": {
+    "technicalExecutionPassed": true,
+    "overallQualityAccepted": false,
+    "sourceInputUnchanged": true,
+    "scoreBefore": 7.7,
+    "scoreAfter": 5.454,
+    "tradeoff": {
+      "roomsNetGainM2": -0.62,
+      "circulationGainM2": 9.6,
+      "unassignedReductionM2": 9.66,
+      "areaDeviationReductionM2": 1.28,
+      "entryRoutesLengthened": [
+        "RECEPTION",
+        "MANAGER",
+        "MEETING",
+        "TEAM",
+        "TRAINING",
+        "OFFICE_A",
+        "OFFICE_B",
+        "FOCUS",
+        "ARCHIVE",
+        "SUPPORT"
+      ],
+      "interpretation": "Unassigned reduction is mostly wider circulation, not useful-room gain. Score improvement is limited to the existing area/preference objective; no claim of overall layout superiority."
+    },
+    "interpretation": "Lower old scalar score alone selected wider circulation, smaller room net area and longer routes. Initial report and native files retained; final allocation guard added, not a changed project requirement.",
+    "controllerCommentaryCorrection": "An interim estimate of +0.06m² room area ignored partition/threshold changes; authoritative independent result is -0.62m², and the correction was stated explicitly"
+  },
+  "retainedIntermediateCounterexample": {
+    "scoreBefore": 7.7,
+    "scoreAfter": 7.62,
+    "tradeoff": {
+      "roomsNetGainM2": 0,
+      "circulationGainM2": 0,
+      "partitionAndThresholdGainM2": 0.8,
+      "unassignedReductionM2": 0.8,
+      "areaDeviationReductionM2": 0,
+      "entryRoutesLengthened": [
+        "FOCUS",
+        "SUPPORT"
+      ],
+      "interpretation": "Scalar-score change has area allocation and route tradeoffs; no overall layout superiority is established."
+    },
+    "acceptedAsBetterOverall": false
+  },
+  "regression": {
+    "full": {
+      "passed": 472,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 205769.8481,
+      "command": "node --test tests/unit/*.test.mjs",
+      "logSHA256": "8044215722110ae672eeb79fb62b02963ec8aabdfba705e9a58c55bdf784163a"
+    },
+    "priorFullLogSHA256": "cf8e339ad1bfb807e99d7805c0323d1dd0eef91211dc5a4fadcb87f28459ccf5",
+    "priorFullPassed": 472,
+    "priorTwoFieldGuardLogSHA256": "5929c4651150304e7c9e18f8b8be1c6e549e28f2875122e0f806b729af5cfb7c",
+    "priorTwoFieldGuardPassed": 472,
+    "guardTestFirst": {
+      "passed": 3,
+      "failed": 1,
+      "logSHA256": "787b5e5bde2ac7ad8002fbdd33e271ff6d4f8df8a29c2c2d4d506c4eb6989220",
+      "reason": "Original must-improve assertion contradicted final allocation guard on this known case. Kept failure; final test requires honest gain flag or retained incumbent, not invented benefit."
+    },
+    "staticGate": {
+      "ok": true,
+      "staticOnly": true,
+      "publicFiles": 531,
+      "checks": 3,
+      "logSHA256": "7d8ea9b9436ece2ffe065de637b93d3d385e274f952a115f028d3cb27938617f"
+    },
+    "legacy": {
+      "calls": 7,
+      "downloads": 5
+    },
+    "threeKindReadonly": {
+      "calls": 8,
+      "downloads": 16,
+      "protectedFiles": 68,
+      "actualAiPerformedThisSwitch": false
+    },
+    "legacyScope": "Legacy/current-three-kind protocol checks preceded the final opt-in allocation guard; final full unit suite rechecks unchanged legacy projections and source semantics. Final native cases also perform A→B→A."
+  },
+  "limits": [
+    "One known synthetic declared office family, not an independent natural-language customer case or newly validated AI interpretation",
+    "Rectangular shell, straight corridor and rectangular bays/furniture remain; richer architecture, genuine standard applicability and installation details incomplete",
+    "Area/preference objective and allocation guard are algorithm policy, not a professional or customer priority decision; room-by-room routes may still lengthen within original limits",
+    "A lower score is not proof of useful-area increase, overall layout superiority or global optimality",
+    "Finite candidates/nodes; elapsed time is cooperative and can exceed the requested interval at check/return boundaries",
+    "No browser visual acceptance of task-center summary, real user/new machine or authenticated professional review",
+    "M2–M4 and full historical release gate remain incomplete; frozen v2 and DLL not repackaged"
+  ],
+  "nextPriorities": [
+    "P0 Preserve explicit task identity, both design packs, analysis, historical outputs and hospital evaluator isolation",
+    "P0 Source-backed project objectives and reviewable area/circulation/route tradeoffs; broader independent briefs/current architecture and explicit standard applicability/conflict decisions",
+    "P0 Actual-client image/text/numerical cross-check and source-backed corrections; general understanding acceptance remains separate",
+    "P1 Richer source-bound layouts, split/merge/multiple-use coordination and installation/wiring/protection design",
+    "P2 Independent real projects, external users, clean machines and authenticated professional signoff"
+  ],
+  "evidence": {
+    "artifactRoot": "artifacts/space-improvement-validation-20261022",
+    "archive": "有界方案改进与面积取舍-完整试验证据.zip",
+    "initialTrial": "space-improvement-native-20261022",
+    "intermediateTrial": "space-improvement-native-20261022-conservative",
+    "finalTrial": "space-improvement-native-20261022-allocation-guard",
+    "oldReportsNotRewritten": true
+  }
+}
