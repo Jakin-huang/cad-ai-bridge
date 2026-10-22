@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "version": "2.1.0-preview.1",
+  "date": "2026-10-22",
+  "status": "source_iteration_developed_local_execution_subset_verified",
+  "iterationDevelopmentComplete": true,
+  "localExecutionSubsetVerified": true,
+  "autonomousAgentEndToEndAccepted": false,
+  "independentProjectAcceptance": false,
+  "crossModelAcceptance": false,
+  "newMachineAcceptance": false,
+  "externalUserAcceptance": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "windowsUserPackageRebuilt": false,
+  "implementation": [
+    "Read-only next_step over existing durable task identity, source/graph checks and operation receipts",
+    "One protocol for installed lighting, space-planning and analysis adapters; no project-label routing",
+    "Original documents/intake/requirements workflow retained, generic engineering Skill updated",
+    "Failed-operation diagnostics stop repeated automatic proposals",
+    "Source-declared frontage difference constraints in generation, independent geometric audit and drawing report",
+    "121 extra bounded room-grid annotation candidates after existing local search; physical inputs/models/devices unchanged"
+  ],
+  "verification": {
+    "fullRegression": {
+      "passed": 547,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 198549.6522
+    },
+    "targetedFinal": {
+      "passed": 7,
+      "failed": 0
+    },
+    "skill": "Official quick_validate.py passed with UTF-8 and workspace-local validation dependency",
+    "matrix": [
+      {
+        "type": "hospital",
+        "kind": "ordinary-lighting",
+        "designObjects": {
+          "rooms": 2,
+          "devices": 9,
+          "circuits": 2
+        },
+        "checks": {
+          "passed": 47,
+          "failed": 0,
+          "pending": 22
+        },
+        "dwgFiles": 1,
+        "reviewPdfPages": 5,
+        "phases": [
+          "design",
+          "delivery",
+          "review_pdfs",
+          "awaiting_human_review"
+        ],
+        "scope": "Synthetic declared conditions, not independent customer design or professional acceptance"
+      },
+      {
+        "type": "school",
+        "kind": "ordinary-lighting",
+        "designObjects": {
+          "rooms": 2,
+          "devices": 30,
+          "circuits": 4
+        },
+        "checks": {
+          "passed": 56,
+          "failed": 0,
+          "pending": 22
+        },
+        "dwgFiles": 1,
+        "reviewPdfPages": 5,
+        "phases": [
+          "design",
+          "delivery_failed_not_applied",
+          "blocked_with_diagnostic",
+          "delivery_after_public_code_fix",
+          "review_pdfs",
+          "awaiting_human_review"
+        ],
+        "scope": "Synthetic declared conditions, not independent customer design or professional acceptance"
+      },
+      {
+        "type": "office",
+        "kind": "office-space-planning",
+        "designObjects": {
+          "rooms": 3,
+          "frontageMm": [
+            2800,
+            2800,
+            2800
+          ]
+        },
+        "checks": {
+          "passed": 48,
+          "failed": 0,
+          "pending": 4
+        },
+        "dwgFiles": 1,
+        "reviewPdfPages": 5,
+        "phases": [
+          "design",
+          "delivery",
+          "review_pdfs",
+          "awaiting_human_review"
+        ],
+        "scope": "Synthetic declared conditions, not independent customer design or professional acceptance"
+      }
+    ],
+    "freshReadonlySwitchVerified": true,
+    "schoolOriginalModelUnchanged": true,
+    "frontageRevision": {
+      "oldMm": [
+        2300,
+        3000,
+        3700
+      ],
+      "newMm": [
+        2800,
+        2800,
+        2800
+      ],
+      "originalRegisteredFilesUnchanged": 23,
+      "currentDwgs": 1,
+      "currentReviewPdfPages": 5,
+      "firstFailureRetained": true
+    },
+    "newNativeDrawings": 4,
+    "newReviewPdfPages": 20,
+    "visuallyReviewedPagesIncludingOldBaseline": 25,
+    "staticGate": {
+      "passed": 3,
+      "publicFiles": 641,
+      "logSHA256": "bd837a7f2a7c44e543888f74b92add4e27c7ec8cb4cfdcf073098554f4245d67"
+    }
+  },
+  "retainedFailures": [
+    "Initial frontage native harness compared source IDs without accounting for legitimate version rebinding; corrected verification, resumed same designed task",
+    "School delivery initially failed before CAD creation at ANNOTATION_PLACEMENT_REQUIRED; original model and requirements retained, common annotation search fixed, one explicit not-applied recovery completed",
+    "Official Skill validator initially lacked PyYAML/defaulted to GBK; workspace-local dependency and UTF-8 invocation resolved validation runtime"
+  ],
+  "limits": [
+    "No new installed-model autonomous natural-language-to-CAD trial in this iteration; MCP driver selected operations from next_step",
+    "Hospital scenario is staff/ordinary circulation lighting only; no clinical, emergency/fire or hospital full-design acceptance",
+    "School scenario is declared horizontal ordinary-lighting subset; no blackboard-plane, real photometry/glare or full school standard applicability acceptance",
+    "Office scenario verifies unfurnished rectangular partition constraints; no complete architectural, furniture, fire/accessibility or MEP design",
+    "Original independent public briefs remain boundary/input audits, not complete independent positive projects",
+    "Full old release-package gate has historical DLL-evidence mismatch; not relaxed or represented as passed. This source/tag iteration does not certify a new Windows user installer",
+    "Complex-engineering milestones M2, M3 and M4 remain incomplete"
+  ],
+  "logs": [
+    {
+      "file": "v21-agent-targeted.log",
+      "sha256": "76b287010a3eb6519074d4a285a61550ca35d601497200b600c7bfe581b64549"
+    },
+    {
+      "file": "v21-full-unit.log",
+      "sha256": "aedbeb55f1af8e539ebf1f5074e601b1af08fcd88d8fd5f0eb90a769fd6fd3c1"
+    },
+    {
+      "file": "v21-final-targeted.log",
+      "sha256": "9728e6f2a99c29781e303b8715d30ff473c9cc57097112377daf5009e80f3587"
+    },
+    {
+      "file": "v21-full-final.log",
+      "sha256": "727f407da85c7f8a55001a0b30852a6f191f0c4dbf4b0ea78a33540d59a9ad09"
+    },
+    {
+      "file": "v21-frontage-resume.log",
+      "sha256": "5d8dd8833ecb3c2399a1cec86a8814d1b8b4e83954293c88fa55f0d4d1077f01"
+    },
+    {
+      "file": "v21-agent-loop-native.log",
+      "sha256": "766fb1104281bf4a4aec242f2b3bda0f10f16fa22375b94d64b7888db1a16d30"
+    },
+    {
+      "file": "v21-agent-loop-recovered.log",
+      "sha256": "1fbc9a5114c6a59e59c21ce1b1458f22f4641815c4ca1ebf1680226eef83fc7f"
+    },
+    {
+      "file": "v21-annotation-before.log",
+      "sha256": "e79407a7c215710354e14bdd1c2a078a9462ee6a2718bb973eb6855b08950341"
+    },
+    {
+      "file": "v21-skill-validation.log",
+      "sha256": "6cf9e7f0d34ccd36dbd28f270cd28dd04277b2e1516bd4333ce7bb501d7b18d4"
+    }
+  ],
+  "actualClientReadback": {
+    "attempted": true,
+    "passed": false,
+    "readOnly": true,
+    "syntheticNonPrivate": true,
+    "processExitCode": 0,
+    "modelResultIsError": true,
+    "reason": "Configured model service quota exhausted",
+    "elapsedMs": 7533,
+    "autonomousDesignAccepted": false
+  },
+  "evidence": {
+    "previousFilesVerified": 3285,
+    "protectedFiles": 3857,
+    "protectedReferences": 26,
+    "localOnly": true,
+    "sourceSnapshot": "Versioned local source snapshot; no raw evidence paths or project assets distributed"
+  }
+}

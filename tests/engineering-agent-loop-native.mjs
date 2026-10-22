@@ -1,0 +1,20 @@
+// Actual MCP/CAD execution of declared development problems; no independent AI interpretation claim.
+import fs from 'node:fs/promises';import path from 'node:path';import crypto from 'node:crypto';import assert from 'node:assert/strict';import {Client} from '@modelcontextprotocol/client';import {StdioClientTransport} from '@modelcontextprotocol/client/stdio';
+import {agentScenario} from './helpers/agent-scenarios.mjs';import {dataHome,outsideProject,projectPath} from '../src/local-paths.mjs';import {hashFile} from '../src/drawings.mjs';
+const root=outsideProject(path.resolve(process.argv[2]??''));assert.ok(process.argv[2]);await fs.mkdir(root);
+const report={ok:false,actualAiClient:false,independentProjectAcceptance:false,professionalApproval:false,scope:'Same continuation protocol, two design packs, three materially different synthetic problems; no source-authority or complete-engineering acceptance',cases:[]},write=()=>fs.writeFile(root+'/report.json',JSON.stringify(report,null,2)+'\n');
+const client=new Client({name:'generic-agent-loop-native',version:'1'}),call=async q=>{await fs.appendFile(root+'/calls.ndjson',JSON.stringify({q})+'\n');const raw=await client.callTool({name:'cad_engineering_task',arguments:q},{timeout:600000}),r=JSON.parse(raw.content.find(c=>c.type==='text').text);await fs.appendFile(root+'/calls.ndjson',JSON.stringify({result:r})+'\n');assert.equal(r.ok,true,JSON.stringify(r));return r;};
+const connect=ro=>client.connect(new StdioClientTransport({command:process.execPath,args:[projectPath('mcp-server.mjs')],env:{...process.env,CADAGENT_ALLOWED_ROOT:dataHome(),CADBRIDGE_READ_ONLY:ro?'1':'0'},stderr:'pipe'}));
+try{
+ await connect(false);
+ for(const type of ['hospital','school','office']){
+  const scenario=agentScenario(type),task=await call({action:'prepare',requestId:crypto.randomUUID(),project:{id:crypto.randomUUID(),name:scenario.parameters.input?.title??scenario.parameters.project.title,type:'declared-development'},task:{kind:scenario.kind,title:'Scoped '+type+' development design',objective:'Use one persisted continuation protocol to design, independently check and deliver this declared problem for human review.'},parameters:scenario.parameters}),binding={jobId:task.jobId,expectedProjectId:task.project.id,expectedTaskSHA256:task.taskSHA256},phases=[];let status=task;
+  for(let n=0;n<6;n++){const next=await call({action:'next_step',...binding,...(scenario.designBudget?{designBudget:scenario.designBudget}:{})});phases.push(next.phase);if(next.phase==='awaiting_human_review')break;assert.notEqual(next.phase,'blocked',JSON.stringify(next));assert.ok(next.next);status=await call({...next.next.arguments,requestId:crypto.randomUUID()});}
+  assert.deepEqual(phases,['design','delivery','review_pdfs','awaiting_human_review']);assert.equal(status.current.delivery.verification.ok,true);const checks=status.current.audit??status.current.checks;assert.equal(checks.failed,0);assert.ok(checks.pending>0);
+  for(const f of status.current.files)assert.equal(await hashFile(f.file),f.sha256,f.file);
+  const modelFile=path.join(dataHome(),'runs',status.current.jobId,'model-'+status.current.revision+'.json');report.cases.push({type,kind:scenario.kind,task:binding,modelFile,modelSHA256:status.current.modelSHA256,phases,checks,files:status.current.files,delivery:status.current.delivery,pdfReview:status.current.pdfReview,visualReviewPending:true});await write();
+ }
+ await client.close();await connect(true);
+ for(const c of [...report.cases].reverse()){const step=await call({action:'next_step',...c.task});assert.equal(step.phase,'awaiting_human_review');assert.equal(step.modelSHA256,c.modelSHA256);for(const f of c.files)assert.equal(await hashFile(f.file),f.sha256);}
+ report.ok=true;report.freshReadonlySwitchVerified=true;await write();console.log(JSON.stringify({ok:true,cases:report.cases.map(c=>({type:c.type,phases:c.phases,files:c.files.length,checks:c.checks})),visualReviewPending:true}));
+}catch(e){report.error=e.stack;await write();throw e;}finally{await client.close().catch(()=>{});}

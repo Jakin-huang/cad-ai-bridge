@@ -187,3 +187,9 @@ cad_design_revision 的 draft/read/apply 接收客户端明确的房间选择、
 新建文档集默认fields_and_sources。cad_project_documents source_blocks按分页返回原文句段、位置与摘要；review.sourceCoverage逐段登记mapped/context/unresolved/conflict、targetIds和reason。未处置或未解决句段阻止审阅绑定；mapped必须有对应字段及相关原句。read_review section=source_coverage可读取完整处置。紧凑intake的parameters也接收sourceCoverage，可先形成blocked草稿、读取实际input目标后再补全。更新原文使旧映射失效，严格文档集及任务不能降级。
 
 fields_only仅保留历史字段核对口径，不能冒称任务书完整理解。句段处置和数值字段自检仍需与独立语义判断、标准适用及工程审核分开。验证结果见[原文覆盖验证](source-coverage-validation.json)。
+
+## 通用 Agent 下一步
+
+`action=next_step` 使用现有任务身份，读取持久状态并返回 `phase/issues/next/snapshotSHA256`；只读，不执行 CAD。`next` 给出当前版本的工具调用参数，调用者为确认执行的操作补充新的 requestId，执行后重新查询。空间包可显式 `designBudget` 指定原有预算/单侧走廊族。来源过期、依赖冲突、未确认操作、输入或设计检查失败将阻断；返回待人工审核不等于需求理解、整项目或专业审核通过。工作流详见[通用 Agent 闭环](../skills/cadbridge-electrical/references/engineering-agent-loop.md)。
+
+空间关系新增 `max_frontage_difference`：沿走廊方向的两房间净开间差不超过 valueMm，0 表示等开间；容差必须显式给出。求解、独立几何检查和图纸说明一致执行，原面积偏好不自动改变。该关系不表示相邻、等面积或任意空间长度方向，也不补齐缺失建筑条件。

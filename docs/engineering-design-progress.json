@@ -1335,5 +1335,20 @@
     "M4": "incomplete",
     "frozenScopeReadIntegrity": true,
     "historicalStaleScopeReadable": true
+  },
+  "v21Iteration": {
+    "validation": "docs/v2.1-validation.json",
+    "version": "2.1.0-preview.1",
+    "developmentComplete": true,
+    "localExecutionSubsetVerified": true,
+    "actualAiClient": false,
+    "independentProjectAcceptance": false,
+    "crossModelAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false,
+    "newNativeDrawings": 4,
+    "newReviewPdfPages": 20,
+    "fullRegression": 547,
+    "actualClientReadback": "failed_model_service_quota"
   }
 }

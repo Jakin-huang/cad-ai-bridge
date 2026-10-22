@@ -1,6 +1,8 @@
 # CAD AI Bridge
 
-A local MCP and Skill connector between your existing CAD software and AI client. The preview preserves read, takeoff, constrained batch editing, file protection, task recovery and pagination capabilities.
+A local MCP and Skill engineering-task system connecting existing CAD software and AI clients. It combines source-linked requirements, bounded design solvers, revisions, checks and reviewable delivery. Current support covers drawing operations, ordinary lighting and bounded office-space planning; general complex-project design remains unaccepted.
+
+**v2.1.0-preview.1 source iteration** adds persistent-task Agent continuation, a reusable engineering Skill, frontage-difference constraints and grouped-control annotation placement. Three materially different synthetic hospital-support, school and office problems exercised the same protocol and native CAD delivery. This does not establish independent customer, autonomous semantic or cross-model acceptance. See [iteration scope and acceptance](docs/v2.1-iteration.md). The frozen Windows user package remains v2.0 below; this iteration publishes source/tag only.
 
 **v2.0.0-preview.1 user preview.** Adds durable multi-drawing projects, tiered verification, traceable engineering quantities/checks, a loopback task center, native batch exports, backend contracts and reproducible evaluation. Local acceptance and external gaps are tracked in the [validation summary](docs/v2-validation.json) and [implementation ledger](docs/v2-implementation.json). The existing verified host baseline is Windows 10 x64, Chinese AutoCAD 2022 and optional Tangent Electrical V8. Development, local automated validation and external usability are separate conclusions. Use your own normally licensed software.
 

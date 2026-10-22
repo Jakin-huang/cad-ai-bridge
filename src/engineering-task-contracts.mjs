@@ -1,7 +1,9 @@
 import {z} from 'zod';
 import {documentSetRefSchema} from './project-document-contracts.mjs';
+import {planningBudgetSchema} from './space-planning-contracts.mjs';
 const digest=z.string().regex(/^[a-fA-F0-9]{64}$/),jobId=z.string().regex(/^job-task-[a-f0-9-]{36}$/),parameters=z.record(z.string(),z.unknown());
 export const engineeringTaskSchema=z.discriminatedUnion('action',[
+ z.strictObject({action:z.literal('next_step'),jobId,expectedProjectId:z.uuid(),expectedTaskSHA256:digest,designBudget:planningBudgetSchema.optional()}),
  z.strictObject({action:z.literal('capabilities'),kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/).optional(),section:z.enum(['all','summary','prepare','operations','data','reconciliation']).default('all'),operation:z.string().regex(/^[a-z][a-z0-9_]{0,63}$/).optional()}),
  z.strictObject({action:z.literal('project_review'),expectedProjectId:z.uuid(),tasks:z.array(z.strictObject({jobId,expectedTaskSHA256:digest})).min(1).max(20),scopeTaskJobId:jobId,requiredKinds:z.array(z.string().regex(/^[a-z][a-z0-9-]{0,63}$/)).min(1).max(20),section:z.enum(['summary','tasks','spaces','issues']).default('summary'),expectedReportSHA256:digest.optional(),offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)}),
  z.strictObject({action:z.literal('project_review_package'),requestId:z.uuid(),expectedProjectId:z.uuid(),tasks:z.array(z.strictObject({jobId,expectedTaskSHA256:digest})).min(1).max(20),scopeTaskJobId:jobId,requiredKinds:z.array(z.string().regex(/^[a-z][a-z0-9-]{0,63}$/)).min(1).max(20),expectedReportSHA256:digest}),
@@ -12,4 +14,4 @@ export const engineeringTaskSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('reconcile'),jobId,expectedProjectId:z.uuid(),expectedTaskSHA256:digest,requestId:z.uuid(),operationRequestId:z.uuid(),expectedOperationSHA256:digest,operationParameters:parameters,recoveryParameters:parameters.default({})}),
  z.strictObject({action:z.literal('invoke'),jobId,expectedProjectId:z.uuid(),expectedTaskSHA256:digest,requestId:z.uuid(),operation:z.string().regex(/^[a-z][a-z0-9_]{0,63}$/),parameters})
 ]);
-export const readonlyEngineeringTaskSchema=z.discriminatedUnion('action',engineeringTaskSchema.options.filter(s=>['capabilities','status','dependencies','data','project_review'].includes(s.shape.action.value)));
+export const readonlyEngineeringTaskSchema=z.discriminatedUnion('action',engineeringTaskSchema.options.filter(s=>['capabilities','status','next_step','dependencies','data','project_review'].includes(s.shape.action.value)));

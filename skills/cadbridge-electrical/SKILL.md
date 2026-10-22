@@ -1,6 +1,6 @@
 ---
 name: cadbridge-electrical
-description: "通过 CAD AI Bridge 查询、修改和统计已有 CAD 图纸，新建二维图、批量替换文字、整理属性图层、保存复核并交付 DWG/CSV/PDF/PNG；支持当前图纸协同，可按需处理天正电气识别、受管理路线和原生桥架。Query, edit, take off and deliver verified CAD drawing copies through the connected bridge."
+description: "通过 CAD AI Bridge 执行有来源的工程需求、设计、修订、自检、CAD出图和待审核交付，或查询、编辑和统计已有图纸。使用已安装专业包，支持当前图纸协同与按需天正扩展。Plan, design, revise and deliver reviewable engineering work through the connected CAD bridge."
 ---
 
 使用已连接的 CAD AI Bridge。目录名 cadbridge-electrical 保留升级兼容，主体是通用 CAD。只发现当前任务需要的工具；不要默认加载全部工具、搜索源码/日志或为制图安装软件。
@@ -13,7 +13,7 @@ description: "通过 CAD AI Bridge 查询、修改和统计已有 CAD 图纸，�
 
 多张图使用 cad_project：start 后按 jobId 查看 status，取消仅停止后续图，resume 只继续未开始项，reexport 只重导已失败出图，不重做已保存修改。工程检查和带来源计量使用 cad_scan_drawing 后的 cad_analyze，按需读 [项目、计量与验证](references/project-analysis.md)。工具返回的 verification.levels 分别报告保存、重开、几何、保护和出图；partial/unknown 不得称为完整验证或实用性验收通过。
 
-完整工程设计任务读 [工程需求、设计与审核](references/engineering-design.md)。cad_design_project 是实验性普通照明项目入口：先解释客户资料和建筑条件，形成有来源的结构约束，再 prepare/design；通过后才 deliver。需求缺项或冲突不能猜成已确认条件。已有受保护种子时，prepare_from_seed的functionalIntake只能补未确认功能并引用原任务书原句；不能判断的用途提交unresolved并保留阻断，不重写几何/产品来绕过缺项。当前仅支持明确边界的普通照明专业设计，参考最终图不能进入生成输入，专业人工审核始终另列。
+完整工程设计任务先读 [通用 Agent 闭环](references/engineering-agent-loop.md)，按需读 [工程需求、设计与审核](references/engineering-design.md)。通用 cad_engineering_task 承接已安装普通照明、有限办公空间方案及图纸分析；项目名称不选择专业。准备或恢复任务后用 next_step 读取当前阶段、阻断项和绑定当前版本的下一调用；它只给出建议，不执行 CAD 或认证需求理解。原文、条件和模型缺项须保留，依据检查反馈作有来源的修订；参考最终图保持隔离，专业审核另列。cad_design_project 保留普通照明兼容入口，不能用于其他专业。
 
 “当前打开的图纸/当前视图/选择集”任务读 [会话流程](references/session-workflow.md)。cad_session先list（status为别名），必要时connect，再context；使用返回的文档身份、内存版本和句柄，人工修改或切图后重新读取。普通文件工作流仍可独立使用。
 

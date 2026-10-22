@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0-preview.1 — 2026-10-22
+
+Add read-only, version-bound `cad_engineering_task next_step` over existing persistent tasks and receipts. It proposes installed design, analysis, quality and delivery operations, exposes blocking source/input/dependency/execution failures, and leaves professional review explicit. Update the reusable engineering Agent Skill. Add source-declared maximum frontage-difference constraints to space generation, independent checks and drawings; expand bounded annotation placement for grouped controls without moving physical devices.
+
+Three different declared hospital-support, school and office development problems exercised the same MCP continuation protocol and real CAD delivery. The school run retained a pre-native annotation failure and completed after the common fix, with its original model unchanged. These are synthetic execution/solver checks, not independent customer projects, new autonomous-model semantic acceptance or cross-model usability acceptance. Sources, original drawings and local evidence remain outside the public tree; the frozen v2.0 archive is retained. This iteration publishes source/tag only; it does not replace or re-certify the v2.0 Windows user package. See [iteration scope and acceptance](docs/v2.1-iteration.md).
+
 ## 2.0.0-preview.1 — 2026-10-20
 
 Integrate durable multi-drawing projects, checkpoint recovery and read-only failed-export recovery; engineering checks and versioned quantities with per-instance provenance; a local authenticated task center; explicit verification levels; richer saved-object geometry checks; and native multi-export execution in one host. Add backend contracts and evidence-bound fixed-denominator benchmark adjudication. Preserve internal/plugin compatibility 0.2.0 and previous interfaces; expose 24 MCP tools. Current-machine validation, external usability and competitive superiority remain separate gates. See docs/v2-usage.md and docs/v2-implementation.json for the actual candidate status.
