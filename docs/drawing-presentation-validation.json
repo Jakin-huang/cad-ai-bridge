@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "baseCommit": "fab7f3d8ef86365012697a7004ca327318e97df5",
+  "status": "unreleased_shared_presentation_gate_and_two_task_family_native_subset_verified",
+  "developmentComplete": true,
+  "localPresentationSubsetAccepted": true,
+  "iterationClosed": true,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "crossModelAcceptance": false,
+  "newMachineAcceptance": false,
+  "externalUserAcceptance": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "hospitalPrivateDataProcessed": false,
+  "implemented": [
+    "Common original-supported title, descriptive scope and project notes for both ordinary-lighting and office-space-planning; no project-name routing",
+    "New freeze defaults requirePresentation=true; omitted declarations remain blocked drafts. Previously frozen records retain their original policy; explicit false is legacy compatibility, never presentation acceptance",
+    "Agent explicitly declares every design-space ID. Shared checks reject missing, extra or repeated IDs and render the actual space names/IDs from the frozen task",
+    "Only evidence-proved title/descriptive scope and additional drawing notes may change through this intake; physical/numerical/product/supply/standard/assumption and original missing-input conditions remain frozen",
+    "Exact continuous quotations and original text/document-set hashes; project name must cite requirements or coordination, evaluator never allowed",
+    "Per-sheet header and note projection checks; source-bound model generation/verification, native saved-scene readback, independently strict-parsed PDF text and all-page visual inspection",
+    "Existing source block coverage, task identity, single adoption and immutable drafts reused; no new project database or parallel execution history"
+  ],
+  "publicProtocol": {
+    "inputPreparation": "cad_engineering_intake freeze/draft/read/commit",
+    "declaration": "parameters.presentation={title,scope,spaceIds,notes,reviewed:true}; each text claim has text/reason/evidence[{documentId,quote}]",
+    "readback": "read section=presentation before commit; input/source_coverage retain current real target IDs and source excerpts",
+    "scopeMeaning": "Descriptive text plus exact current-task space coverage; does not add rooms, change execution-scope dependencies or authorize unimplemented disciplines",
+    "compatibility": "Historical inputs without drawingPresentation are not retroactively certified; legacy presentation v1 is readable but lacks the new v2 space-scope acceptance",
+    "limits": "Literal/supporting-quote presence cannot prove the chosen name or scope is semantically exhaustive. The source may itself be incomplete or contradictory."
+  },
+  "regression": {
+    "full": {
+      "passed": 571,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 246350.4404,
+      "logSHA256": "1bf134a1e7339b3ac21fad9eb9633d09fec893eaef9738a75ae0561204126450"
+    },
+    "finalRelated": {
+      "passed": 7,
+      "failed": 0,
+      "logSHA256": "a984ab99ca9f13fc18fb0599d0502e3def29339f80ad4fef52cf1f3a994df43d"
+    },
+    "originalPreGateCompatibility": {
+      "passed": 19,
+      "failed": 0
+    },
+    "officialSkillValidationPassed": true,
+    "staticSourceCheckPassed": true
+  },
+  "actualAgent": {
+    "client": "Codex CLI",
+    "version": "0.163.0-alpha.10.2",
+    "model": "Installed runtime default, no model/provider override; not controlled cross-model evidence",
+    "authentication": "Existing saved login; credentials/global config not read/copied",
+    "skill": "Verbatim public Skill and technical references embedded in pinned initial prompt; no invented Read call",
+    "inputPolicy": "Only synthetic public in-code generators and byte-identical previous synthetic originals; private oracle excluded",
+    "controllerSemanticRepair": false,
+    "taskKindExplicit": true,
+    "newCustomerAcceptance": false,
+    "lightingInterpretation": {
+      "artifact": "presentation-agent-final-20261023",
+      "checks": 135,
+      "calls": 29,
+      "protocolErrors": 0,
+      "wholeClientTrialPassed": true,
+      "elapsedMs": 140639,
+      "traceSHA256": "2ccfa389657141286d902b6cbf87c3d837348d1ca2ad173f3165fc5746449065"
+    },
+    "cases": [
+      {
+        "artifact": "presentation-publication-final-20261023",
+        "kind": "ordinary-lighting",
+        "report": "client-publication.json",
+        "auditSHA256": "3764b3da67824c79c8f68bfeba75d3cd28c683fdfffb4287b6a8ce4c3581c3ab",
+        "traceSHA256": "cb48a97775aad0455432a9ad0194aa998dd3c69999ecbeee2fd6561fb03f4c06",
+        "calls": 7,
+        "protocolErrors": 0,
+        "checks": 26,
+        "modelSHA256": "a7773fe3d09da163be6e205e1ff70fe6b796836a0a542d39aa2192e6f06f1d41",
+        "inputSHA256": "ca066c612ade856c65af1cb710700a8b78ed1d3fd2844f65f87ce3c0f53af2a6",
+        "design": {
+          "lamps": 29,
+          "circuits": 2,
+          "sheets": 5,
+          "pending": 8
+        },
+        "title": "合成办公项目",
+        "spaces": [
+          "N_A",
+          "N_B"
+        ],
+        "projectNotes": 2,
+        "reviewPdfs": 5,
+        "strictReaderPages": 5,
+        "pixelIdenticalPages": 5,
+        "allPagesViewed": true,
+        "presentationSubsetAccepted": true,
+        "fullDrawingCompletionAccepted": false
+      },
+      {
+        "artifact": "presentation-space-agent-final-20261023",
+        "kind": "office-space-planning",
+        "report": "independent-audit-corrected-readonly.json",
+        "auditSHA256": "fa0852fd2e67bd1d916af61bd7c912c84d07cca60fa9ddcd0b39417b80536979",
+        "traceSHA256": "8af3f09801a6ee73a1cd3a1318ec47316d3dae7e2a3b48009f0b72972d0786aa",
+        "calls": 34,
+        "protocolErrors": 0,
+        "checks": 119,
+        "modelSHA256": "85d90359e61a2cb2454aad361dc595f8619d6157147822a2a3990bff3281580c",
+        "inputSHA256": "88dfcbaf2be8537be89ff3001a6808eaa68f5be79abed43bbd6e7c5950d2126b",
+        "design": {
+          "rooms": 10,
+          "designedSeats": 36,
+          "relations": 3,
+          "sheets": 5,
+          "geometricChecks": 209,
+          "pending": 6,
+          "unassignedM2": 42.2,
+          "title": "合成设计机构办公方案"
+        },
+        "title": "合成设计机构办公方案",
+        "spaces": [
+          "RECEPTION",
+          "MEETING",
+          "TEAM",
+          "OFFICE_A",
+          "OFFICE_B",
+          "MANAGER",
+          "FOCUS",
+          "SUPPORT",
+          "ARCHIVE",
+          "TRAINING"
+        ],
+        "projectNotes": 1,
+        "reviewPdfs": 5,
+        "strictReaderPages": 5,
+        "pixelIdenticalPages": 5,
+        "allPagesViewed": true,
+        "presentationSubsetAccepted": true,
+        "fullDrawingCompletionAccepted": false
+      }
+    ],
+    "lightingSessions": 2,
+    "spaceSessions": 1,
+    "uninterruptedCrossProjectSessionAccepted": false
+  },
+  "retainedFailures": [
+    "Original codex-intake-publication-20261023 task/DWG/five PDFs and title rejection remain frozen; no old PDF or old input/model was patched",
+    "First lighting presentation trial had zero protocol errors but failed independent scope completeness because no explicit space binding existed. Preserve its original failing audit and raw event/source snapshot; final acceptance uses a new v2 space-scope contract, not a rewritten pass",
+    "First space trial ran the earlier v1 development contract and is not promoted to current v2 acceptance. Its original trace/native files and incomplete current-code audit remain retained",
+    "First new unit run had 2 passes/1 failure due to whitespace lost during planning text wrapping; corrected shared presentation text wrapping preserves every character",
+    "First full run: 567 passes/4 failures in legacy source-index-only reader fixtures; optional model-input compatibility fixed, related seven and final full571 pass",
+    "One scope-gate unit assertion incorrectly expected a transport error for an ok=true blocked draft; assertion corrected without weakening the blocker",
+    "First final-space audit omitted next_step from its allowlist despite the declared prompt. Original failure and separate corrected read-only audit retained; zero actual protocol errors in both",
+    "First PDF check correctly stopped at the unaccepted audit; re-run uses the separately corrected audit; raw CAD PageMode duplicate-key warnings retained, strict review files and source/review pixels pass"
+  ],
+  "acceptance": {
+    "development": true,
+    "currentMachineNativeExecution": true,
+    "declaredOriginalToDrawingPresentationSubset": true,
+    "allFinalReviewPdfPages": 10,
+    "finalNativeDrawings": 2,
+    "originalPhysicalAndPendingConditionsPreserved": true,
+    "completeDesign": false,
+    "independentCustomers": false,
+    "independentSemanticScopeCompleteness": false,
+    "professionalApproval": false,
+    "newMachine": false,
+    "crossModel": false
+  },
+  "limits": [
+    "Two known source-assisted development problems, not three independent hospital/school/office commissions. Prior three-scenario files remain protected and their earlier validation is unchanged",
+    "Fresh isolated trials re-walk original intake and retain immutable correction drafts; the previously frozen failed formal task is not migrated or silently updated",
+    "Post-adoption source/metadata changes still require the existing explicit version/review workflow; arbitrary automatic historical-task migration or metadata revision is not certified",
+    "Source quotes can be broad. Explicit task-space coverage and output consistency are accepted here; independent interpretation of a complex commission remains pending",
+    "Ordinary-lighting remains flux-method estimation in this test, with 8 pending conditions unchanged through publication. Planning retains 6 pending conditions; no standards, real IES, construction or professional review invented",
+    "Full production title blocks, drawing layouts, discipline coordination, varied long text and external user/new-machine acceptance remain outside this subset"
+  ],
+  "nextPriority": "Use held-out original commissions in two installed task families to assess omitted/misinterpreted scope and changes. Preserve this text/source-space-output gate; do not expand solver families or claim final complex-project completion from these two tests."
+}

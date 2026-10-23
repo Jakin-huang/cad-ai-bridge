@@ -28,3 +28,5 @@
 
 
 输入准备的 `read section=input` 返回真实输入字段目标ID，不是section=targets。draft后可用 `read section=source_coverage`（必传该draft）分页核对原文块、blockSHA256、已提交处置和literalCitationTargetIds。候选只表示当前草稿中已有supported/assumption决定的字面引文匹配该原文块，最多返回100项并给出总数/截断标记，不自动判断语义、不选择mapped/context、不补写引用或工程值。由Agent根据原文义务选择恰当目标；没有匹配时修正对应解释/引文或保留未解，不能靠猜索引、删除要求或把未知工程义务改为背景放行。沿nextOffset读齐；历史草稿仍可读但eligible及documentsCurrent可能为false。
+
+新冻结入口默认还要求[图面文字声明与校核](drawing-presentation.md)，不能把基线占位名称和流程描述直接带入交付。采纳前读取section=presentation，对照名称、范围、spaceIds和每条说明；原有物理条件及待审级别继续保留。

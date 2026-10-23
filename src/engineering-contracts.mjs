@@ -1,3 +1,4 @@
+import {drawingPresentationSchema,presentationInputIssues} from './drawing-presentation.mjs';
 import {scopeRevisionParameters} from './engineering-scope-contracts.mjs';
 import {lightingInstallationSchema,installationConditionIssues} from './lighting-installation.mjs';
 import {routingConditionsSchema,routingConditionIssues} from './engineering-routing.mjs';
@@ -31,7 +32,7 @@ const primitive=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('polyline'),points:z.array(point).min(2).max(500),closed:z.boolean()})
 ]);
 export const engineeringInputSchema=z.strictObject({
- schemaVersion:z.literal(1),projectId:id,title:z.string().min(1).max(128),designDate:isoDay,
+ schemaVersion:z.literal(1),drawingPresentation:drawingPresentationSchema.optional(),projectId:id,title:z.string().min(1).max(128),designDate:isoDay,
  discipline:z.literal('ordinary-lighting'),scope:z.string().min(20).max(3000),brief:z.string().min(20).max(16000),
  spaceProgram:lightingSpaceProgramSchema.optional(),spaceProgramChanges:lightingSpaceChangesSchema.optional(),architecturalChanges:architecturalChangesSchema.optional(),functionalIntake:functionalIntakeSchema.optional(),briefRevision:briefRevisionSchema.optional(),sourceCarryForwards:carriedConditionsSchema.optional(),
  sources:z.array(source).min(1).max(100),requirements:z.array(requirement).max(1000),
@@ -95,7 +96,7 @@ export const engineeringSchema=z.discriminatedUnion('action',[
 export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineeringSchema.options.filter(s=>!['deliver','revise_title','revise_notes','revise_scope'].includes(s.shape.action.value)));
 
 export function inspectEngineeringInput(raw){
- const input=engineeringInputSchema.parse(raw),issues=[];
+ const input=engineeringInputSchema.parse(raw),issues=presentationInputIssues(input).map(code=>({code,severity:'blocking',message:'Source-declared presentation differs from current input'}));
  const add=(code,severity,message,refs=[])=>issues.push({code,severity,message,refs});
  issues.push(...lightingSpaceProgramIssues(input),...sharedUseInputIssues(input),...functionalIntakeIssues(input),...sourceRevisionIssues(input),...architecturalRevisionIssues(input));
  if(input.functionalIntake)add('FUNCTIONAL_INTERPRETATION_REVIEW','review','Quoted brief evidence preserves the interpretation trail; semantic meaning, actual task and standard applicability still need professional review',input.functionalIntake.map(r=>r.roomId));

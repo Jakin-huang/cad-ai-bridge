@@ -46,3 +46,9 @@ next.arguments 不含 requestId；该操作确认开始后必须保存其 UUID�
 
 
 `cad_engineering_task action=capabilities` 是全局能力查询，只传kind/section/operation等该动作字段，不带jobId、expectedProjectId或expectedTaskSHA256。准备得到的task身份用于status、next_step、invoke等绑定任务动作，不能把身份对象合并进capabilities。操作契约查询示例：`{action:"capabilities",kind:"ordinary-lighting",section:"operations",operation:"design"}`。
+
+新冻结输入默认要求图面文字审阅。先查intake capabilities，再从实际原文解释parameters.presentation：title、scope、notes每项含text/reason/evidence[{documentId,quote}]，notes为1到8条，reviewed=true。项目名必须由需求或协调原文支持；范围是本次声明工作的描述，不能抄基线流程提示、扩大实际设计范围或将未完成工作写成完成。每段text须完整包含于对应单份连续原文quote；不使用文件名或evaluation_only。服务端不会替你选名、摘要或判断语义。title/scope是经明确证据修订的图面文字，物理/数值/标准/假设和missingInputs继续冻结；规划包的项目范围另列说明，不改变壳/程序/求解边界。兼容参数requirePresentation=false只保留旧协议，不能用它绕过本次审阅并声称通过。
+
+声明还必须提供spaceIds，恰好列出当前任务全部房间/程序ID，不能遗漏、增补或重复；说明页会按实际模型打印名称和ID。范围原句可以描述专业及审核边界，但必须结合完整空间清单表达本次实际覆盖，不能只用免责声明代替委托理解。空间列表一致仍不认证原文委托没有其他未完成义务。
+
+先draft，再read section=presentation核对基线文字与声明、summary/requirements/input/sources以及全部相关原文。遗漏声明保持blocked；修正沿previousDraft保留失败稿。设计后每张图签和说明页均须与声明一致；独立检查遗漏/改字会阻断出图。实际CAD保存重开核对文字，另存审核PDF后检查每张标题和全部范围/说明正文，再逐页查看排版。字面一致、Agent声明reviewed、文件可打开均不等于语义完整性、标准适用性或专业审核；缺失条件不得通过项目说明消除。

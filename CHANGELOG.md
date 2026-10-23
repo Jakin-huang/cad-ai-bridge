@@ -2,6 +2,8 @@
 
 ## Unreleased — 2026-10-23
 
+Add shared source-proved drawing presentation for lighting and space planning. New intake defaults require an explicit project title, scope, complete task-space IDs and project notes before adoption; preserve all original physical assumptions and pending inputs. Check every sheet header and note projection, retain literal whitespace, and verify native output plus strict PDF text. Two actual Codex development trials deliver two final DWGs/ten review PDFs with original-supported names, scope lists and notes; original failed versions remain frozen. This accepts the declared presentation subset, not independent interpretation or full engineering usability. See [presentation validation](docs/drawing-presentation-validation.json).
+
 Add a read-only original-block citation/target view for engineering intake without relaxing semantic review or adoption gates. Preserve native Codex client traces and failures alongside WorkBuddy traces. Clarify public Agent instructions for paginated input review and global capabilities queries.
 
 Actual Codex CLI trials interpret the same five synthetic originals, pass the final positive and unresolved-conflict branches, and continue the adopted lighting task through real CAD and five review PDFs in a separate session. Hospital, school and office existing tasks also pass fresh read-only client continuation. Earlier client/tool failures remain recorded. Drawing-content acceptance fails because all five sheet titles retain the baseline placeholder; file/native checks do not establish complete design usability. See [actual evidence and next priorities](docs/codex-agent-intake-validation.json). This is a source increment; existing tags and user packages remain frozen.

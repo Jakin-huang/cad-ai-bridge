@@ -1413,5 +1413,21 @@
     "crossModelAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "drawingPresentationIncrement": {
+    "validation": "docs/drawing-presentation-validation.json",
+    "unreleased": true,
+    "iterationClosed": true,
+    "developmentComplete": true,
+    "fullRegression": 571,
+    "newAiClient": true,
+    "taskFamilies": 2,
+    "newFinalNativeDrawings": 2,
+    "newFinalReviewPdfPages": 10,
+    "presentationSubsetAccepted": true,
+    "independentSemanticAcceptance": false,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }
