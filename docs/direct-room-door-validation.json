@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "unreleased_direct_room_door_geometry_and_native_revision_verified",
+  "released": false,
+  "goalComplete": false,
+  "newAiClient": false,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "professionalApproval": false,
+  "problem": "A shared wall or corridor-route distance does not satisfy an explicit request for direct room-to-room access. Existing room bays always had separate corridor doors but no inter-room opening.",
+  "implementation": [
+    "Explicit direct_door relationship with minimum clear width and mandatory boolean lockable intent",
+    "Same-side shared partition opening, wall subtraction, two-sided approach rectangles, connected clear aisles, furniture/seat and conservative door-swing checks",
+    "Separate audit validates opening coverage, dimensions, intent, entries and swing geometry; scene and saved CAD retain identifiable direct-door attributes",
+    "Door schedule CSV and source-bound relation text; shared-space handoff retains the original corridor entry and adds both new room-face entries",
+    "Native placement supports groups of each declared symbol, retaining the old single-symbol path for previous plans"
+  ],
+  "verification": {
+    "fullRegression": {
+      "passed": 564,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 228198.8852
+    },
+    "geometry": {
+      "orientations": [
+        "west",
+        "east",
+        "south",
+        "north"
+      ],
+      "faults": [
+        "missing doorway",
+        "partition across doorway",
+        "changed lockable intent",
+        "wrong width",
+        "wrong swing endpoint",
+        "furniture in approach zone"
+      ],
+      "impossibleOpeningKeepsOriginalInput": true
+    },
+    "actualMcpCad": {
+      "calls": 12,
+      "newDrawings": 2,
+      "reviewPdfPages": 10,
+      "revisions": [
+        {
+          "revision": 0,
+          "directDoors": 0,
+          "nativeDoorTags": 0,
+          "checksPassed": 46,
+          "checksFailed": 0,
+          "pending": 4
+        },
+        {
+          "revision": 1,
+          "directDoors": 1,
+          "nativeDoorTags": 2,
+          "checksPassed": 51,
+          "checksFailed": 0,
+          "pending": 5
+        }
+      ],
+      "oldFilesUnchanged": true,
+      "freshReadonlyVerified": true,
+      "independentStrictPdfAndA3Check": 10,
+      "individualVisualInspection": 10
+    },
+    "legacyReadback": {
+      "calls": 3,
+      "types": [
+        "hospital",
+        "school",
+        "office"
+      ],
+      "modelsAndFilesUnchanged": true
+    }
+  },
+  "sourceProbe": {
+    "url": "https://committee.worcester.gov.uk/documents/s21811/AppendixBDesignBrief.pdf",
+    "sha256": "5b3087a400cb10656eaffea3e8573d22f15c0a23f935a3301581ebbbf6acd052",
+    "pdfPage": 10,
+    "printedPage": 9,
+    "clause": "2.17",
+    "visuallyVerified": true,
+    "sourceAuthorIndependent": true,
+    "purpose": "Independent public requirement exposes the missing connection capability; it does not provide the test shell or certify completion of that commission"
+  },
+  "limits": [
+    "Native regression uses a separately declared development shell, areas, furniture and 900mm door width. These are not dimensions or issued architectural conditions of the public commission. The declared development design date is 2026-10-21; execution occurred on 2026-10-23.",
+    "Only same-side rectangular bays with a complete shared partition are supported. Bounded opening positions and conservative swing envelopes can reject a practically feasible design; no general layout or global infeasibility claim.",
+    "Existing corridor doors remain. The new relation does not enforce exclusive secure access or an access-control policy. Existing route constraints remain corridor-based, not a general shortest-path network.",
+    "Lockable is an explicit intent carried into the model, CAD attributes and schedule; hardware approval stays false. Fire rating, actual lock/hinge selection, accessible operation and construction details require review.",
+    "The public clause also demands cabinets, a safe and a copier; those placements and other reception/cash/comms/cooling requirements remain unimplemented or unverified. This is not completion of the public project.",
+    "No new actual AI interpretation, unfamiliar-project acceptance, external user, new machine or professional signature. Hospital remains a separate retrospective case.",
+    "Frozen v2.0/v2.1 tags and packages remain unchanged; this is an unreleased main-branch capability increment."
+  ],
+  "logs": [
+    {
+      "file": "direct-door-initial.log",
+      "sha256": "6b8a8142913833390a4189834a291a5e23f0cda2d3a477da78bde65bd0d75628"
+    },
+    {
+      "file": "direct-door-full.log",
+      "sha256": "27dc91c0fd004853ab0f6844409a8410175a09103c6efa1c3092827ec66a811e"
+    },
+    {
+      "file": "direct-door-native.log",
+      "sha256": "1f6d1874e0a63037e6d3a4e4ee0020ab3888d5ef3e130fd476ee61586f5e9dd4"
+    },
+    {
+      "file": "direct-door-pdf-check.log",
+      "sha256": "735d3b6a23219b84a6c843e1930fa7d7fe35fa928b95c46706d356a8ee481c53"
+    },
+    {
+      "file": "direct-door-compatibility.log",
+      "sha256": "11297924d8da289058e905ac7fe87a301f74a2f4654fd954e146dcf13f40d741"
+    }
+  ]
+}

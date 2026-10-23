@@ -8,7 +8,7 @@
     "taskSelection": "Explicit installed task kind, independent of project label",
     "quality": "Retain existing requirements, source/assumption grades, thresholds and immutable outputs across tasks"
   },
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "pilot": "hospital-ordinary-lighting-retrospective-reconstruction",
   "stages": [
     {
@@ -1375,6 +1375,22 @@
     "newFormalTasks": 2,
     "newComputedModels": 2,
     "newNativeCad": false,
+    "newAiClient": false,
+    "independentProjectAcceptance": false,
+    "goalComplete": false
+  },
+  "directRoomDoorIncrement": {
+    "validation": "docs/direct-room-door-validation.json",
+    "unreleased": true,
+    "publicConstraintGap": true,
+    "sharedPartitionOpenings": true,
+    "independentDoorAudit": true,
+    "sourceDeclaredLockableIntent": true,
+    "hardwareApproval": false,
+    "fullRegression": 564,
+    "newNativeDrawings": 2,
+    "newReviewPdfPages": 10,
+    "legacyCasesVerified": 3,
     "newAiClient": false,
     "independentProjectAcceptance": false,
     "goalComplete": false
