@@ -11,7 +11,7 @@ read = lambda p: json.loads(p.read_text(encoding='utf-8-sig'))
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 compact = lambda text: re.sub(r'\s+', '', text)
 report = read(root / report_name)
-assert report.get('ok') or report.get('wholeClientTrialPassed')
+assert report.get('ok') or report.get('wholeClientTrialPassed') or report.get('finalEngineeringStatePassed')
 kind = report.get('kind', 'ordinary-lighting')
 directory = runs / report['jobId']
 state = read(directory / ('space-planning.json' if kind == 'office-space-planning' else 'engineering.json'))
@@ -38,7 +38,7 @@ assert compact('本次设计空间：' + '；'.join(s['name'] + ' [' + s['id'] +
 for index, note in enumerate(presentation['notes']):
     assert compact('项目说明 ' + str(index + 1) + '（原文）：' + note['text']) in compact(notes_text)
 assert '语义完整性' in notes_text and '专业适用性仍待审' in notes_text
-result = {'ok': True, 'kind': kind, 'modelSHA256': state['modelSHA256'], 'inputSHA256': state['inputSHA256'],
+result = {'ok': True, 'wholeClientTrialPassed': report.get('wholeClientTrialPassed'), 'protocolErrorsRetained': len(report.get('protocolErrors', [])), 'kind': kind, 'modelSHA256': state['modelSHA256'], 'inputSHA256': state['inputSHA256'],
           'projectTitle': presentation['title']['text'], 'spaceIds': presentation['spaceIds'],
           'notes': len(presentation['notes']), 'pages': checked, 'scopeAndAllDeclaredNotesPresent': True,
           'scope': 'Declared original-supported project text, exact task-space coverage, all sheet titles and PDF text preservation only',

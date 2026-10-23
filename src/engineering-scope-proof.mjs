@@ -11,7 +11,7 @@ import {taskDocumentStatus,loadDocumentSet,readDocumentText,verifyDocumentReview
 const withoutScope=input=>Object.fromEntries(Object.entries(input).filter(([k])=>k!=='scope'));
 async function evidence(docs,items){for(const [index,c] of items.entries()){const d=await readDocumentText(docs,c.documentId);if(!['requirements','coordination','architecture_notes','standard_excerpt','catalog'].includes(d.document.role)||d.document.textSHA256!==c.textSHA256||!d.text.includes(c.quote))throw Error('SCOPE_LITERAL_SOURCE_REQUIRED: '+JSON.stringify({index,documentId:c.documentId,role:d.document.role,expectedTextSHA256:d.document.textSHA256,quoteFound:d.text.includes(c.quote),next:'Use exact current original engineering evidence, including declared catalog assumptions; evaluation-only content is forbidden.'}));}}
 export async function compileScopeRevision({runs,state,input,parameters}){
- const q=scopeRevisionParameters.parse(parameters);
+ if(input.drawingPresentation)throw Error('SCOPE_PRESENTATION_REVISION_REQUIRED: use the same-task presentation preview/commit flow');const q=scopeRevisionParameters.parse(parameters);
  if(q.expectedRevision!==state.revision||q.expectedInputSHA256!==state.inputSHA256||digest(input)!==state.inputSHA256||q.expectedScope!==input.scope)throw Error('SCOPE_INPUT_CHANGED');
  if(q.scope===input.scope)throw Error('SCOPE_NO_CHANGE');
  if(input.briefRevision?.requiredConditionKeys.includes('project_context'))throw Error('SCOPE_CARRIED_CONTEXT_REQUIRES_SOURCE_REVISION');

@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "baseCommit": "267c33e3c8512ece0fe586ce82ce2074abf4e844",
+  "status": "unreleased_same_task_original_source_text_correction_native_subset_verified",
+  "developmentComplete": true,
+  "localCorrectionExecutionAccepted": true,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "crossModelAcceptance": false,
+  "newMachineAcceptance": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "hospitalPrivateDataProcessed": false,
+  "releaseRepackaged": false,
+  "problem": "The previous original-to-drawing text gate worked on new intake, but title-only or scope-only changes could leave its declaration inconsistent. No same-task revision entry could rebind the complete text and original source coverage.",
+  "implemented": [
+    "Four presentation-revision actions reuse cad_engineering_intake, existing formal tasks, source reviews and operation receipts; no new MCP tool or project database",
+    "Inspect current identity and input, retain immutable same-task draft revisions, expose all new input targets and exact-block citation candidates for explicit source coverage",
+    "Commit applies only original-supported title/descriptive scope/presentation; all other fields, evidence grades and original pending inputs stay exact",
+    "Rebind unchanged original target decisions, independently revalidate current source coverage, invalidate old current model/delivery/quality/review/shared-space output, then require recomputation in the same task",
+    "Persist checksum-bound child revision journal and phased intake adoption receipt; stale source/input, foreign draft, raw physical override and evaluator evidence rejected; unconfirmed reply cannot trigger duplicate revision or design without new binding",
+    "Existing title/scope-only entries direct tasks with drawing declarations to the coherent presentation flow, while legacy title/scope histories remain readable",
+    "Read summary exposes saved commit status/phase/error without filesystem access; unconfirmed input revision stays blocked and is not re-executed."
+  ],
+  "protocol": {
+    "capabilities": "cad_engineering_intake action=capabilities section=presentation_revision",
+    "actions": [
+      "inspect_presentation",
+      "draft_presentation_revision",
+      "read_presentation_revision",
+      "commit_presentation_revision"
+    ],
+    "sameOriginalSetOnly": true,
+    "sourceReplacementSupported": false,
+    "actualProgramChangeSupported": false,
+    "readSections": [
+      "input",
+      "source_coverage",
+      "presentation",
+      "summary"
+    ],
+    "history": "previousDraft and exact draft SHA; every preview expectedRevision/InputSHA256 refers to the current original input until adoption",
+    "underlyingOperation": "revise_presentation validates source coverage and exact metadata delta; preferred public workflow is preview/read/commit, not direct invocation",
+    "limits": "Explicit original-source correction only; fixed project_context source-history assertions require the original source-revision workflow. No automatic engineering obligation or professional approval is inferred."
+  },
+  "regression": {
+    "full": {
+      "passed": 575,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 232370.7325,
+      "logSHA256": "d6d14e3c05f25bd7bf82349f2fc0d3720a1395046c2f8c7380433762948ab516",
+      "scope": "Full suite before the final read-only commit-phase visibility addition; unchanged design/adoption logic. Final visibility branch verified by four targeted integration tests and six fresh read-only MCP calls, without claiming a second full suite or native rerun."
+    },
+    "newIntegration": {
+      "passed": 4,
+      "failed": 0,
+      "durationMs": 14328.8517,
+      "logSHA256": "fb789f3dffc201d120f35b982c8eae6c2ea186bc5b45bf100090b8a9f18fa9a6"
+    },
+    "existingTitleAndPresentation": {
+      "passed": 11,
+      "failed": 0
+    },
+    "officialSkillValidatorPassed": true,
+    "staticSourceGatePassed": true,
+    "finalReadOnlyPhaseVisibility": {
+      "passed": 4,
+      "failed": 0,
+      "durationMs": 16923.2795,
+      "actualMcpCalls": 6,
+      "actualCases": 2,
+      "nativeRerun": false,
+      "logSHA256": "3cd495af71a50023aae280433a304814e6fadc3146eebef0d04a8af1f7208a2e"
+    }
+  },
+  "actualClient": {
+    "client": "Codex CLI",
+    "version": "0.163.0-alpha.10.2",
+    "authentication": "Saved CLI login; no credential/global-config values read or copied",
+    "model": "Runtime default with no model/provider override; not controlled model substitution",
+    "skill": "Exact public Skill and references supplied in pinned initial prompt; no invented filesystem Read",
+    "inputAuthorization": "Only SHA-allowlisted synthetic originals from prior development cases/public generator, never hospital/client drawings or standards PDFs",
+    "controllerSemanticRepair": false,
+    "explicitTaskKinds": true,
+    "cases": [
+      {
+        "artifact": "presentation-revision-lighting-20261023",
+        "kind": "ordinary-lighting",
+        "originalTask": "job-task-360612fe-06bf-464c-8ed1-5e77158ed504",
+        "originalRevision": 0,
+        "currentRevision": 1,
+        "sameFormalTask": true,
+        "newFormalTasks": 0,
+        "actualClientCalls": 36,
+        "checks": 69,
+        "finalEngineeringStatePassed": true,
+        "wholeClientTrialPassed": false,
+        "protocolErrors": 2,
+        "elapsedMs": 242986,
+        "traceSHA256": "75497318322fb4c14eaad4bff8f52be5ad0dcebf018e9fd47f0406bfa7e25c8e",
+        "auditSHA256": "bcd543784b8165ed570a6acb66d2cac71da9b3a0b74c1582055f631c6b569c28",
+        "inputSHA256": "b7f513a9f8e1386ff786e7c458e88cc79700e3f265d672ea7088333f2d58d008",
+        "modelSHA256": "d51e35c63f77e508d6b20ad14e92ddd45b2c40e20e4a759a61d226a0444faeea",
+        "design": {
+          "lamps": 29,
+          "circuits": 2,
+          "sheets": 5,
+          "pending": 9
+        },
+        "oldFilesCopiedBeforeMutation": 136,
+        "mutableLifecycleViewsAdvanced": 5,
+        "oldImmutableOriginalsUnchanged": true,
+        "oldLifecycleBytesRetained": true,
+        "drafts": [
+          {
+            "ready": false,
+            "hasPrevious": false
+          },
+          {
+            "ready": true,
+            "hasPrevious": true
+          }
+        ],
+        "reviewPdfPages": 5,
+        "strictReaderPages": 5,
+        "pixelIdenticalPages": 5,
+        "presentationPdfTextAccepted": true,
+        "allPagesViewed": true,
+        "completeDesignAccepted": false
+      },
+      {
+        "artifact": "presentation-revision-space-20261023",
+        "kind": "office-space-planning",
+        "originalTask": "job-task-9123c830-7cf4-42be-a5fd-f7f120252575",
+        "originalRevision": 0,
+        "currentRevision": 1,
+        "sameFormalTask": true,
+        "newFormalTasks": 0,
+        "actualClientCalls": 35,
+        "checks": 65,
+        "finalEngineeringStatePassed": true,
+        "wholeClientTrialPassed": true,
+        "protocolErrors": 0,
+        "elapsedMs": 202004,
+        "traceSHA256": "3c7f1e6b5aa4520d3263c41e3e9460167f5524dc096ad6e0ea05e9de7ce525ce",
+        "auditSHA256": "8f81c68d306a54b8e79439a05f04df87b9788183b90366af91775d4ce84d4fd1",
+        "inputSHA256": "c855b4d683d441621208ba726405a1c389490aec31d3ee70dbc8410737d325c6",
+        "modelSHA256": "eb9946fe92a7e7fbf8152c7ba3217b527e812b13784c1b9bef9b492fc001539c",
+        "design": {
+          "rooms": 10,
+          "relations": 3,
+          "sheets": 5,
+          "pending": 6
+        },
+        "oldFilesCopiedBeforeMutation": 129,
+        "mutableLifecycleViewsAdvanced": 4,
+        "oldImmutableOriginalsUnchanged": true,
+        "oldLifecycleBytesRetained": true,
+        "drafts": [
+          {
+            "ready": false,
+            "hasPrevious": true
+          },
+          {
+            "ready": false,
+            "hasPrevious": false
+          },
+          {
+            "ready": true,
+            "hasPrevious": true
+          }
+        ],
+        "reviewPdfPages": 5,
+        "strictReaderPages": 5,
+        "pixelIdenticalPages": 5,
+        "presentationPdfTextAccepted": true,
+        "allPagesViewed": true,
+        "completeDesignAccepted": false
+      }
+    ]
+  },
+  "acceptance": {
+    "sameFormalTaskCorrectionAndNativeRedelivery": true,
+    "newNativeDrawings": 2,
+    "newReviewPdfPages": 10,
+    "allPdfPagesStrictParsedAndViewed": true,
+    "oldPhysicalModelsAndOriginalDrawingsRetained": true,
+    "noNumericalOrAssumptionUpgrade": true,
+    "allPriorPendingRetained": true,
+    "clientZeroErrorCases": 1,
+    "clientRecoveredCases": 1,
+    "completeDesign": false,
+    "independentSemanticScopeCompleteness": false,
+    "professionalApproval": false
+  },
+  "historicalEvidence": {
+    "beforePreflight": {
+      "protectedFiles": 15846,
+      "protectedReferences": 26,
+      "passed": true
+    },
+    "immutableInputModelsSourceDocumentsAndCadFilesUnchanged": true,
+    "mutableLifecycleViewsAdvanced": 9,
+    "oldLifecycleBytesPreservedInBeforeData": true,
+    "priorManifestsRewritten": false,
+    "rule": "Earlier manifests remain frozen snapshots. Nine original current-view paths now legitimately contain R1 state. New evidence maps each historical SHA to its byte-identical before-data copy and records the R1 SHA; it does not falsely claim every original current-view pathname stayed unchanged."
+  },
+  "retainedFailures": [
+    "Initial unit run: two passes/two failures because lighting input hashing followed pre-schema property order when adding drawingPresentation. Canonical schema parsing fixed before state publication; corrected four and full575 pass",
+    "Lighting Agent made two failed sourceCoverage mappings: COORD:76:104 to rooms/0 and COORD:104:134 to standards without exact block citations. Bridge rejected both; no engineering value was repaired by the controller. Client self-corrected, one final adoption, same task and final outputs passed",
+    "The complete lighting client trial remains false under the zero-protocol-error gate; independent final-state, native/PDF and recovery evidence are reported separately",
+    "Space client had zero rejected calls, retained two blocked drafts and one ready draft before one adoption",
+    "Raw CAD PDFs retain duplicate PageMode-key warnings; original raw exports are preserved, separate strict review PDFs render identically"
+  ],
+  "limits": [
+    "Known source-assisted synthetic tasks with explicit installed task kind, not held-out customers or autonomous professional task selection",
+    "This corrects original-source presentation only, not source replacement, requirement/program editing, full multidisciplinary coordination or independent semantic completeness",
+    "Scope excerpts may remain broad; exact quoted text and explicit space coverage do not prove every commissioned engineering obligation was captured",
+    "Lighting remains a bounded flux-method study with nine pending items; space planning remains a bounded rectangular-corridor study with six pending items",
+    "Existing v2.0 archive, v2.1 tag and DLL are frozen. This is an unreleased source increment; no installer or clean-machine acceptance claimed"
+  ],
+  "nextPriority": "Evaluate held-out original commissions, requirement omissions, semantic scope and actual design changes across the two installed families. Keep same-task revision and explicit source/quality gates; retain M2-M4 and the full complex-project objective as incomplete."
+}

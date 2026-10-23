@@ -7,7 +7,7 @@ import {titleRevisionParameters} from './engineering-title-contracts.mjs';
 export const titleInputSHA=(kind,input)=>kind==='ordinary-lighting'?engineeringDigest(input):digest(input);
 const withoutTitle=p=>Object.fromEntries(Object.entries(p).filter(([key])=>key!=='title'));
 export async function compileTitleRevision({runs,kind,childJobId,input,inputSHA256,parameters}){
- const q=titleRevisionParameters.parse(parameters);if(!['ordinary-lighting','office-space-planning'].includes(kind))throw Error('TITLE_KIND_UNSUPPORTED');if(titleInputSHA(kind,input)!==inputSHA256||q.expectedInputSHA256!==inputSHA256||q.expectedTitle!==input.title)throw Error('TITLE_INPUT_CHANGED');if(q.title===input.title)throw Error('TITLE_NO_CHANGE');
+ if(input.drawingPresentation)throw Error('TITLE_PRESENTATION_REVISION_REQUIRED: use the same-task presentation preview/commit flow');const q=titleRevisionParameters.parse(parameters);if(!['ordinary-lighting','office-space-planning'].includes(kind))throw Error('TITLE_KIND_UNSUPPORTED');if(titleInputSHA(kind,input)!==inputSHA256||q.expectedInputSHA256!==inputSHA256||q.expectedTitle!==input.title)throw Error('TITLE_INPUT_CHANGED');if(q.title===input.title)throw Error('TITLE_NO_CHANGE');
  // A carried project_context includes the title in its exact old-source hash.
  // Do not silently rewrite that historic assertion through this bounded entry.
  if(kind==='ordinary-lighting'&&input.briefRevision?.requiredConditionKeys.includes('project_context'))throw Error('TITLE_CARRIED_CONTEXT_REQUIRES_SOURCE_REVISION');

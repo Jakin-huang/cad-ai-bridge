@@ -1,3 +1,4 @@
+import {presentationRevisionParameters} from './presentation-revision-contracts.mjs';
 import {drawingPresentationSchema,presentationInputIssues} from './drawing-presentation.mjs';
 import {scopeRevisionParameters} from './engineering-scope-contracts.mjs';
 import {lightingInstallationSchema,installationConditionIssues} from './lighting-installation.mjs';
@@ -89,11 +90,12 @@ export const engineeringSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('review_pdfs'),jobId,requestId:z.uuid(),expectedModelSHA256:digest,expectedSourceSHA256:digest}),
  z.strictObject({action:z.literal('revise_notes'),jobId,requestId:z.uuid(),...noteRevisionParameters.shape}),
  z.strictObject({action:z.literal('revise_scope'),jobId,requestId:z.uuid(),...scopeRevisionParameters.shape}),
+ z.strictObject({action:z.literal('revise_presentation'),jobId,requestId:z.uuid(),...presentationRevisionParameters.shape}),
  z.strictObject({action:z.literal('revise_title'),jobId,requestId:z.uuid(),...titleRevisionParameters.shape}),
  z.strictObject({action:z.literal('revise'),jobId,expectedRevision:z.number().int().nonnegative(),changes:z.array(z.strictObject({requirementId:id,value:requirementValue,reason:z.string().min(1).max(1000),sourceId:id})).min(1).max(100)}),
  z.strictObject({action:z.literal('review'),jobId,expectedModelSHA256:digest,origin:z.enum(['simulation','unverified_external_record']),reviewer:z.string().min(1).max(128),comments:z.array(z.strictObject({id,target:z.string().min(1).max(128),decision:z.enum(['comment','revise','claimed_accepted']),text:z.string().min(1).max(2000)})).min(1).max(100)})
 ]);
-export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineeringSchema.options.filter(s=>!['deliver','revise_title','revise_notes','revise_scope'].includes(s.shape.action.value)));
+export const readonlyEngineeringSchema=z.discriminatedUnion('action',engineeringSchema.options.filter(s=>!['deliver','revise_title','revise_notes','revise_scope','revise_presentation'].includes(s.shape.action.value)));
 
 export function inspectEngineeringInput(raw){
  const input=engineeringInputSchema.parse(raw),issues=presentationInputIssues(input).map(code=>({code,severity:'blocking',message:'Source-declared presentation differs from current input'}));

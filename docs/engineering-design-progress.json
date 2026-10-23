@@ -1429,5 +1429,22 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "presentationRevisionIncrement": {
+    "validation": "docs/presentation-revision-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "fullRegression": 575,
+    "actualAiClient": true,
+    "sameFormalTask": true,
+    "newFormalTasks": 0,
+    "newNativeDrawings": 2,
+    "newReviewPdfPages": 10,
+    "zeroErrorCases": 1,
+    "recoveredCases": 1,
+    "oldLifecycleSnapshotsRetained": true,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

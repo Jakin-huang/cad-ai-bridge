@@ -1,3 +1,4 @@
+import {presentationRevisionActions} from './presentation-revision-contracts.mjs';
 import {presentationParameters} from './drawing-presentation.mjs';
 import {z} from 'zod';
 import {sourceCoverageSchema} from './document-source-coverage.mjs';
@@ -10,8 +11,8 @@ export const intakeDraftRefSchema=z.strictObject({jobId:z.string().regex(/^job-i
 export const intakeCommonParameters={presentation:presentationParameters.optional(),sourceCoverage:sourceCoverageSchema.optional(),frozen:z.strictObject({expectedSHA256:sha,reason:z.string().min(10).max(1000),evidence:intakeEvidenceSchema}),documentDispositions:z.array(z.strictObject({documentId:id,disposition:z.enum(['used','context','unresolved']),reason:z.string().min(10).max(1000)})).min(1).max(100),additionalPending:z.array(z.strictObject({id,description:z.string().min(10).max(1000),severity:z.enum(['review','blocking']),evidence:intakeEvidenceSchema})).max(100).default([])};
 const baseline=intakeBaselineRefSchema,draft=intakeDraftRefSchema,page={offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)};
 export const engineeringIntakeSchema=z.discriminatedUnion('action',[
- reviewScopeSchema,readScopeReviewSchema,bindScopeTaskSchema,
- z.strictObject({action:z.literal('capabilities'),kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/).optional(),section:z.enum(['parameters','conditions','scope']).default('parameters')}),
+ ...presentationRevisionActions,reviewScopeSchema,readScopeReviewSchema,bindScopeTaskSchema,
+ z.strictObject({action:z.literal('capabilities'),kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/).optional(),section:z.enum(['parameters','conditions','scope','presentation_revision']).default('parameters')}),
  z.strictObject({action:z.literal('inspect_baseline'),kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),baselineFile:z.string().min(1).max(2000)}),
  z.strictObject({action:z.literal('freeze'),requestId:z.uuid(),project:z.strictObject({id:z.uuid(),name:z.string().min(1).max(128),type:z.string().min(1).max(64)}),task:z.strictObject({kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),title:z.string().min(1).max(128),objective:z.string().min(20).max(4000)}),documents:documentSetRefSchema,baselineFile:z.string().min(1).max(2000),expectedRawSHA256:sha,scope:scopeSelectionSchema.optional(),requirePresentation:z.boolean().optional()}),
  z.strictObject({action:z.literal('draft'),requestId:z.uuid(),baseline,parameters:z.record(z.string(),z.unknown()),previousDraft:draft.optional()}),
@@ -19,4 +20,4 @@ export const engineeringIntakeSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('commit'),requestId:z.uuid(),baseline,draft,expectedInputSHA256:sha,reviewed:z.literal(true)}),
  z.strictObject({action:z.literal('status'),baseline})
 ]);
-export const readonlyEngineeringIntakeSchema=z.discriminatedUnion('action',engineeringIntakeSchema.options.filter(s=>['capabilities','inspect_baseline','read','status','read_scope_review'].includes(s.shape.action.value)));
+export const readonlyEngineeringIntakeSchema=z.discriminatedUnion('action',engineeringIntakeSchema.options.filter(s=>['capabilities','inspect_baseline','read','status','read_scope_review','inspect_presentation','read_presentation_revision'].includes(s.shape.action.value)));

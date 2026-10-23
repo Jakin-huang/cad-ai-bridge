@@ -58,7 +58,18 @@ for f in packet['files']:
                             'strictReaderAccepted': True, 'sourceAndReviewPixelIdentical': True,
                             'image': str(images[1]), 'imageSHA256': sha(images[1]), 'pixelSHA256': pixels_sha})
 protected_file = folder / 'protected-before.json'
-protected = read(protected_file) if protected_file.exists() else read(folder / 'experiment.json')['protectedFiles']
+if protected_file.exists():
+    protected = read(protected_file)
+elif (folder / 'before-files.json').exists():
+    before = read(folder / 'before-files.json')
+    allowed = set(read(folder / 'allowed-mutable.json'))
+    for item in before:
+        assert sha(pathlib.Path(item['preservedAt'])) == item['sha256']
+    protected = [item for item in before if item['file'] not in allowed]
+    report['preservedBeforeSnapshotFiles'] = len(before)
+    report['mutableLifecycleViewsSeparatelyAudited'] = True
+else:
+    protected = read(folder / 'experiment.json')['protectedFiles']
 for f in protected:
     assert sha(pathlib.Path(f['file'])) == f['sha256']
 report['ok'] = True
