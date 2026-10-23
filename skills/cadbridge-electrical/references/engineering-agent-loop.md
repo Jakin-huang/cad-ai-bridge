@@ -40,3 +40,9 @@ next.arguments 不含 requestId；该操作确认开始后必须保存其 UUID�
 
 
 空间关系 `direct_door` 表示房间间直接门洞，valueMm为最小净宽，必须显式提供lockable布尔值；不得把shared_wall或max_door_route当成直接通行。只搜索同侧矩形房间的完整共墙隔断；按项目门宽生成洞口、两侧接近净空和门扇，检查家具/座位与已有门扇干涉。原走廊门保持，路径约束仍沿原走廊计算；不表示专用安全入口。模型、两张平面、门表CSV及共享空间entries保留该连接；硬件、防火、无障碍及施工审核保持待审。没有直接门关系的原方案输出不增加门。
+
+
+输入准备的 `read section=input` 返回真实输入字段目标ID，不是section=targets。draft后可用 `read section=source_coverage`（必传该draft）分页核对原文块、blockSHA256、已提交处置和literalCitationTargetIds。候选只表示当前草稿中已有supported/assumption决定的字面引文匹配该原文块，最多返回100项并给出总数/截断标记，不自动判断语义、不选择mapped/context、不补写引用或工程值。由Agent根据原文义务选择恰当目标；没有匹配时修正对应解释/引文或保留未解，不能靠猜索引、删除要求或把未知工程义务改为背景放行。沿nextOffset读齐；历史草稿仍可读但eligible及documentsCurrent可能为false。
+
+
+`cad_engineering_task action=capabilities` 是全局能力查询，只传kind/section/operation等该动作字段，不带jobId、expectedProjectId或expectedTaskSHA256。准备得到的task身份用于status、next_step、invoke等绑定任务动作，不能把身份对象合并进capabilities。操作契约查询示例：`{action:"capabilities",kind:"ordinary-lighting",section:"operations",operation:"design"}`。

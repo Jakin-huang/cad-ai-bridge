@@ -27,6 +27,9 @@ export function documentSourceBlocks(document,text){
  return blocks;
 }
 
+function citesBlock(block,decision){return !!decision&&['supported','assumption'].includes(decision.disposition)&&decision.citations.some(c=>c.documentId===block.documentId&&c.textSHA256===block.textSHA256&&c.quote.trim().length>=5&&(block.text.includes(c.quote)||c.quote.includes(block.text)));}
+export function sourceCitationTargetReader(targets,decisions){const first=new Map();for(const d of decisions)for(const id of d.targetIds)if(!first.has(id))first.set(id,d);return block=>targets.filter(t=>citesBlock(block,first.get(t.id))).map(t=>t.id);}
+export function sourceBlockCitationTargets(block,targets,decisions){return sourceCitationTargetReader(targets,decisions)(block);}
 export function checkSourceCoverage(blocks,targets,decisions,raw,{required=true}={}){
  const entries=sourceCoverageSchema.parse(raw??[]),byId=new Map(blocks.map(b=>[b.blockId,b])),targetIds=new Set(targets.map(t=>t.id)),seen=new Set(),blockers=[];
  if(blocks.length>5000)throw Error('DOCUMENT_SOURCE_BLOCK_BUDGET');
@@ -39,7 +42,7 @@ export function checkSourceCoverage(blocks,targets,decisions,raw,{required=true}
    for(const id of entry.targetIds){const d=decisions.find(d=>d.targetIds.includes(id));
     // A link must be backed by a citation in this exact source block. An
     // unrelated quote elsewhere in the same document is not coverage.
-    if(!d||!['supported','assumption'].includes(d.disposition)||!d.citations.some(c=>c.documentId===b.documentId&&c.textSHA256===b.textSHA256&&c.quote.trim().length>=5&&(b.text.includes(c.quote)||c.quote.includes(b.text))))throw documentError('DOCUMENT_SOURCE_TARGET_CITATION_REQUIRED',{path:`sourceCoverage[${index}]`,blockId:b.blockId,documentId:b.documentId,targetId:id,next:'Provide a supported/assumption target decision citing this exact source passage, or explicitly retain the source as unresolved/conflict.'});
+    if(!citesBlock(b,d))throw documentError('DOCUMENT_SOURCE_TARGET_CITATION_REQUIRED',{path:`sourceCoverage[${index}]`,blockId:b.blockId,documentId:b.documentId,targetId:id,next:'Provide a supported/assumption target decision citing this exact source passage, or explicitly retain the source as unresolved/conflict.'});
    }
   }else if(entry.disposition==='context'&&entry.targetIds.length)throw Error('DOCUMENT_SOURCE_CONTEXT_HAS_TARGETS');
   if(['unresolved','conflict'].includes(entry.disposition))blockers.push({code:'DOCUMENT_SOURCE_'+entry.disposition.toUpperCase(),blockId:b.blockId,documentId:b.documentId,targetIds:entry.targetIds,reason:entry.reason});

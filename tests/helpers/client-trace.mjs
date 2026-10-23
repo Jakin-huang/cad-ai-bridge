@@ -1,4 +1,5 @@
 import path from 'node:path';
+import {normalizeCodexClientEvents,codexExecutionErrors} from './codex-client-trace.mjs';
 export function decodeClientResponseText(value){
  try{return JSON.parse(value);}catch{}
  // The installed CLI can join MCP JSON and the bridge's separate presentation
@@ -14,7 +15,7 @@ export function clientToolPayload(event){
 }
 export function parseTrace(text){return text.trim().startsWith('[')?JSON.parse(text):text.split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line));}
 export function normalizeClientEvents(raw){
- const events=[];
+ const events=normalizeCodexClientEvents(raw);
  raw.forEach((event,sourceIndex)=>{
   if(['function_call','function_call_result','result'].includes(event.type)){events.push({...event,sourceIndex});return;}
   for(const block of event.message?.content||[]){
@@ -22,7 +23,7 @@ export function normalizeClientEvents(raw){
    if(block.type==='tool_use')events.push({type:'function_call',callId:block.id,name:block.name,arguments:JSON.stringify(block.input),sourceIndex});
    if(block.type==='tool_result')events.push({type:'function_call_result',callId:block.tool_use_id,status:block.is_error||block._meta?.rawResponse?.is_error===true?'failed':'success',output:{text:typeof block.content==='string'?block.content:JSON.stringify(block.content)},sourceIndex});
   }
- });return events;
+ });return events.sort((a,b)=>a.sourceIndex-b.sourceIndex);
 }
 export function unwrapDeferredCalls(events){return events.map(e=>{if(e.type!=='function_call'||e.name!=='DeferExecuteTool')return e;const args=typeof e.arguments==='string'?JSON.parse(e.arguments):e.arguments;let params=args.params,parameterEncoding='object';if(typeof params==='string'){parameterEncoding='string';try{const parsed=JSON.parse(params);if(parsed!==null&&typeof parsed==='object'&&!Array.isArray(parsed)){params=parsed;parameterEncoding='json_object_string';}}catch{}}return {...e,name:args.toolName,arguments:JSON.stringify(params),wrapper:e.name,parameterEncoding};});}
 export function toolResultErrors(event){
@@ -49,7 +50,7 @@ export function clientExecutionErrors(raw){
  // Match that observed envelope, never arbitrary assistant prose/source text.
  return raw.flatMap((event,sourceIndex)=>{const m=event.message,blocks=m?.content;if(event.type!=='assistant'||m?.usage?.input_tokens!==0||m?.usage?.output_tokens!==0||m.stop_reason!==null||blocks?.length!==1||blocks[0].type!=='text')return [];const match=blocks[0].text?.match(/^Tool ([A-Za-z_][A-Za-z0-9_]*) not found in agent cli\.$/);return match?[{kind:'client_tool_unavailable',tool:match[1],sourceIndex,message:blocks[0].text}]:[];});
 }
-export function clientTraceErrors(raw){return [...normalizeClientEvents(raw).flatMap(toolResultErrors),...clientExecutionErrors(raw)];}
+export function clientTraceErrors(raw){return [...normalizeClientEvents(raw).flatMap(toolResultErrors),...clientExecutionErrors(raw),...codexExecutionErrors(raw)];}
 export function markdownFileLinks(text){
  // Code-formatted paths and links inside code examples are not clickable delivery.
  const visible=String(text??'').replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/g,'').replace(/`[^`\r\n]*`/g,'');

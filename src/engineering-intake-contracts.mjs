@@ -14,7 +14,7 @@ export const engineeringIntakeSchema=z.discriminatedUnion('action',[
  z.strictObject({action:z.literal('inspect_baseline'),kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),baselineFile:z.string().min(1).max(2000)}),
  z.strictObject({action:z.literal('freeze'),requestId:z.uuid(),project:z.strictObject({id:z.uuid(),name:z.string().min(1).max(128),type:z.string().min(1).max(64)}),task:z.strictObject({kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),title:z.string().min(1).max(128),objective:z.string().min(20).max(4000)}),documents:documentSetRefSchema,baselineFile:z.string().min(1).max(2000),expectedRawSHA256:sha,scope:scopeSelectionSchema.optional()}),
  z.strictObject({action:z.literal('draft'),requestId:z.uuid(),baseline,parameters:z.record(z.string(),z.unknown()),previousDraft:draft.optional()}),
- z.strictObject({action:z.literal('read'),baseline,draft:draft.optional(),section:z.enum(['summary','conditions','requirements','sources','input']).default('summary'),...page}),
+ z.strictObject({action:z.literal('read'),baseline,draft:draft.optional(),section:z.enum(['summary','conditions','requirements','sources','input','source_coverage']).default('summary'),...page}),
  z.strictObject({action:z.literal('commit'),requestId:z.uuid(),baseline,draft,expectedInputSHA256:sha,reviewed:z.literal(true)}),
  z.strictObject({action:z.literal('status'),baseline})
 ]);

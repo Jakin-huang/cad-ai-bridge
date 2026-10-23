@@ -1394,5 +1394,24 @@
     "newAiClient": false,
     "independentProjectAcceptance": false,
     "goalComplete": false
+  },
+  "codexAgentIntakeIncrement": {
+    "validation": "docs/codex-agent-intake-validation.json",
+    "unreleased": true,
+    "iterationClosed": true,
+    "developmentComplete": true,
+    "fullRegression": 568,
+    "actualAiClient": true,
+    "finalPositiveProtocolErrors": 0,
+    "conflictProtocolErrors": 0,
+    "readOnlyReuseCases": 3,
+    "newNativeDrawings": 1,
+    "newReviewPdfPages": 5,
+    "fullDrawingContentAccepted": false,
+    "titleMismatchRetained": true,
+    "independentProjectAcceptance": false,
+    "crossModelAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

@@ -25,3 +25,6 @@
 本轮实际客户端R0图册保留为历史结果；新R1补足控制说明并重新物理复核、原生保存重开及出图。使用既有revise同值修订会保守地将该要求status从documented改为interpreted；此唯一元数据变化明确记录，全部数值、理由、原句、功能及其他种子条件保持。不能把R1输入SHA说成原始客户端输入SHA；原始input-0字节继续保留。
 
 本机最终证据见[功能理解验证](functional-intake-validation.json)。这些验证覆盖实际客户端的受保护输入及已声明的CAD/物理子集；原始失败、元数据差异、旧注记和外部验收限制单列，M2—M4保持未完成。
+
+
+输入准备的 `read section=input` 返回真实输入字段目标ID，不是section=targets。draft后可用 `read section=source_coverage`（必传该draft）分页核对原文块、blockSHA256、已提交处置和literalCitationTargetIds。候选只表示当前草稿中已有supported/assumption决定的字面引文匹配该原文块，最多返回100项并给出总数/截断标记，不自动判断语义、不选择mapped/context、不补写引用或工程值。由Agent根据原文义务选择恰当目标；没有匹配时修正对应解释/引文或保留未解，不能靠猜索引、删除要求或把未知工程义务改为背景放行。沿nextOffset读齐；历史草稿仍可读但eligible及documentsCurrent可能为false。

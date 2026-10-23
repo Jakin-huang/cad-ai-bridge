@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — 2026-10-23
+
+Add a read-only original-block citation/target view for engineering intake without relaxing semantic review or adoption gates. Preserve native Codex client traces and failures alongside WorkBuddy traces. Clarify public Agent instructions for paginated input review and global capabilities queries.
+
+Actual Codex CLI trials interpret the same five synthetic originals, pass the final positive and unresolved-conflict branches, and continue the adopted lighting task through real CAD and five review PDFs in a separate session. Hospital, school and office existing tasks also pass fresh read-only client continuation. Earlier client/tool failures remain recorded. Drawing-content acceptance fails because all five sheet titles retain the baseline placeholder; file/native checks do not establish complete design usability. See [actual evidence and next priorities](docs/codex-agent-intake-validation.json). This is a source increment; existing tags and user packages remain frozen.
+
 ## 2.1.0-preview.1 — 2026-10-22
 
 Add read-only, version-bound `cad_engineering_task next_step` over existing persistent tasks and receipts. It proposes installed design, analysis, quality and delivery operations, exposes blocking source/input/dependency/execution failures, and leaves professional review explicit. Update the reusable engineering Agent Skill. Add source-declared maximum frontage-difference constraints to space generation, independent checks and drawings; expand bounded annotation placement for grouped controls without moving physical devices.

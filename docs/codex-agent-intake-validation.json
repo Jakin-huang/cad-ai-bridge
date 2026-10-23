@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "baseCommit": "a315f78b62af59627e3224cc68473c595804d235",
+  "status": "unreleased_source_increment_implemented_local_client_and_native_execution_verified_drawing_content_rejected",
+  "released": false,
+  "iterationClosed": true,
+  "developmentComplete": true,
+  "localExecutionSubsetVerified": true,
+  "fullDrawingContentAccepted": false,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "crossModelAcceptance": false,
+  "newMachineAcceptance": false,
+  "externalUserAcceptance": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "hospitalPrivateDataProcessed": false,
+  "releaseRepackaged": false,
+  "problem": "Actual AI clients need stable read-only evidence about which real input target IDs already cite each original source block, and client failures must remain visible across native trace formats.",
+  "implemented": [
+    "Read-only engineering_intake source_coverage view, bound to the same immutable baseline/draft/document set; returns literal citation targets and submitted source dispositions",
+    "Existing exact-source-block citation rule shared with the read view; no semantic classification, quote repair, value selection, authority upgrade or relaxed commit gate",
+    "Paginated view hydrates only the requested page and caps returned target IDs with explicit total/truncation indicators",
+    "Native Codex MCP/terminal trace normalization preserves inner Bridge failures and unexpected tools; no invented Skill Read",
+    "Public Skill clarifies input target read section and globally scoped capabilities without task identity",
+    "Actual installed Codex CLI use harnesses retain public Skill text, original prompt, source snapshots, raw events, immutable phase evidence and independent audits; no coding delegation"
+  ],
+  "regression": {
+    "full": {
+      "passed": 568,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 232254.7569,
+      "logSHA256": "7173ec522c4e8e53260a60870993878495e32f8c0324d2e6b7ae6a49cde26aca"
+    },
+    "targeted": {
+      "passed": 33,
+      "failed": 0,
+      "logSHA256": "3aa20ceab07589a95d311bf53e145415e0f354a2159283d44e30b47083b2d2b7"
+    },
+    "nativeTraceTests": {
+      "passed": 14,
+      "failed": 0
+    },
+    "officialSkillValidatorPassed": true,
+    "staticGatePassed": true
+  },
+  "actualClients": {
+    "workbuddy": {
+      "date": "2026-10-23",
+      "quotaExhausted": true,
+      "processCode": 0,
+      "continuationAccepted": false,
+      "zeroExitNotPromotedToSuccess": true
+    },
+    "codex": {
+      "version": "0.163.0-alpha.10.2",
+      "authentication": "Existing saved ChatGPT CLI login; credential values not read/copied",
+      "modelProvider": "Runtime default with no model/provider override and isolated user configuration; not a controlled cross-model comparison",
+      "skillDelivery": "Exact public Skill and two technical references embedded in pinned initial prompt, not filesystem Read",
+      "tools": "Only allowlisted CAD MCP tools; shell, patch, multi-agent and web disabled",
+      "taskSelection": "Ordinary-lighting kind and known technical conditions explicitly supplied; not autonomous task selection",
+      "syntheticOriginals": 5,
+      "oracleExcluded": true,
+      "controllerSemanticRepair": false,
+      "trials": [
+        {
+          "artifact": "codex-intake-positive-20261023",
+          "label": "first-positive",
+          "auditFile": "independent-audit-corrected-readonly.json",
+          "auditSHA256": "ae09118a27a277b73652aa741b5976304ec624048b4b66eaa4250d72ee614086",
+          "traceSHA256": "f9f4f85dee0e2f333662d84fed4660598bf6eaef78e4ac7cf4f5b2d749524882",
+          "cliSHA256": "9ecb9df2ecafcc00542ef0966c6f1737a81397dc9531b0a4b178238e2bf4a46d",
+          "wholeClientTrialPassed": false,
+          "declaredStateChecksPassed": true,
+          "checks": 127,
+          "calls": 32,
+          "protocolErrors": 4,
+          "elapsedMs": 149195,
+          "design": {
+            "lamps": 29,
+            "circuits": 2,
+            "pending": 8,
+            "inputSHA256": "055150c7e667d110e4865c132eb1f386ef5dd91515e128e540f778d06527e3c8",
+            "modelSHA256": "987a63f3a858d63db26774278767e2d1b31d81c5f91e356758200d488d826e7f"
+          }
+        },
+        {
+          "artifact": "codex-intake-positive-readback-20261023",
+          "label": "positive-after-citation-readback",
+          "auditFile": "independent-audit.json",
+          "auditSHA256": "ce2960630f560ff2f30da84a983212a1e18bd468d79687254950e4c730796ebb",
+          "traceSHA256": "da8ed43a5505559331ef6767d8e152570e1e3808caf33225584d3fc1c2790608",
+          "cliSHA256": "9ecb9df2ecafcc00542ef0966c6f1737a81397dc9531b0a4b178238e2bf4a46d",
+          "wholeClientTrialPassed": false,
+          "declaredStateChecksPassed": true,
+          "checks": 128,
+          "calls": 34,
+          "protocolErrors": 1,
+          "elapsedMs": 119763,
+          "design": {
+            "lamps": 29,
+            "circuits": 2,
+            "pending": 9,
+            "inputSHA256": "f4ac640c5c3c1005ba51117e6477acf32024fb3e3902172809cdb5e4ebe39beb",
+            "modelSHA256": "fcb6d3008ee15875b877834c2f2abd0709660fcf7b7854e51dfa111b62ff502f"
+          }
+        },
+        {
+          "artifact": "codex-intake-positive-final-20261023",
+          "label": "final-positive",
+          "auditFile": "independent-audit.json",
+          "auditSHA256": "44a4d0bbf8de73b6dfec0d48533102866daf9f05528c8ca8467ede4e7568fc75",
+          "traceSHA256": "169872ccd9440b12978d2e94a6b11ed098be2a328638829085eef5d4b03d5590",
+          "cliSHA256": "9ecb9df2ecafcc00542ef0966c6f1737a81397dc9531b0a4b178238e2bf4a46d",
+          "wholeClientTrialPassed": true,
+          "declaredStateChecksPassed": true,
+          "checks": 127,
+          "calls": 27,
+          "protocolErrors": 0,
+          "elapsedMs": 137534,
+          "design": {
+            "lamps": 29,
+            "circuits": 2,
+            "pending": 9,
+            "inputSHA256": "5636accac21e968c6b7288524f1e28f7a4e486c72c874e74f4863ba9bb8d775b",
+            "modelSHA256": "533b238211e4f9f82e281642cc857b935ff4cada689b06806cddb1e73d5a56db"
+          }
+        },
+        {
+          "artifact": "codex-intake-conflict-20261023",
+          "label": "unresolved-conflict",
+          "auditFile": "independent-audit.json",
+          "auditSHA256": "5aa1661564103998b9a0c23d657dbe5f675d270502ecb11ee43a47ab546f1a21",
+          "traceSHA256": "84d70d60d11ce8707ec451a48a21e40c0fd4c585de9a536534aa435138fe460d",
+          "cliSHA256": "9ecb9df2ecafcc00542ef0966c6f1737a81397dc9531b0a4b178238e2bf4a46d",
+          "wholeClientTrialPassed": true,
+          "declaredStateChecksPassed": true,
+          "checks": 117,
+          "calls": 19,
+          "protocolErrors": 0,
+          "elapsedMs": 139734,
+          "design": null
+        }
+      ]
+    }
+  },
+  "reuse": {
+    "actualClientReadback": {
+      "passed": true,
+      "calls": 3,
+      "protocolErrors": 0,
+      "cases": [
+        {
+          "type": "hospital",
+          "phase": "awaiting_human_review",
+          "pending": 22,
+          "modelSHA256": "d3432025099899eab1d61e3692fa000a49197fb4fc35d4b3b2eacfe3648acf08",
+          "originalFilesVerified": 24
+        },
+        {
+          "type": "school",
+          "phase": "awaiting_human_review",
+          "pending": 22,
+          "modelSHA256": "b93acf96bfe0b53849956bd6bf5a099680245398d2398c9324b93e2b96ec3012",
+          "originalFilesVerified": 24
+        },
+        {
+          "type": "office",
+          "phase": "awaiting_human_review",
+          "pending": 4,
+          "modelSHA256": "4d26107bb78c24953ec10d2b6147001cfd0715be9cddc2e857b55fad4c60f654",
+          "originalFilesVerified": 23
+        }
+      ],
+      "originalFilesVerified": 71,
+      "newDesigns": 0
+    },
+    "limits": "Hospital/school/office fresh read-only continuation of previously delivered different synthetic problems. This is not three new autonomous original-brief-to-CAD trials. Existing v2.1 native scenario results remain separately recorded."
+  },
+  "nativePublication": {
+    "artifact": "codex-intake-publication-20261023",
+    "auditSHA256": "1317b4c63e8e43c685fb04baf0c2738b17971f765a2653dfdf4bbf268b8c04ac",
+    "traceSHA256": "5bb08c68139711bfa6b2c36cc249958bccf63951846094557ea3c3caea95db93",
+    "checks": 26,
+    "calls": 7,
+    "protocolErrors": 0,
+    "elapsedMs": 142956,
+    "sameFormalTask": true,
+    "stagedSessions": 2,
+    "uninterruptedSingleSessionAccepted": false,
+    "design": {
+      "lamps": 29,
+      "circuits": 2,
+      "sheets": 5,
+      "pending": 9
+    },
+    "inputSHA256": "5636accac21e968c6b7288524f1e28f7a4e486c72c874e74f4863ba9bb8d775b",
+    "modelSHA256": "533b238211e4f9f82e281642cc857b935ff4cada689b06806cddb1e73d5a56db",
+    "newDrawings": 1,
+    "rawPdfPages": 5,
+    "reviewPdfPages": 5,
+    "strictReviewPages": 5,
+    "sourceAndReviewPixelIdentical": 5,
+    "allFivePagesViewed": true,
+    "technicalRenderingAccepted": true,
+    "fullDrawingContentAccepted": false,
+    "titleFailureRetained": true,
+    "protectedBeforeFiles": 16,
+    "beforePublicationSnapshot": true,
+    "pendingCountUnchanged": true,
+    "physicalLightingQualityAccepted": false,
+    "reviewStatus": "awaiting_human_review",
+    "professionalApproval": false
+  },
+  "retainedFailures": [
+    "First positive client run had four rejected calls; final numerical/document state passed but whole trial failed. Original and separately corrected auditor reports retained",
+    "First auditor rejected explicitly authorized source_blocks reads; corrected read-only allowlist audit retained separately without rewriting the old report or erasing four actual tool errors",
+    "Second positive had one rejected capabilities query carrying task identity; client self-corrected; whole trial still failed",
+    "Initial new source_coverage integration tests failed twice because the new reader used a nonexistent compiled target list; 31 passes/2 failures retained, corrected 33-pass run retained",
+    "Final positive and conflict trials had zero protocol errors, but this does not erase earlier trial failures or establish general reliability",
+    "Actual five-sheet drawing content rejected for unchanged baseline title; no controller title edit or new revision used to hide this failure",
+    "Raw CAD PDFs contain duplicate PageMode keys; raw bytes retained, generated review PDFs pass strict parsing and render identically"
+  ],
+  "nextPriorities": [
+    {
+      "priority": "P0",
+      "work": "Original-to-delivery consistency: project title, selected scope, sheet titles and customer-facing explanations must be interpreted, source-bound and checked before delivery",
+      "exit": "Independent audit flags the current baseline-title omission; actual client corrects it through public versioned interfaces with source evidence, preserves the failed revision and all numerical/frozen conditions; new CAD pages agree with original source"
+    },
+    {
+      "priority": "P1",
+      "work": "Two task families on held-out original briefs, including explicit conflict/missing-input/change cases",
+      "exit": "Record omissions, incorrect interpretations, preserved unknowns, rework and complete coordinated deliverables; hospital/school/office labels do not branch public code; independent reviewer separates original intent from developer oracle"
+    },
+    {
+      "priority": "P2",
+      "work": "Controlled model substitutions and clean-machine/external-user validation",
+      "exit": "Same inputs and acceptance criteria across each tested model; report first-run success, recovery, errors, human intervention and time; fresh-machine install and workflow independently reproduced"
+    },
+    {
+      "priority": "professional",
+      "work": "Project standards applicability, verified product/architecture/installation conditions, full design quality and independent engineering sign-off",
+      "exit": "Obtain and evaluate the missing source material and qualified review; current format/native/flux checks cannot satisfy this gate"
+    }
+  ],
+  "scopeClosure": "This source increment ends after evidence, regression and push. No additional solver family, project-specific branch, installer rebuild or new release tag is included. M2-M4 and the broader complex-project goal remain incomplete."
+}
