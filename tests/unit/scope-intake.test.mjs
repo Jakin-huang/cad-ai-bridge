@@ -56,6 +56,31 @@ test('an installed analysis adapter is not falsely offered as a supported intake
  const f=await fixture(),caps=ok(await f.execute('engineering_task',{action:'capabilities',section:'summary'}));assert.ok(caps.adapters.some(a=>a.id==='drawing-analysis'));
  const work=structuredClone(f.q.workItems);work[0].taskKind='drawing-analysis';const r=await f.review({workItems:work});assert.equal(r.ok,false);assert.match(r.error.message,/SCOPE_CANDIDATE_INTAKE_UNSUPPORTED/);
 });
+
+test('scope discovery distinguishes its top-level action from draft parameters and keeps unresolved obligations blocked',async()=>{
+ const f=await fixture(),caps=ok(await f.execute('engineering_intake',{action:'capabilities',section:'scope'}));
+ assert.equal(caps.reviewActionSchema.properties.action.const,'review_scope');
+ assert.ok(caps.reviewActionSchema.required.includes('documents')&&caps.reviewActionSchema.required.includes('workItems'));
+ assert.equal(caps.reviewActionSchema.additionalProperties,false);assert.equal(caps.argumentPlacement.parametersWrapperSupported,false);
+ const {action,requestId,...parameters}=f.q;
+ assert.equal((await f.execute('engineering_intake',{action,requestId,parameters})).ok,false);
+ const workItems=structuredClone(f.q.workItems);workItems[0].dependsOn=['TENANT'];workItems[1].disposition='unresolved';
+ const rejected=await f.review({workItems});assert.equal(rejected.ok,false);assert.match(rejected.error.message,/DOCUMENT_SOURCE_TARGET_CITATION_REQUIRED/);
+ const sourceCoverage=structuredClone(f.q.sourceCoverage);sourceCoverage[1].disposition='unresolved';
+ const review=ok(await f.review({workItems,sourceCoverage}));assert.equal(review.sourceCoverage.unresolved,1);assert.equal(review.sourceCoverage.complete,false);
+ assert.equal(review.candidates[0].canPrepareConditions,false);assert.equal((await f.freeze(review.review)).ok,false);
+ const saved=ok(await f.execute('engineering_intake',{action:'read_scope_review',review:review.review,section:'work_items',limit:100}));
+ assert.equal(saved.items.find(w=>w.id==='TENANT').disposition,'unresolved');assert.equal(f.native(),0);
+});
+
+test('short Chinese obligation descriptions retain evidence and all preparation gates; whitespace is not an obligation',async()=>{
+ const f=await fixture(),workItems=structuredClone(f.q.workItems);workItems[0].description='  普通照明  ';
+ const result=ok(await f.review({workItems})),saved=ok(await f.execute('engineering_intake',{action:'read_scope_review',review:result.review,section:'work_items'}));
+ assert.equal(saved.items[0].description,'  普通照明  ');assert.equal(saved.items[0].citations[0].quote,lines[0]);assert.equal(result.semanticCoverageAccepted,false);
+ workItems[0].description=' \t\n ';assert.equal((await f.review({workItems})).ok,false);
+ workItems[0].description='普通照明';workItems[0].dependsOn=['TENANT'];
+ const blocked=ok(await f.review({workItems}));assert.equal(blocked.candidates[0].canPrepareConditions,false);assert.equal((await f.freeze(blocked.review)).ok,false);assert.equal(f.native(),0);
+});
 test('a scope-linked frozen input rechecks scope integrity in status and adoption before creating a formal task',async()=>{
  const f=await conditionsIntakeFixture('ordinary-lighting'),text=await fs.readFile(f.root+'/requirements.txt','utf8'),blocks=ok(await f.execute('project_documents',{action:'source_blocks',set:f.set,limit:100})).items;
  const scope=ok(await f.execute('engineering_intake',{action:'review_scope',requestId:uuid(),documents:f.set,workItems:[{id:'LIGHT',description:'Prepare the explicitly scoped development lighting design',disposition:'candidate',taskKind:'ordinary-lighting',reason:'Known development scope used to verify adoption integrity only.',evidence:[{documentId:'MAIN',quote:text}]}],sourceCoverage:blocks.map(b=>({blockId:b.blockId,blockSHA256:b.blockSHA256,disposition:'mapped',targetIds:['workItems/0'],reason:'Known mechanical test scope contains the declared source requirements.'}))}));

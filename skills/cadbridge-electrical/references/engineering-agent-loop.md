@@ -8,6 +8,10 @@
 
 原文由 cad_project_documents 冻结。尚无设计条件时，可通过 cad_engineering_intake review_scope 保存需求、证据、依赖和缺项。已知物理条件使用 conditions_only，不预填房间程序或照明要求；随后由 Agent 引用原句提交 draft，读回实际条件/要求/输入再 commit。完整格式见工程需求参考。数值、用途、标准适用性和设计选择由原文及工程条件支持；服务端派生的摘要与版本身份直接使用返回值。
 
+范围审阅先查 `capabilities section=scope` 的完整 `reviewActionSchema`：`review_scope` 的 `documents/workItems/sourceCoverage` 与 `action/requestId` 同在顶层，不套进 `parameters`；`draft` 等其他动作的参数形状不能直接复用。逐项保留原文的触发条件、前置批准、现状保留要求和交付形式，含附件及里程碑中新增的义务；未支持的工作仍是未完成工程义务。合并表述时核对每项限定是否仍能单独找到，不能用一个宽泛标题替代。
+
+范围源段的 `mapped` 必须引用该块的原句，且指向受支持的决定；`unresolved/conflict` 工作项不属于这种映射。对应原文仍未解时将源段保留为 `unresolved/conflict`，让准备保持阻断。`context` 只表示非义务背景，不是消除未解项的手段。读回完整范围和依赖后再判断能否准备条件；源段已全部处置也可能 `complete=false`，这是保留真实缺项的正常结果。
+
 ## 按当前状态执行
 
 保存返回的 task 身份：jobId、expectedProjectId、expectedTaskSHA256。这些与原文/草稿/设计版本和操作收据共同构成持久状态；模型切换或会话恢复后重新读取，不靠聊天摘要构造新任务。

@@ -1446,5 +1446,22 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "originalCommissionIncrement": {
+    "validation": "docs/original-commission-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "independentSourceAuthor": true,
+    "actualAiClientTrials": 2,
+    "frozenContentCriteria": 38,
+    "initialLocallySatisfied": 37,
+    "finalLocallySatisfied": 38,
+    "zeroErrorTrials": 0,
+    "formalDesignTasks": 0,
+    "newNativeDrawings": 0,
+    "independentSemanticAcceptance": false,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

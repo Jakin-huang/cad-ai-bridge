@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "baseCommit": "d13f4bb7d852d151d976749733ddb963c418fcc0",
+  "status": "unreleased_original_commission_evaluation_and_scope_contract_corrections",
+  "developmentComplete": true,
+  "originalCommissionEvaluationExecuted": true,
+  "localCriterionContentSatisfied": true,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "wholeClientZeroErrorAcceptance": false,
+  "crossModelAcceptance": false,
+  "newMachineAcceptance": false,
+  "professionalApproval": false,
+  "goalComplete": false,
+  "nativeCadExecutedThisIncrement": false,
+  "releaseRepackaged": false,
+  "privateHospitalDataProcessed": false,
+  "source": {
+    "url": "https://procurement-notices.undp.org/view_file.cfm?doc_id=273349",
+    "reference": "IC/PNG/055-2021",
+    "publicationYear": 2021,
+    "sourcePDFSHA256": "932f6e8102e85340fe208154d8bad941f2b6d8dc6f3f80b20e56c4c6426c2682",
+    "pdfPages": 7,
+    "originalCommission": true,
+    "sourceAuthorIndependent": true,
+    "allPagesRenderedAndReviewed": true,
+    "noArchitecturalOrFinalLayoutDrawing": true,
+    "currentRegulation": false,
+    "rawMaterialsInPublicSource": false
+  },
+  "evaluation": {
+    "oracleSHA256": "5b9bba834e243a10e4b141066b014da5da8e8e0d9f4cec1ece0660ad12639196",
+    "criteriaFrozenBeforeFirstActualClient": true,
+    "denominator": 38,
+    "oracleExcludedFromModelWorkspaceAndDocumentSet": true,
+    "quoteOverlapIsSemanticGrade": false,
+    "grader": "Local repository developer; not an independent professional",
+    "scope": "Selected engineering/coordination/delivery content criteria, not exhaustive legal/commercial or professional design acceptance",
+    "firstUseNotControlledBlindBenchmark": true,
+    "repeatIsKnownCaseNotSecondIndependentCommission": true
+  },
+  "implemented": [
+    "Scope capabilities expose complete top-level review/read action schemas and explicit argument placement without removing old compatibility fields",
+    "Explain exact-block supported mapping versus unresolved/conflict obligations; unknown engineering work cannot become background to force preparation",
+    "Public Agent reference preserves conditional triggers, approvals, existing-condition requirements, annex/milestone obligations and deliverable forms",
+    "Language-neutral nonempty scope descriptions replace arbitrary10-character minimum; evidence/reasons/capability/source/dependency/engineering gates remain",
+    "Pinned-public-source actual-client harness and independent protocol/source reconstruction; no private inputs, final drawings or client-visible oracle"
+  ],
+  "trials": [
+    {
+      "artifact": "public-office-scope-agent-initial-20261023",
+      "knownSourceRegression": false,
+      "process": {
+        "status": "terminal",
+        "code": 0,
+        "signal": null,
+        "elapsedMs": 225563
+      },
+      "calls": 27,
+      "checks": 105,
+      "wholeClientTrialPassed": false,
+      "protocolErrors": 2,
+      "protocolFactChecksExceptZeroErrorPassed": true,
+      "sourceCoverage": {
+        "required": true,
+        "blocks": 296,
+        "reviewed": 296,
+        "unreviewed": 0,
+        "mapped": 182,
+        "context": 75,
+        "unresolved": 39,
+        "conflicts": 0,
+        "complete": false,
+        "semanticCoverageAccepted": false,
+        "professionalApproval": false
+      },
+      "workItems": 40,
+      "finalReview": {
+        "jobId": "job-scopereview-a25395b3-1bb0-4694-8b81-e9646bc2b474",
+        "sha256": "0c57ebb1ea4470f05546bffcc57be1f182b7eb53e8982cb4d4231988b19bb2e0"
+      },
+      "traceSHA256": "c157ce1a50d7fe5adf290e637bc81a96bbc5872a135039844dd6052f0e774d44",
+      "protocolAuditSHA256": "3c5b0783db73f184dae5b3bce00c83009e92e95b0e60751e3bf06f811d635dde",
+      "localSemanticReviewSHA256": "68d256687f8a80d665f81ca4ebffba8f9c3e801cb9a24ddf76dea5e248a9aa5b",
+      "sourceManifestSHA256": "721d647a3621166d1773824b6088141da893766fba85882e90fd5a7bfa8cb948",
+      "contentCriteria": {
+        "denominator": 38,
+        "satisfied": 37,
+        "partial": 1,
+        "missing": 0,
+        "contradicted": 0,
+        "localOnly": true
+      },
+      "caseInterpretationAccepted": false,
+      "noBaselineOrFinalDrawing": true,
+      "controllerSemanticRepair": false,
+      "nativeCadExecuted": false
+    },
+    {
+      "artifact": "public-office-scope-agent-final-20261023",
+      "knownSourceRegression": true,
+      "process": {
+        "status": "terminal",
+        "code": 0,
+        "signal": null,
+        "elapsedMs": 278046
+      },
+      "calls": 36,
+      "checks": 184,
+      "wholeClientTrialPassed": false,
+      "protocolErrors": 2,
+      "protocolFactChecksExceptZeroErrorPassed": true,
+      "sourceCoverage": {
+        "required": true,
+        "blocks": 296,
+        "reviewed": 296,
+        "unreviewed": 0,
+        "mapped": 132,
+        "context": 110,
+        "unresolved": 54,
+        "conflicts": 0,
+        "complete": false,
+        "semanticCoverageAccepted": false,
+        "professionalApproval": false
+      },
+      "workItems": 81,
+      "finalReview": {
+        "jobId": "job-scopereview-d4b02b81-2ae6-4aa3-91d9-3aa733da452c",
+        "sha256": "e074fd54acb713fae0b061f4dd5191d82380297e4b8396e28c7abb858b865b5b"
+      },
+      "traceSHA256": "34426887b06b2408a21cd10ad7eb14e478ba3f3d36a2555bbc3c79f403f13ca8",
+      "protocolAuditSHA256": "d9443d2c684923293df0a85936dd10fa08044d9563f7c2c83deb9f09d9131061",
+      "localSemanticReviewSHA256": "a3b9382a109cdcf50772a9ef11a0fe8ab270eeb12c74388fd50c940d7d5bb75c",
+      "sourceManifestSHA256": "c8750f9cbe971aa19721eacf2c90077a17cd5e9a36a176178d6528e7ea1bca93",
+      "contentCriteria": {
+        "denominator": 38,
+        "satisfied": 38,
+        "partial": 0,
+        "missing": 0,
+        "contradicted": 0,
+        "localOnly": true
+      },
+      "caseInterpretationAccepted": false,
+      "noBaselineOrFinalDrawing": true,
+      "controllerSemanticRepair": false,
+      "nativeCadExecuted": false
+    }
+  ],
+  "characterRuleVerification": {
+    "afterActualClients": true,
+    "exactFailedArgumentsReplayed": true,
+    "isolatedSourceOnlyStore": true,
+    "controllerArgumentRepair": false,
+    "actualAiClientRerun": false,
+    "proofSHA256": "1934ae7807ecbe080a872319ae5a6837cf2fb814e0113a40aefc33ea5ab73fe8",
+    "nativeLaunches": 0,
+    "designReady": false
+  },
+  "regression": {
+    "targetedScopeIntegration": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 1500.9986,
+      "logSHA256": "7a09c6bde591d615f0452dc01a6d8b186a5ae1c8b8958ef0bf555975218edc87",
+      "originalDescriptionBytesRetained": true
+    },
+    "officialSkillValidatorPassed": true,
+    "fullSuiteRerunThisIncrement": false
+  },
+  "retainedFailures": [
+    "Pre-client setup failed its pinned byte hash because Windows text output usedCRLF; original bytes retained before explicitUTF8LF normalization. No model launched in this failed preflight.",
+    "Initial client first nested scope fields underparameters, then attempted a supported source mapping to an unresolved target. Both rejected; client recovered without controller semantic repair.",
+    "Second client supplied a valid concise Chinese obligation below10characters; rejected by the old schema. It self-corrected and retained its earlier review. The arbitrary character restriction was fixed afterward and the exact failed call now persists safely in an isolated store.",
+    "Second client also recorded tls handshake eof reconnect. Terminal success does not erase it; neither whole trial meets the zero-error gate.",
+    "First local semantic review retained one partial condition-trigger expression. Second known-source run explicitly preserved it; both38-item denominators and original reviews remain."
+  ],
+  "limits": [
+    "No independent shell geometry, quantified room programme, authoritative existing facility/furniture inventory, applicable verified standards or approvals supplied; area never converted to fabricated dimensions.",
+    "Content wording is locally reviewed, not professionally or externally certified. Conditional activation across child work and engineering dependency meaning remain unverified.",
+    "Both candidates remain blocked; no formal design task or nativeCAD created. Existing priorCAD/PDF evidence is not counted as this commission design.",
+    "Only one independently authored source, repeated once; no three independent customer projects or controlled model substitution.",
+    "M2-M4 and complete complex-engineering-design objective remain incomplete."
+  ],
+  "nextPriority": [
+    "Bind requirement conditions and existing equipment/furniture/retention/service-clearance inputs to actual shared solver constraints and independent checks; do not stop at notes.",
+    "Validate reuse on explicitly declared hospital/school/office development conditions without promoting them to real site evidence.",
+    "Obtain independent project inputs, professional applicability and external/new-machine acceptance separately."
+  ]
+}
