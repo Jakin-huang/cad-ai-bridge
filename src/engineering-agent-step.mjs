@@ -4,7 +4,7 @@ import {dependencyDigest} from './task-dependencies.mjs';
 export function engineeringAgentStep({snapshot,graph,workflow,operations,options={}}){
  const c=snapshot.current,issues=[],binding={jobId:snapshot.jobId,expectedProjectId:snapshot.project.id,expectedTaskSHA256:snapshot.taskSHA256};
  const base={ok:true,task:binding,kind:snapshot.task.kind,revision:c?.revision??null,inputSHA256:c?.inputSHA256??null,modelSHA256:c?.modelSHA256??null,readOnly:true,semanticAcceptance:false,engineeringAcceptance:false,professionalApproval:false,reviewStatus:'awaiting_human_review',pendingCount:(c?.audit??c?.checks)?.pending??0};
- const result=(phase,next=null)=>{const body={...base,phase,issues,next,...(workflow?.feasibility?{feasibility:workflow.feasibility}:{})};return {...body,snapshotSHA256:dependencyDigest(body)};};
+ const result=(phase,next=null)=>{const body={...base,phase,issues,next,...(workflow?.feasibility?{feasibility:workflow.feasibility}:{}),...(workflow?.standardApplicability?{standardApplicability:workflow.standardApplicability}:{})};return {...body,snapshotSHA256:dependencyDigest(body)};};
  const block=(code,detail)=>{issues.push({code,detail});return result('blocked');};
  if(snapshot.pendingOperations?.length)return block('OPERATION_UNCONFIRMED',snapshot.pendingOperations);
  if(snapshot.executionScope?.eligible===false)return block('SCOPE_EXECUTION_BLOCKED',snapshot.executionScope);

@@ -4,8 +4,9 @@ import {dependencyDigest as digest} from './task-dependencies.mjs';
 import {documentTargets} from './project-document-store.mjs';
 import {engineeringDigest} from './engineering-design.mjs';
 import {frozenLightingSpaceConditions,frozenLightingSpaceConditionValues,verifyLightingSpaceProgram} from './lighting-space-program.mjs';
+import {resolveLightingStandards} from './lighting-standard-evidence.mjs';
 
-export const lightingDataSections=['input','space_adoption','space_program_changes'];
+export const lightingDataSections=['input','space_adoption','space_program_changes','standard_conditions'];
 // These are facts about persisted values, not suggested uses, requirements,
 // permissions or an automatic carry-forward decision. No task files are written.
 export async function readLightingData({runs,binding,q,manifest}){
@@ -18,6 +19,10 @@ export async function readLightingData({runs,binding,q,manifest}){
  const upstream=await verifyLightingSpaceProgram(input,{runs});
  let values;
  if(q.section==='input')values=documentTargets('ordinary-lighting',input);
+ else if(q.section==='standard_conditions'){
+  const basis=await resolveLightingStandards(input,{runs,childJobId:binding.childJobId}),conditional=basis?.conditionalBasis,{facts,...context}=conditional?.context??{facts:[]},rows=[['basis',basis?{profileId:basis.profileId,profileSHA256:basis.profileSHA256,issues:basis.issues,conditional:conditional?{definitions:conditional.definitions,context}:null}:null],...(facts??[]).map(f=>['fact/'+f.id,f]),...(basis?.conditionDecisions??[]).map((d,i)=>['decision/'+i,d])];values=rows.map(([id,value])=>({id,value,valueSHA256:digest(value)}));
+  const after=await resolveLightingStandards(input,{runs,childJobId:binding.childJobId});if(digest(after??null)!==digest(basis??null))throw Error('TASK_DATA_CHANGED_DURING_READ');
+ }
  else if(q.section==='space_program_changes')values=(input.spaceProgramChanges??[]).map((value,index)=>({id:'spaceProgramChanges/'+index,value,valueSHA256:digest(value)}));
  else{
   const rows=[['adoption',{hasSharedSpaceBinding:!!input.spaceProgram,expectedRevision:revision,expectedInputSHA256:inputSHA256,expectedConditionsSHA256:frozenLightingSpaceConditions(input)}],['binding',input.spaceProgram??null],['upstream',upstream??null],...Object.entries(frozenLightingSpaceConditionValues(input)).filter(([,value])=>value!==undefined).map(([id,value])=>['frozen/'+id,value])];

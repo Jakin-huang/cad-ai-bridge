@@ -1650,5 +1650,23 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "standardConditionIncrement": {
+    "validation": "docs/standard-conditions-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "fullRegression": 630,
+    "actualClientStarted": false,
+    "actualClientAccepted": false,
+    "actualClientBlock": "Additional test input model-service authorization rejected by auto-review; permission pending",
+    "localControllerNativeChecks": 11,
+    "localDesignChecks": 43,
+    "newNativeDwgs": 1,
+    "newReviewPdfs": 5,
+    "originalRequirementsPreserved": true,
+    "oldUnknownTaskNoModel": true,
+    "independentSemanticAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

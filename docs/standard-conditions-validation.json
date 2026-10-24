@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "baseCommit": "8a8e2a549ddd95b0425199585486bf37245426c1",
+  "status": "unreleased_source_bound_standard_conditions_locally_verified_real_agent_authorization_pending",
+  "developmentComplete": true,
+  "iterationSourceIncrementClosed": true,
+  "realAgentAcceptanceCompleted": false,
+  "actualInstalledAiClient": false,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "crossModelAcceptance": false,
+  "externalUserAcceptance": false,
+  "newMachineAcceptance": false,
+  "professionalApproval": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "goalComplete": false,
+  "regression": {
+    "passed": 630,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 188889.4706,
+    "logSHA256": "c8d60e3c260a6fb9266cfae92137d8af3dbacc292753df2e5adaba970f634bc8",
+    "earlierFullRun": {
+      "passed": 629,
+      "failed": 1,
+      "logSHA256": "76cbbbc796d0b8ba2eab26c5a34acc88fcfc6fcf2c3839a8782115f2f77e99b7",
+      "cause": "Old capabilities assertion omitted additive standard_conditions section; corrected without weakening feature checks"
+    },
+    "officialSkillValidatorPassed": true,
+    "staticOnlyPassed": true,
+    "staticPublicFiles": 747,
+    "staticChecks": 3,
+    "staticLogSHA256": "e7aa8fff571f9463f726516f87d9433b4c3eadc0204e3efd383cef2c2c88adfc"
+  },
+  "localNative": {
+    "artifact": "standard-conditions-native-20261024",
+    "controllerDrivenNative": true,
+    "actualInstalledAiClient": false,
+    "firstHarnessPassed": false,
+    "firstHarnessReportSHA256": "02c2bb2726cfd4d4c3f83da0fd5a37b6fe42bc531fa1ad17c24c856c4673fa4b",
+    "independentAuditPassed": true,
+    "independentChecks": 11,
+    "independentAuditSHA256": "9ee6c6720e847572356aa36fd069d61cfae79b4963fc49dd591cb32d05f713e9",
+    "design": {
+      "lights": 23,
+      "sheets": 5,
+      "averageLux": 103.99755605034034,
+      "uniformity": 0.6595046491829174,
+      "lpd": 3.953125,
+      "checks": 43,
+      "pending": 10
+    },
+    "strictReviewPdfPages": 5,
+    "sourceReviewPixelIdentical": 5,
+    "individuallyViewed": 5,
+    "fullOriginalBlockCoverageAccepted": false,
+    "sourceCoveragePolicy": "fields_only",
+    "firstReportErrorRetained": true,
+    "professionalApproval": false
+  },
+  "realAgent": {
+    "status": "not_started_auto_review_rejected_additional_model_service_input_authorization_pending",
+    "attemptedHarness": "tests/codex-standard-conditions-client.mjs",
+    "controllerSemanticRepair": false,
+    "plannedPhases": [
+      "unknown_source_fact_stops_before_design",
+      "explicit_source_revision_reprepare_then_current_design_and_native_review"
+    ],
+    "noExternalTransmission": true,
+    "accepted": false
+  },
+  "limits": [
+    "Optional typed predicates currently integrated with ordinary-lighting standard categories only",
+    "Condition truth depends on declared source interpretation; no semantic or site-authority guarantee",
+    "Legacy profiles without predicates retain compatibility but no inferred applicability approval",
+    "Direct-point optical subset only; ten known design pending items remain",
+    "Controller-supplied complete requirements and fields_only review are not Agent intake or full source-to-drawing acceptance",
+    "Existing M2-M4, independent projects, external users/new machines and professional acceptance remain incomplete"
+  ]
+}
