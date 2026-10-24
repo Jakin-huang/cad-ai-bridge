@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "baseCommit": "5111a7aa9e2b8dc4b08c0806b0c8770aa64dd288",
+  "status": "unreleased_source_bound_asset_revision_with_recovered_actual_client",
+  "iterationClosed": true,
+  "developmentComplete": true,
+  "localSameTaskPhysicalRevisionSubsetAccepted": true,
+  "wholeEditClientTrialPassed": false,
+  "independentSemanticAcceptance": false,
+  "independentCustomerAcceptance": false,
+  "independentProjectAcceptance": false,
+  "professionalApproval": false,
+  "newMachineAcceptance": false,
+  "externalUserAcceptance": false,
+  "crossModelAcceptance": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "privateHospitalDataProcessed": false,
+  "implemented": [
+    "Reject assets in revise_program instead of silently ignoring caller values",
+    "Same-task revise_assets requires newer current version of the original document set and complete explicit add/update/remove delta with old-value hashes",
+    "New literal witnesses identify the asset; retained changes additionally require changed coordination/architecture notes and explicit retention action",
+    "Preserve all non-asset engineering values, existing grades and missing inputs; invalidate old current model/native/review/shared-space views, retain old bytes",
+    "New source/input review and binding required before design; immutable history recompiled at load; completed replay and interrupted-publication guards use generic receipts"
+  ],
+  "regression": {
+    "passed": 594,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 221281.1332,
+    "logSHA256": "5faa082ba1055835b8768fe88962fd3ebe09e63694d1913dc4420572cae50ae9",
+    "scope": "Full current JavaScript unit/integration suite, including eight new source/revision/replay/interruption tests. Later changes affect Skill/docs and read-only Python verifier runs argument only.",
+    "officialSkillValidatorPassed": true
+  },
+  "actualClient": {
+    "name": "Codex CLI",
+    "version": "0.163.0-alpha.11.2",
+    "model": "Installed runtime default; no override, not a cross-model test",
+    "onlySyntheticPublicGenerators": true,
+    "controllerSemanticRepair": false,
+    "oracleExcluded": true,
+    "credentialValuesRead": false,
+    "initial": {
+      "artifact": "planning-asset-revision-office-base-20261024",
+      "calls": 28,
+      "checks": 64,
+      "passedChecks": 64,
+      "protocolErrors": 0,
+      "wholeClientTrialPassed": true,
+      "finalEngineeringStatePassed": true,
+      "inputSHA256": "6966bfe88b0299f17fab727144aae901ede88c1271be3a5122ab0edc327cdc03",
+      "modelSHA256": "9b650760c3dc6fce80afd1b3611a9d90b5d08786ec21f7fd34f229e843a16085"
+    },
+    "edit": {
+      "artifact": "planning-asset-revision-office-edit-20261024",
+      "calls": 36,
+      "checks": 41,
+      "passedChecks": 40,
+      "protocolErrors": 1,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "inputSHA256": "9574736a78eb3e67d05c10fe55afa69c2079303f0046024677a4e56943c898a3",
+      "modelSHA256": "7f6c8cd643071f86ab30e76aac114388d26c9220b7696179dba8ec8be819a09b",
+      "taskJobId": "job-task-1abf4af3-44a1-4da5-98a5-5321649b88db",
+      "design": {
+        "rooms": 4,
+        "assets": 6,
+        "fixedAssets": 1,
+        "sheets": 6,
+        "pending": 5,
+        "geometricChecks": 87,
+        "revision": 1
+      },
+      "sourceCoverage": {
+        "total": 44,
+        "mapped": 42,
+        "context": 2,
+        "unresolved": 0,
+        "conflict": 0
+      },
+      "lifecycleMutations": 7,
+      "preservedBeforeFiles": 147
+    },
+    "fidelity": "Normal physical revision/review/design/CAD path was exercised. Final conservative unconfirmed-publication guard was added after that client started and is covered by full fault-injection regression; later action-scope Skill guidance was not rerun as a new zero-error client trial."
+  },
+  "localNativeAcceptance": {
+    "formalTasks": 1,
+    "physicalRevisions": 1,
+    "newDwgsIncludingBefore": 2,
+    "reviewPdfPagesIncludingBefore": 12,
+    "strictPass": 12,
+    "rawToReviewPixelIdentical": 12,
+    "sourcePresentationTextPass": 12,
+    "inventoryCsvAndPdfPass": true,
+    "allTwelvePagesActuallyViewed": true,
+    "pendingPreserved": 5,
+    "fixedPositionPreserved": [
+      1000,
+      3900
+    ],
+    "fixedOrientationPreserved": 180,
+    "changedValues": [
+      "PRINTER width 600 to 800 mm",
+      "BENCH depth 700 to 800 mm"
+    ],
+    "sourceAuthorityVerified": false,
+    "professionalApproval": false
+  },
+  "retainedFailures": [
+    {
+      "kind": "actual_client_contract_error",
+      "callId": "item_15",
+      "detail": "source_blocks incorrectly included task; strict tool schema rejected it. Agent removed task and completed without controller semantic repair. Whole-trial zero-error gate remains false."
+    },
+    {
+      "kind": "verification_harness_order",
+      "detail": "Two read-only checks were initially scheduled before PDF-check output existed, then rerun successfully in dependency order; private recovery note retained."
+    }
+  ],
+  "limitations": [
+    "Known developer-authored rectangular planar case, not an independent customer commission or an independently validated semantic interpretation.",
+    "Three program types exercise the shared source-revision code in local tests; only office has the new positive actual Agent/CAD physical revision trial.",
+    "Retained relocation/release/removal and asset additions are source/negative/local behavior, not positive real-client/native engineering acceptance.",
+    "No automatic proof that an actual source author is authorized or that quoted natural text semantically supports every typed value.",
+    "Full bounded recomputation, not minimum-change optimization or complete multidisciplinary change impact repair.",
+    "Original commissioned hospital design, independent architectural truth, actual product interfaces/standards, external users/new machine and professional approval remain incomplete."
+  ],
+  "nextPriorities": [
+    "Clarify action-specific tool scope and reduce actual-client contract mistakes without weakening strict inputs.",
+    "Exercise a source-proved fixed-retention conflict through the actual Agent; verify blocked result and preserved old drawings without relaxed constraints.",
+    "Expose a compact before/after amendment summary in the review package and test downstream shared-space consumers against physical revisions."
+  ],
+  "staticRelease": {
+    "passed": true,
+    "checks": 3,
+    "publicFiles": 694,
+    "logSHA256": "666c7b481bbbd766ca1dc83b58d14d26cb005d8616dcf8a2ce54a7b498020119",
+    "releaseRepackaged": false
+  }
+}

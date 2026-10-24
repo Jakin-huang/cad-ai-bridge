@@ -7,6 +7,7 @@ import re
 import sys
 import pypdf
 
+assert len(sys.argv) in (2, 3, 4)
 root = Path(sys.argv[1])
 read = lambda f: json.loads(f.read_text(encoding='utf-8-sig'))
 sha = lambda f: hashlib.sha256(f.read_bytes()).hexdigest()
@@ -15,7 +16,10 @@ audit_name = sys.argv[2] if len(sys.argv) > 2 else 'independent-audit.json'
 assert Path(audit_name).name == audit_name and audit_name.endswith('.json')
 audit = read(root / audit_name)
 assert audit['finalEngineeringStatePassed']
-directory = root / 'data' / 'runs' / audit['jobId']
+# Same-task client trials store their before-data and reports separately from
+# the still-authoritative original task's runs directory.
+runs = Path(sys.argv[3]) if len(sys.argv) > 3 else root / 'data' / 'runs'
+directory = runs / audit['jobId']
 state = read(directory / 'space-planning.json')
 model = read(directory / f"model-{state['revision']}.json")
 expected = model['input']['assets']

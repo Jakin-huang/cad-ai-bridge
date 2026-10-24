@@ -1479,5 +1479,24 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "planningAssetRevisionsIncrement": {
+    "validation": "docs/planning-asset-revisions-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "localSameTaskRevisionSubsetAccepted": true,
+    "fullRegression": 594,
+    "actualAiClientTrials": 2,
+    "formalTasks": 1,
+    "physicalRevisions": 1,
+    "newNativeDrawingsIncludingBefore": 2,
+    "reviewPdfPagesIncludingBefore": 12,
+    "editWholeClientTrialPassed": false,
+    "editFinalEngineeringStatePassed": true,
+    "editRecoveredProtocolErrors": 1,
+    "oldLifecycleSnapshotsRetained": true,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }
