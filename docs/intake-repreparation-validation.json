@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "baseCommit": "f31a95a1dd7e3883ed01ebb0d63fc10d64f00e75",
+  "status": "unreleased_scope_bound_source_repreparation_with_immutable_predecessor_lineage",
+  "iterationClosed": true,
+  "developmentComplete": true,
+  "localRepreparationSubsetAccepted": true,
+  "positiveFinalEngineeringStateAccepted": true,
+  "wholeClientTrialPassed": false,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "professionalApproval": false,
+  "crossModelAcceptance": false,
+  "externalUserAcceptance": false,
+  "newMachineAcceptance": false,
+  "releaseRepackaged": false,
+  "privateHospitalDataProcessed": false,
+  "goalComplete": false,
+  "implemented": [
+    "New source/scope preparation from the exact original frozen physical baseline, with no pending/input-revised predecessor bypass",
+    "Both design families retain original physical conditions and reinterpret logical requirements under a newer current source set",
+    "Immutable predecessor/baseline/draft lineage in task identity, downloadable JSON and project review aggregation; read-time snapshot tamper detection",
+    "Task-specific progressive reference rather than full unrelated references; token observations reported without causal efficiency claim"
+  ],
+  "regression": {
+    "officialSkillValidatorPassed": true,
+    "staticOnlyPassed": true,
+    "staticPublicFiles": 722,
+    "staticChecks": 3,
+    "passed": 611,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 194065.6762,
+    "logSHA256": "90bd2acd305e7b93754dc43d3ab2d39f62c80b971d4e8edf6708cd784a2b10d8",
+    "earlierFull611Retained": true
+  },
+  "blockedTrial": {
+    "artifact": "scope-repreparation-client-20261024",
+    "knownStructuredSynthetic": true,
+    "plannedOutcome": "new native delivery",
+    "observedOutcome": "blocked_before_new_model_or_CAD",
+    "controllerDrivenPredecessor": true,
+    "controllerNewScopeProvided": false,
+    "controllerNewDraftProvided": false,
+    "controllerSemanticRepairDuringClient": false,
+    "calls": 28,
+    "bridgeErrors": 0,
+    "clientTransportWarnings": 0,
+    "newScopeAndInputPreparationPassed": true,
+    "safeStopAccepted": true,
+    "wholeClientTrialPassed": false,
+    "requirementLux": 600,
+    "oldRequirementLux": 450,
+    "newNativeDrawings": 0,
+    "newReviewPdfPages": 0,
+    "beforeFilesVerified": 140,
+    "sourceLifecycleViewsChanged": 2,
+    "allOtherOriginalBytesUnchanged": true,
+    "clientElapsedMs": 88692,
+    "reportedTokenUsage": {
+      "input_tokens": 485558,
+      "cached_input_tokens": 439680,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 2739,
+      "reasoning_output_tokens": 30
+    },
+    "task": {
+      "jobId": "job-task-83ceca92-bcd0-493d-8c2a-8435d9c20faa",
+      "expectedProjectId": "7d54b073-62e4-4354-a2ff-3d30ca19c176",
+      "expectedTaskSHA256": "e7794580c9abcdcceca3646fc8e2b76fdebdf380ccead306ab16217053086885"
+    },
+    "blockingCodes": [
+      "NO_FEASIBLE_LIGHTING_LAYOUT"
+    ],
+    "firstIncompleteAuditorPreserved": true
+  },
+  "positiveTrial": {
+    "artifact": "scope-repreparation-positive-20261024",
+    "separateProject": true,
+    "declaredLuxBeforeClient": 500,
+    "knownStructuredSynthetic": true,
+    "controllerDrivenPredecessor": true,
+    "controllerNewScopeProvided": false,
+    "controllerNewDraftProvided": false,
+    "controllerSemanticRepairDuringClient": false,
+    "calls": 33,
+    "bridgeErrors": 0,
+    "clientTransportWarnings": 4,
+    "warningKind": "TLS/stream reconnects reported by model client",
+    "finalEngineeringStatePassed": true,
+    "wholeClientTrialPassed": false,
+    "checks": 23,
+    "passedChecks": 22,
+    "design": {
+      "rooms": 1,
+      "devices": 14,
+      "circuits": 2,
+      "sheets": 5,
+      "pending": 5,
+      "oldLux": 450,
+      "newLux": 500
+    },
+    "newNativeDrawings": 1,
+    "currentReviewPdfPages": 5,
+    "strictPass": 5,
+    "sourceReviewPixelIdentical": 5,
+    "sourcePresentationTextPass": true,
+    "allFivePagesViewed": true,
+    "beforeFilesVerified": 140,
+    "sourceLifecycleViewsChanged": 2,
+    "allOtherOriginalBytesUnchanged": true,
+    "clientElapsedMs": 120430,
+    "reportedTokenUsage": {
+      "input_tokens": 721071,
+      "cached_input_tokens": 645376,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 3528,
+      "reasoning_output_tokens": 10
+    },
+    "task": {
+      "jobId": "job-task-c21ca760-2390-4a86-8fe8-1a31127991bd",
+      "expectedProjectId": "fe764f0b-e84c-48b8-8ac1-7774a0abd5f7",
+      "expectedTaskSHA256": "01284e33d6b059849d71991fadaa42e98246fb419a14c6605feb094aaf916d91"
+    },
+    "childJobId": "job-design-c21ca760-2390-4a86-8fe8-1a31127991bd",
+    "inputSHA256": "f44bbb650684c867dd07aa1b0f411071c73afbdc95276575f5f18d9fa3da12a8",
+    "modelSHA256": "6189d3d5ee694cb507715040eb17f914e38c079ed1d93389d006497294b8b5d3"
+  },
+  "finalCodeVerification": {
+    "productionDifferenceAfterClients": {
+      "scope-repreparation-client-20261024": [
+        "src/intake-preparation-lineage.mjs"
+      ],
+      "scope-repreparation-positive-20261024": [
+        "src/intake-preparation-lineage.mjs"
+      ]
+    },
+    "meaning": "Only added final read-time checks for frozen baseline bytes/JSON; no engineering inputs, tool response shape or native outputs changed",
+    "finalFreshReadonlyMcpVerified": true,
+    "negativeNextPhase": "blocked",
+    "positiveNextPhase": "awaiting_human_review",
+    "oldScopesEligible": false,
+    "newScopesEligible": true,
+    "noNativeReplay": true
+  },
+  "limits": [
+    "Only scope-bound, intake-created initial input revisions; existing input changes/pending operations remain rejected rather than dropped.",
+    "Successor task is explicitly new and linked; no in-place scope migration or automatic input/standard authority inference.",
+    "Only known single-room ordinary-lighting real-client trials; second design family covered by preparation regressions, not new native/Agent design acceptance here.",
+    "600lx delivery gate failed and remained unchanged; independent500lx result cannot retire that failure.",
+    "Four actual model-client TLS reconnect warnings mean uninterrupted trial acceptance failed despite correct final engineering state.",
+    "No independent original-customer, optical, multidisciplinary, cross-model, new-machine or professional acceptance.",
+    "Task-specific reference token counts use different tasks than earlier trials and do not establish efficiency improvement."
+  ],
+  "nextPriorities": [
+    "Give general, model-bounded feasibility diagnostics for contradictory project requirements without modifying their values.",
+    "Reduce repeated context with same-input measured comparisons while preserving required review.",
+    "Extend source amendments for already-revised tasks only with complete history and physical-change authority."
+  ]
+}

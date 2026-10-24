@@ -1590,5 +1590,25 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "intakeRepreparationIncrement": {
+    "validation": "docs/intake-repreparation-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "fullRegression": 611,
+    "realClientTrials": 2,
+    "bridgeErrors": 0,
+    "clientTransportWarnings": 4,
+    "blocked600LuxRetained": true,
+    "positive500LuxFinalStatePassed": true,
+    "wholeClientTrialPassed": false,
+    "newActualClientDwgs": 1,
+    "newReviewPdfPages": 5,
+    "originalPhysicalBytesPreserved": true,
+    "explicitPredecessorLineage": true,
+    "finalReadonlyIntegrityHardeningVerified": true,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

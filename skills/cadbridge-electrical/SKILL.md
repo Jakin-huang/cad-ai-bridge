@@ -13,7 +13,7 @@ description: "通过 CAD AI Bridge 执行有来源的工程需求、设计、修
 
 多张图使用 cad_project：start 后按 jobId 查看 status，取消仅停止后续图，resume 只继续未开始项，reexport 只重导已失败出图，不重做已保存修改。工程检查和带来源计量使用 cad_scan_drawing 后的 cad_analyze，按需读 [项目、计量与验证](references/project-analysis.md)。工具返回的 verification.levels 分别报告保存、重开、几何、保护和出图；partial/unknown 不得称为完整验证或实用性验收通过。
 
-完整工程设计任务先读 [通用 Agent 闭环](references/engineering-agent-loop.md)，按需读 [工程需求、设计与审核](references/engineering-design.md)。通用 cad_engineering_task 承接已安装普通照明、有限办公空间方案及图纸分析；项目名称不选择专业。准备或恢复任务后用 next_step 读取当前阶段、阻断项和绑定当前版本的下一调用；它只给出建议，不执行 CAD 或认证需求理解。原文、条件和模型缺项须保留，依据检查反馈作有来源的修订；参考最终图保持隔离，专业审核另列。cad_design_project 保留普通照明兼容入口，不能用于其他专业。
+已有范围任务因原文换版失效、需要保留物理基线重新解释需求时，按需读 [来源换版后的重新准备](references/engineering-repreparation.md)。其他完整工程设计任务先读 [通用 Agent 闭环](references/engineering-agent-loop.md)，按需读 [工程需求、设计与审核](references/engineering-design.md)。通用 cad_engineering_task 承接已安装普通照明、有限办公空间方案及图纸分析；项目名称不选择专业。准备或恢复任务后用 next_step 读取当前阶段、阻断项和绑定当前版本的下一调用；它只给出建议，不执行 CAD 或认证需求理解。原文、条件和模型缺项须保留，依据检查反馈作有来源的修订；参考最终图保持隔离，专业审核另列。cad_design_project 保留普通照明兼容入口，不能用于其他专业。
 
 “当前打开的图纸/当前视图/选择集”任务读 [会话流程](references/session-workflow.md)。cad_session先list（status为别名），必要时connect，再context；使用返回的文档身份、内存版本和句柄，人工修改或切图后重新读取。普通文件工作流仍可独立使用。
 

@@ -29,7 +29,7 @@ export function compileProjectReview(q,snapshots){
   for(const n of graph?.nodes??[])if(['source','condition','requirement','standard'].includes(n.kind)&&['assumed','unverified'].includes(n.authority))issue('EVIDENCE_REVIEW_REQUIRED',s.jobId,{nodeId:n.id,kind:n.kind,label:n.label,authority:n.authority,valueSHA256:dependencyDigest(n.value)});
   for(const node of graph?.nodes??[])if(node.kind==='check')for(const pending of node.value?.pending??[])issue('CHECK_ITEM_PENDING',s.jobId,{nodeId:node.id,detail:pending});
   for(const conflict of graph?.conflicts??[])issue('TASK_CONSTRAINT_CONFLICT',s.jobId,{conflict});
-  tasks.push({jobId:s.jobId,taskSHA256:s.taskSHA256,kind:s.task.kind,title:s.task.title,revision:c.revision??null,inputSHA256:c.inputSHA256??null,modelSHA256:c.modelSHA256??null,dependencyGraphSHA256:graph?.sha256??null,currentScope,designed,delivered,checks:checks??null,files:(s.files??[]).map(f=>({kind:f.kind,file:f.file,sha256:f.sha256})),professionalApproval:false});
+  tasks.push({...(s.preparationLineage?{preparationLineage:s.preparationLineage}:{}),jobId:s.jobId,taskSHA256:s.taskSHA256,kind:s.task.kind,title:s.task.title,revision:c.revision??null,inputSHA256:c.inputSHA256??null,modelSHA256:c.modelSHA256??null,dependencyGraphSHA256:graph?.sha256??null,currentScope,designed,delivered,checks:checks??null,files:(s.files??[]).map(f=>({kind:f.kind,file:f.file,sha256:f.sha256})),professionalApproval:false});
  }
  const spaces=basis.spaces.map(space=>({...space,disciplines:q.requiredKinds.map(kind=>{
   const candidates=snapshots.filter(s=>s.status.task.kind===kind&&s.scope?.spaces.some(r=>r.id===space.id));
