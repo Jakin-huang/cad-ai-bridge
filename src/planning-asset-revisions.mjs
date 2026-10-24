@@ -8,13 +8,14 @@ import {planningAssetsSchema} from './planning-assets.mjs';
 import {documentSetRefSchema} from './project-document-contracts.mjs';
 import {dependencyDigest as digest} from './task-dependencies.mjs';
 import {loadDocumentSet,readDocumentText,taskDocumentStatus,verifyDocumentReview} from './project-document-store.mjs';
-import {verifyDrawingPresentation} from './drawing-presentation-evidence.mjs';
+import {verifyDrawingPresentation,compileDrawingPresentation} from './drawing-presentation-evidence.mjs';
+import {presentationParameters} from './drawing-presentation.mjs';
 import {jobDirectory,jobJson} from './jobs.mjs';
 import {hashFile} from './drawings.mjs';
 const sha=z.string().regex(/^[a-f0-9]{64}$/),id=z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,47}$/);
 export const assetRevisionParameters=z.strictObject({
  expectedRevision:z.number().int().nonnegative(),expectedInputSHA256:sha,documents:documentSetRefSchema,
- brief:z.string().min(30).max(30000),assets:planningAssetsSchema,
+ brief:z.string().min(30).max(30000),assets:planningAssetsSchema,presentation:presentationParameters.optional().describe('Required for new revisions of tasks with drawingPresentation. Re-read notes against the amended conditions; title, descriptive scope and space IDs must remain the same.'),
  changes:z.array(z.strictObject({assetId:id,kind:z.enum(['add','update','remove']),expectedAssetSHA256:sha.optional(),retentionAction:z.enum(['unchanged','establish','relocate','release','remove']),reason:z.string().min(10).max(1000),evidence:z.array(z.strictObject({documentId:z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,63}$/),textSHA256:sha,quote:z.string().min(5).max(2000)})).min(1).max(10)})).min(1).max(64),
  reason:z.string().min(10).max(1000)
 });
@@ -55,13 +56,15 @@ export async function applyAssetRevision({runs,input,parameters,priorDocuments})
  if(input.sources.some(s=>s.id===sourceId)||!oldIds.size)throw Error('ASSET_REVISION_BRIEF_ID_CONFLICT');
  const rebind=item=>({...item,sourceIds:[...item.sourceIds.filter(id=>!oldIds.has(id)),sourceId]});
  const next={...structuredClone(input),brief:q.brief,sources:[...input.sources.map(s=>oldIds.has(s.id)?{...s,supersededBy:sourceId}:s),{id:sourceId,role:'brief',sha256:crypto.createHash('sha256').update(q.brief).digest('hex'),description:q.reason,derivedFromFinalDrawing:input.sources.some(s=>oldIds.has(s.id)&&s.derivedFromFinalDrawing)}],assets:q.assets.map(rebind),program:input.program.map(rebind),relations:input.relations.map(rebind),parameters:rebind(input.parameters),shell:rebind(input.shell),missingInputs:input.missingInputs.map(rebind),...(input.selection?{selection:rebind(input.selection)}:{})};
- // Text claims and their original citations remain identical. They must still
- // be true literal claims in the new set; a rename needs its own text revision.
- if(next.drawingPresentation){next.drawingPresentation.documents=q.documents;await verifyDrawingPresentation(next,{runs,documents:q.documents});}
+ // New operations explicitly reconcile notes against amended conditions. Keep
+ // legacy history reproducible; title/scope/program changes use other protocols.
+ if(q.presentation){if(!input.drawingPresentation)throw Error('ASSET_REVISION_PRESENTATION_BASE_REQUIRED');const p=await compileDrawingPresentation(q.presentation,docs);if(p.title.text!==input.title||p.scope.text!==input.drawingPresentation.scope.text||digest([...p.spaceIds].sort())!==digest([...(input.drawingPresentation.spaceIds??input.program.map(r=>r.id))].sort()))throw Error('ASSET_REVISION_PRESENTATION_SCOPE_CHANGE');next.drawingPresentation=p;}else if(next.drawingPresentation)next.drawingPresentation.documents=q.documents;
+ if(next.drawingPresentation)await verifyDrawingPresentation(next,{runs,documents:q.documents});
  return {nextInput:next,changes:delta,documents:q.documents,sourceAuthorityVerified:false,professionalApproval:false};
 }
 export async function compileAssetRevision({runs,childJobId,input,inputSHA256,parameters}){
  const q=assetRevisionParameters.parse(parameters);if(digest(input)!==inputSHA256||q.expectedInputSHA256!==inputSHA256)throw Error('ASSET_REVISION_INPUT_CHANGED');
+ if(input.drawingPresentation&&!q.presentation)throw Error('ASSET_REVISION_PRESENTATION_REVIEW_REQUIRED');
  const status=await taskDocumentStatus({runs,childJobId,inputSHA256});if(!status?.reviewReady||!status.inputCurrent)throw Error('ASSET_REVISION_PRIOR_INPUT_REVIEW_REQUIRED');
  await loadDocumentSet(runs,q.documents,{requireCurrent:true});
  const prior=await verifyDocumentReview(runs,status.review);if(prior.kind!=='office-space-planning'||prior.childJobId!==childJobId)throw Error('ASSET_REVISION_PRIOR_REVIEW_CHANGED');

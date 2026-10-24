@@ -1,3 +1,7 @@
+import {compileDrawingPresentation} from '../../src/drawing-presentation-evidence.mjs';
+import {loadDocumentSet} from '../../src/project-document-store.mjs';
+import {planningInputIssues} from '../../src/space-planning-contracts.mjs';
+import {assetFieldChanges,retainAssetChangeReport} from '../../src/planning-asset-change-report.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -10,14 +14,15 @@ import {hashFile} from '../../src/drawings.mjs';
 import {planningAssetsInput} from '../helpers/planning-assets-input.mjs';
 import {assetRevisionDelta} from '../../src/planning-asset-revisions.mjs';
 const uuid=()=>crypto.randomUUID(),ok=r=>{assert.equal(r.ok,true,JSON.stringify(r));return r;},reason='Explicit synthetic source revision; no authority or professional approval is inferred.';
-async function fixture(type='office',role='coordination',mode='update'){
+async function fixture(type='office',role='coordination',mode='update',withPresentation=false){
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'asset-revision-')),runs=root+'/runs';await fs.mkdir(runs);let native=0;
  const execute=createExecutor({runs,getSettings:async()=>({workspace:root}),launch:async()=>{native++;throw Error('No native execution in unit verification');}}),input=planningAssetsInput(type),project={id:uuid(),name:'Synthetic source revision',type:'development'},task={kind:'office-space-planning',title:'Edit retained assets',objective:reason};
- await fs.writeFile(root+'/main.txt',input.brief);const docs=[{id:'MAIN',title:'Declared initial brief',versionLabel:'R0',role:'requirements',file:'main.txt',expectedRawSHA256:await hashFile(root+'/main.txt')}];
+ const note='Physical conditions remain declared assumptions and require professional review.',scope='Only the explicitly supplied planar space and asset programme is commissioned in this synthetic test.',mainText=withPresentation?[input.title,scope,note,input.brief].join('\n'):input.brief;await fs.writeFile(root+'/main.txt',mainText);const docs=[{id:'MAIN',title:'Declared initial brief',versionLabel:'R0',role:'requirements',file:'main.txt',expectedRawSHA256:await hashFile(root+'/main.txt')}];
  const set=ok(await execute('project_documents',{action:'create',requestId:uuid(),projectId:project.id,coveragePolicy:'fields_only',documents:docs})).set;
+ if(withPresentation){const claim=text=>({text,reason,evidence:[{documentId:'MAIN',quote:mainText}]});input.drawingPresentation=await compileDrawingPresentation({title:claim(input.title),scope:claim(scope),notes:[claim(note)],spaceIds:input.program.map(r=>r.id),reviewed:true},await loadDocumentSet(runs,set));if(withPresentation==='legacy'){delete input.drawingPresentation.spaceIds;input.drawingPresentation.schemaVersion=1;}}
  const prepared=ok(await execute('engineering_task',{action:'prepare',requestId:uuid(),project,task,documents:set,parameters:{input}})),binding={jobId:prepared.jobId,expectedProjectId:project.id,expectedTaskSHA256:prepared.taskSHA256},dir=path.join(runs,prepared.current.jobId);
  const status=async()=>ok(await execute('engineering_task',{action:'status',...binding})),invoke=(operation,parameters,requestId=uuid())=>execute('engineering_task',{action:'invoke',...binding,operation,parameters,requestId});
- async function review(set){const s=(await status()).current,targets=ok(await execute('project_documents',{action:'targets',task:binding,set,limit:100})).items,citations=[{documentId:'MAIN',textSHA256:crypto.createHash('sha256').update(input.brief).digest('hex'),quote:input.brief}];
+ async function review(set){const s=(await status()).current,targets=ok(await execute('project_documents',{action:'targets',task:binding,set,limit:100})).items,citations=[{documentId:'MAIN',textSHA256:crypto.createHash('sha256').update(mainText).digest('hex'),quote:mainText}];
   const r=ok(await execute('project_documents',{action:'review',requestId:uuid(),task:binding,set,expectedInputSHA256:s.inputSHA256,decisions:targets.map(t=>({targetIds:[t.id],expectedValuesSHA256:t.singleTargetValuesSHA256,disposition:'assumption',reason,citations})),documentDispositions:[{documentId:'MAIN',disposition:'used',reason},...(set.revision?[{documentId:'CHANGE',disposition:'context',reason}]:[])]}));
   return ok(await execute('project_documents',{action:'bind',requestId:uuid(),task:binding,set,expectedInputSHA256:s.inputSHA256,review:r.review}));
  }
@@ -34,6 +39,8 @@ for(const type of ['hospital','school','office'])test(type+': same task revises 
  const next=JSON.parse(await fs.readFile(f.dir+'/input-1.json','utf8')),strip=a=>Object.fromEntries(Object.entries(a).filter(([k])=>k!=='sourceIds'));
  assert.deepEqual(strip(next.shell),strip(f.input.shell));assert.deepEqual(next.program.map(strip),f.input.program.map(strip));assert.deepEqual(next.assets.find(a=>a.id==='RETAIN').fixed,f.input.assets.find(a=>a.id==='RETAIN').fixed);assert.equal(next.assets.find(a=>a.id==='PRINTER').widthMm,f.q.assets.find(a=>a.id==='PRINTER').widthMm);assert.ok(next.assets.every(a=>a.status==='assumed'));
  assert.equal((await f.invoke('design',{expectedRevision:1,expectedInputSHA256:r.current.inputSHA256})).ok,false);await f.review(f.newSet);const d=ok(await f.invoke('design',{expectedRevision:1,expectedInputSHA256:r.current.inputSHA256,budget:{maxNodes:50000,maxMilliseconds:10000,maxPlans:1}}));assert.equal(d.current.audit.failed,0);assert.equal(await hashFile(f.dir+'/model-0.json'),modelSHA);
+ const m=JSON.parse(await fs.readFile(f.dir+'/model-1.json','utf8'));assert.equal(m.sceneVersion,8);assert.equal(m.assetChanges.revisions.length,1);assert.equal(m.assetChanges.sourceAuthorityVerified,false);const item=m.assetChanges.revisions[0].items[0];assert.equal(item.assetId,'PRINTER');assert.deepEqual(item.fields,[{field:'widthMm',before:f.input.assets.find(a=>a.id==='PRINTER').widthMm,after:f.q.assets.find(a=>a.id==='PRINTER').widthMm}]);assert.ok(m.sheets.some(s=>s.id==='SP07'));assert.ok(m.scene.entities.some(e=>e.kind==='text'&&e.text.includes('宽度(mm)')));const reportFiles=await retainAssetChangeReport({dir:f.dir,revision:1,report:m.assetChanges});assert.equal(reportFiles.length,2);for(const file of reportFiles)assert.equal(await hashFile(file.file),file.sha256);
+
  const state=JSON.parse(await fs.readFile(f.dir+'/space-planning.json','utf8')),journal=f.dir+'/'+state.assetRevisions[0].file,bytes=await fs.readFile(journal);await fs.appendFile(journal,'\n');assert.equal((await f.execute('engineering_task',{action:'status',...f.binding})).ok,false);await fs.writeFile(journal,bytes);assert.equal((await f.status()).current.revision,1);
 });
 test('stale source, omitted/forged delta, wrong quote/hash/retention action and grade upgrade cannot mutate the task',async()=>{
@@ -60,4 +67,19 @@ test('interrupted physical publication stays unconfirmed and blocks same or new 
  const f=await fixture(),requestId=uuid(),before=await hashFile(f.dir+'/space-planning.json');await fs.writeFile(f.dir+'/input-1.json','Retained orphan simulates an interrupted prior publication.\n',{flag:'wx'});
  const r=await f.invoke('revise_assets',f.q,requestId);assert.equal(r.ok,false);assert.equal(r.execution.status,'unconfirmed');assert.equal(r.execution.result.error.code,'PLANNING_ASSET_REVISION_UNCONFIRMED');assert.equal((await f.status()).status,'operation_unconfirmed');assert.equal(await hashFile(f.dir+'/space-planning.json'),before);
  assert.equal((await f.invoke('revise_assets',f.q,requestId)).ok,false);assert.equal((await f.invoke('revise_assets',f.q)).ok,false);assert.equal((await f.status()).current.revision,0);assert.equal(f.native(),0);
+});
+
+test('asset amendment report exposes nested coordinates, additions and removals without confusing source rebinds with physical edits',()=>{
+ const a=planningAssetsInput().assets[0],b=structuredClone(a);b.sourceIds=['NEW_SOURCE'];b.evidenceQuote='New declaration, physical conditions retained.';assert.deepEqual(assetFieldChanges(a,b),[]);b.fixed.position[0]+=100;assert.deepEqual(assetFieldChanges(a,b),[{field:'fixed.position[0]',before:1000,after:1100}]);
+ for(const [before,after]of [[null,a],[a,null]]){const rows=assetFieldChanges(before,after);assert.ok(rows.some(r=>r.field==='widthMm'&&(before?r.before:r.after)===1200));assert.ok(rows.some(r=>r.field==='fixed.position[1]'));assert.ok(rows.every(r=>!r.field.includes('sourceIds')&&!r.field.includes('evidenceQuote')));}
+});
+
+test('fixed footprint and service envelope outside the source shell are explicit blockers, with no dimension or coordinate repair',()=>{
+ for(const change of [a=>a.widthMm=50000,a=>a.fixed.position[0]=-50,a=>a.clearances.frontMm=20000]){const p=planningAssetsInput(),a=p.assets.find(a=>a.id==='RETAIN');change(a);const before=structuredClone(p),r=planningInputIssues(p);assert.equal(r.ok,false);const c=r.blocking.find(c=>c.code==='FIXED_ASSET_OUTSIDE_SHELL');assert.equal(c.id,'RETAIN');assert.deepEqual(c.fixed,a.fixed);assert.deepEqual(p,before);}
+});
+
+for(const presentationVersion of [true,'legacy'])test(String(presentationVersion)+': new physical revisions require explicit note reconciliation while preserving title/scope and historical inputs',async()=>{
+ const f=await fixture('office','coordination','update',presentationVersion),r=await f.invoke('revise_assets',f.q);assert.equal(r.ok,false);assert.match(r.execution.result.error.message,/ASSET_REVISION_PRESENTATION_REVIEW_REQUIRED/);assert.equal((await f.status()).current.revision,0);
+ const p=f.input.drawingPresentation,claim=c=>({text:c.text,reason:c.reason,evidence:c.evidence.map(({documentId,quote})=>({documentId,quote}))}),presentation={title:claim(p.title),scope:claim(p.scope),notes:p.notes.map(claim),spaceIds:p.spaceIds??f.input.program.map(r=>r.id),reviewed:true};
+ const q={...f.q,presentation};ok(await f.invoke('revise_assets',q));const after=JSON.parse(await fs.readFile(f.dir+'/input-1.json','utf8'));assert.deepEqual(after.drawingPresentation.documents,f.newSet);assert.equal(after.title,f.input.title);assert.equal(after.drawingPresentation.scope.text,p.scope.text);assert.equal((await f.status()).current.revision,1);assert.equal(f.native(),0);
 });

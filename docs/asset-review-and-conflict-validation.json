@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "baseCommit": "0cf47de78cefa9cfd7dacb57814829d010b45203",
+  "status": "unreleased_amendment_review_with_retained_note_failure_and_actual_fixed_conflict_stop",
+  "iterationClosed": true,
+  "developmentComplete": true,
+  "localAmendmentReviewSubsetAccepted": true,
+  "localExpectedConflictStopAccepted": true,
+  "wholeCorrectedClientTrialPassed": false,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "independentCustomerAcceptance": false,
+  "professionalApproval": false,
+  "externalUserAcceptance": false,
+  "newMachineAcceptance": false,
+  "crossModelAcceptance": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "privateHospitalDataProcessed": false,
+  "implemented": [
+    "Derive complete asset before/after history from verified immutable revisions; include SP07/continuations and source-bound change JSON/CSV in new deliveries",
+    "Version8 review projection retains prior render versions; no retrofit of old drawings or failed notes",
+    "Shared fixed-body/service-envelope preflight identifies FIXED_ASSET_OUTSIDE_SHELL with exact declared bounds; no automatic move, shrink or deletion",
+    "New physical revisions require explicit source-supported project-note reconciliation when presentation exists; preserve title, scope, space list and legacy histories"
+  ],
+  "regression": {
+    "passed": 597,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 188961.2498,
+    "logSHA256": "6be7c89820d4db7cfa82dcad9b8246dd146b685968784da1e8045b56b209d48e",
+    "scope": "Full 597-test JavaScript run before the final legacy presentation-v1 fallback and its additional case. Do not claim a final598 full run; the final16 related checks cover both presentation versions, history and interruption behavior.",
+    "officialSkillValidatorPassed": true
+  },
+  "actualClient": {
+    "name": "Codex CLI",
+    "version": "0.163.0-alpha.11.2",
+    "model": "Installed runtime default, no override; not controlled cross-model acceptance",
+    "onlySyntheticPublicGenerators": true,
+    "credentialValuesRead": false,
+    "oracleExcluded": true,
+    "sameFormalTask": true,
+    "taskJobId": "job-task-ed71f492-ff32-4afe-9b7e-391cc39f772c",
+    "formalTasks": 1,
+    "baseline": {
+      "artifact": "asset-review-office-base-20261024",
+      "calls": 31,
+      "checks": 65,
+      "passedChecks": 65,
+      "protocolErrors": 0,
+      "wholeClientTrialPassed": true,
+      "finalEngineeringStatePassed": true,
+      "inputSHA256": "33d5f9860ad3c17e7776b21d3ff82c55c8bd49c5740d8fa9d5ef439e55b9752c",
+      "modelSHA256": "5ee7f5fa9dc928571f9c08f26383c004f3e90f3e10e08623b51bad664ca6605f"
+    },
+    "failedAmendment": {
+      "artifact": "asset-review-office-edit-20261024",
+      "calls": 40,
+      "checks": 44,
+      "passedChecks": 43,
+      "protocolErrors": 0,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": false,
+      "inputSHA256": "53d22e0888c4335ac20180bf2412e9b60fd3c5d749f20b44a31b8f78691fcc53",
+      "modelSHA256": "86c962ee065dfc78669f5532a553437361d83e9b179c5abca99f729a4318b115"
+    },
+    "correctedHistoricalReview": {
+      "artifact": "asset-review-office-notes-20261024",
+      "calls": 37,
+      "checks": 60,
+      "passedChecks": 59,
+      "protocolErrors": 2,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "inputSHA256": "3a408c72ca2f99fc41187b619fb1d269fb6a7f0948d6db2b16875a00987a2fe7",
+      "modelSHA256": "4b1f35e4c4c89ba4ee031f17dcae3adefd71b2dfd030fb8e72f2587bcb1f3deb"
+    },
+    "expectedConflict": {
+      "artifact": "asset-review-office-conflict-20261024",
+      "calls": 28,
+      "checks": 15,
+      "passedChecks": 15,
+      "protocolErrors": 0,
+      "negativeTrialPassed": true,
+      "newDesignAccepted": false,
+      "inputSHA256": "ba29ec09b9ea8582dbaa1a4cacc25f146d561d8e22d04a4a942f72b81901fa6e"
+    },
+    "specificControllerSemanticFeedbackBeforeCorrection": true,
+    "replacementNotesWrittenByController": false,
+    "fullyUnassistedSemanticAcceptance": false,
+    "fidelity": "R1 exposed stale project-note meaning despite literal/projection checks. R2 correction used the existing same-source presentation workflow with specific control-side review feedback. The new atomic asset/presentation contract is locally tested and exercised by the R3 blocked-input trial; no positive real-client CAD claim for that new atomic form."
+  },
+  "nativeReview": {
+    "newDwgs": 3,
+    "generatedReviewPdfPagesIncludingFailedR1": 20,
+    "independentlyStrictAndPixelCheckedPages": 13,
+    "allThirteenActuallyViewed": true,
+    "lastReviewedHistoricalRevision": 2,
+    "lastReviewedHistoricalPages": 7,
+    "failedR1PagesPreserved": 7,
+    "failedR1FullVisualAcceptance": false,
+    "independentAmendmentFields": 2,
+    "amendmentJsonSHA256": "f8d81378d3d2a6fd45b671e820c5813a32617f37817c602f0a6fe7d1a7ade298",
+    "amendmentCsvSHA256": "abc9f36307906c3bb3674f15333e70b43d4f93cca8355890f6fa8fc081b0d8ca",
+    "currentRevision": 3,
+    "currentSourceSetRevision": 2,
+    "currentStatus": "blocked_input",
+    "currentNewModel": false,
+    "currentNewCad": false,
+    "currentNewReviewPdf": false,
+    "oldSharedSpaceCurrent": false,
+    "sourceReviewCompleted": true,
+    "oldArtifactsPreserved": true
+  },
+  "failuresRetained": [
+    {
+      "kind": "stale_project_note",
+      "artifact": "asset-review-office-edit-20261024",
+      "detail": "The old original freeze-all-dimensions instruction remained in project notes after two size changes. Zero protocol errors did not imply valid final presentation; R1 fails the final-state gate."
+    },
+    {
+      "kind": "actual_contract_errors",
+      "artifact": "asset-review-office-notes-20261024",
+      "callIds": [
+        "item_16",
+        "item_17"
+      ],
+      "detail": "The actual client twice supplied a read response wrapper instead of presentation parameters, then self-corrected. Full zero-error gate remains false."
+    }
+  ],
+  "lifecycleStages": [
+    "R0 initial six-page drawing",
+    "R1 amended sizes/new review page but stale note; retained failure",
+    "R2 source-bound same-task note correction and seven-page reviewed historical design",
+    "R3 new declared fixed envelope conflict; new source review completed, no design/delivery/publication calls"
+  ],
+  "limitations": [
+    "Known author-assisted synthetic planar case; no independent customer semantic or full-project acceptance.",
+    "Literal source and explicit review do not automatically prove every note remains semantically applicable.",
+    "The fixed-envelope negative trial proves only this direct declared geometric conflict; no general unsatisfiable-core or global infeasibility claim.",
+    "Old upstream source freshness is checked; no actual downstream lighting/MEP consumer redesign or multidisciplinary approval is claimed.",
+    "Legal new-source conflict removal/recovery, new-machine/external users, authoritative original hospital geometry/standards/products and qualified professional review remain incomplete."
+  ],
+  "nextPriorities": [
+    "Return clear schema-shaped editable fragments to reduce actual-client response-wrapper mistakes without relaxing strict contracts.",
+    "Verify recovery from a recorded conflict using a legitimate newer source and explicit note reconciliation on the same task.",
+    "Evaluate conditional requirements and note applicability against independent original commissions, then verify affected downstream consumers."
+  ],
+  "finalRelated": {
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 16942.753,
+    "logSHA256": "e7ca60630048dcbc2b61f155bc82f22e870ee52f633798af0e54d9d68d9e2b81",
+    "scope": "Final project-note reconciliation for presentation-v1/v2, immutable revisions, old source/history compatibility and unconfirmed publication."
+  },
+  "staticRelease": {
+    "passed": true,
+    "checks": 3,
+    "publicFiles": 699,
+    "logSHA256": "03bb98d53de655da345843642e6b20fb3a9c1449ce86562970086db354a2d0a3",
+    "releaseRepackaged": false
+  }
+}

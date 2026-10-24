@@ -1498,5 +1498,30 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "assetReviewAndConflictIncrement": {
+    "validation": "docs/asset-review-and-conflict-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "actualAiClientTrials": 4,
+    "formalTasks": 1,
+    "newNativeDrawings": 3,
+    "generatedReviewPagesIncludingFailedR1": 20,
+    "independentlyCheckedAndViewedPages": 13,
+    "correctedR2FinalStatePassed": true,
+    "correctedR2WholeClientTrialPassed": false,
+    "correctedR2ProtocolErrors": 2,
+    "specificControllerSemanticFeedbackProvided": true,
+    "negativeR3Checks": 15,
+    "negativeR3Passed": true,
+    "currentRevision": 3,
+    "currentStatus": "blocked_input",
+    "currentNewCad": false,
+    "oldSharedSourceCurrent": false,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false,
+    "fullRegressionBeforeFinalLegacy": 597,
+    "finalRelatedTests": 16
   }
 }
