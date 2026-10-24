@@ -1,3 +1,4 @@
+import {editablePresentation,presentationEditingScope} from './editable-presentation.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {projectDocumentsSchema,readonlyProjectDocumentsSchema} from './project-document-contracts.mjs';
@@ -24,6 +25,7 @@ export function createProjectDocumentManager({runs,getInputRoot,taskContext}){
   if(q.action==='read'){const ctx=await loadDocumentSet(runs,q.set);if(q.documentId){const d=await readDocumentText(ctx,q.documentId);const chunks=[];for(let n=0;n<d.text.length;n+=2000)chunks.push({start:n,end:Math.min(n+2000,d.text.length),text:d.text.slice(n,n+2000)});return {ok:true,set:q.set,current:ctx.current,coveragePolicy:ctx.version.coveragePolicy??'fields_only',document:d.document,...page(chunks,q),...scope};}return {ok:true,set:q.set,current:ctx.current,coveragePolicy:ctx.version.coveragePolicy??'fields_only',...page(ctx.version.documents.map(({snapshot,...d})=>d),q),...scope};}
   if(q.action==='read_review'){const record=await verifyDocumentReview(runs,q.review),task=await taskContext(q.task);if(digest(record.task)!==digest(q.task)||record.childJobId!==task.childJobId)throw Error('DOCUMENT_REVIEW_WRONG_TASK_OR_INPUT');const ctx=await loadDocumentSet(runs,record.set),current=ctx.current&&record.inputSHA256===task.inputSHA256,items=q.section==='targets'?record.targets:q.section==='decisions'?record.decisions:q.section==='documents'?record.documentDispositions:q.section==='source_coverage'?(record.sourceCoverage??[]):[{task:record.task,set:record.set,inputSHA256:record.inputSHA256,ready:record.ready,blockers:record.blockers,targetCount:record.targets.length,documentCount:record.documentDispositions.length,sourceCoverage:record.sourceCoverageSummary??null}];return {ok:true,review:q.review,current,section:q.section,...page(items,q),...scope};}
   const c=await context(q),{task,targets,ctx}=c;
+  if(q.action==='editable_presentation')return {ok:true,task:q.task,set:q.set,inputSHA256:task.inputSHA256,editablePresentation:editablePresentation(task.input.drawingPresentation,(task.input.rooms??task.input.program).map(r=>r.id)),editing:presentationEditingScope,...scope};
   if(q.action==='targets')return {ok:true,set:q.set,task:q.task,kind:task.kind,inputSHA256:task.inputSHA256,...page(targets,q),...scope,legacyBriefIsNotDocumentAuthority:true};
   if(q.expectedInputSHA256!==task.inputSHA256)throw Error('DOCUMENT_TASK_INPUT_CHANGED');
   if(q.action==='review'){

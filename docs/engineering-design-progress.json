@@ -1523,5 +1523,31 @@
     "goalComplete": false,
     "fullRegressionBeforeFinalLegacy": 597,
     "finalRelatedTests": 16
+  },
+  "assetRecoveryIncrement": {
+    "validation": "docs/asset-recovery-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "localSourceRecoverySubsetAccepted": true,
+    "fullRegression": 600,
+    "actualAiClientTrials": 1,
+    "formalTaskReused": true,
+    "fromRevision": 3,
+    "currentRevision": 4,
+    "currentStatus": "delivered",
+    "newNativeDrawings": 1,
+    "newReviewPdfPages": 7,
+    "beforeFilesVerified": 448,
+    "changedCurrentLifecycleViews": 7,
+    "actualClientChecks": 31,
+    "passedClientChecks": 30,
+    "protocolErrors": 1,
+    "finalEngineeringStatePassed": true,
+    "wholeClientTrialPassed": false,
+    "newSharedSourceCurrent": true,
+    "oldSharedSourceCurrent": false,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }
