@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "baseCommit": "be496145a83542943823cc1f97f18e9a17f33712",
+  "status": "unreleased_opt_in_transverse_workstation_design_and_source_to_native_client_verified",
+  "iterationClosed": true,
+  "developmentComplete": true,
+  "localKnownSyntheticClientSubsetAccepted": true,
+  "wholeCorrectedKnownClientTrialPassed": true,
+  "wholeFirstClientTrialPassed": false,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "professionalApproval": false,
+  "crossModelAcceptance": false,
+  "externalUserAcceptance": false,
+  "newMachineAcceptance": false,
+  "hospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "goalComplete": false,
+  "implemented": [
+    "Optional transverse single rear workstation row with original desk/chair/seat/aisle dimensions and unchanged doorway approach",
+    "Original furniture mode identities preserved; four entry orientations and distinct same-geometry furniture states retained in bounded improvement",
+    "Independent world-space seat/object/door/aisle checks and clear annotation search without moving any physical geometry",
+    "Actual client interprets original synthetic language from conditions_only baseline through scoped intake, CAD, shared spaces and project review"
+  ],
+  "regression": {
+    "passed": 623,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 197593.6986,
+    "logSHA256": "b037129b76c4eb93592248ee05957cc16110694ea0b058690cd1933e40560146",
+    "earlierFull623BeforeAnnotationFixRetained": true,
+    "earlierFullLogSHA256": "6e0796773f8e6bc66135b64737b9374736bf2fe409bbfe78be5c3c6bc29f8194",
+    "officialSkillValidatorPassed": true,
+    "staticOnlyPassed": true,
+    "staticPublicFiles": 736,
+    "staticChecks": 3,
+    "staticLogSHA256": "b0ec951363a2867e7156f9b1234050dd545d2481bf00c34c326c29d05e2366ec"
+  },
+  "firstTrial": {
+    "artifact": "transverse-client-20261024",
+    "actualInstalledAiClient": true,
+    "knownSyntheticOriginalLanguage": true,
+    "calls": 43,
+    "protocolErrors": 2,
+    "errorCodes": [
+      "PRESENTATION_LITERAL_TEXT_REQUIRED",
+      "HOST_OR_INPUT_ERROR"
+    ],
+    "errorMessages": [
+      "PRESENTATION_LITERAL_TEXT_REQUIRED",
+      "TASK_DATA_NOT_PUBLISHED_FOR_REVISION"
+    ],
+    "wholeClientTrialPassed": false,
+    "finalEngineeringStatePassed": true,
+    "visualAccepted": false,
+    "visualIssue": "SP03 labels near doorway swing; all five original pages retained",
+    "design": {
+      "rooms": 4,
+      "seats": 16,
+      "sheets": 5,
+      "checksPassed": 69,
+      "pending": 5,
+      "unassignedM2": 1.2,
+      "netRoomM2": 78.88
+    },
+    "sourceAndInputValuesCorrect": true,
+    "clientCorrectedErrors": true,
+    "controllerSemanticRepair": false,
+    "elapsedMs": 190543,
+    "reportedTokenUsage": {
+      "input_tokens": 1563143,
+      "cached_input_tokens": 1434368,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 5670,
+      "reasoning_output_tokens": 226
+    },
+    "initialAuditorRetained": true,
+    "initialAuditorProblems": [
+      "Omitted legal inspect_baseline from allowed reads",
+      "Compared internal evaluator relation ID although original declares only endpoints/type/bound"
+    ],
+    "finalAuditorPreservesRealClientFailures": true
+  },
+  "correctedTrial": {
+    "artifact": "transverse-corrected-client-20261024",
+    "actualInstalledAiClient": true,
+    "knownSyntheticOriginalLanguage": true,
+    "independentAuthorOrCustomer": false,
+    "controllerLogicalProgramProvided": false,
+    "controllerScopeProvided": false,
+    "controllerDesignOrNativeWork": false,
+    "privateExpectedProgramOutsideWorkspace": true,
+    "calls": 41,
+    "protocolErrors": 0,
+    "wholeClientTrialPassed": true,
+    "finalEngineeringStatePassed": true,
+    "independentChecks": 22,
+    "passedChecks": 22,
+    "design": {
+      "rooms": 4,
+      "seats": 16,
+      "sheets": 5,
+      "checksPassed": 69,
+      "pending": 5,
+      "unassignedM2": 1.2,
+      "netRoomM2": 78.88
+    },
+    "physicalSourceAndExpectedProgramBytesIdenticalToFirst": true,
+    "actualPlanGeometryIdenticalToFirst": true,
+    "originalFurnitureFamilyOnSameInterpretedInput": "bounded_family_exhausted",
+    "sourceBlocks": 15,
+    "sourceBlocksMapped": 15,
+    "newNativeDwgs": 1,
+    "reviewPdfsStrictPass": 5,
+    "pixelIdenticalReviewPdfs": 5,
+    "allFiveFinalPagesViewed": true,
+    "originalProjectTitleScopeNotesInAllRequiredSheets": true,
+    "declaredNotes": 8,
+    "baselineBeforeFilesVerified": 5,
+    "baselineBeforeFilesChanged": 0,
+    "sharedSpaces": 5,
+    "projectReview": {
+      "includedTasks": 1,
+      "scopeSpaces": 5,
+      "requiredKinds": [
+        "office-space-planning"
+      ],
+      "designCoverageComplete": true,
+      "deliveryCoverageComplete": true,
+      "openIssues": 35,
+      "issuesByCode": {
+        "CHECK_ITEM_PENDING": 5,
+        "EVIDENCE_REVIEW_REQUIRED": 24,
+        "TASK_CHECKS_PENDING": 1,
+        "TASK_SCOPE_PENDING": 5
+      },
+      "professionalApproval": false,
+      "engineeringAcceptance": false
+    },
+    "elapsedMs": 232872,
+    "reportedTokenUsage": {
+      "input_tokens": 1335235,
+      "cached_input_tokens": 1232896,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 4964,
+      "reasoning_output_tokens": 105
+    },
+    "performanceCausalImprovementClaim": false,
+    "runtimeSourceAndSkillFilesMatchFinal": 187,
+    "traceSHA256": "3e03106a7ed00120e04489365acc319c60689a0b18d8ff7246305b90665b8df2"
+  },
+  "evidenceSeal": {
+    "artifact": "transverse-final-20261024",
+    "parentArtifact": "feasibility-final-20261024-r2",
+    "parentManifestSHA256": "104bae3f4b8b9a14aad65d0a4aa59e69c005c5cb976e8b5947ad61c1699a2f6c",
+    "parentSourceManifestSHA256": "29f8a9ce7b8f66d274d1f30302ea0cac4447eeb02e14ab11fbe384e11cdb2add"
+  },
+  "limitations": [
+    "Single transverse rear workstation bank, not arbitrary room topology, multiple transverse rows or specialist medical/classroom design",
+    "Source/program author is the developer; successful known original-language use is not independent customer or general semantic acceptance",
+    "Five model pending items and35 project review issues remain; only explicitly commissioned spatial scope has complete delivery coverage",
+    "No installed global skill/release repackaging, clean-machine, cross-model, customer or authenticated professional approval",
+    "Tool contexts remain substantial; token and elapsed observations from two stochastic client trials do not establish an efficiency gain",
+    "Standalone project-package browser interaction remains unverified; filesystem/model/PDF checks are separate"
+  ],
+  "nextPriorities": [
+    "Broader independent multi-document briefs and current-condition/standard applicability without losing requirements or authority grades",
+    "Measure and reduce repeated source/tool context on identical frozen tasks while preserving first failures",
+    "Expand source-supported layout and cross-pack design/installation detail; keep professional/customer/new-machine gates separate"
+  ]
+}

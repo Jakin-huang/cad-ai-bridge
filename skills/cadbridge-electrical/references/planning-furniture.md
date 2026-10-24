@@ -1,0 +1,19 @@
+# 空间方案的工位排布
+
+用于已声明面积、席位、桌椅及通道条件的空间任务。先按当前原文确定空间程序与设计自由度，再选择已支持的搜索模式；不能由项目名称推断规则。
+
+`office-space-planning` 的 design budget 可显式使用 `furnitureMode=allow_transverse_workstations`。它在原纵向工位/会议/未配家具布局之外，增加靠房间后侧的横向单排工位；门仍面对走廊，不会随家具一起旋转。门前连通净通道、声明桌椅尺寸、座位净空、桌间距、席位、窗/面积/入口路径/关系及固定物品继续校核。它不能生成任意旋转、多排横向席位、教室排椅、医疗设施或工程批准。原文要求固定朝向但当前不能表达时，保留为未解条件，不用此开关绕过。
+
+未指定/`furnitureMode=original` 保持原家具族；额外族须显式启用。较宽、较浅房间的面积足够但纵向席位容纳失败时，可在原文允许的设计自由度内启用新族，不改小桌椅、减少席位或放宽通道。靠边入口仍需按条件显式选择 `corridorMode=allow_single_sided`。这两项都是求解预算选项，不改变输入或来源等级；同一输入下保存原有界搜索失败记录。
+
+从原始资料开始时，通过 `cad_project_documents` 读取当前原文及source_blocks；先查intake capabilities section=scope保存有原句及完整源段处置的review_scope，再freeze独立conditions_only基线并带入scope。按该包intake parameters契约，引用原句解释program/relations、frozen延续条件及presentation，保留原物理数值、标准和缺项。draft后read requirements/input/presentation及source_coverage全部页；修订用previousDraft保留前稿，完整且ready才commit。不要把原本未解的工程义务标成背景或未委托以取得通过。
+
+每个presentation字段的完整text须包含在同一条evidence.quote中；文本跨分号或相邻句时，引用覆盖完整text的单条连续原句，不用多条短quote拼接支持。原文不连续时拆为独立说明，不改写拼接成新的原文声明。
+
+正式任务用`next_step`及返回版本身份继续；designBudget包含上述选择时，下一次设计调用才会使用。`feasibility=no_necessary_conflict_found`只表示未发现已实现的必要条件冲突；仍需要实际求解、自检。capabilities只传当前动作允许字段，不携带任务身份；invoke等绑定动作才传task身份。失败/超时查原收据，不能换UUID重复CAD。
+
+设计成功后完成deliver与review_pdfs，再publish_spaces（当前modelSHA256及不重名circulationId）发布真实CAD绑定的上游空间。发布不代表人工批准。用project_review明确requiredKinds和scopeTaskJobId，检查spaces/issues完整分页，按当前reportSHA256生成project_review_package；未委托专业和已列待审条件分别报告，不将完整几何覆盖称为完整工程设计。
+
+空间包的task data sections=spaces/context/sources/space_bindings读取的是已publish_spaces的共享空间包；仅完成design时这些数据尚不可用。发布前核对输入用intake read，模型/校核状态用task status及返回文件；不要把共享包读取当作未发布模型的通用预览接口。
+
+核对SP03实际桌椅/净空朝向、SP04面积及席位、SP05关系与待审、原文到各图签/范围/说明；严格PDF及逐页查看另列。最终用工具返回的当前DWG、每张审核PDF、space pack和项目待审包链接交付。未知标准、现场/人体工学/采光/无障碍及专业签审保持待审，开发测试和真实项目实用性验收分开。

@@ -1627,5 +1627,28 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "transverseWorkstationIncrement": {
+    "validation": "docs/planning-transverse-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "fullRegression": 623,
+    "actualClientTrials": 2,
+    "firstTrialErrors": 2,
+    "firstTrialVisualAccepted": false,
+    "correctedTrialCalls": 41,
+    "correctedTrialErrors": 0,
+    "correctedWholeKnownTrialPassed": true,
+    "originalBytesAndActualPlanPreserved": true,
+    "rooms": 4,
+    "seats": 16,
+    "newCorrectedNativeDwgs": 1,
+    "newCorrectedReviewPdfs": 5,
+    "sharedSpaces": 5,
+    "projectReviewOpenIssues": 35,
+    "independentSemanticAcceptance": false,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }
