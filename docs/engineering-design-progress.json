@@ -8,7 +8,7 @@
     "taskSelection": "Explicit installed task kind, independent of project label",
     "quality": "Retain existing requirements, source/assumption grades, thresholds and immutable outputs across tasks"
   },
-  "updated": "2026-10-23",
+  "updated": "2026-10-24",
   "pilot": "hospital-ordinary-lighting-retrospective-reconstruction",
   "stages": [
     {
@@ -1460,6 +1460,22 @@
     "formalDesignTasks": 0,
     "newNativeDrawings": 0,
     "independentSemanticAcceptance": false,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
+  },
+  "planningAssetsIncrement": {
+    "validation": "docs/planning-assets-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "localDeclaredAssetSubsetAccepted": true,
+    "fullRegressionBeforeFinalAnnotation": 584,
+    "finalRelatedTests": 20,
+    "actualAiClientCases": 3,
+    "newFinalNativeDrawings": 3,
+    "finalReviewPdfPages": 18,
+    "declaredAssets": 18,
+    "zeroProtocolErrorCases": 3,
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false

@@ -23,6 +23,7 @@ export function createSpacePlanningAdapter(context){
   add('condition:shell','condition','Source shell, entry, facade windows and retained keepouts',input.shell,input.shell.sourceIds.map(id=>'source:'+id),input.shell.status==='unresolved'?'unverified':'declared');
   add('condition:parameters','condition','Declared planning and clearance dimensions',input.parameters,input.parameters.sourceIds.map(id=>'source:'+id),input.parameters.status==='unresolved'?'unverified':input.parameters.status);
   for(const r of [...input.program,...input.relations])add('requirement:'+r.id,'requirement',r.name??r.id,r,r.sourceIds.map(id=>'source:'+id),r.status==='unresolved'?'unverified':r.status);
+  for(const a of input.assets??[])add('condition:asset:'+a.id,'condition',a.name,a,a.sourceIds.map(id=>'source:'+id),a.status==='unresolved'?'unverified':a.status);
   if(input.selection)add('requirement:selection','requirement','Source-declared project objective order and bounds',input.selection,input.selection.sourceIds.map(id=>'source:'+id),input.selection.status==='unresolved'?'unverified':input.selection.status);
   for(const r of input.standards)add('standard:'+r.id,'standard',r.code+' '+r.edition,r,['source:'+r.sourceId],'unverified');
   for(const r of input.missingInputs)add('condition:missing:'+r.id,'condition',r.description,r,r.sourceIds.map(id=>'source:'+id),'unverified');

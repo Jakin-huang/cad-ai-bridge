@@ -19,10 +19,10 @@ export function planningDirectDoors(input,rooms,walls){
   for(const v0 of [...new Set(starts)]){
    const v1=v0+D,threshold=frame.rect(left.u1,v0,right.u0,v1),clearances=[{roomId:left.id,rect:frame.rect(left.u1-depth,v0,left.u1,v1)},{roomId:right.id,rect:frame.rect(right.u0,v0,right.u0+depth,v1)}];
    if(!partitions.some(w=>rectContains(w,threshold))||input.shell.keepouts.some(k=>rectOverlap(k.rect,threshold)))continue;
-   if(clearances.some((c,i)=>!rectContains(pair[i].rect,c.rect)||pair[i].furniture.items.some(item=>rectOverlap(c.rect,item.rect))||pair[i].furniture.seats.some(s=>rectOverlap(c.rect,s.clearRect))||!accessible(c.rect,pair[i],Math.min(D,g.aisleMm))))continue;
+   if(clearances.some((c,i)=>!rectContains(pair[i].rect,c.rect)||pair[i].furniture.items.some(item=>rectOverlap(c.rect,item.rect))||pair[i].furniture.seats.some(s=>rectOverlap(c.rect,s.clearRect))||(pair[i].assets??[]).some(a=>rectOverlap(c.rect,a.clearRect))||!accessible(c.rect,pair[i],Math.min(D,g.aisleMm))))continue;
    for(const swingRoom of [right,left]){
     const intoRight=swingRoom===right,hinge=frame.world(intoRight?right.u0:left.u1,v0),closedEnd=frame.world(intoRight?right.u0:left.u1,v1),openEnd=frame.world((intoRight?right.u0:left.u1)+(intoRight?D:-D),v0),swingBounds=frame.rect(intoRight?right.u0:left.u1-D,v0,intoRight?right.u0+D:left.u1,v1);
-    if(rectOverlap(swingBounds,corridorDoorSweep(swingRoom,g.doorWidthMm,frame))||result.some(d=>d.swingRoomId===swingRoom.id&&rectOverlap(d.swingBounds,swingBounds)))continue;
+    if((swingRoom.assets??[]).some(a=>rectOverlap(swingBounds,a.clearRect))||rectOverlap(swingBounds,corridorDoorSweep(swingRoom,g.doorWidthMm,frame))||result.some(d=>d.swingRoomId===swingRoom.id&&rectOverlap(d.swingBounds,swingBounds)))continue;
     chosen={id:relation.id,a:relation.a,b:relation.b,widthMm:D,lockable:relation.lockable,threshold,clearances,entries:[{roomId:left.id,position:frame.world(left.u1,(v0+v1)/2)},{roomId:right.id,position:frame.world(right.u0,(v0+v1)/2)}],swingRoomId:swingRoom.id,hinge,closedEnd,openEnd,swingBounds,hardwareApproval:false};break;
    }
    if(chosen)break;

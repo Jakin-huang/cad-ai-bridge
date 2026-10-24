@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "baseCommit": "72d346ad5e67548f705e76372f7ad4c2b5c22512",
+  "status": "unreleased_declared_asset_solver_and_three_actual_client_native_subsets_verified",
+  "iterationClosed": true,
+  "developmentComplete": true,
+  "localDeclaredAssetSubsetAccepted": true,
+  "independentSemanticAcceptance": false,
+  "independentCustomerAcceptance": false,
+  "independentProjectAcceptance": false,
+  "professionalApproval": false,
+  "newMachineAcceptance": false,
+  "externalUserAcceptance": false,
+  "crossModelAcceptance": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "privateHospitalDataProcessed": false,
+  "implemented": [
+    "Optional source-declared assets with room identity, physical sizes, four world orientations, directional clearances, explicit front-interface width and optional retained fixed coordinates",
+    "Asset placement participates in bounded room search and its existing total node/time budget; no input editing, automatic movement of retained items or global infeasibility claims",
+    "Independent inventory, dimension, orientation, retention, door/aisle/seat/other-asset/service checks; direct-room door search and checks also exclude asset zones",
+    "Two native plans, attributed tags, SP06 and asset CSV agree with the current source-bound model; equipment footprints also enter shared-space context and dependency conditions",
+    "Version7 room annotations avoid declared asset/service zones without moving objects; version6 projections remain reconstructible but are not accepted under the new layout policy",
+    "Conditions-only intake keeps declared inventory frozen, resolves room programme from actual original text and retains all assumption grades/missing inputs; program revisions cannot silently drop its rooms/quotes"
+  ],
+  "regression": {
+    "full": {
+      "passed": 584,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 306693.9318,
+      "logSHA256": "a1b5b4e1937c1154ee653d9f8f86bb640e9835c41ebbb24b7199cfb164ba61ba",
+      "scope": "Full suite before final annotation version7, two additional fixture tests and verifier-only corrections. Do not claim a final586-test full run."
+    },
+    "finalRelated": {
+      "passed": 20,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 10390.2181,
+      "logSHA256": "03712eaa779c3599d3114428b46a2ce68b7973fbcb8afe6e894b7e4621d1db6a",
+      "scope": "Final asset solver/audit/annotation, world rotations/translations/source freshness and existing space planning compatibility."
+    },
+    "officialSkillValidatorPassed": true
+  },
+  "actualClient": {
+    "name": "Codex CLI",
+    "version": "0.163.0-alpha.11.2",
+    "model": "Installed runtime default, no model/provider override; not a controlled cross-model test",
+    "skill": "Verbatim public Skill/references embedded in pinned initial prompt",
+    "credentialValuesRead": false,
+    "onlySyntheticPublicGenerators": true,
+    "noFinalPlanOrPrivateOracleInClientWorkspace": true,
+    "noControllerSemanticRepairDuringFinalTrials": true,
+    "finalCases": [
+      {
+        "type": "hospital",
+        "artifact": "planning-assets-hospital-visual-final-20261024",
+        "auditFile": "independent-audit.json",
+        "actualClientCalls": 31,
+        "checks": 65,
+        "protocolErrors": 0,
+        "wholeClientTrialPassed": true,
+        "finalEngineeringStatePassed": true,
+        "design": {
+          "assetCase": "hospital",
+          "assets": 6,
+          "rooms": 4,
+          "designedSeats": 10,
+          "relations": 0,
+          "sheets": 6,
+          "geometricChecks": 87,
+          "pending": 5,
+          "unassignedM2": 2.4,
+          "title": "医院后勤协作测试"
+        },
+        "nativeSteps": [
+          {
+            "action": "create_drawing",
+            "ok": true
+          },
+          {
+            "action": "apply",
+            "ok": true
+          },
+          {
+            "action": "apply",
+            "ok": true
+          },
+          {
+            "action": "scan",
+            "ok": true
+          },
+          {
+            "action": "export_many",
+            "ok": true
+          }
+        ],
+        "strictPdfPages": 6,
+        "pixelIdenticalPages": 6,
+        "allPagesViewed": true,
+        "inputSHA256": "e863893d8c0f4c783191172a1abd433358645a3469133fe513a0b37798552fda",
+        "modelSHA256": "85a9797dd88187ce649d05c651285ccdf5ffe88ae629fe717abf438bed897ab2",
+        "traceSHA256": "cd5d2ee2333f8225bfb7cd98d34bce7480cf17ed47d9723c50b831e667f4b7b6",
+        "auditSHA256": "664281974f41548ae39da846ad5b5685e5c84c8ca94d5d1979ecd2a587b4410c",
+        "pdfCheckSHA256": "87918bc1b25b8dae36648ee9b637f6f1c3c82d9eb6bd0b842635a2dbe4d0e865",
+        "assetCheckSHA256": "b37a626b074c45f3f34473379001db9e12409fbc4f4e32d4e0cf2a4145b65298",
+        "visualReviewSHA256": "22911b683e3292570048148ccacdc7ba6a41f6a1b155587fea6200400c71be9f",
+        "assetCsvSHA256": "54671ce607f362525251715e453ba180c2c8b77ddf021534cfb157024a2f1c0d",
+        "completeDesignAccepted": false
+      },
+      {
+        "type": "school",
+        "artifact": "planning-assets-school-visual-final-20261024",
+        "auditFile": "independent-audit-corrected.json",
+        "actualClientCalls": 28,
+        "checks": 65,
+        "protocolErrors": 0,
+        "wholeClientTrialPassed": true,
+        "finalEngineeringStatePassed": true,
+        "design": {
+          "assetCase": "school",
+          "assets": 6,
+          "rooms": 4,
+          "designedSeats": 10,
+          "relations": 0,
+          "sheets": 6,
+          "geometricChecks": 87,
+          "pending": 5,
+          "unassignedM2": 2.4,
+          "title": "学校支持空间测试。"
+        },
+        "nativeSteps": [
+          {
+            "action": "create_drawing",
+            "ok": true
+          },
+          {
+            "action": "apply",
+            "ok": true
+          },
+          {
+            "action": "apply",
+            "ok": true
+          },
+          {
+            "action": "scan",
+            "ok": true
+          },
+          {
+            "action": "export_many",
+            "ok": true
+          }
+        ],
+        "strictPdfPages": 6,
+        "pixelIdenticalPages": 6,
+        "allPagesViewed": true,
+        "inputSHA256": "b97b5eccaf6cd0e721195d63747ba9d7ce001bf80418740de8cb8a6cb217627b",
+        "modelSHA256": "8a21d4a071128b2d78567ce1b13c3ad381354b5b765565449d481668cb20f14a",
+        "traceSHA256": "826e5cebaff1db301bb23720667aaad809889f15fc89bb1d1592c23975a4f569",
+        "auditSHA256": "d3657559b5a2150db291214a74eb9345e04302fabf772b5aae6b15bddc3b54e1",
+        "pdfCheckSHA256": "e92f953828f597d17037344eaf1378a3aabd17cd617135b600838ff4dda30f8e",
+        "assetCheckSHA256": "8a0e6fe55617750e0efba41b37a99eb1c37ae4a15faadda2f009f71f35f3400f",
+        "visualReviewSHA256": "8421c262173f873bde062fd75bb91ab8c915adfb5ce42572aa24ed4277bc7a22",
+        "assetCsvSHA256": "a30612c289c3f6046b1b5502921c336ebd8424a42b21ef02311c0eec0af01937",
+        "completeDesignAccepted": false
+      },
+      {
+        "type": "office",
+        "artifact": "planning-assets-office-final-20261024",
+        "auditFile": "independent-audit.json",
+        "actualClientCalls": 28,
+        "checks": 65,
+        "protocolErrors": 0,
+        "wholeClientTrialPassed": true,
+        "finalEngineeringStatePassed": true,
+        "design": {
+          "assetCase": "office",
+          "assets": 6,
+          "rooms": 4,
+          "designedSeats": 10,
+          "relations": 0,
+          "sheets": 6,
+          "geometricChecks": 87,
+          "pending": 5,
+          "unassignedM2": 2.4,
+          "title": "办公设施测试"
+        },
+        "nativeSteps": [
+          {
+            "action": "create_drawing",
+            "ok": true
+          },
+          {
+            "action": "apply",
+            "ok": true
+          },
+          {
+            "action": "apply",
+            "ok": true
+          },
+          {
+            "action": "scan",
+            "ok": true
+          },
+          {
+            "action": "export_many",
+            "ok": true
+          }
+        ],
+        "strictPdfPages": 6,
+        "pixelIdenticalPages": 6,
+        "allPagesViewed": true,
+        "inputSHA256": "9c482d6ddbdeed367568d868dbadd25fa2b650ca8b72be5ba23b09918117f94e",
+        "modelSHA256": "7b4bfaeec0e03c3ca45058609e8f5dbbb0c147a69f2c87e1b3da2e940dfd4803",
+        "traceSHA256": "e68229e7db62a6260cbd60e4db5ca6156ca76345bc659a4dcc4887d51f497054",
+        "auditSHA256": "fe1f884419099f362015573e8fba1df47f4bc8621307e7278c05fb11b4f63986",
+        "pdfCheckSHA256": "7e4ac729c84b5a16c502d8cfd23586743cc72aa2d6550c9ba9542d1fe2669d26",
+        "assetCheckSHA256": "34eb57d71ab96f9b44555a25ef1e0fb7f993d9bd7375c8f84e6a9dcf75ffa44a",
+        "visualReviewSHA256": "cfdeb1e9ec74bb4be1b1a512409794be73bc66cf1bbb3c5802f56dd3bce846e2",
+        "assetCsvSHA256": "ef8a82c27fc65a63ed88a35bc1c025b770acd14dec618d13f3a361a54c6f1217",
+        "completeDesignAccepted": false
+      }
+    ]
+  },
+  "acceptance": {
+    "newFinalDrawings": 3,
+    "finalReviewPdfPages": 18,
+    "declaredAssets": 18,
+    "fixedRetainedAssets": 3,
+    "allFinalClientTrialsZeroErrors": true,
+    "allFinalPdfPagesStrictParsedPixelComparedAndViewed": true,
+    "completeEngineeringProject": false
+  },
+  "retainedFailures": [
+    "First hospital prototype inherited an old synthetic shell source digest after changing geometry. Native geometry passed but source fidelity failed. Original input/model/DWG/PDF/trace remain unchanged; corrected fixture is a new trial, not an edit of evidence.",
+    "First independent verifier incorrectly used raw JSON condition ordering rather than the protocol-normalized frozen baseline. Both the rejected audit and corrected audit remain. The corrected first prototype still fails its true shell-source mismatch.",
+    "Version6 hospital/school outputs precede collision-checked room label bounds. Hospital plan inspection and conservative annotation-box checks motivated shared version7. Those outputs remain outside final layout acceptance; no claim that every glyph on every old sheet was occluded.",
+    "School final title faithfully included the original first-line sentence terminator. An overly specific verifier rejected it, then accepted only the exact source first line or that same line without its single terminal Chinese full stop. Original false audit and corrected audit retained; input/model/DWG/PDF not repaired.",
+    "Raw CAD PDF duplicate PageMode-key warnings remain; separate strict review copies render pixel-identically."
+  ],
+  "retainedArtifacts": [
+    "planning-assets-hospital-agent-20261024",
+    "planning-assets-hospital-final-20261024",
+    "planning-assets-school-final-20261024"
+  ],
+  "limits": [
+    "All three inputs are known, source-assisted synthetic development conditions in the same rectangular-corridor family, with different project descriptions and selected asset sizes; not three independently commissioned customer projects.",
+    "A real physical inventory must be supplied before freeze. The intake does not autonomously obtain an actual site survey or product catalogue and cannot synthesize absent asset dimensions.",
+    "No equipment inventory replacement/fixed-equipment move operation yet. Program revision preserves existing inventory; engineering edits require a new explicit evidence-bound workflow.",
+    "Front service-zone contact and footprints are not full maintenance path, equipment capacity/load, vertical space, MEP, fire/accessibility or clinical/teaching suitability.",
+    "Existing deterministic desk/chair layout family remains; a failed bounded search is not global infeasibility. Conditional obligation activation and full multidisciplinary coordination remain unaccepted.",
+    "Hospital retrospective full-floor geometry/original client requirements, applicable real standards, independent users/new machines and professional review remain incomplete."
+  ],
+  "nextPriority": "Implement source-bound same-task asset/retention requirement revisions and affected-design revalidation; require explicit authority for fixed-condition changes, preserve old evidence and unknown applicability. Keep external independent project/standard/professional acceptance separate."
+}

@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased — 2026-10-23
+## Unreleased — 2026-10-24
+
+Add source-declared asset footprints, retained world coordinates and directional service zones to the shared bounded spatial solver, independent checks, direct-door clearances, native plans, schedules and CSV. Version7 annotations avoid asset zones while preserving old projections. Three actual-client development cases issue three final DWGs/eighteen review PDFs with no tool errors; all final pages are checked and viewed. Retain source/annotation/verifier failures and frozen prior packages. These are declared synthetic planar subsets, not independent customer or professional design acceptance. See [asset validation](docs/planning-assets-validation.json).
 
 Evaluate a complete independently authored public office commission with38pre-frozen content criteria hidden from two actual clients. Retain unsupported scope, conditions, original records and all errors; no geometry is fabricated and no CAD delivery is claimed for this brief. Expose complete top-level scope contracts and unresolved mapping rules; accept meaningful short Chinese descriptions without changing evidence or design gates. Nine related checks and exact failed-call replay pass; both client zero-error gates remain failed. Local content review is not professional or independent project acceptance. See [evidence and limits](docs/original-commission-validation.json).
 
