@@ -1,0 +1,9 @@
+# 多来源事实与明确处置
+
+先读取当前原文。遇到同一事实的不同陈述时，用scope的facts[].observations逐条保留：id、value、status、与事实相同的unit（数值必填）、reason及evidence。每个值都是对原句的解释，不是核定的现场事实。不能按资料顺序、文件名、项目名或“角色看起来更权威”直接选一个值。
+
+无resolution时，程序重算汇总：不同已声明值要求fact.value=null、status=unresolved；任何未知陈述保持未知；一致但含assumed的陈述保持assumed；全部interpreted且值完全相同才汇总为interpreted。原值、字母大小写及单位严格比较，不隐式转换。汇总与所填fact不一致会拒绝，不能用解释理由把冲突强行升级。每个事实最多十条陈述，完整事实输入不超过160KiB；保持引用精确且完整，分页可读。
+
+只有原文有明确的处置指令，才增加resolution：selectedObservationIds、reason、evidence。引用当前requirements或coordination原句，说明选用哪些陈述及如何处置其余陈述；选项必须已确认且彼此一致。保留排除项及其原句，不删源、不改旧review，不把标准表/背景/产品目录当作项目冲突的处置指令。框架验证类型、引用和声明的一致性；不会自动理解处置句、确认发出人的权威或代替专业审核。没有明确依据就保留unresolved/null。
+
+通过read_scope_review section=facts读原始陈述、引用和resolution，通过section=applicability读重新计算的observationAgreement。相同逻辑作用于两种设计任务的when条件和照明标准类别条件；后者也可从task data section=standard_conditions分页核对。冲突会阻断相应准备/设计，不换类绕过。新资料或新处置须生成新scope并走现有来源修订/重新准备流程；旧任务不会读取最新review来升级事实。

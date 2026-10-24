@@ -1668,5 +1668,27 @@
     "independentSemanticAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "multiSourceFactIncrement": {
+    "validation": "docs/source-fact-observations-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "fullRegression": 638,
+    "sharedConditionTaskKinds": [
+      "ordinary-lighting",
+      "office-space-planning"
+    ],
+    "sourceIndexVersion": 2,
+    "actualClientStarted": false,
+    "actualClientAccepted": false,
+    "firstNativeVisualSourceExplanationAccepted": false,
+    "correctedNativeVisualSourceExplanationAccepted": true,
+    "correctedIndependentChecks": 13,
+    "unchangedPhysicalDesign": true,
+    "newNativeDwgs": 2,
+    "newReviewPdfs": 10,
+    "independentSemanticAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }
