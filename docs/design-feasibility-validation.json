@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "baseCommit": "dd53f57b7537dbbdd4e398da51ee1d016ae5cbbf",
+  "status": "unreleased_declared_model_necessary_bounds_in_agent_and_solver",
+  "iterationClosed": true,
+  "developmentComplete": true,
+  "localKnownClientSubsetAccepted": true,
+  "wholeKnownClientTrialPassed": true,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "professionalApproval": false,
+  "crossModelAcceptance": false,
+  "externalUserAcceptance": false,
+  "newMachineAcceptance": false,
+  "releaseRepackaged": false,
+  "privateHospitalDataProcessed": false,
+  "goalComplete": false,
+  "implemented": [
+    "Shared current-input SHA-bound necessary-condition reports with numeric operands, units, source identities/grades and report digest",
+    "Flux-method continuous mixed-catalog power/maintained-efficacy upper bound; deliberately not applied to IES/reflected/glare modes",
+    "Planning disjoint-room area and source-window contact optimistic bounds; unresolved conditions remain unknown",
+    "Agent next_step and both actual design entrypoints stop for declared-model conflicts; intake completeness stays independent",
+    "Historical task diagnosis is read-only; no previous failed trial is upgraded"
+  ],
+  "regression": {
+    "passed": 617,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 191876.7747,
+    "logSHA256": "d369478f85d579d88c2ad7bc4bcb7bce7db032a170d6ff61efc9aff761d1f2b8",
+    "firstFull": {
+      "passed": 616,
+      "failed": 1,
+      "retained": true,
+      "reason": "Existing search-exception assertion replaced with stronger checks for earlier structured conflict, no scene/devices and exact unchanged input"
+    },
+    "firstLogSHA256": "dcd0e0b00fad0d136858d167d788d3c45000d09b21233ef32c6c1c5436ec0810",
+    "officialSkillValidatorPassed": true,
+    "staticOnlyPassed": true,
+    "staticPublicFiles": 728,
+    "staticChecks": 3,
+    "staticLogSHA256": "300f1a7f0448b3851ab32e0849e042da59d282512521b624f5ede14761b25292"
+  },
+  "actualClient": {
+    "artifact": "feasibility-client-20261024",
+    "actualInstalledAiClient": true,
+    "knownStructuredSynthetic": true,
+    "controllerPreparedKnownInputs": true,
+    "controllerNativeWork": false,
+    "controllerDiagnosisProvided": false,
+    "calls": 15,
+    "protocolErrors": 0,
+    "checks": 19,
+    "passedChecks": 19,
+    "elapsedMs": 123030,
+    "reportedTokenUsage": {
+      "input_tokens": 519805,
+      "cached_input_tokens": 468608,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 2447,
+      "reasoning_output_tokens": 18
+    },
+    "performanceCausalClaim": false,
+    "unchangedInitialFilesVerified": 26,
+    "allowedPositiveLifecycleChanges": 4,
+    "blockedCases": [
+      {
+        "kind": "ordinary-lighting",
+        "requiredLux": 600,
+        "optimisticLuxUpperBound": 576,
+        "gapLux": 24,
+        "newModels": 0,
+        "newDrawings": 0
+      },
+      {
+        "kind": "office-space-planning",
+        "minimumProgramM2": 712,
+        "fullShellM2": 432,
+        "gapM2": 280,
+        "requiredWindowMm": 6400,
+        "sourceWindowMm": 12000,
+        "newModels": 0,
+        "newDrawings": 0
+      }
+    ],
+    "positiveCase": {
+      "rooms": 1,
+      "devices": 14,
+      "circuits": 2,
+      "sheets": 5,
+      "pending": 5,
+      "maintainedFluxEstimateLux": 504,
+      "targetLux": 500,
+      "lpdWPerM2": 7,
+      "designChecksPassed": 33,
+      "nativeSavedReopened": true,
+      "reviewPdfStrictPass": 5,
+      "rawAndReviewPixelIdentical": 5,
+      "allFivePagesViewed": true,
+      "originalCustomerBriefInterpretedByClient": false,
+      "sourcePresentationNewAcceptance": false
+    },
+    "runtimeSourceAndSkillFilesMatchedFinal": 185,
+    "runtimeSourceMatchesFinal": true,
+    "traceSHA256": "e1f1ea0ed8b710f06fafa98fdedd5a361e494492cfbd0fd5b041b788e02e225e"
+  },
+  "historicalRead": {
+    "artifact": "feasibility-history-20261024",
+    "freshMcpReadOnly": true,
+    "records": [
+      {
+        "artifact": "scope-repreparation-client-20261024",
+        "protectedDataFiles": 177,
+        "allBytesUnchanged": true,
+        "newNativeWork": false,
+        "phase": "blocked",
+        "diagnosis": "declared_model_conflict"
+      },
+      {
+        "artifact": "scope-repreparation-positive-20261024",
+        "protectedDataFiles": 274,
+        "allBytesUnchanged": true,
+        "newNativeWork": false,
+        "phase": "awaiting_human_review",
+        "diagnosis": "no_necessary_conflict_found"
+      }
+    ],
+    "earlierWholeTrialFailuresRemain": true,
+    "earlierTrialOutcomesReclassified": false,
+    "helperSelfCopyErrorPreserved": true
+  },
+  "evidenceSeal": {
+    "artifact": "feasibility-final-20261024-r2",
+    "parentArtifact": "repreparation-final-20261024",
+    "parentManifestSHA256": "10b90e4ff60896ac3aa2da7ddab8356e488619822f6576c1c1175626687a46a9",
+    "parentSourceManifestSHA256": "cf7d504be11b0eed804ef52a135a4d2bb95b0b1f33ebbb7baff779f140d83a9f",
+    "earlierSnapshotArtifact": "feasibility-final-20261024",
+    "earlierSnapshotManifestSHA256": "9c677ced7b37e383e51daea4aa75b75909aaf69be6d1f54167db667014c782a0"
+  },
+  "limitations": [
+    "Only necessary conditions in two installed bounded design families; absence of conflict never proves feasibility",
+    "Declared assumptions/catalog factors and source identities are not professional validity",
+    "No independent broad original brief, hospital whole-project, full MEP or authenticated professional acceptance",
+    "Actual client trial is known structured-input product use; not a blind requirement-understanding or cross-model evaluation",
+    "No efficiency improvement claim across different client scenarios; current token observation remains substantial",
+    "Large multi-room/candidate diagnostic report length and model-context cost have not been accepted on independent projects; no pagination or efficiency claim for this new report"
+  ],
+  "nextPriorities": [
+    "Expand substantive source-bound design conditions/layout coverage under unchanged quality gates",
+    "Verify complete original multi-document requirements and standard applicability on independent task inputs",
+    "Reduce repeated context with measured same-input trials; preserve historical revisions and explicit pending work"
+  ]
+}

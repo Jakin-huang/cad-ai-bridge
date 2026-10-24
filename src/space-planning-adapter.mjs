@@ -4,11 +4,12 @@ import {planningDataSections,readPlanningData} from './space-planning-data.mjs';
 import path from 'node:path';
 import {createSpacePlanningManager} from './space-planning-projects.mjs';
 import {planningPrepareSchema,planningOperationSchemas,planningInputIssues} from './space-planning-contracts.mjs';
+import {planningFeasibility,feasibilityIssues} from './design-feasibility.mjs';
 export function createSpacePlanningAdapter(context){
  const manager=createSpacePlanningManager(context);
  return {dataSections:planningDataSections,readData:(binding,q,manifest)=>readPlanningData(manager,binding,q,manifest,context),id:'office-space-planning',version:1,complexDesign:true,limitations:'Bounded rectangular interior shell, fixed source entry/windows/keepouts, two-sided straight corridor or opt-in single-sided edge corridor and rectangular bays. Source-declared area, adjacency, furniture and aisle checks; no building/fire/accessibility/daylight/acoustic/MEP approval. Not independent customer acceptance.',prepareSchema:planningPrepareSchema,operationSchemas:planningOperationSchemas,constraintSensitiveOperations:['design','deliver'],
  validatePrepare:p=>planningPrepareSchema.parse(p),prepare:manager.prepare,inspect:manager.inspect,
- async agentWorkflow(binding){const {input}=await manager.load(binding);return {designOperation:'design',inputIssues:planningInputIssues(input).blocking};},
+ async agentWorkflow(binding){const {input}=await manager.load(binding),feasibility=planningFeasibility(input);return {designOperation:'design',feasibility,inputIssues:[...planningInputIssues(input).blocking,...feasibilityIssues(feasibility)]};},
  documentChildJobId:requestId=>'job-spaceplan-'+requestId,
  async documentInput(binding){const {s,input}=await manager.load(binding);return {childJobId:binding.childJobId,input,inputSHA256:s.inputSHA256,modelSHA256:s.modelSHA256};},
  validateOperation(op,p){if(!planningOperationSchemas[op])throw Error('TASK_OPERATION_UNSUPPORTED');return planningOperationSchemas[op].parse(p);},invoke:manager.invoke,

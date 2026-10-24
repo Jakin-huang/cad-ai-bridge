@@ -8,6 +8,7 @@ import {partitionLightingCircuits} from './lighting-circuit-partition.mjs';
 import crypto from 'node:crypto';
 import {sourceDocumentLines} from './source-document-presentation.mjs';
 import {inspectEngineeringInput} from './engineering-contracts.mjs';
+import {lightingFeasibility,feasibilityIssues} from './design-feasibility.mjs';
 import {sceneSchema} from './contracts.mjs';
 import {evaluateRoomPhotometryWork,roomPhotometricGrid} from './engineering-photometry.mjs';
 import {selectEngineeringPlanSheet} from './engineering-sheets.mjs';
@@ -108,6 +109,7 @@ export async function engineeringLightingChoicesAsync(model,{preflight,deadlineM
 
 export function makeEngineeringDesign(raw,{revision=0,standardEvidence=[],architecturalEvidence,photometricEvidence=[],lightingStandardEvidence,layoutSelections,sourceDocuments}={}){
  const intake=inspectEngineeringInput(raw);if(!intake.ok)return {ok:false,stage:'requirements',issues:intake.issues};
+ const feasibility=lightingFeasibility(intake.input);if(feasibility.conflictCount)return {ok:false,stage:'feasibility',issues:[...intake.issues,...feasibilityIssues(feasibility)],feasibility};
  const p=intake.input;if(p.lightingStandards&&(!lightingStandardEvidence||lightingStandardEvidence.profileId!==p.lightingStandards.profileId||lightingStandardEvidence.profileSHA256!==p.lightingStandards.expectedProfileSHA256.toLowerCase()||lightingStandardEvidence.issues.some(i=>i.severity==='blocking')||lightingStandardEvidence.rooms.length!==p.rooms.length))throw Error('LIGHTING_STANDARD_EVIDENCE_REQUIRED');if(lightingStandardEvidence&&!p.lightingStandards)throw Error('LIGHTING_STANDARD_UNREQUESTED');
  if(p.rooms.some(r=>r.secondaryUseAssessments?.length&&!auditSharedUseBasis(r,lightingStandardEvidence?.rooms.find(n=>n.roomId===r.id))))throw Error('MULTI_USE_LIGHTING_EVIDENCE_REQUIRED');
  if(layoutSelections&&(!p.photometricDesign||!p.lightingEnvironment||layoutSelections.length!==p.rooms.length||new Set(layoutSelections.map(s=>s.roomId)).size!==p.rooms.length||layoutSelections.some(s=>!p.rooms.some(r=>r.id===s.roomId)||!/^[a-f0-9]{64}$/.test(s.choiceSHA256??''))))throw Error('LIGHTING_SELECTION_COVERAGE');

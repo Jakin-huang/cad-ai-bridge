@@ -24,6 +24,8 @@
 
 - phase=design/analysis/quality/delivery/review_pdfs：核对 next.arguments 与当前委托相符，为这一次操作生成新 requestId 后调用 next.tool；完成后再次查询 next_step。
 - phase=blocked：读取 issues。过期来源先完成来源审阅/模型重算，缺项和矛盾用原文修订输入，设计不满足则检查失败对象和候选/质量结果。LAST_OPERATION_FAILED 包含原操作和失败原因；先解决原因。只有原记录明确 not_applied 且无未确认操作时，才可在问题已修正后按能力契约新建操作；next_step 不自动重试。不要猜测条件、改低要求或循环轮询同一阻断状态。
+
+`next_step.feasibility` 是对当前输入的只读必要条件诊断；核对 inputSHA256 与任务一致，再核对 checks 的原值、单位、sourceIds、状态和适用模型。`declared_model_conflict` 表示声明模型中有必要条件冲突：普通流明法按功率密度×全部声明候选的最高维持光效给出乐观照度上界；空间包按总最小房间面积/窗接触长度与整壳面积/全部源窗长度比较。要求值超过这个乐观上界时，保持输入和旧图，报告差额及来源，待有依据的需求、物理或产品变更；necessaryThresholds只是必要边界，不能当作新设计或自动修订值。流明法诊断不用于IES直射、反射和眩光；`not_evaluated`保持未知。`no_necessary_conflict_found`不证明存在可行图，也不覆盖标准适用性；仍按原求解/自检流程执行。`budget_exhausted`、`bounded_family_exhausted`和NO_FEASIBLE_LIGHTING_LAYOUT只是相应有界搜索结果，不能宣称工程全局无解。历史失败任务也可只读取得当前诊断，不能据此覆盖原失败版本。
 - phase=awaiting_human_review：整理当前成果与待审问题。它只说明当前支持流程已到交付末端；还需核对委托交付清单、图面可读性、需求覆盖和工程缺项，不能据此宣称完整项目或专业签审。
 
 next.arguments 不含 requestId；该操作确认开始后必须保存其 UUID。超时或回复丢失时先用原身份 status 读取 pendingOperations/lastExecution；未确认操作不得换 UUID 重做。next_step 是只读建议，后续实际 invoke 仍校验来源、版本与状态，期间变化会拒绝旧建议。

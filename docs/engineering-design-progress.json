@@ -168,11 +168,11 @@
     "Hospital DUTY and TEACH standard-space classification unresolved"
   ],
   "nextPriorities": [
-    "P0 Preserve source/assumption grades, original thresholds, explicit task identity, both design packs, analysis and hospital evaluator isolation",
-    "P0 Expand substantive design on current independent architecture and broader briefs; record source-backed standard applicability/conflicts and measure actual engineering completeness rather than repeat this known recovery case",
-    "P0 Keep actual-client source access and task outer/operation contracts reliable; one unplanned identity-shape error remains, post-trial guidance is not a new verified session",
-    "P1 Richer layout families, shared-space split/merge and multi-use coordination, cross-pack design and installation/wiring/protection detail",
-    "P2 Independent real-project/customer evaluation, external users, clean machines and authenticated professional review"
+    "P0 Preserve explicit task identity, source/assumption grades, original thresholds, both design packs, analysis and isolated final-drawing evaluator",
+    "P0 Expand substantive source-bound design conditions/layouts and verify original multi-document requirements and standard applicability; known structured diagnostics are not general design understanding acceptance",
+    "P0 Measure and reduce repeated client context on the same frozen inputs without weakening source or quality gates; preserve all failed trials",
+    "P1 Richer shared-space split/merge, multi-use coordination and installation/wiring/protection design",
+    "P2 Independent real projects, external users, clean machines, controlled cross-model use and authenticated professional review"
   ],
   "plan": "docs/engineering-design-plan.md",
   "validation": "docs/engineering-design-validation.json",
@@ -1607,6 +1607,23 @@
     "originalPhysicalBytesPreserved": true,
     "explicitPredecessorLineage": true,
     "finalReadonlyIntegrityHardeningVerified": true,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
+  },
+  "designFeasibilityIncrement": {
+    "validation": "docs/design-feasibility-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "fullRegression": 617,
+    "actualClientCalls": 15,
+    "protocolErrors": 0,
+    "wholeKnownStructuredTrialPassed": true,
+    "declaredModelConflictsRetained": 2,
+    "newActualClientDwgs": 1,
+    "newReviewPdfPages": 5,
+    "legacyHistoricalDataFilesUnchanged": 451,
+    "independentSemanticAcceptance": false,
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
