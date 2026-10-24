@@ -12,6 +12,10 @@
 
 范围源段的 `mapped` 必须引用该块的原句，且指向受支持的决定；`unresolved/conflict` 工作项不属于这种映射。对应原文仍未解时将源段保留为 `unresolved/conflict`，让准备保持阻断。`context` 只表示非义务背景，不是消除未解项的手段。读回完整范围和依赖后再判断能否准备条件；源段已全部处置也可能 `complete=false`，这是保留真实缺项的正常结果。
 
+原文有条件义务时，按scope契约提交可选facts和workItems[].when，不能只把“如果”写在description后仍按无条件任务执行。facts保存类型、值、状态、理由及原句；when用all/any和类型一致的比较，数字显式同单位，不隐式换算。只在原文确实给出现状值时用interpreted；条件句本身不证明条件成立或不成立，未知用unresolved/null，假设用assumed。标准条文可定义阈值，不能作为项目现状或客户批准事实。后端只计算声明的逻辑，不认证解释和权限。
+
+读回section=facts及applicability：active才允许准备/执行；inactive/unknown仍保留义务，不算交付或审核完成。条件已解释但触发事实未知，与义务本身语义不明分别登记；sourceCoverage.complete只衡量源段登记。dependsOn保持必须交付，不能因前置inactive便自动略过；原文允许这种独立推进时才用allowInactiveDependencies提供该依赖边的workItemId/reason/evidence，unknown不能豁免。新来源或事实变化创建新不可变review，原任务不会自动换到新解释；旧来源任务会失效，受影响工作须显式重准备，不凭旧图推定批准。
+
 ## 按当前状态执行
 
 保存返回的 task 身份：jobId、expectedProjectId、expectedTaskSHA256。这些与原文/草稿/设计版本和操作收据共同构成持久状态；模型切换或会话恢复后重新读取，不靠聊天摘要构造新任务。

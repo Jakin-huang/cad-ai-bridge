@@ -14,7 +14,8 @@ assert pathlib.Path(publication_name).name == publication_name and publication_n
 read = lambda p: json.loads(p.read_text(encoding='utf-8-sig'))
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 publication = read(folder / publication_name)
-assert (publication.get('ok') or publication.get('finalEngineeringStatePassed')) and publication['actualInstalledAiClient']
+assert (publication.get('ok') or publication.get('finalEngineeringStatePassed'))
+assert publication.get('actualInstalledAiClient') is True or publication.get('controllerDrivenNative') is True
 kind = publication.get('kind', 'ordinary-lighting')
 assert kind in ['ordinary-lighting', 'office-space-planning']
 state_name = 'space-planning.json' if kind == 'office-space-planning' else 'engineering.json'
@@ -26,9 +27,10 @@ assert sha(pathlib.Path(state['pdfReview']['manifestFile'])) == state['pdfReview
 assert len(packet['files']) == len(model['sheets'])
 render = folder / 'pdf-check'
 render.mkdir(exist_ok=False)
-report = {'ok': False, 'scope': 'Exact client-published synthetic design sheets, strict parsing and raw/derived rendering preservation; not professional design approval',
+report = {'ok': False, 'scope': 'Exact declared synthetic design sheets, strict parsing and raw/derived rendering preservation; not professional design approval',
           'readerVersion': pypdf.__version__, 'rendererSHA256': sha(poppler), 'dpi': 120,
-          'kind': kind, 'actualAiPublished': True, 'priorWholeClientTrialPassed': publication.get('priorWholeClientTrialPassed'),
+          'kind': kind, 'actualAiPublished': publication.get('actualInstalledAiClient') is True,
+          'controllerDrivenNative': publication.get('controllerDrivenNative') is True, 'priorWholeClientTrialPassed': publication.get('priorWholeClientTrialPassed'),
           'wholeClientTrialPassed': publication.get('wholeClientTrialPassed'),
           'pages': [], 'visualReview': 'pending', 'professionalApproval': False}
 papers = {'A0': [1189, 841], 'A1': [841, 594], 'A2': [594, 420], 'A3': [420, 297], 'A4': [297, 210]}

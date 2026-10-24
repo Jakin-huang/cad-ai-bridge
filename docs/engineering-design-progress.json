@@ -1549,5 +1549,26 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "conditionalScopeIncrement": {
+    "validation": "docs/scope-applicability-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "fullRegression": 605,
+    "actualAiClientTrials": 1,
+    "actualAiClientCalls": 69,
+    "protocolErrors": 1,
+    "wholeClientTrialPassed": false,
+    "unknownFacts": 9,
+    "unknownConditionalItems": 19,
+    "sourceCoverageComplete": false,
+    "controllerDrivenNative": true,
+    "newNativeDrawings": 1,
+    "reviewPdfPages": 5,
+    "nativeCurrentTaskEligibleAfterSourceChange": false,
+    "historicalOutputsPreserved": true,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

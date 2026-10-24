@@ -13,8 +13,9 @@ import {hashFile} from '../src/drawings.mjs';
 import {publicFiles} from '../scripts/public-files.mjs';
 import {publicOfficeCommission as source} from './helpers/public-office-commission.mjs';
 
-const [cli, originalArgument, rootArgument] = process.argv.slice(2);
+const [cli, originalArgument, rootArgument, mode='scope'] = process.argv.slice(2);
 assert.ok(cli && originalArgument && rootArgument);
+assert.ok(['scope','conditions'].includes(mode));
 const original = outsideProject(path.resolve(originalArgument));
 const root = outsideProject(path.resolve(rootArgument));
 const workspace = path.join(root, 'workspace'), data = path.join(root, 'data');
@@ -62,6 +63,7 @@ const prompt = '这是 CAD AI Bridge 产品的原始工程委托理解验证，�
   '用 review_scope 保存完整的项目范围解释；将可独立遗漏、可单独验收的工程义务分开，保留限定、条件、前置审批、交付形式、范围边界和原有设施的要求。candidate 只代表已安装能力的准确子集；缺条件、超出能力和需要人工执行的部分明确登记，不能把它们改成背景或写成已经完成。不要凭面积或图纸名称假造尺寸、人数、房间程序、产品、标准、批准或签审。商业履约背景与工程设计义务按原文分别处理。\n' +
   '分页 source_blocks 读齐所有原文块，逐块提交 sourceCoverage 的 blockId/blockSHA256/disposition/targetIds/reason。引用必须与对应原文块精确相符；targetIds 是 workItems/数组索引。语义不明可以保留 unresolved/conflict，不能为了 coverage.complete 把工程要求改成 context。每个 workItem 都有明确原文 evidence；dependsOn 用实际工作项 ID，不能编造循环依赖。\n' +
   '先 review_scope 保存解释，再 read_scope_review 读齐 summary、work_items、source_coverage 核对；需要修正则创建新不可变 review 并保留旧 review。不要 freeze、prepare、创建正式设计任务或调用 CAD 出图：本轮先判断原文是否足够进行设计，不具备条件应明确停止。\n' +
+  (mode==='conditions'?'本轮还检验通用条件义务能力：从原文自行找出有触发条件的工程义务，按刚查询的scope契约用facts和workItems[].when表达，并读回facts及applicability核对。原文只说“如果/需要时/批准后”不能证明现状事实，缺证据保留未知；不能为通过而假设已批准或不需要。即使任务超出已安装设计能力，仍保留条件结构及未完成义务。不要由脚本或你臆造新的协调文件、现场测量或批准。\n':'') +
   '最终中文报告完整委托和已实现能力的差距、具体待补输入、合理执行顺序、未完成交付物，并给出最终 review 身份和实际文件链接。不把范围登记、源段覆盖或免责声明当作完整需求理解/工程设计验收。\n' + technical.join('\n\n');
 await fs.writeFile(root + '/prompt.txt', prompt, {flag: 'wx'});
 const sourceFiles = [];
@@ -73,6 +75,7 @@ for (const file of await publicFiles()) {
 }
 await save(root + '/source-manifest.json', sourceFiles);
 await save(root + '/experiment.json', {actualInstalledAiClient: true, clientKind: 'codex-cli',
+  scopeMode:mode,
   publicSource: source, originalRoot: original, sourceSet: set, oracleSHA256,
   skillDelivery: 'initial_prompt', skillFiles: await Promise.all(skillFiles.map(async file =>
     ({file, sha256: await hashFile(projectPath(file))}))), stdinSHA256: await hashFile(root + '/prompt.txt'),

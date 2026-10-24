@@ -8,6 +8,7 @@ import {dependencyDigest as digest} from '../src/task-dependencies.mjs';
 import {loadDocumentSet, documentSetSourceBlocks, readDocumentText} from '../src/project-document-store.mjs';
 import {checkSourceCoverage} from '../src/document-source-coverage.mjs';
 import {loadScopeReview, reviewScopeSchema} from '../src/engineering-scope-intake.mjs';
+import {scopeApplicability,validateScopeConditions} from '../src/scope-applicability.mjs';
 import {parseTrace, normalizeClientEvents, clientTraceErrors, clientToolPayload} from '../tests/helpers/client-trace.mjs';
 import {publicOfficeCommission as source} from '../tests/helpers/public-office-commission.mjs';
 
@@ -71,21 +72,25 @@ try {
     check('Exact immutable scope request ' + record.jobId, record.requestSHA256 === digest(q));
     const decisions = [];
     for (const [index, item] of record.workItems.entries()) {
-      const submitted = q.workItems[index], {evidence, ...value} = submitted;
+      const submitted = q.workItems[index], {evidence, allowInactiveDependencies, ...value} = submitted;
       check('Actual caller owns scope item ' + item.id, Object.entries(value).every(([k, v]) => digest(v) === digest(item[k])) &&
         item.citations.length === evidence.length && item.citations.every((cit, i) => cit.documentId === evidence[i].documentId && cit.quote === evidence[i].quote));
       for (const citation of item.citations) {const {document, text} = await readDocumentText(documents, citation.documentId);
         assert.equal(citation.textSHA256, document.textSHA256); assert.ok(text.includes(citation.quote));}
+      check('Caller owns inactive dependency edges ' + item.id, digest(item.allowInactiveDependencies??[])===digest((allowInactiveDependencies??[]).map(({evidence,...edge})=>({...edge,citations:evidence.map(e=>({...e,textSHA256:documents.version.documents.find(d=>d.id===e.documentId)?.textSHA256}))}))));
       decisions.push({targetIds: ['workItems/' + index], disposition: ['unresolved', 'conflict'].includes(item.disposition) ? item.disposition : 'supported', citations: item.citations});
     }
     const coverage = checkSourceCoverage(blocks, record.workItems.map((value, i) => ({id: 'workItems/' + i, value})), decisions, q.sourceCoverage, {required: true});
     check('Independently reconstruct source coverage ' + record.jobId, digest(coverage) === digest(record.sourceCoverage));
+    validateScopeConditions(record.workItems,record.facts);
+    check('Exact caller-supplied facts ' + record.jobId,digest(record.facts??[])===digest((q.facts??[]).map(({evidence,...fact})=>({...fact,citations:evidence.map(e=>({...e,textSHA256:documents.version.documents.find(d=>d.id===e.documentId)?.textSHA256}))}))));
+    for(const fact of record.facts??[])for(const citation of fact.citations){const {document,text}=await readDocumentText(documents,citation.documentId);assert.equal(citation.textSHA256,document.textSHA256);assert.ok(text.includes(citation.quote));if(fact.status==='interpreted')assert.ok(['requirements','coordination','architecture_notes','catalog'].includes(document.role));}
     reviews.push({ref: result.review, record});
   }
   check('At least one actual immutable scope interpretation retained', reviews.length > 0);
   const final = reviews.at(-1); assert.ok(final);
   report.finalReview = final.ref;
-  for (const section of ['summary', 'work_items', 'source_coverage']) {
+  for (const section of ['summary', 'work_items', 'source_coverage',...(e.scopeMode==='conditions'?['facts','applicability']:[])]) {
     const seen = new Set(); let end = false;
     for (const c of calls.filter(c => c.name.endsWith('cad_engineering_intake') && args(c).action === 'read_scope_review' &&
       args(c).section === section && digest(args(c).review) === digest(final.ref))) {
@@ -95,10 +100,20 @@ try {
         if (r.nextOffset === null) end = true;}
     }
     check('Client reads final complete ' + section, end && seen.size === (section === 'summary' ? 1 :
-      section === 'work_items' ? final.record.workItems.length : final.record.sourceCoverage.entries.length));
+      ['work_items','applicability'].includes(section) ? final.record.workItems.length : section==='facts'?(final.record.facts??[]).length:final.record.sourceCoverage.entries.length));
   }
   report.sourceCoverage = final.record.sourceCoverage.summary;
-  report.workItems = final.record.workItems.map(({id, description, disposition, taskKind, reason, dependsOn}) => ({id, description, disposition, taskKind, reason, dependsOn}));
+  report.workItems = final.record.workItems.map(w => ({id:w.id,description:w.description,disposition:w.disposition,taskKind:w.taskKind,reason:w.reason,dependsOn:w.dependsOn,applicability:scopeApplicability(final.record,w)}));
+  report.facts=final.record.facts??[];
+  if(e.scopeMode==='conditions'){
+    // Source-specific regression anchors stay in the isolated frozen oracle,
+    // never in the model's workspace or the production inference/evaluator.
+    report.conditionalAnchors=['CONDITIONAL_APPROVAL','CLIENT_APPROVAL'].map(id=>{const o=oracle.obligations.find(o=>o.id===id);assert.ok(o);const items=final.record.workItems.filter(w=>w.when&&w.citations.some(c=>c.documentId===o.documentId&&(c.quote.includes(o.quote)||o.quote.includes(c.quote))));return {id,workItemIds:items.map(w=>w.id),states:items.map(w=>scopeApplicability(final.record,w).state),semanticCoverageAccepted:false};});
+    check('Original conditional approval obligations retain unknown applicability',report.conditionalAnchors.every(a=>a.workItemIds.length>0&&a.states.every(s=>s==='unknown')));
+    const anchorItems=new Set(report.conditionalAnchors.flatMap(a=>a.workItemIds)),anchorFacts=new Set(final.record.workItems.filter(w=>anchorItems.has(w.id)).flatMap(w=>w.when.conditions.map(c=>c.factId)));
+    check('Approval trigger facts stay explicitly unresolved',anchorFacts.size>0&&[...anchorFacts].every(id=>report.facts.some(f=>f.id===id&&f.status==='unresolved'&&f.value===null)));
+    check('No formal design or native CAD fabricated without physical inputs',(await fs.readdir(runs)).every(n=>!/^job-(task|design|spaceplan|intake)-/.test(n)));
+  }
   report.quoteOverlapCandidates = oracle.obligations.map(o => ({id: o.id,
     candidateWorkItemIds: final.record.workItems.filter(w => w.citations.some(c => c.documentId === o.documentId &&
       (c.quote.includes(o.quote) || o.quote.includes(c.quote)))).map(w => w.id),
