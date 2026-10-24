@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "baseCommit": "56548d0fe88753abc5fb36faacf26576a656dd77",
+  "status": "unreleased_readonly_lighting_conditions_and_actual_client_upstream_adoption",
+  "developmentComplete": true,
+  "iterationClosed": true,
+  "localKnownAdoptionSubsetAccepted": true,
+  "wholeClientTrialPassed": true,
+  "independentSemanticAcceptance": false,
+  "independentProjectAcceptance": false,
+  "professionalApproval": false,
+  "externalUserAcceptance": false,
+  "newMachineAcceptance": false,
+  "crossModelAcceptance": false,
+  "goalComplete": false,
+  "releaseRepackaged": false,
+  "privateHospitalDataProcessed": false,
+  "implemented": [
+    "Paginated current lighting input, adoption evidence and immutable change readers through the existing task data action",
+    "Exact legacy frozen-condition digest and values exposed without adopting or deciding authority",
+    "Read-only snapshot currency checks and actual same-task source adoption/recalculation with no controller-supplied digest or binding"
+  ],
+  "regression": {
+    "officialSkillValidatorPassed": true,
+    "staticOnlyPassed": true,
+    "staticPublicFiles": 714,
+    "staticChecks": 3,
+    "passed": 608,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 215096.7218,
+    "logSHA256": "cca05ae96c51fb9656a1447d642c8796779d8799b2eff4f8cc604a4331ff74be"
+  },
+  "actualClient": {
+    "artifact": "space-adoption-client-20261024",
+    "client": "Codex CLI",
+    "knownSyntheticCase": true,
+    "controllerDrivenInitialDesign": true,
+    "controllerDrivenUpstreamChange": true,
+    "controllerClientAdoptionBindingProvided": false,
+    "controllerClientConditionsDigestProvided": false,
+    "controllerSemanticRepairDuringClient": false,
+    "privateOracleExcluded": true,
+    "unstructuredOriginalCustomerIntakeAccepted": false,
+    "sourceDocumentsBound": false,
+    "executionScopeBound": false,
+    "calls": 31,
+    "checks": 26,
+    "passedChecks": 26,
+    "protocolErrors": 0,
+    "wholeClientTrialPassed": true,
+    "finalEngineeringStatePassed": true,
+    "clientElapsedMs": 141100,
+    "elapsedExcludesControllerSetup": true,
+    "reportedTokenUsage": {
+      "input_tokens": 1003468,
+      "cached_input_tokens": 896000,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 3247,
+      "reasoning_output_tokens": 62
+    },
+    "model": "Installed default; no override or cross-model benchmark",
+    "runtimeAndSkillFilesMatchFinal": 182,
+    "task": {
+      "jobId": "job-task-2184be7d-7216-4a19-b7ec-f870638998eb",
+      "expectedProjectId": "d217de62-cd47-4b8d-be3b-dab2074ced10",
+      "expectedTaskSHA256": "dd4f69915d5cc349a37eef4082cd833c385c2f7f4ba7130a89a3d0329215589c"
+    },
+    "childJobId": "job-design-2184be7d-7216-4a19-b7ec-f870638998eb",
+    "inputSHA256": "84668bd6d50491a935ff5bda011f1f6554a9da4ff778931fc6cf5b751c772ed4",
+    "modelSHA256": "bf0f00bfb08ebcf4424251535719eaec958b5967c3a0c9c43fe65b15958fecbd",
+    "design": {
+      "revision": 1,
+      "rooms": 5,
+      "devices": 41,
+      "circuits": 5,
+      "sheets": 5,
+      "pending": 52
+    }
+  },
+  "coordination": {
+    "upstreamSpaces": 11,
+    "lightingSelectedSpaces": 5,
+    "excludedSpaces": [
+      "MANAGER",
+      "OFFICE_B",
+      "TRAINING",
+      "FOCUS",
+      "ARCHIVE",
+      "SUPPORT"
+    ],
+    "projectOpenIssues": 119,
+    "projectDeliveryCoverageComplete": false,
+    "officeA": {
+      "fromOccupants": 4,
+      "toOccupants": 6,
+      "fromAreaM2": 36.34,
+      "toAreaM2": 47.88
+    },
+    "allSelectedRoomsRecomputed": true,
+    "unchangedLightingConditionDigest": true,
+    "assumptionGradesPreserved": true,
+    "devicesBefore": 41,
+    "devicesAfter": 41,
+    "initialControllerDwgs": 2,
+    "newControllerUpstreamDwgs": 1,
+    "newActualClientConsumerDwgs": 1,
+    "currentProducerReviewPages": 5,
+    "currentConsumerReviewPages": 5,
+    "currentStrictAndPixelPass": 10,
+    "allTenCurrentPagesViewed": true,
+    "beforeFilesVerified": 221,
+    "currentLifecycleViewsChanged": 7,
+    "beforeImagesRetained": true,
+    "oldInputModelAndDrawingFilesUnchanged": true,
+    "projectReviewPackageSHA256": "f1bae407958fcacbac68e480988083402fd44b29b916ce620f188fcbff1d1727"
+  },
+  "retainedVerificationFailures": {
+    "firstAuditSHA256": "c67759f7236ea9f956692f3dbd2f3267527fcef87c78e39438761a2fb4bf773a",
+    "firstPdfCheckSHA256": "bb1b9ad3987ff7322259d64be7ef384cf66e7bd9b1b449e23d1d2a623227e941",
+    "actualClientResultModified": false,
+    "details": [
+      "First auditor incorrectly compared unnormalized request property order and the unprojected model scene.",
+      "First PDF verifier compared mixed Windows path spellings as raw strings; exact before-image hashes remained intact.",
+      "Corrected read-only audits use new filenames; all first reports/renders remain retained."
+    ]
+  },
+  "limits": [
+    "Known structured legacy task; initial producer/consumer design and upstream change were supplied by a controller, not understood from an independent customer commission.",
+    "Five of eleven upstream spaces only; review packet explicitly reports incomplete delivery and 119 open issues.",
+    "Flux estimates, assumed products and supply; real photometry, standards applicability and professional coordination remain unaccepted.",
+    "No new scope migration: scope-bound or document-stale tasks keep their existing gates, and full schedule/use changes require the explicit complete revision route.",
+    "Current-version-only data; per-item/page budgets may reject oversized values rather than silently truncate.",
+    "High cumulative input tokens and one model/client case do not establish efficiency or model stability."
+  ],
+  "nextPriorities": [
+    "Reduce irrelevant/repeated client context with measured token/call budgets while keeping full condition review.",
+    "Make source/scope amendment preparation explicit across the newer immutable-plan workflow without bypassing its stale gates.",
+    "Obtain independently frozen architectural/commission inputs and evaluate semantic omissions and actual professional design quality."
+  ]
+}

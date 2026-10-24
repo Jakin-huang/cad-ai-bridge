@@ -7,10 +7,12 @@ import sys
 import pypdf
 from PIL import Image, ImageChops
 
-assert len(sys.argv) in [4, 5]
+assert len(sys.argv) in [4, 5, 6]
 folder, runs, poppler = map(lambda p: pathlib.Path(p).resolve(), sys.argv[1:4])
-publication_name = sys.argv[4] if len(sys.argv) == 5 else 'client-publication.json'
+publication_name = sys.argv[4] if len(sys.argv) >= 5 else 'client-publication.json'
 assert pathlib.Path(publication_name).name == publication_name and publication_name.endswith('.json')
+check_name = sys.argv[5] if len(sys.argv) == 6 else 'independent-pdf-check'
+assert pathlib.Path(check_name).name == check_name and check_name.replace('-', '').isalnum()
 read = lambda p: json.loads(p.read_text(encoding='utf-8-sig'))
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 publication = read(folder / publication_name)
@@ -25,7 +27,7 @@ assert state['modelSHA256'] == publication['modelSHA256']
 packet = read(pathlib.Path(state['pdfReview']['manifestFile']))
 assert sha(pathlib.Path(state['pdfReview']['manifestFile'])) == state['pdfReview']['manifestSHA256']
 assert len(packet['files']) == len(model['sheets'])
-render = folder / 'pdf-check'
+render = folder / ('pdf-check' if check_name == 'independent-pdf-check' else check_name)
 render.mkdir(exist_ok=False)
 report = {'ok': False, 'scope': 'Exact declared synthetic design sheets, strict parsing and raw/derived rendering preservation; not professional design approval',
           'readerVersion': pypdf.__version__, 'rendererSHA256': sha(poppler), 'dpi': 120,
@@ -64,10 +66,14 @@ if protected_file.exists():
     protected = read(protected_file)
 elif (folder / 'before-files.json').exists():
     before = read(folder / 'before-files.json')
-    allowed = set(read(folder / 'allowed-mutable.json'))
+    # Windows callers may use mixed separators/casing for the same verified
+    # path. Normalize identities, without weakening the separate before-image
+    # hashes or allowing any additional mutable files.
+    path_key = lambda p: str(pathlib.Path(p).resolve()).casefold() if sys.platform == 'win32' else str(pathlib.Path(p).resolve())
+    allowed = {path_key(p) for p in read(folder / 'allowed-mutable.json')}
     for item in before:
         assert sha(pathlib.Path(item['preservedAt'])) == item['sha256']
-    protected = [item for item in before if item['file'] not in allowed]
+    protected = [item for item in before if path_key(item['file']) not in allowed]
     report['preservedBeforeSnapshotFiles'] = len(before)
     report['mutableLifecycleViewsSeparatelyAudited'] = True
 else:
@@ -76,6 +82,6 @@ for f in protected:
     assert sha(pathlib.Path(f['file'])) == f['sha256']
 report['ok'] = True
 report['protectedInputsAndModelsUnchanged'] = True
-with (folder / 'independent-pdf-check.json').open('x', encoding='utf-8') as out:
+with (folder / (check_name + '.json')).open('x', encoding='utf-8') as out:
     out.write(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
 print(json.dumps({'ok': True, 'strictPass': len(report['pages']), 'pixelIdentical': len(report['pages']), 'visualReview': 'pending', 'professionalApproval': False}))

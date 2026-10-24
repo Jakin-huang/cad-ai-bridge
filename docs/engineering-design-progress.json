@@ -1570,5 +1570,25 @@
     "independentProjectAcceptance": false,
     "professionalApproval": false,
     "goalComplete": false
+  },
+  "spaceAdoptionClientIncrement": {
+    "validation": "docs/space-adoption-client-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "fullRegression": 608,
+    "actualAiClientTrials": 1,
+    "actualAiClientCalls": 31,
+    "protocolErrors": 0,
+    "wholeKnownClientTrialPassed": true,
+    "upstreamControllerDesigned": true,
+    "selectedLightingSpaces": 5,
+    "upstreamSpaces": 11,
+    "projectDeliveryCoverageComplete": false,
+    "newActualClientDwgs": 1,
+    "newActualClientReviewPages": 5,
+    "currentTwoTaskPagesViewed": 10,
+    "independentProjectAcceptance": false,
+    "professionalApproval": false,
+    "goalComplete": false
   }
 }

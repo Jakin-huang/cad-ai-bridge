@@ -11,13 +11,14 @@ import {isWithin} from './drawings.mjs';
 import {engineeringDigest} from './engineering-design.mjs';
 import {lightingDependencyNodes,analysisDependencyNodes} from './engineering-task-dependencies.mjs';
 import {analyzeCapture} from './engineering-analysis.mjs';
+import {lightingDataSections,readLightingData} from './lighting-task-data.mjs';
 const reserved=['jobId','requestId'];
 function clean(parameters){if(reserved.some(k=>Object.hasOwn(parameters,k)))throw Error('TASK_BINDING_OVERRIDE: jobId/requestId belong to the bound task');}
 export function createEngineeringTaskAdapters({schemas,execute,runs}){
  const option=action=>schemas.engineering.options.find(s=>s.shape.action.value===action);
  const prepare=z.discriminatedUnion('action',['prepare','prepare_from_seed'].map(a=>option(a).omit({requestId:true})));
  const operations=['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver','review_pdfs','revise_presentation','revise_notes','revise_title','revise_scope','revise','replace_brief','reconcile_brief','replace_architecture','adopt_spaces','preview_space_scope','revise_space_scope','review','recover_lighting','recover_initial_lighting'];
- const lighting={...lightingInterruptionReconciliation({runs,execute}),dependencyNodes:context=>lightingDependencyNodes({runs,...context}),constraintSensitiveOperations:['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver'],id:'ordinary-lighting',version:1,complexDesign:true,limitations:'Bounded ordinary lighting only; existing evidence/quality gates unchanged. No full electrical-system or other discipline design.',prepareSchema:prepare,
+ const lighting={...lightingInterruptionReconciliation({runs,execute}),dataSections:lightingDataSections,readData:(binding,q,manifest)=>readLightingData({runs,binding,q,manifest}),dependencyNodes:context=>lightingDependencyNodes({runs,...context}),constraintSensitiveOperations:['design','solve_lighting','assess_lighting','optimize_lighting','adopt_lighting','deliver'],id:'ordinary-lighting',version:1,complexDesign:true,limitations:'Bounded ordinary lighting only; existing evidence/quality gates unchanged. No full electrical-system or other discipline design.',prepareSchema:prepare,
   operationSchemas:Object.fromEntries(operations.map(a=>[a,option(a).omit({action:true,jobId:true,...('requestId'in option(a).shape?{requestId:true}:{})})])),
   validatePrepare(parameters){clean(parameters);return prepare.parse(parameters);},
   async agentWorkflow(binding,manifest){const {input}=await this.documentInput(binding,manifest);return {designOperation:input.lightingEnvironment?'solve_lighting':'design',qualityRequired:!!input.lightingEnvironment,inputIssues:inspectEngineeringInput(input).issues.filter(i=>i.severity==='blocking')};},
