@@ -13,7 +13,7 @@ export const intakeCommonParameters={presentation:presentationParameters.optiona
 const baseline=intakeBaselineRefSchema,draft=intakeDraftRefSchema,page={offset:z.number().int().nonnegative().default(0),limit:z.number().int().min(1).max(100).default(25)};
 export const engineeringIntakeSchema=z.discriminatedUnion('action',[
  ...presentationRevisionActions,reviewScopeSchema,readScopeReviewSchema,bindScopeTaskSchema,reprepareIntakeSchema,
- z.strictObject({action:z.literal('capabilities'),kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/).optional(),section:z.enum(['parameters','conditions','scope','presentation_revision','repreparation']).default('parameters')}),
+ z.strictObject({action:z.literal('capabilities'),kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/).optional(),section:z.enum(['summary','parameters','conditions','scope','presentation_revision','repreparation']).default('parameters')}),
  z.strictObject({action:z.literal('inspect_baseline'),kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),baselineFile:z.string().min(1).max(2000)}),
  z.strictObject({action:z.literal('freeze'),requestId:z.uuid(),project:z.strictObject({id:z.uuid(),name:z.string().min(1).max(128),type:z.string().min(1).max(64)}),task:z.strictObject({kind:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),title:z.string().min(1).max(128),objective:z.string().min(20).max(4000)}),documents:documentSetRefSchema,baselineFile:z.string().min(1).max(2000),expectedRawSHA256:sha,scope:scopeSelectionSchema.optional(),requirePresentation:z.boolean().optional()}),
  z.strictObject({action:z.literal('draft'),requestId:z.uuid(),baseline,parameters:z.record(z.string(),z.unknown()),previousDraft:draft.optional()}),

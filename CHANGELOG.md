@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — 2026-10-26
+
+Preserve the configured model service and verify actual-client source-bound unknown/conflict stops, explicit coordination, repreparation and native CAD review delivery. Retain both whole-trial failures and all three final drawings/seventeen checked and viewed PDFs. Expose the existing single-paragraph constraint in JSON Schema and shared Skill; add compact read-only intake capability summaries. The corrected native delivery phase has zero errors; exact failed discovery replay and a final-source read-only client pass for both task kinds. All 638 final regressions pass. No complete final-source zero-error native rerun, independent customer, cross-model, new-machine or professional acceptance is claimed. See [evidence and limits](docs/real-agent-standard-conditions.md).
+
 ## Unreleased — 2026-10-24
 
 Preserve typed source observations and explicit resolution instructions for shared task/standard conditions. Propagate consumed fact, selected/excluded statements and resolution citations into new source indices and drawing notes while retaining historical formats. All638 regressions pass; preserve an initial native source-label failure and verify the corrected drawing without changing physical design. Actual Agent/independent project acceptance remains pending. See [evidence and limits](docs/source-fact-observations.md).

@@ -8,7 +8,7 @@
     "taskSelection": "Explicit installed task kind, independent of project label",
     "quality": "Retain existing requirements, source/assumption grades, thresholds and immutable outputs across tasks"
   },
-  "updated": "2026-10-24",
+  "updated": "2026-10-26",
   "pilot": "hospital-ordinary-lighting-retrospective-reconstruction",
   "stages": [
     {
@@ -1689,6 +1689,34 @@
     "newReviewPdfs": 10,
     "independentSemanticAcceptance": false,
     "professionalApproval": false,
+    "goalComplete": false
+  },
+  "realAgentStandardConditionsIncrement": {
+    "validation": "docs/real-agent-standard-conditions-validation.json",
+    "unreleased": true,
+    "developmentComplete": true,
+    "authorizationResolved": true,
+    "nativeTrials": 3,
+    "nativeTrialPhases": 6,
+    "wholeNativeTrialsPassed": 1,
+    "wholeNativeTrialsFailed": 2,
+    "nativeTrialToolCalls": 237,
+    "nativeTrialProtocolErrors": 2,
+    "finalCorrectedNativeDeliveryPhaseCalls": 47,
+    "finalCorrectedNativeDeliveryPhaseErrors": 0,
+    "allFinalEngineeringStatesPassed": true,
+    "nativeDwgs": 3,
+    "checkedAndIndividuallyViewedPdfs": 17,
+    "targetedReadOnlyClientCalls": 2,
+    "targetedReadOnlyClientErrors": 0,
+    "totalClientCalls": 239,
+    "fullRegression": 638,
+    "wholeFinalSourceNativeEndToEndZeroErrorAcceptance": false,
+    "targetedFinalSourceReadOnlyClientAccepted": true,
+    "independentAuthorOrCustomerAcceptance": false,
+    "professionalApproval": false,
+    "crossModelAcceptance": false,
+    "newMachineAcceptance": false,
     "goalComplete": false
   }
 }

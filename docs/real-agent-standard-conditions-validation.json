@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "baseCommit": "30b66a1130848d74afd27c1270f09bb98bb4cea3",
+  "status": "native_synthetic_states_verified_two_whole_trial_failures_retained_and_targeted_discovery_fixed",
+  "developmentComplete": true,
+  "realAgentKnownSyntheticEngineeringSubsetAccepted": true,
+  "wholeFinalSourceNativeEndToEndZeroErrorAcceptance": false,
+  "targetedFinalSourceReadOnlyClientAccepted": true,
+  "independentAuthorOrCustomerAcceptance": false,
+  "independentSemanticAcceptance": false,
+  "professionalApproval": false,
+  "crossModelAcceptance": false,
+  "newMachineAcceptance": false,
+  "externalUserAcceptance": false,
+  "privateHospitalDataProcessed": false,
+  "releaseRepackaged": false,
+  "goalComplete": false,
+  "authorization": {
+    "explicitCurrentUserAuthorization": true,
+    "resolvedHistoricalBlock": true,
+    "scope": "Synthetic briefs, synthetic physical baselines, imported standard summaries and public IES calculations using signed-in current configured Codex model service",
+    "credentialValuesRead": false,
+    "modelOverride": false
+  },
+  "changes": [
+    "Preserve current model configuration while restricting MCP to CAD Bridge tools",
+    "Add source-disagreement trial and independent immutable input/source/native/publication audit",
+    "Expose existing single-paragraph invariant as JSON Schema pattern for both design families without loosening validation or normalizing original text; clarify shared Skill",
+    "Add compact read-only intake capabilities summary for both installed design families, consistent with task capability discovery"
+  ],
+  "cases": [
+    {
+      "artifact": "standard-conditions-client-20261026",
+      "actualInstalledAiClient": true,
+      "controllerLogicalProgramProvided": false,
+      "controllerSemanticRepair": false,
+      "independentAuthorOrCustomer": false,
+      "sourceRevisionControllerDriven": true,
+      "wholeClientTrialPassed": true,
+      "finalEngineeringStatePassed": true,
+      "finalCodeIndependentlyRecheckedEngineeringState": true,
+      "independentChecks": 36,
+      "phases": [
+        {
+          "name": "unknown",
+          "calls": 31,
+          "protocolErrors": 0,
+          "taskJobId": "job-task-8137d5c4-839b-4b1b-bf8d-f383ae618a55",
+          "childJobId": "job-design-8137d5c4-839b-4b1b-bf8d-f383ae618a55",
+          "inputSHA256": "eaadc76519688f0955797778f674b388ee42448d21009362fdf0494570a23367",
+          "sourceCoverage": {
+            "required": true,
+            "blocks": 18,
+            "reviewed": 18,
+            "unreviewed": 0,
+            "mapped": 18,
+            "context": 0,
+            "unresolved": 0,
+            "conflicts": 0,
+            "complete": true,
+            "semanticCoverageAccepted": false,
+            "professionalApproval": false
+          }
+        },
+        {
+          "name": "confirmed",
+          "calls": 40,
+          "protocolErrors": 0,
+          "taskJobId": "job-task-4e47c886-ec71-4532-ae34-80fd2477cd09",
+          "childJobId": "job-design-4e47c886-ec71-4532-ae34-80fd2477cd09",
+          "inputSHA256": "18c4269215fd4e4b10c595ce1647e6980579fe632b0ba7d294551618c446b3ef",
+          "sourceCoverage": {
+            "required": true,
+            "blocks": 18,
+            "reviewed": 18,
+            "unreviewed": 0,
+            "mapped": 18,
+            "context": 0,
+            "unresolved": 0,
+            "conflicts": 0,
+            "complete": true,
+            "semanticCoverageAccepted": false,
+            "professionalApproval": false
+          }
+        }
+      ],
+      "task": {
+        "jobId": "job-task-4e47c886-ec71-4532-ae34-80fd2477cd09",
+        "expectedProjectId": "d985d82f-8a89-4c88-834f-301d1abcc972",
+        "expectedTaskSHA256": "d24227b417dcd2b932a29c226cc230ad8648b314f446d71b4d4897afe0438a90"
+      },
+      "inputSHA256": "18c4269215fd4e4b10c595ce1647e6980579fe632b0ba7d294551618c446b3ef",
+      "modelSHA256": "1e8599a2ebe6b5aef6a8138e0b6ac6ffcfc9b66d69a5abd898d69837c467fa5d",
+      "design": {
+        "lights": 23,
+        "circuits": 2,
+        "sheets": 5,
+        "averageLux": 103.99755605034034,
+        "uniformity": 0.6595046491829174,
+        "lpd": 3.953125,
+        "checks": 58,
+        "pending": 10
+      },
+      "pdfPages": 5,
+      "strictAndPixelChecksPassed": true,
+      "individuallyViewed": 5,
+      "allDeclaredPresentationTextPassed": true,
+      "runtimeAndSkillFiles": 196,
+      "runtimeAndSkillFilesMatchingFinal": 191,
+      "allRuntimeAndSkillMatchFinal": false,
+      "auditSHA256": "52b053180d818d6cc1ba044f0bcc2957fa5fd7fa2b843f6d9d540c5f3045a975",
+      "pdfCheckSHA256": "ac9ecb813bf581526b94bb1ec8bd517bdc8b11685e6d365fefebce584f113157",
+      "presentationCheckSHA256": "72d94a2691735af38887179d8c1be7f76a3ad4248ddf87aa39669a09c9042985",
+      "visualReviewSHA256": "097ddba37db858c92817b8436ab2536e60652b1d3a0f07adb1e0846cb0ee4c78",
+      "independentSemanticAcceptance": false,
+      "professionalApproval": false
+    },
+    {
+      "artifact": "source-facts-client-20261026",
+      "caseMode": "source_disagreement",
+      "actualInstalledAiClient": true,
+      "controllerLogicalProgramProvided": false,
+      "controllerSemanticRepair": false,
+      "independentAuthorOrCustomer": false,
+      "sourceRevisionControllerDriven": true,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "finalCodeIndependentlyRecheckedEngineeringState": true,
+      "independentChecks": 41,
+      "phases": [
+        {
+          "name": "unknown",
+          "calls": 34,
+          "protocolErrors": 0,
+          "taskJobId": "job-task-59ba79c8-b369-45b7-8b80-e8aa44f3dd36",
+          "childJobId": "job-design-59ba79c8-b369-45b7-8b80-e8aa44f3dd36",
+          "inputSHA256": "467fe1627bb90d384c9fa1c6bc27a3b4467a24ae9f08741149f1cb5125cc37d6",
+          "sourceCoverage": {
+            "required": true,
+            "blocks": 22,
+            "reviewed": 22,
+            "unreviewed": 0,
+            "mapped": 22,
+            "context": 0,
+            "unresolved": 0,
+            "conflicts": 0,
+            "complete": true,
+            "semanticCoverageAccepted": false,
+            "professionalApproval": false
+          }
+        },
+        {
+          "name": "confirmed",
+          "calls": 47,
+          "protocolErrors": 1,
+          "taskJobId": "job-task-2d8cce81-970a-4d4b-8af2-d8ff0be39760",
+          "childJobId": "job-design-2d8cce81-970a-4d4b-8af2-d8ff0be39760",
+          "inputSHA256": "b14f9ac854a8ce488791b84ea6292cce787b3fc86b166418207e6f4d1e83bd35",
+          "sourceCoverage": {
+            "required": true,
+            "blocks": 23,
+            "reviewed": 23,
+            "unreviewed": 0,
+            "mapped": 23,
+            "context": 0,
+            "unresolved": 0,
+            "conflicts": 0,
+            "complete": true,
+            "semanticCoverageAccepted": false,
+            "professionalApproval": false
+          }
+        }
+      ],
+      "task": {
+        "jobId": "job-task-2d8cce81-970a-4d4b-8af2-d8ff0be39760",
+        "expectedProjectId": "6b6b11af-b041-41a4-8355-fc1091a2b779",
+        "expectedTaskSHA256": "213503e56e35c448780f63b36c784ef43a185b56f8864ccc7e5b9879ccbb217d"
+      },
+      "inputSHA256": "b14f9ac854a8ce488791b84ea6292cce787b3fc86b166418207e6f4d1e83bd35",
+      "modelSHA256": "32bc52f5c6bd77f82d0f5e6964fd458c1480dea3849403c4531d70222b890def",
+      "design": {
+        "lights": 23,
+        "circuits": 2,
+        "sheets": 6,
+        "averageLux": 103.99755605034034,
+        "uniformity": 0.6595046491829174,
+        "lpd": 3.953125,
+        "checks": 59,
+        "pending": 11
+      },
+      "pdfPages": 6,
+      "strictAndPixelChecksPassed": true,
+      "individuallyViewed": 6,
+      "allDeclaredPresentationTextPassed": true,
+      "runtimeAndSkillFiles": 196,
+      "runtimeAndSkillFilesMatchingFinal": 191,
+      "allRuntimeAndSkillMatchFinal": false,
+      "auditSHA256": "841dba544e5ebd60f0a95a9142db48e77959ced20faac96db7f42adbdc7ac7b1",
+      "pdfCheckSHA256": "cb95b1b2284ed982d201de3975cbae56b0d1f78d060daa08fb594c3806e7dbb4",
+      "presentationCheckSHA256": "6e8604abab92c999f444000c46d367909bbc03d52db5f69bd4b18f409fb3b068",
+      "visualReviewSHA256": "0db606d2fd4bffa6b9cbdb8d3ae74246e4935a661b5ddfeaba204672a65b80d2",
+      "independentSemanticAcceptance": false,
+      "professionalApproval": false
+    },
+    {
+      "artifact": "source-facts-client-fixed-20261026",
+      "caseMode": "source_disagreement",
+      "actualInstalledAiClient": true,
+      "controllerLogicalProgramProvided": false,
+      "controllerSemanticRepair": false,
+      "independentAuthorOrCustomer": false,
+      "sourceRevisionControllerDriven": true,
+      "wholeClientTrialPassed": false,
+      "finalEngineeringStatePassed": true,
+      "finalCodeIndependentlyRecheckedEngineeringState": true,
+      "independentChecks": 41,
+      "phases": [
+        {
+          "name": "unknown",
+          "calls": 38,
+          "protocolErrors": 1,
+          "taskJobId": "job-task-9dc394df-6936-41fb-a273-a13a31064d38",
+          "childJobId": "job-design-9dc394df-6936-41fb-a273-a13a31064d38",
+          "inputSHA256": "1f335772bc6ee1f0f0d271eac21a837b6a5ebedad75467d024c20f65fef96761",
+          "sourceCoverage": {
+            "required": true,
+            "blocks": 22,
+            "reviewed": 22,
+            "unreviewed": 0,
+            "mapped": 22,
+            "context": 0,
+            "unresolved": 0,
+            "conflicts": 0,
+            "complete": true,
+            "semanticCoverageAccepted": false,
+            "professionalApproval": false
+          }
+        },
+        {
+          "name": "confirmed",
+          "calls": 47,
+          "protocolErrors": 0,
+          "taskJobId": "job-task-40aee589-91ed-4977-ae30-a8e88fb84625",
+          "childJobId": "job-design-40aee589-91ed-4977-ae30-a8e88fb84625",
+          "inputSHA256": "f80e7f6ef7246b11eb31c442b3fe67bb4324bb40511ca1e165eba9dc7fb85823",
+          "sourceCoverage": {
+            "required": true,
+            "blocks": 23,
+            "reviewed": 23,
+            "unreviewed": 0,
+            "mapped": 23,
+            "context": 0,
+            "unresolved": 0,
+            "conflicts": 0,
+            "complete": true,
+            "semanticCoverageAccepted": false,
+            "professionalApproval": false
+          }
+        }
+      ],
+      "task": {
+        "jobId": "job-task-40aee589-91ed-4977-ae30-a8e88fb84625",
+        "expectedProjectId": "d6f50512-6599-43ec-862e-3a5b69d70966",
+        "expectedTaskSHA256": "f8db93937dfff26ecca3401d616d417b8b646f199a61c91e62c63163734aa0bc"
+      },
+      "inputSHA256": "f80e7f6ef7246b11eb31c442b3fe67bb4324bb40511ca1e165eba9dc7fb85823",
+      "modelSHA256": "81d9158c92901a7e6676557455cf1d941d28c7f85c6c2be1cc8f39f658ceb102",
+      "design": {
+        "lights": 23,
+        "circuits": 2,
+        "sheets": 6,
+        "averageLux": 103.99755605034034,
+        "uniformity": 0.6595046491829174,
+        "lpd": 3.953125,
+        "checks": 59,
+        "pending": 11
+      },
+      "pdfPages": 6,
+      "strictAndPixelChecksPassed": true,
+      "individuallyViewed": 6,
+      "allDeclaredPresentationTextPassed": true,
+      "runtimeAndSkillFiles": 196,
+      "runtimeAndSkillFilesMatchingFinal": 194,
+      "allRuntimeAndSkillMatchFinal": false,
+      "auditSHA256": "c415db79143a47497eb8a2b4728c93cf1b704c5a33f30e4842dd243e6ddfce99",
+      "pdfCheckSHA256": "5537611e084301887fb74c6dec2c769d0f6e88a6a717d7cc9d6b6edeb25d3ace",
+      "presentationCheckSHA256": "945b7338c50f4844fcec8308cf61d97e8edd98d4aea3a7dbef5632fef84bd747",
+      "visualReviewSHA256": "63628575684105e331e652428e4b5c9ee5bf8bf7557e073f5a558ae5285c65cf",
+      "independentSemanticAcceptance": false,
+      "professionalApproval": false
+    }
+  ],
+  "summary": {
+    "nativeTrials": 3,
+    "nativeTrialPhases": 6,
+    "wholeNativeTrialsPassed": 1,
+    "wholeNativeTrialsFailed": 2,
+    "nativeTrialToolCalls": 237,
+    "nativeTrialProtocolErrors": 2,
+    "finalCorrectedNativeDeliveryPhaseCalls": 47,
+    "finalCorrectedNativeDeliveryPhaseErrors": 0,
+    "allFinalEngineeringStatesPassed": true,
+    "nativeDwgs": 3,
+    "checkedAndIndividuallyViewedPdfs": 17,
+    "targetedReadOnlyClientCalls": 2,
+    "targetedReadOnlyClientErrors": 0,
+    "totalClientCalls": 239
+  },
+  "targetedDiscovery": {
+    "artifact": "intake-discovery-client-20261026",
+    "ok": true,
+    "actualInstalledAiClient": true,
+    "targetedReadOnlyDiscoveryOnly": true,
+    "exactFailedRequestReplayPassed": true,
+    "clientCalls": 2,
+    "protocolErrors": 0,
+    "bothTaskKinds": true,
+    "beforeFilesUnchanged": 174,
+    "newDataFiles": 0,
+    "nativeInvocations": 0,
+    "professionalApproval": false,
+    "independentSemanticAcceptance": false,
+    "wholePriorTrialReclassified": false,
+    "traceSHA256": "cbc939a885bad948b81bb5aa11457cd4414ac6f9b2b33e7d90008050a133e0e6",
+    "finalRuntimeAndSkillFilesMatching": 196,
+    "allRuntimeAndSkillMatchFinal": true,
+    "reportSHA256": "64e6f07bf5543cfae16b3b594bfb5deefbadee7dddab0e97d735e6ad1a70e8b0"
+  },
+  "failuresPreserved": [
+    {
+      "artifact": "standard-conditions-client-20261026/independent-audit.json",
+      "kind": "independent_auditor_false_positive",
+      "actualProductClientError": false,
+      "reason": "Read-only status on own bound child was incorrectly rejected",
+      "fix": "Permit only read-only status on exact bound child",
+      "originalBytesRetained": true
+    },
+    {
+      "artifact": "source-facts-client-20261026/final-source-audit.json",
+      "kind": "actual_client_rejected_multiline_drawing_note",
+      "actualProductClientError": true,
+      "finalEngineeringStatePassed": true,
+      "wholeClientTrialPassed": false,
+      "reason": "One rejected notes[2].text containing internal newline, then self-correction",
+      "fix": "Expose the existing invariant in JSON Schema and shared Skill; corrected native delivery phase has no errors",
+      "originalBytesRetained": true
+    },
+    {
+      "artifact": "source-facts-client-fixed-20261026/final-source-audit.json",
+      "kind": "actual_client_unsupported_read_only_capabilities_summary",
+      "actualProductClientError": true,
+      "finalEngineeringStatePassed": true,
+      "wholeClientTrialPassed": false,
+      "reason": "After correct unknown-condition stop, an extra capabilities/summary query was unsupported; confirmed-source native phase has zero errors",
+      "fix": "Implement compact read-only overview, replay exact failed arguments and verify both task kinds through an actual read-only client; no wholesale trial reclassification",
+      "originalBytesRetained": true
+    }
+  ],
+  "developmentAttempts": [
+    {
+      "kind": "pdf_validator_argument_contract",
+      "reason": "Absolute report path rejected because validator accepts basename; corrected without changing any PDF/model/source data"
+    }
+  ],
+  "regression": {
+    "passed": 638,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 249754.8867,
+    "logSHA256": "e57edb27c9a55d737ad82a9ed0a7223ed096f2453bf9767756851b96dff9f13f",
+    "earlierFull638BeforeSchemaClarificationPassed": true,
+    "earlierFull638AfterSchemaClarificationPassed": true,
+    "targetedPresentationChecks": 3,
+    "officialSkillValidatorPassed": true,
+    "staticOnlyPassed": true,
+    "staticPublicFiles": 758,
+    "staticChecks": 3,
+    "staticLogSHA256": "31e50e2ff20f285aed4d283f9defc152483827d3383f585646458343fbdfb60a"
+  },
+  "limits": [
+    "Known developer-authored cases with explicit operation instructions and controller-driven source revisions; not held-out/customer evaluation",
+    "One historical whole trial passed; two retained whole trials remain failed despite accepted final engineering states and later targeted fixes",
+    "No new complete zero-error native trial was run after the final read-only overview addition; final-source actual verification is targeted discovery only, with all original native engineering states independently rechecked",
+    "Complete source-block registration is structural only; unregistered conflicts and full semantic completeness are not automatically established",
+    "Source interpretation and explicit resolution do not establish site truth, authority or professional standard applicability",
+    "Actual standard-condition native cases cover ordinary-lighting only; task conditions and presentation/discovery contracts support both installed design families",
+    "Direct-point IES subset excludes full reflection/daylight/room UGR and actual product/site/professional acceptance; all10–11pending items retained",
+    "No new CAD plugin package or release tag; M2-M4 and overall complex-engineering goal remain incomplete"
+  ]
+}

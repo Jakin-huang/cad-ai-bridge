@@ -2,7 +2,7 @@
 // evidence and projection checks do not certify semantic completeness.
 import {z} from 'zod';
 const sha=z.string().regex(/^[a-f0-9]{64}$/),id=z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,63}$/);
-const plain=(min,max)=>z.string().trim().min(min).max(max).refine(s=>!/[\u0000-\u001f\u007f]/.test(s),'Use a single plain-text paragraph');
+const plain=(min,max)=>z.string().trim().min(min).max(max).regex(/^[^\u0000-\u001f\u007f]*$/,'Use a single plain-text paragraph');
 const original=z.strictObject({documentId:id,quote:z.string().min(5).max(4000)});
 const claim=(min,max,evidence=original)=>z.strictObject({text:plain(min,max),reason:z.string().min(10).max(1000),evidence:z.array(evidence).min(1).max(10)});
 export const presentationParameters=z.strictObject({title:claim(1,80),scope:claim(20,1000),spaceIds:z.array(id).min(1).max(100),notes:z.array(claim(10,500)).min(1).max(8),reviewed:z.literal(true)}).refine(p=>Buffer.byteLength(JSON.stringify(p))<=64000,'Presentation evidence budget exceeded');

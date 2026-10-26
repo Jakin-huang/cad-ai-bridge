@@ -25,6 +25,8 @@ description: "通过 CAD AI Bridge 执行有来源的工程需求、设计、修
 
 同一事实存在不同资料陈述时，按需读[多来源事实与处置](references/source-fact-observations.md)，保留分歧和明确处置依据；无依据不自动选源。
 
+图面presentation的title/scope/notes[].text各为单段原文，不含换行、制表或控制字符；evidence.quote可跨原文多行。不能把多行quote整体复制为text，也不能删换行拼接成原文不存在的新句；应选完整连续单段，其他要求继续登记在相应字段和完整源段覆盖中。
+
 超时、断连、保存或后续验证/展示失败，先以原jobId/requestId查已有结果。查看outcome、drawingSaved、mutationCommitted和保留文件。已有DWG不因导出失败而重做修改；unconfirmed不是重试许可，不能换UUID绕过冲突。只读导出失败可单独重做失败项。
 
 最终简短返回：优先直接采用工具返回的 delivery.markdown 中的实际文件链接，再说明测得结果和重要缺口；未提供该字段时，由已返回的确切路径生成 Markdown 链接。客户端提供文件展示工具时也使用确切文件。不要把链接改成反引号包住的路径、代码块或纯路径清单；这些不算可点击交付。不列UUID、插件指纹或完整执行日志。文件卡片、PNG预览和能否打开CAD分别报告；保护DXF记录和主要几何通过不等于完整厂商数据库、所有字体或工程合规通过。
