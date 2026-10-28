@@ -1,25 +1,52 @@
 # CAD AI Bridge
 
-A local MCP and Skill engineering-task system connecting existing CAD software and AI clients. It combines source-linked requirements, bounded design solvers, revisions, checks and reviewable delivery. Current support covers drawing operations, ordinary lighting and bounded office-space planning; general complex-project design remains unaccepted.
+Connect existing CAD software to AI clients through MCP and Skill. Organize requirements, source evidence, bounded design, revisions, checks and editable drawing delivery for human review.
 
-**v2.1.0-preview.1 source iteration** adds persistent-task Agent continuation, a reusable engineering Skill, frontage-difference constraints and grouped-control annotation placement. Three materially different synthetic hospital-support, school and office problems exercised the same protocol and native CAD delivery. This does not establish independent customer, autonomous semantic or cross-model acceptance. See [iteration scope and acceptance](docs/v2.1-iteration.md). The frozen Windows user package remains v2.0 below; this iteration publishes source/tag only.
+Current support covers drawing operations, ordinary lighting and bounded office-space planning. Independent understanding and completion of complex engineering projects remain unaccepted. Hospital, school and office inputs are validation cases; project names do not select a design workflow.
 
-**v2.0.0-preview.1 user preview.** Adds durable multi-drawing projects, tiered verification, traceable engineering quantities/checks, a loopback task center, native batch exports, backend contracts and reproducible evaluation. Local acceptance and external gaps are tracked in the [validation summary](docs/v2-validation.json) and [implementation ledger](docs/v2-implementation.json). The existing verified host baseline is Windows 10 x64, Chinese AutoCAD 2022 and optional Tangent Electrical V8. Development, local automated validation and external usability are separate conclusions. Use your own normally licensed software.
+## Get started
 
-Extract the complete user ZIP, open **开始使用.exe**, choose your drawing folder and connect WorkBuddy. Complete its first-trust confirmation and select the connector in your task. The [offline illustrated guide](使用说明.html) explains the steps. Portable runtimes, locked dependencies and the project plugin are included; development tools and administrator rights are unnecessary.
+Verified host: Windows 10 x64 and Chinese AutoCAD 2022, with optional Tangent Electrical V8. WorkBuddy is the primary tested client.
 
-Unreleased source adds `cad_engineering_task` for explicit capability matching, project/task identity and persisted operation receipts, plus bounded ordinary-lighting and office-space-planning design packs. Compact `cad_design_revision` supports inspectable source-quoted amendments. Three synthetic actual-client final states passed; one required recovery from a rejected quote, so clean usability remains partial. See [client validation](docs/scope-client-validation.md) and [scope](docs/engineering-tasks.md). The source tree has 27 tools; the frozen user package retains 24. Independent customer and professional acceptance remain open.
+1. Download the complete [Windows user preview](https://github.com/Jakin-huang/cad-ai-bridge/releases) and extract it to a writable folder.
+2. Open **开始使用.exe**, choose your drawing folder and connect WorkBuddy.
+3. Find **cad-ai-bridge** in WorkBuddy, complete first-trust confirmation and select the connector in your task.
+4. Describe a task and inspect the returned DWG, PDF, PNG or CSV. Open **任务中心.cmd** for common batch tasks.
 
-**No drawings, example datasets, test previews, private libraries or historical test deliverables are distributed in source or release packages.** Supply your own inputs. Runtime jobs live in per-user data storage; maintainer test data and release staging live outside the source project. [Data separation](docs/asset-separation.md)
+The user package includes its runtimes. Other local stdio MCP clients can import the generated configuration and install the Skill using their own mechanism. See the [offline guide](使用说明.html), [installation and recovery](docs/windows-user-release.md), and [troubleshooting](docs/troubleshooting.md).
 
-Source development requires Node.js 22.19+, PowerShell 7+, .NET Framework 4.8 and AutoCAD 2022. Run npm ci and setup.cmd. Other local stdio MCP clients can import the generated mcp-config.local.json and install the portable Skill through their own mechanism.
+## Scope
 
-Run npm test and npm run check -- --static for source verification. Tests requiring private requirement files explicitly skip when those external inputs are absent. Real CAD verification requires a licensed local host and writes outputs outside the repository.
+| Capability | Current support |
+| --- | --- |
+| Drawing operations | Queries, text/attribute/layer changes, 2D transforms, additions, dimensions and quantities |
+| Batch delivery | Multi-drawing queues, separate outputs, save/reopen checks, PDF/PNG/CSV and bounded recovery |
+| Engineering tasks — source increments | Source-linked requirements and conditions, bounded lighting/space solvers, revisions, checks and review packages |
+| Current document — experimental | View/selection context and edits bound to document identity and memory revision |
+| Optional Tangent extension | Tested V8 electrical reads, independent straight channel trays and associated labels |
 
-Clean Windows, a separate standard account, browser download prompts and other CAD/client versions remain unverified. Prior WorkBuddy desktop acceptance is user-assisted; embedded CAD preview and unattended desktop setup are not claimed.
+The source line is **v2.1 preview plus later increments**. The frozen Windows user package is **v2.0.0-preview.1** and does not include all source design features. [Tool contracts](docs/tools.md) · [Engineering tasks](docs/engineering-tasks.md)
 
-[中文](README.md) · [Release notes](docs/releases/v2.0.0-preview.1.md) · [Tools](docs/tools.md) · [Contributing](CONTRIBUTING.md) · [MIT](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+## Acceptance boundaries
 
-The 24 tools include cad_project, cad_analyze, cad_capabilities, cad_workflow, cad_scan_drawing and experimental cad_session. Capture up to 100000 entities once, then filter/project/page its hash-bound local index without restarting CAD. Combine edit, final CSV and PDF/PNG delivery in one workflow with compact replies and explicit takeoff exclusions. Verification levels distinguish saved bytes, reopening, geometry, preservation, rendering and independent visual review. Projects freeze inputs, retain per-drawing copies and resume only unstarted work. Quantity rules retain object/instance provenance and missing measurements. Open 任务中心.cmd after setup for the loopback browser UI. Local nested blocks and paper layouts remain read-only. See [v2 scope and evidence](docs/v2-usage.md).
+- Supply your own drawings and project inputs. Private drawings, vendor libraries and historical test outputs are not distributed.
+- Successful execution, reopened CAD, design checks and professional approval are separate conclusions. Keep missing requirements, unknown conditions, conflicts and pending review items visible.
+- Design support is bounded. Arbitrary complex buildings, complete multidisciplinary construction design, full vendor-object coverage and other CAD versions remain outside accepted scope.
+- Independent customer projects, cross-model behavior, clean machines, external users and professional review remain unaccepted.
 
-The original 18 tools retain scoped editing, managed route updates, dimensions, layouts, and actual CAD PDF/PNG plotting. Optional Tangent V8 support includes real independent straight channel-type (槽式) cable trays, catalog-matched dimensions/models and associated proprietary labels through cad_edit. See [editing scope](docs/editing.md) and [native tray limits](docs/native-trays.md). Connected fittings, other tray families and complete vendor statistics remain outside scope.
+See the [current plan](docs/engineering-design-plan.md) and [latest actual-client/CAD evidence](docs/real-agent-standard-conditions.md).
+
+## Develop
+
+Use Node.js 22.19+ and PowerShell 7+. CAD execution also requires local AutoCAD 2022 and .NET Framework 4.8.
+
+```powershell
+npm ci
+.\setup.cmd
+npm test
+npm run check -- --static
+```
+
+Real CAD tests require the relevant software environment. Keep private inputs and runtime outputs outside the repository. [Contributing](CONTRIBUTING.md) · [Releasing](docs/releasing.md)
+
+[中文](README.md) · [MIT](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Changelog](CHANGELOG.md)
